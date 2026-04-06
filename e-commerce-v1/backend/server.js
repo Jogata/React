@@ -14,6 +14,16 @@ app.get("/", (req, res) => {
     res.send("Server is ready");
 })
 
+app.get("/products", async (req, res) => {
+    try {
+		const products = await Product.find({});
+		res.status(200).json({ success: true, data: products });
+	} catch (error) {
+		console.log("error in fetching products:", error.message);
+		res.status(500).json({ success: false, message: "Server Error" });
+	}
+})
+
 app.post("/products", async (req, res) => {
     const product = req.body;
 
