@@ -4,6 +4,31 @@
   box-sizing: border-box;
 }
 
+a {
+  display: inline-block;
+  text-decoration: none;
+  transition: color 300ms;
+}
+
+button {
+  font-family: inherit;
+  border: 0px solid transparent;
+  outline: 1px solid transparent;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 1px solid #999;
+}
+
+img {
+  display: block;
+  /* display: flex; */
+  width: 100%;
+}
+
 .page {
   min-height: 100vh;
 }

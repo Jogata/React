@@ -1,0 +1,63 @@
+nav {
+    padding: 1rem 2%;
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    color: transparent;
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    background-image: 
+        linear-gradient(
+            rgb(115, 115, 252), 
+            rgb(22, 131, 131)
+        );
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.logo i {
+    padding-left: 0.35em;
+    font-size: 2.2rem;
+    font-weight: bold;
+}
+
+.buttons {
+    display: flex;
+    gap: 1rem;
+    /* align-items: center; */
+    /* border: 1px solid red; */
+}
+
+nav .buttons a {
+    padding: 1rem 1.5rem;
+    color: white;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+nav .buttons a i {
+    padding: 0.2em 0.35em;
+    font-size: 1.2rem;
+    border-radius: 6px;
+    border: 1px solid white;
+}
+
+nav button {
+    padding: 1rem 1.5rem;
+    font-size: 0px;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.buttons button i {
+    /* padding: 0.2em; */
+    color: white;
+    font-size: 1.9rem;
+}
