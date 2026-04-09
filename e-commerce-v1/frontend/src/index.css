@@ -33,8 +33,13 @@ img {
   min-height: 100vh;
 }
 
-body {
+body.dark {
   color: white;
   font-family: Georgia, serif;
   background-color: black;
+}
+
+body.light {
+  color: black;
+  background-color: white;
 }

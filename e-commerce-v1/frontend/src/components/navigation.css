@@ -15,6 +15,7 @@ nav {
     text-transform: uppercase;
     background-image: 
         linear-gradient(
+            to left, 
             rgb(115, 115, 252), 
             rgb(22, 131, 131)
         );
@@ -26,13 +27,17 @@ nav {
     padding-left: 0.35em;
     font-size: 2.2rem;
     font-weight: bold;
+    color: transparent;
+    -webkit-text-stroke: 2px rgb(115, 115, 252);
+    background-image: 
+        linear-gradient(
+            black, 
+            black);
 }
 
 .buttons {
     display: flex;
     gap: 1rem;
-    /* align-items: center; */
-    /* border: 1px solid red; */
 }
 
 nav .buttons a {
@@ -57,7 +62,25 @@ nav button {
 }
 
 .buttons button i {
-    /* padding: 0.2em; */
     color: white;
     font-size: 1.9rem;
+}
+
+.light .logo i {
+    background-image: 
+        linear-gradient(
+            white, 
+            white);
+}
+
+.light nav .buttons a {
+    color: black;
+}
+
+.light nav .buttons a i {
+    border: 1px solid black;
+}
+
+.light .buttons button i {
+    color: black;
 }
