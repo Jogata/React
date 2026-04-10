@@ -2,13 +2,39 @@ import { useState } from "react";
 
 const CreatePage = () => {
     const [newProduct, setNewProduct] = useState({
-		name: "",
-		price: null,
-		image: "",
+		name: "test",
+		price: "5",
+		image: "test",
 	});
 
+    const createProduct = async (newProduct) => {
+		if (!newProduct.name || !newProduct.image || !newProduct.price) {
+            console.log("fill all");
+			return { success: false, message: "Please fill in all fields." };
+		}
+
+		const res = await fetch("http://localhost:5000/products", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(newProduct),
+		});
+
+		const data = await res.json();
+        console.log(data);
+
+        return { success: true, message: "Product created successfully" };
+	}
+
+    const handleSubmitForm = (e) => {
+        e.preventDefault();
+        console.log("submitted");
+        createProduct(newProduct);
+    }
+
     return (
-        <form>
+        <form onSubmit={handleSubmitForm}>
             <h1>Create New Product</h1>
             <input
                 name="name"

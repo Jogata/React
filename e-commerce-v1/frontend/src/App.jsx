@@ -7,10 +7,12 @@ function App() {
   return (
     <div className="page">
       <Navigation />
-      <Routes>
-				<Route path="/" element={<HomePage />} />
-				<Route path="/create" element={<CreatePage />} />
-			</Routes>
+      <main>
+        <Routes>
+	  			<Route path="/" element={<HomePage />} />
+		  		<Route path="/create" element={<CreatePage />} />
+			  </Routes>
+      </main>
     </div>
   )
 }

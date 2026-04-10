@@ -38,7 +38,17 @@ img {
 }
 
 .page {
+  max-width: 1200px;
   min-height: 100vh;
+  margin: auto;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+main {
+  padding: 3rem 2% 1rem;
+  /* display: flex; */
+  /* margin: auto; */
 }
 
 body.dark {
@@ -54,7 +64,7 @@ body.light {
 
 form {
   max-width: 600px;
-  margin: auto;
+  margin: 0 auto;
   padding: 2rem;
   /* color: white; */
   text-align: center;
@@ -83,12 +93,12 @@ input {
   color: #eee;
   font-size: 1.2rem;
   border-radius: 12px;
-  border: 1px solid #fff2;
+  border: 1px solid #fff3;
   background-color: transparent;
 }
 
 input::placeholder {
-  color: #fff5;
+  color: #fff6;
 }
 
 form button {
@@ -100,13 +110,13 @@ form button {
   border: 1px solid cornflowerblue;
   border-radius: 12px;
   transition: color 300ms, 
-      border-color 300ms,
+      /* border-color 300ms, */
   background-color 300ms;
 }
 
 form button:hover {
-  color: #eee;
-  border-color: #eee;
+  color: #000;
+  /* border-color: #000; */
   background-color: cornflowerblue;
 }
 
