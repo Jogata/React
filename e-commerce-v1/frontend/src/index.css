@@ -18,7 +18,15 @@ button {
   cursor: pointer;
 }
 
+input {
+  font-family: inherit;
+  border: 0px solid transparent;
+  outline: 1px solid transparent;
+  background-color: transparent;
+}
+
 button:focus-visible,
+input:focus-visible,
 a:focus-visible {
   outline: 1px solid #999;
 }
@@ -42,4 +50,77 @@ body.dark {
 body.light {
   color: black;
   background-color: white;
+}
+
+form {
+  max-width: 600px;
+  margin: auto;
+  padding: 2rem;
+  /* color: white; */
+  text-align: center;
+  border-radius: 12px;
+  box-shadow: -3px -3px 3px #fff2, 
+              3px 3px 3px #fff1;
+}
+
+form h1 {
+  color: transparent;
+  padding: 1rem 0 2rem;
+  background-image: 
+  linear-gradient(
+      to left, 
+      rgb(115, 115, 252), 
+      rgb(22, 131, 131)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+input {
+  width: 100%;
+  margin-bottom: 0.5rem;
+  padding: 0.5em 1em;
+  color: #eee;
+  font-size: 1.2rem;
+  border-radius: 12px;
+  border: 1px solid #fff2;
+  background-color: transparent;
+}
+
+input::placeholder {
+  color: #fff5;
+}
+
+form button {
+  margin: 2rem 0 1rem;
+  padding: 0.5em 1.5em;
+  color: cornflowerblue;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: 1px solid cornflowerblue;
+  border-radius: 12px;
+  transition: color 300ms, 
+      border-color 300ms,
+  background-color 300ms;
+}
+
+form button:hover {
+  color: #eee;
+  border-color: #eee;
+  background-color: cornflowerblue;
+}
+
+.light form {
+  color: black;
+  box-shadow: -3px -3px 3px #0001, 
+              3px 3px 3px #0002;
+}
+
+.light form input {
+  color: black;
+  border: 1px solid #0005;
+}
+
+.light form input::placeholder {
+  color: #0005;
 }

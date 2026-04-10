@@ -21,12 +21,12 @@ const Navigation = () => {
 
 	return (
 		<nav>
-            <Link to={"/"} className="logo">
+            <Link to="/" className="logo">
                 Product Store
                 <i className="fa fa-shopping-cart"></i>
             </Link>
             <div className="buttons">
-                <Link>
+                <Link to="/create">
                     <i className="fa fa-plus"></i>
                 </Link>
                 <button onClick={() => {setIsDarkTheme(!isDarkTheme)}}>
