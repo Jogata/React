@@ -52,9 +52,18 @@ app.post("/books", async (request, response) => {
     }
 });
 
-// app.listen(PORT, () => {
-//     console.log(`App is listening to port: ${PORT}`);
-// });
+router.get('/:id', async (request, response) => {
+    try {
+        const { id } = request.params;
+
+        const book = await Book.findById(id);
+
+        return response.status(200).json(book);
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({ message: error.message });
+    }
+});
 
 mongoose
     .connect(mongoDBURL)
