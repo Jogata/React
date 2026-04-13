@@ -4,7 +4,13 @@ import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
+
+  function getAllBooks() {
+    fetch("http://localhost:5555/books")
+      .then(res => res.json())
+      .then(data => console.log(data))
+  }
 
   return (
     <>
@@ -21,7 +27,7 @@ function App() {
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </button>
-        <button onClick={() => {fetch("http://localhost:5555/books")}}>
+        <button onClick={() => getAllBooks()}>
           get all books
         </button>
         <p>
