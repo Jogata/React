@@ -30,7 +30,7 @@ router.get("/:id", async (request, response) => {
     }
 });
 
-router.post("/books", async (request, response) => {
+router.post("/", async (request, response) => {
     try {
         if (
             !request.body.title ||
