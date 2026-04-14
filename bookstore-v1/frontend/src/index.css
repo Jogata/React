@@ -42,6 +42,25 @@ body {
   min-height: 100vh;
 }
 
+.back-btn {
+  display: inline-block;
+}
+
+.back-btn a {
+  padding: 0.4rem 2.1rem 0.4rem 2rem;
+  /* display: inline-flex; */
+  /* gap: 1rem; */
+  font-size: 0px;
+  border-radius: 10rem;
+  background-color: cornflowerblue;
+}
+
+.back-btn i {
+  color: white;
+  font-size: 1.6rem;
+  font-weight: bold;
+}
+
 .loader {
   display: block;
   position: relative;
@@ -51,16 +70,9 @@ body {
   border-radius: 50%;
 }
 
-/* .logo:focus {
-  outline: 1px solid steelblue;
-  outline-offset: 8px;
-} */
-
 .logo-ring {
   position: absolute;
-  /* width: 25vw; */
   width: 100%;
-  /* height: 25vw; */
   height: 100%;
   border-radius: 50%;
 }
@@ -111,7 +123,6 @@ body {
 }
 
 .logo-ring:nth-child(4) {
-  /* position: relative; */
   border-left: 3px solid #f00;
   animation: loaderv324 2s linear infinite;
 }

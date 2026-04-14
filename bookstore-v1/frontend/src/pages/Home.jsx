@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Spinner from "../components/Spinner";
+import BackButton from "../components/BackButton";
 
 const Home = () => {
     const [books, setBooks] = useState([]);
@@ -9,21 +10,22 @@ const Home = () => {
 
     useEffect(() => {
         setLoading(true);
-        // fetch("http://localhost:5555/books")
-        //     .then(res => res.json())
-        //     .then(data => {
-        //         console.log(data);
-        //         setBooks(data);
-        //         setLoading(false);
-        //     })
-        //     .catch((error) => {
-        //         console.log(error);
-        //         setLoading(false);
-        //     });
+        fetch("http://localhost:5555/books")
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                setBooks(data);
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.log(error);
+                setLoading(false);
+            });
     }, []);
 
     return (
-        <div className="">
+        <div className="home-page">
+            <BackButton />
             <div className="">
                 <button
                     className=""
@@ -38,10 +40,11 @@ const Home = () => {
                     Card
                 </button>
             </div>
-            <div className="">
+            <div className="header">
                 <h1>Books List</h1>
-                <Link to="/books/create">
+                <Link to="/books/create" title="Create new book">
                     Create new book
+                    <i className="ri-add-line"></i>
                 </Link>
             </div>
             {loading ? (
