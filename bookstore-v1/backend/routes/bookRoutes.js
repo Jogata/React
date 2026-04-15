@@ -56,6 +56,12 @@ router.post("/", async (request, response) => {
     }
 });
 
+router.post("/test", async (request, response) => {
+    setTimeout(() => {
+        response.status(200).send({message: "test ok"});
+    }, 3000);
+});
+
 router.put("/:id", async (request, response) => {
     try {
         if (

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Spinner from "../components/Spinner";
 import BackButton from "../components/BackButton";
@@ -13,6 +13,12 @@ const Home = () => {
     const [publishYear, setPublishYear] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+
+    let controller = useRef(null);
+
+    // useEffect(() => {
+    //     console.log("render");
+    // })
 
     // useEffect(() => {
     //     setLoading(true);
@@ -35,26 +41,72 @@ const Home = () => {
             publishYear,
         };
 
-        const controller = new AbortController();
+        data.title = "test title";
+        data.author = "test author";
+        data.publishYear = 2000;
+        
+        if (controller.current) {
+            console.log("Old controller aborted");
+            controller.current.abort();
+        }
+        
+        // controller = new AbortController();
+        console.log(controller);
+
+        if (
+            !data.title ||
+            !data.author ||
+            !data.publishYear
+        ) {
+            console.log("Send all required fields: title, author, publishYear");
+            // controller = null;
+            // setLoading(false);
+            return {
+                message: "Send all required fields: title, author, publishYear",
+            }
+        }
 
         setLoading(true);
 
-        fetch("http://localhost:5555/books", {
-            method: "POST",
-            body: JSON.stringify(data),
-            signal: controller.signal,
-        })
-            .then(() => {
-                setLoading(false);
-                navigate("/");
+        controller.current = new AbortController();
+        console.log(controller);
+
+        try {
+            fetch("http://localhost:5555/books/test", {
+                method: "POST",
+                body: JSON.stringify(data),
+                signal: controller.current.signal,
             })
-            .catch((error) => {
-                setLoading(false);
-                // alert("An error happened. Please Chack console");
-                console.error(error);
-            });
+                .then((res) => {
+                    setLoading(false);
+                    // console.log(res);
+                    return res.json();
+                    // navigate("/");
+                })
+                .then(data => {
+                    console.log(data.message);
+                })
+                .catch((error) => {
+                    setLoading(false);
+                    // alert("An error happened. Please Check console");
+                    // console.log("error");
+                    console.error(error);
+                });
+                // .finally(() => {
+                //     setLoading(false);
+                // });
+        } catch (error) {
+            console.log(error);
+        }
     };
   
+    // useEffect(() => {
+    //     return () => {
+    //         if (controller.current) {
+    //             controller.current.abort();
+    //         }
+    //     };
+    // }, [controller.current])
 
     return (
         <div className="home-page">
@@ -89,7 +141,7 @@ const Home = () => {
             <div>
                 <BackButton />
                 <h1>Create Book</h1>
-                {loading ? <Spinner /> : ""}
+                {/* {loading ? <Spinner /> : ""} */}
                 <div>
                     <div>
                         <label>Title</label>
