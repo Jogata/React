@@ -14,7 +14,7 @@ const Home = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    let controller = useRef(null);
+    const controller = useRef(null);
 
     // useEffect(() => {
     //     console.log("render");
@@ -35,6 +35,7 @@ const Home = () => {
     //         });
     // }, []);
     const handleSaveBook = () => {
+        try {
         const data = {
             title,
             author,
@@ -71,7 +72,7 @@ const Home = () => {
         controller.current = new AbortController();
         console.log(controller);
 
-        try {
+        // try {
             fetch("http://localhost:5555/books/test", {
                 method: "POST",
                 body: JSON.stringify(data),
@@ -85,28 +86,37 @@ const Home = () => {
                 })
                 .then(data => {
                     console.log(data.message);
+                    navigate("/create");
                 })
                 .catch((error) => {
                     setLoading(false);
+                    console.log("catched");
                     // alert("An error happened. Please Check console");
                     // console.log("error");
-                    console.error(error);
+                    // console.error(error);
+                    if (error.name === "AbortError") {
+                        console.log("Fetch request was canceled");
+                    } else {
+                        console.error("Fetch error:", error);
+                    }
                 });
                 // .finally(() => {
                 //     setLoading(false);
                 // });
         } catch (error) {
+            // console.log("catched");
             console.log(error);
         }
     };
   
-    // useEffect(() => {
-    //     return () => {
-    //         if (controller.current) {
-    //             controller.current.abort();
-    //         }
-    //     };
-    // }, [controller.current])
+    useEffect(() => {
+        return () => {
+            console.log("clean");
+            if (controller.current) {
+                controller.current.abort();
+            }
+        };
+    }, [controller])
 
     return (
         <div className="home-page">
