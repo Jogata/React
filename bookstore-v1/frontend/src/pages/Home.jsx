@@ -1,32 +1,65 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Spinner from "../components/Spinner";
 import BackButton from "../components/BackButton";
 
 const Home = () => {
     const [books, setBooks] = useState([]);
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
     const [showType, setShowType] = useState("table");
 
-    useEffect(() => {
+    const [title, setTitle] = useState("");
+    const [author, setAuthor] = useState("");
+    const [publishYear, setPublishYear] = useState("");
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
+    // useEffect(() => {
+    //     setLoading(true);
+    //     fetch("http://localhost:5555/books")
+    //         .then(res => res.json())
+    //         .then(data => {
+    //             console.log(data);
+    //             setBooks(data);
+    //             setLoading(false);
+    //         })
+    //         .catch((error) => {
+    //             console.log(error);
+    //             setLoading(false);
+    //         });
+    // }, []);
+    const handleSaveBook = () => {
+        const data = {
+            title,
+            author,
+            publishYear,
+        };
+
+        const controller = new AbortController();
+
         setLoading(true);
-        fetch("http://localhost:5555/books")
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
-                setBooks(data);
+
+        fetch("http://localhost:5555/books", {
+            method: "POST",
+            body: JSON.stringify(data),
+            signal: controller.signal,
+        })
+            .then(() => {
                 setLoading(false);
+                navigate("/");
             })
             .catch((error) => {
-                console.log(error);
                 setLoading(false);
+                // alert("An error happened. Please Chack console");
+                console.error(error);
             });
-    }, []);
+    };
+  
 
     return (
         <div className="home-page">
             <BackButton />
-            <div className="">
+            {/* <div className="">
                 <button
                     className=""
                     onClick={() => setShowType("table")}
@@ -48,11 +81,45 @@ const Home = () => {
                 </Link>
             </div>
             {loading ? (
-                // <h2>loading</h2>
                 <Spinner />
             ) : (
                 <h2>TODO: map books</h2>
-            )}
+            )} */}
+
+            <div>
+                <BackButton />
+                <h1>Create Book</h1>
+                {loading ? <Spinner /> : ""}
+                <div>
+                    <div>
+                        <label>Title</label>
+                        <input
+                            type="text"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label>Author</label>
+                        <input
+                            type="text"
+                            value={author}
+                            onChange={(e) => setAuthor(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label>Publish Year</label>
+                        <input
+                            type="number"
+                            value={publishYear}
+                            onChange={(e) => setPublishYear(e.target.value)}
+                        />
+                    </div>
+                    <button onClick={handleSaveBook}>
+                        Save
+                    </button>
+                </div>
+            </div>
         </div>
     );
 };
