@@ -6,17 +6,17 @@ import BooksTable from "../components/BooksTable";
 
 const Home = () => {
     const [books, setBooks] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [showType, setShowType] = useState("table");
 
     useEffect(() => {
         console.log("effect");
-        // setLoading(true);
+        setLoading(true);
         fetch("http://localhost:5555/books")
             .then(res => res.json())
             .then(data => {
-                console.log(data);
-                setBooks(data);
+                // console.log(data.data);
+                setBooks(data.data);
                 setLoading(false);
             })
             .catch((error) => {
@@ -52,7 +52,7 @@ const Home = () => {
             {loading ? (
                 <Spinner />
             ) : (
-                <BooksTable books={books.data} />
+                <BooksTable books={books} />
                 // <h1>test</h1>
             )}
         </div>

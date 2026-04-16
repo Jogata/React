@@ -21,27 +21,16 @@ const CreateBook = () => {
                 publishYear,
             };
 
-            // data.title = "test title 2";
-            // data.author = "test author 2";
-            // data.publishYear = 2002;
-
             if (controller.current) {
-                console.log("Old controller aborted");
                 controller.current.abort();
                 controller.current = null;
             }
-
-            // controller = new AbortController();
-            console.log(controller);
 
             if (
                 !data.title ||
                 !data.author ||
                 !data.publishYear
             ) {
-                console.log("Send all required fields: title, author, publishYear");
-                // controller = null;
-                // setLoading(false);
                 return {
                     message: "Send all required fields: title, author, publishYear",
                 }
@@ -50,9 +39,7 @@ const CreateBook = () => {
             setLoading(true);
 
             controller.current = new AbortController();
-            console.log(controller);
 
-            // try {
             fetch("http://localhost:5555/books", {
                 method: "POST",
                 body: JSON.stringify(data),
@@ -61,23 +48,12 @@ const CreateBook = () => {
                   },
                 signal: controller.current.signal,
             })
-                .then((res) => {
-                    // console.log(res);
-                    return res.json();
-                    // navigate("/");
-                })
-                .then(data => {
-                    // setLoading(false);
+                .then(res => res.json())
+                .then(() => {
                     controller.current = null;
-                    console.log(data.message);
-                    // navigate("/");
+                    navigate("/");
                 })
                 .catch((error) => {
-                    // setLoading(false);
-                    console.log("catched");
-                    // alert("An error happened. Please Check console");
-                    // console.log("error");
-                    // console.error(error);
                     if (error.name === "AbortError") {
                         console.log("Fetch request was canceled");
                     } else {
@@ -85,21 +61,17 @@ const CreateBook = () => {
                     }
                 })
                 .finally(() => {
-                    console.log("finally");
-                    console.log(controller);
                     if (!controller.current) {
                         setLoading(false);
                     }
                 });                
         } catch (error) {
-            // console.log("catched");
             console.log(error);
         }
     };
 
     useEffect(() => {
         return () => {
-            console.log("clean");
             if (controller.current) {
                 controller.current.abort();
             }
@@ -110,7 +82,7 @@ const CreateBook = () => {
         <div>
             <BackButton />
             <h1>Create Book</h1>
-            {loading ? <Spinner /> : ""}
+            {loading ? <Spinner /> : null}
             <div>
                 <div>
                     <label>Title</label>

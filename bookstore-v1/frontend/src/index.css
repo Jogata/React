@@ -201,3 +201,29 @@ th, td {
     display: none;
   }
 }
+
+.book-page {
+  padding: 1rem 2%;
+}
+
+.book-page h1 {
+  margin: 2rem 0 1rem;
+}
+
+.book-info {
+  display: inline-block;
+  padding: 1rem;
+  border-radius: 12px;
+  /* border: 1px solid; */
+  box-shadow: 3px 3px 3px #0004, 
+            -2px -2px 2px #0001;
+}
+
+.book-info .row {
+  padding: 0.5rem;
+  /* border-bottom: 1px solid #0004; */
+}
+
+.book-info .property-name {
+  padding-right: 1rem;
+}
