@@ -2,14 +2,16 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Spinner from "../components/Spinner";
 import BackButton from "../components/BackButton";
+import BooksTable from "../components/BooksTable";
 
 const Home = () => {
     const [books, setBooks] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [showType, setShowType] = useState("table");
 
     useEffect(() => {
-        setLoading(true);
+        console.log("effect");
+        // setLoading(true);
         fetch("http://localhost:5555/books")
             .then(res => res.json())
             .then(data => {
@@ -50,7 +52,8 @@ const Home = () => {
             {loading ? (
                 <Spinner />
             ) : (
-                <h2>TODO: map books</h2>
+                <BooksTable books={books.data} />
+                // <h1>test</h1>
             )}
         </div>
     );

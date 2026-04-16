@@ -31,6 +31,7 @@ router.get("/:id", async (request, response) => {
 });
 
 router.post("/", async (request, response) => {
+    console.log(request.body);
     try {
         if (
             !request.body.title ||
@@ -41,11 +42,14 @@ router.post("/", async (request, response) => {
                 message: "Send all required fields: title, author, publishYear",
             });
         }
+
         const newBook = {
             title: request.body.title,
             author: request.body.author,
             publishYear: request.body.publishYear,
         };
+
+        console.log(newBook);
 
         const book = await Book.create(newBook);
 
@@ -56,11 +60,11 @@ router.post("/", async (request, response) => {
     }
 });
 
-router.post("/test", async (request, response) => {
-    setTimeout(() => {
-        response.status(200).send({message: "test ok"});
-    }, 3000);
-});
+// router.post("/test", async (request, response) => {
+//     setTimeout(() => {
+//         response.status(200).send({message: "test ok"});
+//     }, 3000);
+// });
 
 router.put("/:id", async (request, response) => {
     try {

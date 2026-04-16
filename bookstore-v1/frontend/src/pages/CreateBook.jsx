@@ -13,10 +13,6 @@ const CreateBook = () => {
 
     const controller = useRef(null);
 
-    // useEffect(() => {
-    //     console.log("render");
-    // })
-
     const handleSaveBook = () => {
         try {
             const data = {
@@ -25,13 +21,14 @@ const CreateBook = () => {
                 publishYear,
             };
 
-            data.title = "test title";
-            data.author = "test author";
-            data.publishYear = 2000;
+            // data.title = "test title 2";
+            // data.author = "test author 2";
+            // data.publishYear = 2002;
 
             if (controller.current) {
                 console.log("Old controller aborted");
                 controller.current.abort();
+                controller.current = null;
             }
 
             // controller = new AbortController();
@@ -56,18 +53,22 @@ const CreateBook = () => {
             console.log(controller);
 
             // try {
-            fetch("http://localhost:5555/books/test", {
+            fetch("http://localhost:5555/books", {
                 method: "POST",
                 body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                  },
                 signal: controller.current.signal,
             })
                 .then((res) => {
-                    setLoading(false);
                     // console.log(res);
                     return res.json();
                     // navigate("/");
                 })
                 .then(data => {
+                    // setLoading(false);
+                    controller.current = null;
                     console.log(data.message);
                     // navigate("/");
                 })
@@ -83,10 +84,13 @@ const CreateBook = () => {
                         console.error("Fetch error:", error);
                     }
                 })
-            .finally(() => {
-                console.log("finally");
-                setLoading(false);
-            });
+                .finally(() => {
+                    console.log("finally");
+                    console.log(controller);
+                    if (!controller.current) {
+                        setLoading(false);
+                    }
+                });                
         } catch (error) {
             // console.log("catched");
             console.log(error);
