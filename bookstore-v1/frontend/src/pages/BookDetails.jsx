@@ -11,6 +11,7 @@ const BookDetails = () => {
     useEffect(() => {
         const controller = new AbortController();
         setLoading(true);
+        
         fetch(`http://localhost:5555/books/${id}`, {
             signal: controller.signal
         })
@@ -36,32 +37,6 @@ const BookDetails = () => {
             {loading ? (
                 <Spinner />
             ) : (
-                // <div className="book-info">
-                //     <div className="row">
-                //         <span className="property-name">Id</span>
-                //         <span>{book._id}</span>
-                //     </div>
-                //     <div className="row">
-                //         <span className="property-name">Title</span>
-                //         <span>{book.title}</span>
-                //     </div>
-                //     <div className="row">
-                //         <span className="property-name">Author</span>
-                //         <span>{book.author}</span>
-                //     </div>
-                //     <div className="row">
-                //         <span className="property-name">Publish Year</span>
-                //         <span>{book.publishYear}</span>
-                //     </div>
-                //     <div className="row">
-                //         <span className="property-name">Create Time</span>
-                //         <span>{new Date(book.createdAt).toString()}</span>
-                //     </div>
-                //     <div className="row">
-                //         <span className="property-name">Last Update Time</span>
-                //         <span>{new Date(book.updatedAt).toString()}</span>
-                //     </div>
-                // </div>
                 <dl className="book-info">
                     <div className="row">
                         <dt>Id</dt>

@@ -22,6 +22,10 @@ const CreateBook = () => {
                 publishYear,
             };
 
+            data.title = "test title 3";
+            data.author = "test author 3";
+            data.publishYear = 2003;
+
             if (controller.current) {
                 controller.current.abort();
                 controller.current = null;
@@ -36,7 +40,7 @@ const CreateBook = () => {
                     message: "Send all required fields: title, author, publishYear",
                 }
             }
-
+            
             setLoading(true);
 
             controller.current = new AbortController();
