@@ -13,7 +13,8 @@ const CreateBook = () => {
 
     const controller = useRef(null);
 
-    const handleSaveBook = () => {
+    const handleSaveBook = (e) => {
+        e.preventDefault();
         try {
             const data = {
                 title,
@@ -79,30 +80,33 @@ const CreateBook = () => {
     }, [controller])
 
     return (
-        <div>
+        <div className="create-page">
             <BackButton />
             <h1>Create Book</h1>
             {loading ? <Spinner /> : null}
-            <div>
-                <div>
-                    <label>Title</label>
+            <form>
+                <div className="row">
+                    <label htmlFor="title">Title</label>
                     <input
+                        id="title"
                         type="text"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
                 </div>
-                <div>
-                    <label>Author</label>
+                <div className="row">
+                    <label htmlFor="author">Author</label>
                     <input
+                        id="author"
                         type="text"
                         value={author}
                         onChange={(e) => setAuthor(e.target.value)}
                     />
                 </div>
-                <div>
-                    <label>Publish Year</label>
+                <div className="row">
+                    <label htmlFor="year">Publish Year</label>
                     <input
+                        id="year"
                         type="number"
                         value={publishYear}
                         onChange={(e) => setPublishYear(e.target.value)}
@@ -111,7 +115,7 @@ const CreateBook = () => {
                 <button onClick={handleSaveBook}>
                     Save
                 </button>
-            </div>
+            </form>
         </div>
     )
 }

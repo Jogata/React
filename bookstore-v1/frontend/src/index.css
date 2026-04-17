@@ -225,5 +225,80 @@ th, td {
 }
 
 .book-info .property-name {
-  padding-right: 1rem;
+  /* padding-right: 1rem; */
+}
+
+dl, dt, dd {
+  all: revert;
+}
+
+dt {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.create-page {
+  padding: 1rem 2%;
+}
+
+.create-page h1 {
+  margin: 2rem 0 1rem;
+}
+
+.create-page form {
+  max-width: 400px;
+  padding: 1rem 1rem 2rem;
+  border-radius: 12px;
+  /* border: 1px solid; */
+  box-shadow: 3px 3px 3px #0004, 
+            -2px -2px 2px #0001;
+}
+
+.create-page .row {
+  margin: 1rem 0;
+}
+
+.create-page .row label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.create-page .row input {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  outline: 0px solid transparent;
+  border-radius: 10em;
+  border: 0px solid transparent;
+  background-color: transparent;
+  box-shadow: inset 1px 1px 1px #0002, 
+            inset -1px -1px 1px #0001;
+  transition: box-shadow 300ms;
+}
+
+.create-page .row input:focus-visible {
+  box-shadow: inset 2px 2px 2px #0004, 
+            inset -1px -1px 1px #0002;
+}
+
+.create-page button {
+  margin-top: 1rem;
+  padding: 0.5em 3em;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 10em;
+  /* border: 1px solid; */
+  box-shadow: 1px 1px 1px #0004, 
+            -1px -1px 1px #0001;
+  transition: box-shadow 300ms;
+}
+
+.create-page button:hover,
+.create-page button:focus-visible {
+  box-shadow: 3px 3px 3px #0004, 
+            -2px -2px 2px #0001;
+}
+
+.create-page button:active {
+  box-shadow: inset 2px 2px 2px #0004, 
+          inset -2px -2px 2px #0001;
 }
