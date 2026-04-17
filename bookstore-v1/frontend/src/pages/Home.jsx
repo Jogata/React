@@ -53,7 +53,6 @@ const Home = () => {
                 <Spinner />
             ) : (
                 <BooksTable books={books} />
-                // <h1>test</h1>
             )}
         </div>
     );
