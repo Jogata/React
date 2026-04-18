@@ -15,6 +15,7 @@ const CreateBook = () => {
 
     const handleSaveBook = (e) => {
         e.preventDefault();
+
         try {
             const data = {
                 title,
@@ -22,9 +23,9 @@ const CreateBook = () => {
                 publishYear,
             };
 
-            data.title = "test title 3";
-            data.author = "test author 3";
-            data.publishYear = 2003;
+            data.title = "test title 4";
+            data.author = "test author 4";
+            data.publishYear = 2004;
 
             if (controller.current) {
                 controller.current.abort();

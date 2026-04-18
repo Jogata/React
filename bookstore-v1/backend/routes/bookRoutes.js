@@ -31,7 +31,7 @@ router.get("/:id", async (request, response) => {
 });
 
 router.post("/", async (request, response) => {
-    console.log(request.body);
+    // console.log(request.body);
     try {
         if (
             !request.body.title ||
@@ -98,12 +98,17 @@ router.delete("/:id", async (request, response) => {
         const { id } = request.params;
 
         const result = await Book.findByIdAndDelete(id);
-
+        
         if (!result) {
+            console.log("Book not found");
             return response.status(404).json({ message: "Book not found" });
         }
+        
+        setTimeout(() => {
+            return response.status(200).send({ message: "Book deleted successfully" });
+        }, 20000);
 
-        return response.status(200).send({ message: "Book deleted successfully" });
+        // return response.status(200).send({ message: "Book deleted successfully" });
     } catch (error) {
         console.log(error.message);
         response.status(500).send({ message: error.message });
