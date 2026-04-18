@@ -30,43 +30,39 @@ const DeleteBook = () => {
         } else {
           setLoading(false);
           console.error("Fetch error:", error);
-          // console.log(error);
         }
       });
   };
 
   useEffect(() => {
     return () => {
-      // try {
       if (controller) {
         controller.abort();
       }
-      // controller.abort();
-      // } catch (error) {
-      // console.log(error);
-      // if (error.name === "AbortError") {
-      // console.log("Fetch request was canceled");
-      // } else {
-      // console.error("Fetch error:", error);
-      // }
     }
-  // }
   }, [controller])
 
-return (
-  <div>
-    <BackButton />
-    <h1>Delete Book</h1>
-    {loading ? <Spinner /> : null}
-    <div>
-      <h3>Are You Sure You want to delete this book?</h3>
+  const buttonText = loading ? "Deleting..." : "Yes, Delete it";
 
-      <button onClick={handleDeleteBook}>
-        Yes, Delete it
-      </button>
+  return (
+    <div className="delete-page">
+      <BackButton />
+      <h1>Delete a Book</h1>
+      {/* {loading ? <Spinner /> : null} */}
+      <div className="main-section">
+        {loading ? (
+          <Spinner />
+        ) : (
+          <h3>Are You Sure You want to delete this book?</h3>
+        )}
+        {/* <h3>Are You Sure You want to delete this book?</h3> */}
+
+        <button onClick={handleDeleteBook}>
+          {buttonText}
+        </button>
+      </div>
     </div>
-  </div>
-)
+  )
 }
 
 export default DeleteBook;

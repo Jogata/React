@@ -368,3 +368,46 @@ dt {
   box-shadow: inset 2px 2px 2px #0004, 
           inset -2px -2px 2px #0001;
 }
+
+.delete-page {
+  max-width: 500px;
+  margin: auto;
+  padding: 1rem 2%;
+  /* text-align: center; */
+}
+
+.delete-page h1 {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.delete-page .main-section {
+  text-align: center;
+}
+
+.delete-page button {
+  margin-top: 1rem;
+  padding: 0.8em 2em;
+  color: white;
+  /* color: #f13939; */
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 10em;
+  /* border: 1px solid; */
+  background-color: #f13939;
+  box-shadow: 1px 1px 1px #0004, 
+            -1px -1px 1px #0001;
+  /* text-shadow: 1px 1px 1px #000; */
+  transition: box-shadow 300ms;
+}
+
+.delete-page button:hover,
+.delete-page button:focus-visible {
+  box-shadow: 3px 3px 3px #0004, 
+            -2px -2px 2px #0001;
+}
+
+.delete-page button:active {
+  box-shadow: inset 2px 2px 2px #0004, 
+          inset -2px -2px 2px #0001;
+}
