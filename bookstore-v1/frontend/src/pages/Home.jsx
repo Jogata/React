@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Spinner from "../components/Spinner";
-import BackButton from "../components/BackButton";
 import BooksTable from "../components/BooksTable";
+import BookCards from "../components/BookCards";
 
 const Home = () => {
     const [books, setBooks] = useState([]);
@@ -10,12 +10,10 @@ const Home = () => {
     const [showType, setShowType] = useState("table");
 
     useEffect(() => {
-        console.log("effect");
         setLoading(true);
         fetch("http://localhost:5555/books")
             .then(res => res.json())
             .then(data => {
-                // console.log(data.data);
                 setBooks(data.data);
                 setLoading(false);
             })
@@ -25,18 +23,24 @@ const Home = () => {
             });
     }, []);
 
+    const content = showType == "table" ? (
+        <BooksTable books={books} />
+    ) : (
+        <BookCards books={books} />
+    );
+
     return (
         <div className="home-page">
-            <BackButton />
-            <div className="">
+            {/* <BackButton /> */}
+            <div className="type-buttons">
                 <button
-                    className=""
+                    className="type-btn"
                     onClick={() => setShowType("table")}
                 >
                     Table
                 </button>
                 <button
-                    className=""
+                    className="type-btn"
                     onClick={() => setShowType("card")}
                 >
                     Card
@@ -52,7 +56,7 @@ const Home = () => {
             {loading ? (
                 <Spinner />
             ) : (
-                <BooksTable books={books} />
+                content
             )}
         </div>
     );

@@ -48,8 +48,6 @@ body {
 
 .back-btn a {
   padding: 0.4rem 2.1rem 0.4rem 2rem;
-  /* display: inline-flex; */
-  /* gap: 1rem; */
   font-size: 0px;
   border-radius: 10rem;
   background-color: cornflowerblue;
@@ -174,7 +172,6 @@ table {
   margin-top: 1rem;
   text-align: center;
   border-spacing: 0.5rem;
-  /* border: 1px solid; */
 }
 
 th, td {
@@ -243,7 +240,6 @@ dt {
   max-width: 400px;
   padding: 1rem 1rem 2rem;
   border-radius: 12px;
-  /* border: 1px solid; */
   box-shadow: 3px 3px 3px #0004, 
             -2px -2px 2px #0001;
 }
@@ -280,7 +276,6 @@ dt {
   font-size: 1.1rem;
   font-weight: bold;
   border-radius: 10em;
-  /* border: 1px solid; */
   box-shadow: 1px 1px 1px #0004, 
             -1px -1px 1px #0001;
   transition: box-shadow 300ms;
@@ -314,7 +309,6 @@ dt {
   padding: 1rem 1rem 2rem;
   text-align: center;
   border-radius: 12px;
-  /* border: 1px solid; */
   box-shadow: 3px 3px 3px #0004, 
             -2px -2px 2px #0001;
 }
@@ -352,7 +346,6 @@ dt {
   font-size: 1.1rem;
   font-weight: bold;
   border-radius: 10em;
-  /* border: 1px solid; */
   box-shadow: 1px 1px 1px #0004, 
             -1px -1px 1px #0001;
   transition: box-shadow 300ms;
@@ -373,7 +366,6 @@ dt {
   max-width: 500px;
   margin: auto;
   padding: 1rem 2%;
-  /* text-align: center; */
 }
 
 .delete-page h1 {
@@ -389,15 +381,12 @@ dt {
   margin-top: 1rem;
   padding: 0.8em 2em;
   color: white;
-  /* color: #f13939; */
   font-size: 1.1rem;
   font-weight: bold;
   border-radius: 10em;
-  /* border: 1px solid; */
   background-color: #f13939;
   box-shadow: 1px 1px 1px #0004, 
             -1px -1px 1px #0001;
-  /* text-shadow: 1px 1px 1px #000; */
   transition: box-shadow 300ms;
 }
 
@@ -410,4 +399,46 @@ dt {
 .delete-page button:active {
   box-shadow: inset 2px 2px 2px #0004, 
           inset -2px -2px 2px #0001;
+}
+
+.type-buttons {
+  padding: 2rem 0;
+  /* display: flex; */
+  /* gap: 1rem; */
+  text-align: center;
+}
+
+.type-btn {
+  padding: 0.8em 2em;
+  color: white;
+  /* color: #0284c7; */
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 10em;
+  background-color: #7dd3fc;
+  text-shadow: 1px 1px 1px #000;
+  box-shadow: 1px 1px 1px #0004, 
+  -1px -1px 1px #0001;
+  transition: background-color 300ms, 
+                    box-shadow 300ms;
+}
+
+.type-btn:first-child {
+  margin-right: 1rem;
+}
+
+.type-btn:hover {
+  /* color: white; */
+  background-color: #0284c7;
+}
+
+.type-btn:hover,
+.type-btn:focus-visible {
+  box-shadow: 3px 3px 3px #0004, 
+            -2px -2px 2px #0001;
+}
+
+.type-btn:active {
+  box-shadow: inset 2px 2px 2px #0004, 
+          inset -2px -2px 2px #fff8;
 }
