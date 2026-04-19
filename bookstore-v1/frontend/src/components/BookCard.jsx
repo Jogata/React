@@ -1,6 +1,10 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import BookModal from "./BookModal";
 
 const BookCard = ({ book }) => {
+    const [showModal, setShowModal] = useState(false);
+
     return (
         <div className="card">
             <div className="card-row top-row">
@@ -18,6 +22,9 @@ const BookCard = ({ book }) => {
                 <h2>{book.author}</h2>
             </div>
             <div className="actions">
+                <button onClick={() => setShowModal(true)}>
+                    show modal
+                </button>
                 <Link to={`/books/details/${book._id}`}>
                     <i className="ri-information-line"></i>
                 </Link>
@@ -28,6 +35,12 @@ const BookCard = ({ book }) => {
                     <i className="fa fa-trash-o"></i>
                 </Link>
             </div>
+            {showModal && (
+                <BookModal 
+                    book={book} 
+                    onClose={() => setShowModal(false)} 
+                />
+            )}
         </div>
     );
 };
