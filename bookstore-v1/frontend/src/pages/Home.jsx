@@ -31,7 +31,6 @@ const Home = () => {
 
     return (
         <div className="home-page">
-            {/* <BackButton /> */}
             <div className="type-buttons">
                 <button
                     className="type-btn"
@@ -41,9 +40,9 @@ const Home = () => {
                 </button>
                 <button
                     className="type-btn"
-                    onClick={() => setShowType("card")}
+                    onClick={() => setShowType("cards")}
                 >
-                    Card
+                    Cards
                 </button>
             </div>
             <div className="header">

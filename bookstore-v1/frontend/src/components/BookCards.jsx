@@ -4,18 +4,20 @@ const BookCards = ({ books }) => {
     return (
         <div className="cards">
             {books.map(book => (
-                <div className="card">
-                    <h2 className="year">
-                        {book.publishYear}
-                    </h2>
-                    <h4 className="book-id">{book._id}</h4>
-                    <div className="book-title">
-                        <i className="fa fa-book"></i>
-                        <h2 className='my-1'>{book.title}</h2>
+                <div className="card" key={book._id}>
+                    <div className="card-row top-row">
+                        <h2 className="year">
+                            {book.publishYear}
+                        </h2>
+                        <h4 className="book-id">{book._id}</h4>
                     </div>
-                    <div className="author">
+                    <div className="card-row book-title">
+                        <i className="fa fa-book"></i>
+                        <h2>{book.title}</h2>
+                    </div>
+                    <div className="card-row author">
                         <i className="fa fa-user-o"></i>
-                        <h2 className='my-1'>{book.author}</h2>
+                        <h2>{book.author}</h2>
                     </div>
                     <div className="actions">
                         <Link to={`/books/details/${book._id}`}>
