@@ -1,9 +1,9 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { Link } from "react-router-dom";
 import BookModal from "./BookModal";
 
 const BookCard = ({ book }) => {
-    const [showModal, setShowModal] = useState(false);
+    // const [showModal, setShowModal] = useState(false);
 
     return (
         <>
@@ -23,10 +23,11 @@ const BookCard = ({ book }) => {
                     <h2>{book.author}</h2>
                 </div>
                 <div className="actions">
-                    <button onClick={() => setShowModal(true)}>
+                    <BookModal book={book} />
+                    {/* <button onClick={() => setShowModal(true)}>
                         show modal
                         <i className="fa fa-eye"></i>
-                    </button>
+                    </button> */}
                     <Link to={`/books/details/${book._id}`}>
                         <i className="ri-information-line"></i>
                     </Link>
@@ -38,12 +39,12 @@ const BookCard = ({ book }) => {
                     </Link>
                 </div>
             </div>
-            {showModal && (
+            {/* {showModal && (
                 <BookModal
                     book={book}
                     onClose={() => setShowModal(false)}
                 />
-            )}
+            )} */}
         </>
     );
 };
