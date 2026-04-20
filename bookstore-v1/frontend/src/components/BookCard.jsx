@@ -4,7 +4,7 @@ import BookModal from "./BookModal";
 
 const BookCard = ({ book }) => {
     // const [showModal, setShowModal] = useState(false);
-
+    console.log(book);
     return (
         <>
             <div className="card">
