@@ -1,0 +1,80 @@
+.loader {
+    display: block;
+    position: relative;
+    width: 25vw;
+    height: 25vw;
+    margin: auto;
+    border-radius: 50%;
+}
+
+.logo-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.logo-ring:nth-child(1) {
+    border-top: 3px solid steelblue;
+    animation: loaderv321 2s linear infinite;
+}
+
+@keyframes loaderv321 {
+    0% {
+        transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+    }
+
+    100% {
+        transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+    }
+}
+
+.logo-ring:nth-child(2) {
+    border-right: 3px solid #f00;
+    animation: loaderv322 2s linear infinite;
+}
+
+@keyframes loaderv322 {
+    0% {
+        transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+    }
+
+    100% {
+        transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+    }
+}
+
+.logo-ring:nth-child(3) {
+    border-bottom: 3px solid steelblue;
+    animation: loaderv323 2s linear infinite;
+}
+
+@keyframes loaderv323 {
+    0% {
+        transform: rotateX(35deg) rotateY(65deg) rotateZ(0deg);
+    }
+
+    100% {
+        transform: rotateX(35deg) rotateY(65deg) rotateZ(360deg);
+    }
+}
+
+.logo-ring:nth-child(4) {
+    border-left: 3px solid #f00;
+    animation: loaderv324 2s linear infinite;
+}
+
+@keyframes loaderv324 {
+    0% {
+        transform: rotateX(50deg) rotateY(150deg) rotateZ(0deg);
+    }
+
+    100% {
+        transform: rotateX(50deg) rotateY(150deg) rotateZ(360deg);
+    }
+}
+
+.logo:focus .logo-ring,
+.logo:hover .logo-ring {
+    animation-duration: 1s;
+}

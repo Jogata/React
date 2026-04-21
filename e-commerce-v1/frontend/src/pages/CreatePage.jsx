@@ -2,9 +2,9 @@ import { useState } from "react";
 
 const CreatePage = () => {
     const [newProduct, setNewProduct] = useState({
-		name: "test",
-		price: "5",
-		image: "test",
+		name: "test2",
+		price: "6",
+		image: "test2",
 	});
 
     const createProduct = async (newProduct) => {

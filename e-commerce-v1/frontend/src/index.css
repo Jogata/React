@@ -4,6 +4,16 @@
   box-sizing: border-box;
 }
 
+noscript {
+  padding: 3rem 2%;
+}
+
+noscript h1 {
+  max-width: 600px;
+  margin: auto;
+  text-align: center;
+}
+
 a {
   display: inline-block;
   text-decoration: none;
