@@ -60,10 +60,18 @@ const CreatePage = () => {
         }
 	}
 
-    const handleSubmitForm = (e) => {
+    const handleSubmitForm = async (e) => {
         e.preventDefault();
         // console.log("submitted");
-        createProduct(newProduct);
+        const result = await createProduct(newProduct);
+        console.log(result);
+        if (result.success) {
+            setNewProduct({
+                name: "",
+                price: "",
+                image: "",        
+            });
+        }
     }
 
     const buttonText = loading ? "Creating..." : "Add Product";
