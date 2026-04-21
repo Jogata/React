@@ -1,37 +1,80 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const CreatePage = () => {
     const [newProduct, setNewProduct] = useState({
-		name: "test2",
-		price: "6",
-		image: "test2",
+		name: "test4",
+		price: "4",
+		image: "image4",
 	});
+    const [loading, setLoading] = useState(false);
+
+    const controller = useRef(null);
 
     const createProduct = async (newProduct) => {
+        if (loading) {
+            console.log("do nothing");
+            return;
+        }
+
 		if (!newProduct.name || !newProduct.image || !newProduct.price) {
-            console.log("fill all");
+            // console.log("fill all");
 			return { success: false, message: "Please fill in all fields." };
 		}
 
-		const res = await fetch("http://localhost:5000/products", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(newProduct),
-		});
+        if (controller.current) {
+            controller.current.abort();
+            controller.current = null;
+        }
 
-		const data = await res.json();
-        console.log(data);
+        try {
+            setLoading(true);
 
-        return { success: true, message: "Product created successfully" };
+            controller.current = new AbortController();
+
+            const res = await fetch("http://localhost:5000/products", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newProduct),
+                signal: controller.current.signal
+            });
+    
+            const data = await res.json();
+            console.log(data);
+            controller.current = null;
+            // setLoading(false);
+    
+            return { success: true, message: "Product created successfully" };    
+        } catch (error) {
+            if (error.name === "AbortError") {
+                console.log("Fetch request was canceled");
+            } else {
+                console.error("Fetch error:", error);
+            }
+            // setLoading(false);
+        } finally {
+            if (!controller.current) {
+                setLoading(false);
+            }
+        }
 	}
 
     const handleSubmitForm = (e) => {
         e.preventDefault();
-        console.log("submitted");
+        // console.log("submitted");
         createProduct(newProduct);
     }
+
+    const buttonText = loading ? "Creating..." : "Add Product";
+
+    useEffect(() => {
+        return () => {
+            if (controller.current) {
+                controller.current.abort();
+            }
+        };
+    }, [controller])
 
     return (
         <form onSubmit={handleSubmitForm}>
@@ -56,7 +99,10 @@ const CreatePage = () => {
                 onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })}
                 placeholder="Image URL"
             />
-            <button>Add Product</button>
+            <button>
+                {/* Add Product */}
+                {buttonText}
+            </button>
         </form>
     );
 };
