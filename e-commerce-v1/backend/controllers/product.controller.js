@@ -5,11 +5,11 @@ export const getProducts = async (req, res) => {
 	try {
 		const products = await Product.find({});
 
-		setTimeout(() => {
-			res.status(200).json({ success: true, data: products });
-		}, 10000);
+		// setTimeout(() => {
+		// 	res.status(200).json({ success: true, data: products });
+		// }, 5000);
 
-		// res.status(200).json({ success: true, data: products });
+		res.status(200).json({ success: true, data: products });
 	} catch (error) {
 		console.log("error in Fetch products: ", error.message);
 		res.status(500).json({ success: false, message: "Server Error" });
