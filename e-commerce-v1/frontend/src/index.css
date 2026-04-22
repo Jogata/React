@@ -151,6 +151,16 @@ form button:hover {
 
 .empty-list h1 {
   margin-bottom: 2rem;
+  color: transparent;
+  padding: 1rem 0 2rem;
+  background-image: 
+  linear-gradient(
+      to left, 
+      rgb(115, 115, 252), 
+      rgb(22, 131, 131)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
 }
 
 .empty-list a {
@@ -195,4 +205,79 @@ form button:hover {
 .empty-list a:hover::before {
   /* text-decoration: underline; */
   transform: scale(1);
+}
+
+/* .products-section {} */
+
+.products-section h1 {
+  margin-bottom: 2rem;
+  padding: 1rem 0 2rem;
+  color: transparent;
+  font-size: 4rem;
+  text-align: center;
+  background-image:
+    linear-gradient(to left,
+      rgb(115, 115, 252),
+      rgb(22, 131, 131));
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.products {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns:
+    repeat(auto-fit, minmax(300px, 1fr));
+  grid-auto-rows: 1fr;
+}
+
+.product {
+  /* padding: 1rem; */
+  border: 1px solid red;
+}
+
+.product-info {
+  padding: 1rem;
+}
+
+.product-info h2 {
+  margin-bottom: 1rem;
+  /* text-align: center; */
+}
+
+.actions {
+  padding-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.actions button {
+  /* padding: 0.5em 1em; */
+  color: #000;
+  font-size: 0px;
+  border-radius: 6px;
+  transition: background-color 300ms;
+  overflow: hidden;
+}
+
+.actions .edit {
+  background-color: #85a6e2;
+}
+
+.actions .edit:hover {
+  background-color: cornflowerblue;
+}
+
+.actions .delete {
+  background-color: #ec5f5f;
+}
+
+.actions .delete:hover {
+  background-color: red;
+}
+
+.actions button i {
+  display: inline-block;
+  padding: 0.5em 0.56em;
+  font-size: 1.2rem;
 }

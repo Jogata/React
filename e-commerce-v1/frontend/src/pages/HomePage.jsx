@@ -50,9 +50,7 @@ const Products = ({ products }) => {
 			{products.length === 0 ? (
 				<EmptyList />
 			) : (
-				products.map(product => (
-					<h1 key={product._id}>{product.name}</h1>
-				))
+				<ProductsList products={products} />
 			)}
 		</>
 	)
@@ -66,6 +64,37 @@ const EmptyList = () => {
 				Create a product
 			</Link>
 		</div>
+	)
+}
+
+const ProductsList = ({products}) => {
+	return (
+		<section className="products-section">
+			<h1>Products</h1>
+		<div className="products">
+			{products.map(product => (
+				<div className="product" key={product._id}>
+					<img src={product.image} alt="" />
+					<div className="product-info">
+					<h2>{product.name}</h2>
+					<p className="price">
+						${product.price.toFixed(2)}
+					</p>
+					<div className="actions">
+						<button className="edit">
+							Edit product
+							<i className="ri-edit-line"></i>
+						</button>
+						<button className="delete">
+							Delete product
+							<i className="fa fa-trash-o"></i>
+						</button>
+					</div>
+					</div>
+				</div>
+			))}
+		</div>
+		</section>
 	)
 }
 

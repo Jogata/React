@@ -4,7 +4,7 @@ const CreatePage = () => {
     const [newProduct, setNewProduct] = useState({
 		name: "test4",
 		price: "4",
-		image: "image4",
+		image: "https://github.com/Jogata/Front-end/blob/main/assets/img/headphones/324064873_1192683554696328_4848221003213450933_n-copy.jpg?raw=true",
 	});
     const [loading, setLoading] = useState(false);
 
