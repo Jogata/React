@@ -144,3 +144,55 @@ form button:hover {
 .light form input::placeholder {
   color: #0005;
 }
+
+.empty-list {
+  text-align: center;
+}
+
+.empty-list h1 {
+  margin-bottom: 2rem;
+}
+
+.empty-list a {
+  position: relative;
+  padding: 0.5em;
+  color: cornflowerblue;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.empty-list a::after {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  content: "";
+  width: 100%;
+  height: 1px;
+  background-color: cornflowerblue;
+  transform-origin: left;
+  transform: scale(0);
+  transition: transform 500ms ease-in-out;
+}
+
+.empty-list a:hover::after {
+  /* text-decoration: underline; */
+  transform: scale(1);
+}
+
+.empty-list a::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  content: "";
+  width: 100%;
+  height: 1px;
+  background-color: cornflowerblue;
+  transform-origin: right;
+  transform: scale(0);
+  transition: transform 500ms ease-in-out;
+}
+
+.empty-list a:hover::before {
+  /* text-decoration: underline; */
+  transform: scale(1);
+}
