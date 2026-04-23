@@ -207,7 +207,9 @@ form button:hover {
   transform: scale(1);
 }
 
-/* .products-section {} */
+.products-section {
+  padding-bottom: 2rem;
+}
 
 .products-section h1 {
   margin-bottom: 2rem;
@@ -237,18 +239,24 @@ form button:hover {
   /* max-width: 400px; */
   margin: 0 auto;
   /* padding: 1rem; */
-  border: 1px solid red;
+  border-radius: 12px;
+  /* border: 1px solid red; */
+  box-shadow: 3px 3px 3px #fff2, -3px -3px 3px #fff5;
 }
 
 @media screen and (min-width: 400px) {
   .products {
     grid-template-columns:
-      repeat(auto-fit, minmax(300px, 1fr));
+      repeat(auto-fill, minmax(300px, 1fr));
   }
 
   .product {
     max-width: 400px;
   }
+}
+
+.product img {
+  border-radius: 12px 12px 0 0;
 }
 
 .product-info {
@@ -269,27 +277,35 @@ form button:hover {
 .actions button, 
 .actions a {
   /* padding: 0.5em 1em; */
-  color: #000;
+  /* color: #000; */
   font-size: 0px;
   border-radius: 6px;
-  transition: background-color 300ms;
+  border: 1px solid;
+  transition: color 300ms, 
+  background-color 300ms;
   overflow: hidden;
 }
 
 .actions .edit {
-  background-color: #85a6e2;
+  color: #85a6e2;
+  /* background-color: #85a6e2; */
 }
 
 .actions .edit:hover {
-  background-color: cornflowerblue;
+  color: #000;
+  /* background-color: cornflowerblue; */
+  background-color: #85a6e2;
 }
 
 .actions .delete {
-  background-color: #ec5f5f;
+  color: #ec5f5f;
+  /* background-color: #ec5f5f; */
 }
 
 .actions .delete:hover {
-  background-color: red;
+  color: #000;
+  /* background-color: red; */
+  background-color: #ec5f5f;
 }
 
 .actions button i, 

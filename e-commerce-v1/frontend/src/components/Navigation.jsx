@@ -9,7 +9,6 @@ const Navigation = () => {
     const text = isDarkTheme ? "turn on light mode" : "turn on dark mode";
 
     useEffect(() => {
-        console.log("use efffect");
         if (isDarkTheme) {
             document.body.classList.remove("light");
             document.body.classList.add("dark");

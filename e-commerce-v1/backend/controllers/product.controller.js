@@ -4,11 +4,6 @@ import Product from "../models/product.model.js";
 export const getProducts = async (req, res) => {
 	try {
 		const products = await Product.find({});
-
-		// setTimeout(() => {
-		// 	res.status(200).json({ success: true, data: products });
-		// }, 5000);
-
 		res.status(200).json({ success: true, data: products });
 	} catch (error) {
 		console.log("error in Fetch products: ", error.message);
@@ -61,7 +56,12 @@ export const deleteProduct = async (req, res) => {
 
 	try {
 		await Product.findByIdAndDelete(id);
-		res.status(200).json({ success: true, message: "Product deleted" });
+
+		setTimeout(() => {
+			res.status(200).json({ success: true, message: "Product deleted" });
+		}, 5000);
+
+		// res.status(200).json({ success: true, message: "Product deleted" });
 	} catch (error) {
 		console.log("error in Delete product: ", error.message);
 		res.status(500).json({ success: false, message: "Server Error" });
