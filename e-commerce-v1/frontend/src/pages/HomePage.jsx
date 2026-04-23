@@ -40,11 +40,11 @@ const HomePage = () => {
 
 	return (
 		<>
-			{loading ? 
-				<Loader /> : 
-				<Products 
-					products={products} 
-					setProducts={setProducts} 
+			{loading ?
+				<Loader /> :
+				<Products
+					products={products}
+					setProducts={setProducts}
 				/>
 			}
 		</>
@@ -58,9 +58,9 @@ const Products = ({ products, setProducts }) => {
 			{products.length === 0 ? (
 				<EmptyList />
 			) : (
-				<ProductsList 
-					products={products} 
-					setProducts={setProducts} 
+				<ProductsList
+					products={products}
+					setProducts={setProducts}
 				/>
 			)}
 		</>
@@ -84,10 +84,10 @@ const ProductsList = ({ products, setProducts }) => {
 			<h1>Products</h1>
 			<div className="products">
 				{products.map(product => (
-					<Product 
-						key={product._id} 
-						product={product} 
-						setProducts={setProducts} 
+					<Product
+						key={product._id}
+						product={product}
+						setProducts={setProducts}
 					/>
 				))}
 			</div>
@@ -113,7 +113,7 @@ const Product = ({ product, setProducts }) => {
 			if (!res) {
 				console.log("delete product fail");
 			} else {
-				setProducts(old => old.filter(p => p._id !== id))
+				setProducts(old => old.filter(p => p._id !== id));
 			}
 		} catch (error) {
 			if (error.name === "AbortError") {
@@ -142,10 +142,6 @@ const Product = ({ product, setProducts }) => {
 					${product.price.toFixed(2)}
 				</p>
 				<div className="actions">
-					{/* <Link to="/create" className="edit">
-						Edit product
-						<i className="ri-edit-line"></i>
-					</Link> */}
 					<EditProductModalForm product={product} />
 					<button className="delete" onClick={() => handleDelete(product._id)}>
 						Delete product
@@ -157,92 +153,105 @@ const Product = ({ product, setProducts }) => {
 	)
 }
 
-// const EditProductModalForm = ({ book, onClose }) => {
 const EditProductModalForm = ({ product }) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+	const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const focusPoint = useRef(null);
+	const focusPoint = useRef(null);
 
-    useEffect(() => {
-        // console.log(focusPoint.current);
-        if (focusPoint.current) {
-            focusPoint.current.focus();
-        }
-    }, [focusPoint.current])
+	useEffect(() => {
+		// console.log(focusPoint.current);
+		if (focusPoint.current) {
+			focusPoint.current.focus();
+		}
+	}, [focusPoint.current])
 
-    return (
-        <>
-            <button 
-				className="edit" 
-				onClick={() => setIsModalOpen(true)} 
+	return (
+		<>
+			<button
+				className="edit"
+				onClick={() => setIsModalOpen(true)}
 			>
 				Edit product
 				<i className="ri-edit-line"></i>
-            </button>
+			</button>
 
-            {isModalOpen ? (
-                <Modal 
-                    item={product} 
-                    closeModal={() => setIsModalOpen(false)}
-                />
-            ) : null}
-        </>
-    );
+			{isModalOpen ? (
+				<Modal
+					item={product}
+					closeModal={() => setIsModalOpen(false)}
+				/>
+			) : null}
+		</>
+	);
 };
 
 const Modal = ({ item, closeModal }) => {
 	const [product, setProduct] = useState({
 		name: item.name,
 		price: item.price,
-        image: item.image
+		image: item.image
 	});
-    const focusPoint = useRef(null);
+	const focusPoint = useRef(null);
 
-    useEffect(() => {
-        // console.log(focusPoint.current);
-        if (focusPoint.current) {
-            focusPoint.current.focus();
-        }
-    }, [focusPoint.current])
+	useEffect(() => {
+		document.body.classList.add("overflow");
 
-    return (
-        <div className="modal" onClick={closeModal}>
-        <div
-            className="modal-box update-form"
-            onClick={(event) => event.stopPropagation()}
-        >
-			<form>
-            <h2
-                ref={focusPoint}
-                tabIndex="-1"
-            >
-                Update product
-            </h2>
-			<input
-                name="name"
-                value={product.name}
-                placeholder="Product Name"
-            />
-            <input
-                name="price"
-                type="number"
-                min={0}
-                value={product.price}
-                placeholder="Price"
-            />
-            <input
-                name="image"
-                value={product.image}
-                placeholder="Image URL"
-            />
-			</form>
-            <button onClick={closeModal}>
-                close
-                <i className="ri-close-line"></i>
-            </button>
-        </div>
-    </div>
-    );
+		return () => {
+			document.body.classList.remove("overflow");
+		}
+	}, [])
+
+	useEffect(() => {
+		// console.log(focusPoint.current);
+		if (focusPoint.current) {
+			focusPoint.current.focus();
+		}
+	}, [focusPoint.current])
+
+	return (
+		<div className="modal" onClick={closeModal}>
+			<div
+				className="modal-box update-form"
+				onClick={(event) => event.stopPropagation()}
+			>
+				<form>
+					<h2
+						ref={focusPoint}
+						tabIndex="-1"
+					>
+						Update product
+					</h2>
+					<input
+						name="name"
+						value={product.name}
+						onChange={(e) => setProduct({ ...product, name: e.target.value })}
+						placeholder="Product Name"
+					/>
+					<input
+						name="price"
+						type="number"
+						min={0}
+						value={product.price}
+						onChange={(e) => setProduct({ ...product, price: e.target.value })}
+						placeholder="Price"
+					/>
+					<input
+						name="image"
+						value={product.image}
+						onChange={(e) => setProduct({ ...product, image: e.target.value })}
+						placeholder="Image URL"
+					/>
+					<button className="save-button">
+						Save Changes
+					</button>
+				</form>
+				<button className="close-button" onClick={closeModal}>
+					close
+					<i className="ri-close-line"></i>
+				</button>
+			</div>
+		</div>
+	);
 };
 
 export default HomePage;

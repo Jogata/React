@@ -44,7 +44,9 @@ nav .buttons a {
     padding: 1rem 1.5rem;
     color: white;
     border-radius: 6px;
-    background-color: rgba(255, 255, 255, 0.2);
+    /* background-color: rgba(255, 255, 255, 0.2); */
+    box-shadow: 2px 2px 3px #fff5, 
+            -2px -2px 3px #fff2;
 }
 
 nav .buttons a i {
@@ -58,7 +60,9 @@ nav button {
     padding: 1rem 1.5rem;
     font-size: 0px;
     border-radius: 6px;
-    background-color: rgba(255, 255, 255, 0.2);
+    /* background-color: rgba(255, 255, 255, 0.2); */
+    box-shadow: 2px 2px 3px #fff5, 
+            -2px -2px 3px #fff2;
 }
 
 .buttons button i {
