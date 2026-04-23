@@ -6,10 +6,8 @@ const HomePage = () => {
 	const [products, setProducts] = useState([]);
 	const [loading, setLoading] = useState(false);
 
-	// console.count("home rendered");
-
 	useEffect(() => {
-		console.log("home use effect");
+		// console.log("home use effect");
 		const controller = new AbortController();
 		getProducts();
 
@@ -42,7 +40,13 @@ const HomePage = () => {
 
 	return (
 		<>
-			{loading ? <Loader /> : <Products products={products} setProducts={setProducts} />}
+			{loading ? 
+				<Loader /> : 
+				<Products 
+					products={products} 
+					setProducts={setProducts} 
+				/>
+			}
 		</>
 	)
 
@@ -54,7 +58,10 @@ const Products = ({ products, setProducts }) => {
 			{products.length === 0 ? (
 				<EmptyList />
 			) : (
-				<ProductsList products={products} setProducts={setProducts} />
+				<ProductsList 
+					products={products} 
+					setProducts={setProducts} 
+				/>
 			)}
 		</>
 	)
@@ -77,7 +84,11 @@ const ProductsList = ({ products, setProducts }) => {
 			<h1>Products</h1>
 			<div className="products">
 				{products.map(product => (
-					<Product key={product._id} product={product} setProducts={setProducts} />
+					<Product 
+						key={product._id} 
+						product={product} 
+						setProducts={setProducts} 
+					/>
 				))}
 			</div>
 		</section>
@@ -97,34 +108,12 @@ const Product = ({ product, setProducts }) => {
 			});
 
 			const res = await response.json();
-			console.log(res);
+			// console.log(res);
 
 			if (!res) {
 				console.log("delete product fail");
 			} else {
 				setProducts(old => old.filter(p => p._id !== id))
-				// getProducts();
-				
-				// async function getProducts() {
-				// 	const controller = new AbortController();
-				// 	setLoading(true);
-		
-				// 	try {
-				// 		const res = await fetch("http://localhost:5000/products", {
-				// 			signal: controller.signal
-				// 		});
-				// 		const data = await res.json();
-				// 		setProducts(data.data);
-				// 		setLoading(false);
-				// 	} catch (error) {
-				// 		if (error.name === "AbortError") {
-				// 			console.log("Fetch request was canceled");
-				// 		} else {
-				// 			console.error("Fetch error:", error);
-				// 			setLoading(false);
-				// 		}
-				// 	}
-				// }		
 			}
 		} catch (error) {
 			if (error.name === "AbortError") {
@@ -153,10 +142,11 @@ const Product = ({ product, setProducts }) => {
 					${product.price.toFixed(2)}
 				</p>
 				<div className="actions">
-					<Link to="/create" className="edit">
+					{/* <Link to="/create" className="edit">
 						Edit product
 						<i className="ri-edit-line"></i>
-					</Link>
+					</Link> */}
+					<EditProductModalForm product={product} />
 					<button className="delete" onClick={() => handleDelete(product._id)}>
 						Delete product
 						<i className="fa fa-trash-o"></i>
@@ -166,5 +156,93 @@ const Product = ({ product, setProducts }) => {
 		</div>
 	)
 }
+
+// const EditProductModalForm = ({ book, onClose }) => {
+const EditProductModalForm = ({ product }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const focusPoint = useRef(null);
+
+    useEffect(() => {
+        // console.log(focusPoint.current);
+        if (focusPoint.current) {
+            focusPoint.current.focus();
+        }
+    }, [focusPoint.current])
+
+    return (
+        <>
+            <button 
+				className="edit" 
+				onClick={() => setIsModalOpen(true)} 
+			>
+				Edit product
+				<i className="ri-edit-line"></i>
+            </button>
+
+            {isModalOpen ? (
+                <Modal 
+                    item={product} 
+                    closeModal={() => setIsModalOpen(false)}
+                />
+            ) : null}
+        </>
+    );
+};
+
+const Modal = ({ item, closeModal }) => {
+	const [product, setProduct] = useState({
+		name: item.name,
+		price: item.price,
+        image: item.image
+	});
+    const focusPoint = useRef(null);
+
+    useEffect(() => {
+        // console.log(focusPoint.current);
+        if (focusPoint.current) {
+            focusPoint.current.focus();
+        }
+    }, [focusPoint.current])
+
+    return (
+        <div className="modal" onClick={closeModal}>
+        <div
+            className="modal-box update-form"
+            onClick={(event) => event.stopPropagation()}
+        >
+			<form>
+            <h2
+                ref={focusPoint}
+                tabIndex="-1"
+            >
+                Update product
+            </h2>
+			<input
+                name="name"
+                value={product.name}
+                placeholder="Product Name"
+            />
+            <input
+                name="price"
+                type="number"
+                min={0}
+                value={product.price}
+                placeholder="Price"
+            />
+            <input
+                name="image"
+                value={product.image}
+                placeholder="Image URL"
+            />
+			</form>
+            <button onClick={closeModal}>
+                close
+                <i className="ri-close-line"></i>
+            </button>
+        </div>
+    </div>
+    );
+};
 
 export default HomePage;

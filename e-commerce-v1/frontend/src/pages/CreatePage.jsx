@@ -2,11 +2,20 @@ import { useEffect, useRef, useState } from "react";
 
 const CreatePage = () => {
     const [newProduct, setNewProduct] = useState({
-		name: "test4",
-		price: "4",
-        image: "https://cdn.pixabay.com/photo/2016/11/21/13/58/analog-watch-1845547_1280.jpg"
+		name: "",
+		price: "",
+        image: ""
 	});
     const [loading, setLoading] = useState(false);
+
+    // todelete
+    useEffect(() => {
+        setNewProduct({
+            name: "test4",
+            price: "4",
+            image: "https://cdn.pixabay.com/photo/2016/11/21/13/58/analog-watch-1845547_1280.jpg"
+        })
+    }, [])
 
     const controller = useRef(null);
 
