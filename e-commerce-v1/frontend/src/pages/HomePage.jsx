@@ -207,89 +207,94 @@ const Modal = ({ item, setProducts, closeModal }) => {
 		}
 	}, [])
 
-    const editProduct = async (newProduct) => {
-        if (loading) {
-            console.log("do nothing");
-            return;
-        }
+	const editProduct = async (newProduct) => {
+		if (loading) {
+			console.log("do nothing");
+			return;
+		}
 
 		if (!newProduct.name || !newProduct.image || !newProduct.price) {
-            // console.log("fill all");
+			// console.log("fill all");
 			return { success: false, message: "Please fill in all fields." };
 		}
 
-        if (controller.current) {
-            controller.current.abort();
-            controller.current = null;
-        }
+		if (controller.current) {
+			controller.current.abort();
+			controller.current = null;
+		}
 
-        try {
-            setLoading(true);
+		try {
+			setLoading(true);
 
-            controller.current = new AbortController();
+			controller.current = new AbortController();
 
-            const res = await fetch(`http://localhost:5000/products/${item._id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(newProduct),
-                signal: controller.current.signal
-            });
-    
-            const data = await res.json();
-            // console.log(data);
-            controller.current = null;
-            setLoading(false);
+			const res = await fetch(`http://localhost:5000/products/${item._id}`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(newProduct),
+				signal: controller.current.signal
+			});
+
+			const data = await res.json();
+			// console.log(data);
+			controller.current = null;
+			setLoading(false);
 
 			if (data.success) {
 				setProducts(old => {
 					const productIndex = old.findIndex(p => p._id === item._id);
 					const newProducts = [...old];
-					const updatedProduct = {...newProducts[productIndex]};
+					const updatedProduct = { ...newProducts[productIndex] };
 					updatedProduct.price = Number(newProduct.price);
 					newProducts[productIndex] = updatedProduct;
 					console.log(updatedProduct);
 					return newProducts;
 				})
 			}
-    
-            return { success: true, message: "Product edited successfully" };    
-        } catch (error) {
-            if (error.name === "AbortError") {
-                console.log("Fetch request was canceled");
-            } else {
-                console.error("Fetch error:", error);
-            }
-            setLoading(false);
-        } finally {
-            if (!controller.current) {
-                setLoading(false);
-            }
-        }
+
+			return { success: true, message: "Product edited successfully" };
+		} catch (error) {
+			if (error.name === "AbortError") {
+				console.log("Fetch request was canceled");
+			} else {
+				console.error("Fetch error:", error);
+			}
+			setLoading(false);
+		} finally {
+			if (!controller.current) {
+				setLoading(false);
+			}
+		}
 	}
 
-    const handleSubmitForm = async (e) => {
-        e.preventDefault();
-        // console.log("submitted");
-        const result = await editProduct(product);
-        console.log(result);
-    }
+	const cancelEdit = e => {
+		e.preventDefault();
+		closeModal();
+	}
+
+	const handleSubmitForm = async (e) => {
+		e.preventDefault();
+		// console.log("submitted");
+		const result = await editProduct(product);
+		console.log(result);
+	}
 
 	useEffect(() => {
 		// console.log(focusPoint.current);
 		// if (focusPoint.current) {
-			focusPoint.current.focus();
+		focusPoint.current.focus();
 		// }
 	}, [focusPoint.current])
 
 	useEffect(() => {
-        return () => {
-            if (controller.current) {
-                controller.current.abort();
-            }
-        };
-    }, [controller])
+		return () => {
+			if (controller.current) {
+				controller.current.abort();
+			}
+		};
+	}, [controller])
 
 	return (
 		<div className="modal" onClick={closeModal}>
@@ -328,6 +333,11 @@ const Modal = ({ item, setProducts, closeModal }) => {
 						{/* Save Changes */}
 						{buttonText}
 					</button>
+					{loading ? null : (
+						<button className="cancel-button" onClick={cancelEdit}>
+							Cancel
+						</button>
+					)}
 				</form>
 				<button className="close-button" onClick={closeModal}>
 					close

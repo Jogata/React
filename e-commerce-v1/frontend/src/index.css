@@ -411,8 +411,19 @@ form button:hover {
 }
 
 .modal-box .save-button {
+  margin: 2rem 0.5rem 1rem;
   color: #eee;
   font-size: 1.2rem;
+}
+
+.modal-box .cancel-button {
+  margin: 2rem 0.5rem 1rem;
+  color: #eee;
+  font-size: 1.2rem;
+}
+
+.modal-box .cancel-button:hover {
+  background-color: #dc2626;
 }
 
 .modal-box .close-button:focus-visible, 
