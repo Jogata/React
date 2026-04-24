@@ -191,7 +191,12 @@ const Modal = ({ item, closeModal }) => {
 		price: item.price,
 		image: item.image
 	});
+	const [loading, setLoading] = useState(false);
+
 	const focusPoint = useRef(null);
+	const controller = useRef(null);
+
+	const buttonText = loading ? "Submitting..." : "Save Changes";
 
 	useEffect(() => {
 		document.body.classList.add("overflow");
@@ -201,12 +206,77 @@ const Modal = ({ item, closeModal }) => {
 		}
 	}, [])
 
+    const editProduct = async (newProduct) => {
+        if (loading) {
+            console.log("do nothing");
+            return;
+        }
+
+		if (!newProduct.name || !newProduct.image || !newProduct.price) {
+            // console.log("fill all");
+			return { success: false, message: "Please fill in all fields." };
+		}
+
+        if (controller.current) {
+            controller.current.abort();
+            controller.current = null;
+        }
+
+        try {
+            setLoading(true);
+
+            controller.current = new AbortController();
+
+            const res = await fetch(`http://localhost:5000/products/${item._id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newProduct),
+                signal: controller.current.signal
+            });
+    
+            const data = await res.json();
+            // console.log(data);
+            controller.current = null;
+            setLoading(false);
+    
+            return { success: true, message: "Product edited successfully" };    
+        } catch (error) {
+            if (error.name === "AbortError") {
+                console.log("Fetch request was canceled");
+            } else {
+                console.error("Fetch error:", error);
+            }
+            setLoading(false);
+        } finally {
+            if (!controller.current) {
+                setLoading(false);
+            }
+        }
+	}
+
+    const handleSubmitForm = async (e) => {
+        e.preventDefault();
+        // console.log("submitted");
+        const result = await editProduct(product);
+        console.log(result);
+    }
+
 	useEffect(() => {
 		// console.log(focusPoint.current);
-		if (focusPoint.current) {
+		// if (focusPoint.current) {
 			focusPoint.current.focus();
-		}
+		// }
 	}, [focusPoint.current])
+
+	useEffect(() => {
+        return () => {
+            if (controller.current) {
+                controller.current.abort();
+            }
+        };
+    }, [controller])
 
 	return (
 		<div className="modal" onClick={closeModal}>
@@ -214,7 +284,7 @@ const Modal = ({ item, closeModal }) => {
 				className="modal-box update-form"
 				onClick={(event) => event.stopPropagation()}
 			>
-				<form>
+				<form onSubmit={handleSubmitForm}>
 					<h2
 						ref={focusPoint}
 						tabIndex="-1"
@@ -242,7 +312,8 @@ const Modal = ({ item, closeModal }) => {
 						placeholder="Image URL"
 					/>
 					<button className="save-button">
-						Save Changes
+						{/* Save Changes */}
+						{buttonText}
 					</button>
 				</form>
 				<button className="close-button" onClick={closeModal}>
