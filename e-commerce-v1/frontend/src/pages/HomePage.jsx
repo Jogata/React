@@ -142,7 +142,7 @@ const Product = ({ product, setProducts }) => {
 					${product.price.toFixed(2)}
 				</p>
 				<div className="actions">
-					<EditProductModalForm product={product} />
+					<EditProductModalForm product={product} setProducts={setProducts} />
 					<button className="delete" onClick={() => handleDelete(product._id)}>
 						Delete product
 						<i className="fa fa-trash-o"></i>
@@ -153,7 +153,7 @@ const Product = ({ product, setProducts }) => {
 	)
 }
 
-const EditProductModalForm = ({ product }) => {
+const EditProductModalForm = ({ product, setProducts }) => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	const focusPoint = useRef(null);
@@ -178,6 +178,7 @@ const EditProductModalForm = ({ product }) => {
 			{isModalOpen ? (
 				<Modal
 					item={product}
+					setProducts={setProducts}
 					closeModal={() => setIsModalOpen(false)}
 				/>
 			) : null}
@@ -185,7 +186,7 @@ const EditProductModalForm = ({ product }) => {
 	);
 };
 
-const Modal = ({ item, closeModal }) => {
+const Modal = ({ item, setProducts, closeModal }) => {
 	const [product, setProduct] = useState({
 		name: item.name,
 		price: item.price,
@@ -240,6 +241,18 @@ const Modal = ({ item, closeModal }) => {
             // console.log(data);
             controller.current = null;
             setLoading(false);
+
+			if (data.success) {
+				setProducts(old => {
+					const productIndex = old.findIndex(p => p._id === item._id);
+					const newProducts = [...old];
+					const updatedProduct = {...newProducts[productIndex]};
+					updatedProduct.price = Number(newProduct.price);
+					newProducts[productIndex] = updatedProduct;
+					console.log(updatedProduct);
+					return newProducts;
+				})
+			}
     
             return { success: true, message: "Product edited successfully" };    
         } catch (error) {
