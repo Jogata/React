@@ -13,7 +13,6 @@ const getAllUsers = async (req, res) => {
 }
 
 const createNewUser = async (req, res) => {
-    console.log("todo create");
     try {        
         const { username, password, roles } = req.body;
     
@@ -44,7 +43,6 @@ const createNewUser = async (req, res) => {
 }
 
 const updateUser = async (req, res) => {
-    console.log("todo update");
     try {
         const { id, username, roles, active, password } = req.body;
 
@@ -81,7 +79,6 @@ const updateUser = async (req, res) => {
 }
 
 const deleteUser = async (req, res) => {
-    console.log("todo delete");
     try {
         const { id } = req.body;
 
