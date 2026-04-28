@@ -29,18 +29,53 @@ body {
   background-color: var(--BGCOLOR);
 }
 
-h1 {
-  padding-top: 5rem;
-  color: brown;
-  font-size: 10vw;
-  font-weight: bold;
-  text-align: center;
-  text-transform: uppercase;
+a {
+  display: inline-block;
+  text-decoration: none;
 }
 
-a {
-  text-decoration: none;
-  color: cornflowerblue;
-  font-size: 3rem;
-  text-transform: capitalize;
+a,
+a:visited {
+  color: var(--LINK-COLOR);
+}
+
+a:hover,
+a:focus-visible {
+  color: var(--LINK-HOVER);
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.home {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header, 
+footer {
+  padding: 1rem;
+}
+
+main {
+  flex: 1;
+  padding: 1rem;
+  border-top: 2px solid var(--BORDER-COLOR);
+  border-bottom: 2px solid var(--BORDER-COLOR);
+}
+
+.main-desc {
+  max-width: 300px;
+  margin-bottom: 2rem;
+}
+
+.addr {
+  margin-bottom: 2rem;
+}
+
+.addr span {
+  display: block;
+  margin-bottom: 0.5rem;
 }
