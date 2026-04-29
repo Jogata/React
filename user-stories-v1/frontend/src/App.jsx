@@ -3,6 +3,7 @@ import Home from "./components/Home";
 import Login from "./components/Login";
 import Welcome from "./components/Welcome";
 import Notes from "./components/Notes";
+import Users from "./components/Users";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/dash" element={<Welcome />} />
         <Route path="/dash/notes" element={<Notes />} />
+        <Route path="/dash/users" element={<Users />} />
       </Routes>
     </>
   )
