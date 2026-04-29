@@ -3,15 +3,23 @@ import { Link } from "react-router-dom";
 
 const Login = () => {
     const userRef = useRef();
+    const ref = useRef(0);
 
     useEffect(() => {
         userRef.current.focus();
     }, [])
 
-    function handleSubmit() {
+    useEffect(() => {
+        console.log(ref.current);;
+    }, [ref.current])
+
+    function handleSubmit(e) {
         e.preventDefault();
         console.log("form submitted");
+        ref.current++;
     }
+
+    console.log(ref.current);
 
     const content = (
         <section className="public">
@@ -27,7 +35,7 @@ const Login = () => {
                         className="form-input"
                         ref={userRef}
                         autoComplete="off"
-                        required
+                        // required
                     />
 
                     <label htmlFor="password">Password:</label>
@@ -35,7 +43,7 @@ const Login = () => {
                         type="password"
                         id="password"
                         className="form-input"
-                        required
+                        // required
                     />
 
                     <button className="submit-button">Sign In</button>
