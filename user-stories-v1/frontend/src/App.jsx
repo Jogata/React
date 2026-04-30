@@ -4,6 +4,7 @@ import Login from "./components/Login";
 import Welcome from "./components/Welcome";
 import Notes from "./components/Notes";
 import Users from "./components/Users";
+import CreateUserForm from "./components/CreateUserForm";
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
         <Route path="/dash" element={<Welcome />} />
         <Route path="/dash/notes" element={<Notes />} />
         <Route path="/dash/users" element={<Users />} />
-        {/* <Route path="//dash/users/:userId" element={<Users />} /> */}
+        <Route path="/dash/users/create" element={<CreateUserForm />} />
+        {/* <Route path="/dash/users/:userId" element={<Users />} /> */}
       </Routes>
     </>
   )

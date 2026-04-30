@@ -1,4 +1,5 @@
-import User from "../../../backend/models/User";
+import User from "./User";
+
 
 const Users = () => {
     const {
