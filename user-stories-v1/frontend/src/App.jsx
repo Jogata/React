@@ -14,6 +14,7 @@ function App() {
         <Route path="/dash" element={<Welcome />} />
         <Route path="/dash/notes" element={<Notes />} />
         <Route path="/dash/users" element={<Users />} />
+        {/* <Route path="//dash/users/:userId" element={<Users />} /> */}
       </Routes>
     </>
   )

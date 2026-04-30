@@ -1,3 +1,5 @@
+import User from "../../../backend/models/User";
+
 const Users = () => {
     const {
         users,
@@ -26,9 +28,10 @@ const Users = () => {
     if (isSuccess) {
         const tableContent = users.length > 0 ? (
             ids.map(user => (
-                <div className="user" key={user._id}>
-                    <h1>{user.name}</h1>
-                </div>
+                // <div className="user" key={user._id}>
+                //     <h1>{user.name}</h1>
+                // </div>
+                <User userId={user._id} key={user._id} />
             ))
         ) : (
             <p>no users to display</p>
