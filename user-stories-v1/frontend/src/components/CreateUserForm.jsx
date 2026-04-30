@@ -7,9 +7,9 @@ const PWD_REGEX = /^[A-z0-9!@#$%]{4,12}$/;
 
 const CreateUserForm = () => {
     const [username, setUsername] = useState("");
-    const [validUsername, setValidUsername] = useState(false);
+    const [validUsername, setValidUsername] = useState(true);
     const [password, setPassword] = useState("");
-    const [validPassword, setValidPassword] = useState(false);
+    const [validPassword, setValidPassword] = useState(true);
     const [roles, setRoles] = useState(["Employee"]);
     let isSuccess = false;
     let isError = false;
@@ -19,14 +19,17 @@ const CreateUserForm = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        console.log("useeffect1");
         setValidUsername(USER_REGEX.test(username));
     }, [username])
-
+    
     useEffect(() => {
+        console.log("useeffect2");
         setValidPassword(PWD_REGEX.test(password));
     }, [password])
-
+    
     useEffect(() => {
+        console.log("useeffect3");
         if (isSuccess) {
             setUsername("");
             setPassword("");
@@ -47,6 +50,9 @@ const CreateUserForm = () => {
     }
 
     const canSave = [roles.length, validUsername, validPassword].every(Boolean) && !isLoading;
+    // const canSave = [roles.length, validUsername, validPassword].every(Boolean);
+    // console.log([roles.length, validUsername, validPassword]);
+    // console.log(canSave);
 
     const onSaveUserClicked = async (e) => {
         e.preventDefault();
@@ -70,13 +76,12 @@ const CreateUserForm = () => {
     const validPwdClass = !validPassword ? "incomplete" : "complete";
     const validRolesClass = !Boolean(roles.length) ? "incomplete" : "complete";
 
-
     const content = (
         <>
             <p className={errClass}>{error.message}</p>
 
             <form className="form" onSubmit={onSaveUserClicked}>
-                <div className="form-title-row">
+                <div className="form-header">
                     <h2>New User</h2>
                     <div className="form-action-buttons">
                         <button

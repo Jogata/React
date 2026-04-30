@@ -22,6 +22,33 @@
   --TABLE-COLOR: #000;
 }
 
+a {
+  text-decoration: none;
+  display: inline-block;
+  padding: 0.2em 0.5em;
+  transition: color 300ms ease-in-out;
+}
+
+button {
+  padding: 0.4em 1em;
+  border: none;
+  outline: none;
+  font-family: Georgia, serif;
+  background-color: transparent;
+  transition: color 300ms ease-in-out;
+  cursor: pointer;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 1px solid #888;
+}
+
+img {
+  display: block;
+  width: 100%;
+}
+
 body {
   min-height: 100vh;
   color: var(--COLOR);
@@ -78,4 +105,68 @@ main {
 .addr span {
   display: block;
   margin-bottom: 0.5rem;
+}
+
+.form {
+  max-width: 600px;
+  padding: 1rem;
+}
+
+.form-header {
+  /* padding: 1rem; */
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.form-label {
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.icon-button {
+  font-size: 0px;
+}
+
+.icon-button i {
+  padding: 0.2em;
+  font-size: 1.6rem;
+  /* border: 1px solid; */
+}
+
+.form-input {
+  width: 100%;
+  max-width: 30ch;
+  padding: 0.25em 1em;
+  color: inherit;
+  border-radius: 10em;
+  border: 1px solid #444;
+  background-color: transparent;
+}
+
+.form-select {
+  width: 100%;
+  max-width: 30ch;
+  padding: 0.5em;
+  color: inherit;
+  /* border-radius: 12px; */
+  border: 1px solid #444;
+  background-color: transparent;
+}
+
+.form-select option {
+  padding: 0.2em;
+  font-family: Georgia, serif;
+}
+
+option:checked {
+  color: var(--STATUS-COMPLETE);
+  background-color: transparent;
+}
+
+select:focus option:focus {
+  /* color: var(--STATUS-COMPLETE); */
+  background-color: red;
 }
