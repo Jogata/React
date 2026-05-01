@@ -5,9 +5,9 @@ import { ROLES } from "../config/roles";
 const USER_REGEX = /^[A-z0-9]{3,20}$/;
 const PWD_REGEX = /^[A-z0-9!@#$%]{4,12}$/;
 
-async function addNewUser(user) {
+async function addNewUser(user, url="http://localhost:5000/users") {
     try {
-        const res = await fetch("http://localhost:5000/users", {
+        const res = await fetch(url, {
             method: "POST", 
             headers: {
                 "Content-Type": "application/json",
@@ -34,10 +34,10 @@ async function addNewUser(user) {
 
 const CreateUserForm = () => {
     // const [username, setUsername] = useState("");
-    const [username, setUsername] = useState("user7");
+    const [username, setUsername] = useState("user8");
     const [validUsername, setValidUsername] = useState(true);
     // const [password, setPassword] = useState("");
-    const [password, setPassword] = useState("pass1237");
+    const [password, setPassword] = useState("pass1238");
     const [validPassword, setValidPassword] = useState(true);
     const [roles, setRoles] = useState(["Employee"]);
     const [isSuccess, setIsSuccess] = useState(false);
@@ -64,7 +64,7 @@ const CreateUserForm = () => {
             setUsername("");
             setPassword("");
             setRoles([]);
-            navigate("/dash/users");
+            // navigate("/dash/users");
         }
     }, [isSuccess, navigate])
 
@@ -96,7 +96,27 @@ const CreateUserForm = () => {
         }
     }
 
-    const options = Object.values(ROLES).map(role => {
+    const options = Object.values(ROLES).map((role, index) => {
+        // if (index === 1) {
+        //     return (
+        //         <option
+        //             key={role}
+        //             value={role}
+        //             selected
+        //         >
+        //             {role}
+        //         </option >
+        //     )
+        // } else {
+        //     return (
+        //         <option
+        //             key={role}
+        //             value={role}
+        //         >
+        //             {role}
+        //         </option >
+        //     )
+        // }
         return (
             <option
                 key={role}
@@ -106,6 +126,9 @@ const CreateUserForm = () => {
             </option >
         )
     })
+
+    console.log(options[0].props);
+    // options[0].props.selected = true;
 
     const errClass = isError ? "errmsg" : "offscreen";
     const validUserClass = !validUsername ? "incomplete" : "complete";
@@ -165,7 +188,7 @@ const CreateUserForm = () => {
                     className={`form-select ${validRolesClass}`}
                     multiple={true}
                     size="3"
-                    value={roles}
+                    defaultValue={roles}
                     onChange={onRolesChanged}
                 >
                     {options}

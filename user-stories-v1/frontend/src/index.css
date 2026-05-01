@@ -203,3 +203,45 @@ option:hover {
   /* color: var(--STATUS-COMPLETE); */
   /* background-color: red !important; */
 /* } */
+
+.table {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  /* padding: 1rem; */
+  text-align: left;
+  border-collapse: collapse;
+  border: 2px solid rgb(140 140 140);
+}
+
+.table-thead {
+  /* padding: 1rem; */
+  font-size: 1.4rem;
+  border-bottom: 2px solid rgb(140 140 140);
+  background-color: #044464;
+}
+
+.table-thead th {
+  padding: 1rem;
+}
+
+.user-username {
+  width: 100%;
+}
+
+.user-edit {
+  text-align: center;
+}
+
+th,
+td {
+  padding: 0.5rem 1rem;
+  border: 1px solid rgb(160 160 160);
+}
+
+
+
+
+
+
+

@@ -1,22 +1,56 @@
+import { useEffect, useState } from "react";
 import User from "./User";
 
+async function getAllUsers(url, onSuccess) {
+    try {
+        const res = await fetch(url);
+        console.log(res.status);
+        console.log(res.ok);
+        console.log(res);
+    
+        const data = await res.json();
+        console.log(data);
+
+        if (res.ok) {
+            onSuccess(data);
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 const Users = () => {
+    const [users, setUsers] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
+
     const {
-        users,
-        isLoading,
-        isSuccess,
+        // users,
+        // isLoading,
+        // isSuccess,
         isError,
         error
     } = {
-        users: [], 
-        isLoading: true,
-        isSuccess: false,
+        // users: [], 
+        // isLoading: true,
+        // isSuccess: false,
         isError: false,
         error: {}
     };
 
-    console.log(isLoading);
+    // console.log(isLoading);
+
+    useEffect(() => {
+        setIsLoading(true);
+        getAllUsers("http://localhost:5000/users", onSuccess);
+
+        function onSuccess(data) {
+            setUsers(data);
+            setIsLoading(false);
+            setIsSuccess(true);
+        }
+    }, [])
 
     let content;
 
@@ -28,11 +62,8 @@ const Users = () => {
 
     if (isSuccess) {
         const tableContent = users.length > 0 ? (
-            ids.map(user => (
-                // <div className="user" key={user._id}>
-                //     <h1>{user.name}</h1>
-                // </div>
-                <User userId={user._id} key={user._id} />
+            users.map(user => (
+                <User user={user} key={user._id} />
             ))
         ) : (
             <p>no users to display</p>
