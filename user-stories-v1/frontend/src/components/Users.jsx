@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import User from "./User";
+import Loader from "./Loader";
 
 async function getAllUsers(url, onSuccess) {
     try {
         const res = await fetch(url);
-        console.log(res.status);
-        console.log(res.ok);
-        console.log(res);
+        // console.log(res.status);
+        // console.log(res.ok);
+        // console.log(res);
     
         const data = await res.json();
-        console.log(data);
+        console.log("all users: ", data);
 
         if (res.ok) {
             onSuccess(data);
@@ -26,20 +27,12 @@ const Users = () => {
     const [isSuccess, setIsSuccess] = useState(false);
 
     const {
-        // users,
-        // isLoading,
-        // isSuccess,
         isError,
         error
     } = {
-        // users: [], 
-        // isLoading: true,
-        // isSuccess: false,
         isError: false,
         error: {}
     };
-
-    // console.log(isLoading);
 
     useEffect(() => {
         setIsLoading(true);
@@ -54,7 +47,8 @@ const Users = () => {
 
     let content;
 
-    if (isLoading) content = <p>Loading...</p>
+    // if (isLoading) content = <p>Loading...</p>
+    if (isLoading) content = <Loader />
 
     if (isError) {
         content = <p>{error.message}</p>

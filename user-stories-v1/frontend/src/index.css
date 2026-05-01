@@ -49,6 +49,87 @@ img {
   width: 100%;
 }
 
+.loader {
+  display: block;
+  position: relative;
+  width: 25vw;
+  height: 25vw;
+  margin: auto;
+  border-radius: 50%;
+}
+
+.logo-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.logo-ring:nth-child(1) {
+  border-top: 3px solid steelblue;
+  animation: loaderv321 2s linear infinite;
+}
+
+@keyframes loaderv321 {
+  0% {
+    transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+  }
+
+  100% {
+    transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+  }
+}
+
+.logo-ring:nth-child(2) {
+  border-right: 3px solid #f00;
+  animation: loaderv322 2s linear infinite;
+}
+
+@keyframes loaderv322 {
+  0% {
+    transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+  }
+
+  100% {
+    transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+  }
+}
+
+.logo-ring:nth-child(3) {
+  border-bottom: 3px solid steelblue;
+  animation: loaderv323 2s linear infinite;
+}
+
+@keyframes loaderv323 {
+  0% {
+    transform: rotateX(35deg) rotateY(65deg) rotateZ(0deg);
+  }
+
+  100% {
+    transform: rotateX(35deg) rotateY(65deg) rotateZ(360deg);
+  }
+}
+
+.logo-ring:nth-child(4) {
+  border-left: 3px solid #f00;
+  animation: loaderv324 2s linear infinite;
+}
+
+@keyframes loaderv324 {
+  0% {
+    transform: rotateX(50deg) rotateY(150deg) rotateZ(0deg);
+  }
+
+  100% {
+    transform: rotateX(50deg) rotateY(150deg) rotateZ(360deg);
+  }
+}
+
+.logo:focus .logo-ring,
+.logo:hover .logo-ring {
+  animation-duration: 1s;
+}
+
 body {
   min-height: 100vh;
   color: var(--COLOR);
@@ -113,7 +194,6 @@ main {
 }
 
 .form-header {
-  /* padding: 1rem; */
   display: flex;
   gap: 2rem;
   flex-wrap: wrap;
@@ -134,7 +214,6 @@ main {
   padding: 0.2em;
   color: var(--COLOR);
   font-size: 1.6rem;
-  /* border: 1px solid; */
   transition: color 300ms;
 }
 
@@ -153,19 +232,15 @@ main {
 }
 
 .form-select {
-  /* position: relative; */
   width: 100%;
   max-width: 30ch;
   padding: 0.5em;
   color: inherit;
-  /* color: red; */
-  /* border-radius: 12px; */
   border: 1px solid #444;
   background-color: transparent;
 }
 
 .form-select option {
-  /* position: relative; */
   padding: 0.2em;
   font-family: Georgia, serif;
   transition: color 300ms, 
@@ -177,45 +252,20 @@ option:checked {
   background-color: transparent;
 }
 
-/* select:focus option:checked {
-  color: red;
-  background-color: green !important;
-  font-size: 2rem;
-} */
-
-/* select:focus option:checked:after {
-  position: absolute;
-  top: 0;
-  left: 0;
-  content: "";
-  width: 100%;
-  height: 100%;
-  background-color: red;
-  z-index: -1;
-} */
-
 option:hover {
   color: #6cb0e8;;
-  /* background-color: #0078d7;; */
 }
-
-/* select:open option:focus { */
-  /* color: var(--STATUS-COMPLETE); */
-  /* background-color: red !important; */
-/* } */
 
 .table {
   width: 100%;
   max-width: 900px;
   margin: 0 auto;
-  /* padding: 1rem; */
   text-align: left;
   border-collapse: collapse;
   border: 2px solid rgb(140 140 140);
 }
 
 .table-thead {
-  /* padding: 1rem; */
   font-size: 1.4rem;
   border-bottom: 2px solid rgb(140 140 140);
   background-color: #044464;

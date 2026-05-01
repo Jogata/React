@@ -14,11 +14,8 @@ async function addNewUser(user, url="http://localhost:5000/users") {
             },
             body: JSON.stringify(user),
         });
-        console.log(res.status);
-        console.log(res.ok);
     
         const data = await res.json();
-        // console.log(data);
 
         if (res.ok) {
             return {
@@ -41,7 +38,6 @@ const CreateUserForm = () => {
     const [validPassword, setValidPassword] = useState(true);
     const [roles, setRoles] = useState(["Employee"]);
     const [isSuccess, setIsSuccess] = useState(false);
-    // let isSuccess = false;
     let isError = false;
     let error = {};
     let isLoading = false;
@@ -49,22 +45,19 @@ const CreateUserForm = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // console.log("useeffect1");
         setValidUsername(USER_REGEX.test(username));
     }, [username])
     
     useEffect(() => {
-        // console.log("useeffect2");
         setValidPassword(PWD_REGEX.test(password));
     }, [password])
     
     useEffect(() => {
-        // console.log("useeffect3");
         if (isSuccess) {
             setUsername("");
             setPassword("");
             setRoles([]);
-            // navigate("/dash/users");
+            navigate("/dash/users");
         }
     }, [isSuccess, navigate])
 
@@ -80,13 +73,9 @@ const CreateUserForm = () => {
     }
 
     const canSave = [roles.length, validUsername, validPassword].every(Boolean) && !isLoading;
-    // const canSave = [roles.length, validUsername, validPassword].every(Boolean);
-    console.log([roles.length, validUsername, validPassword]);
-    // console.log(canSave);
 
     const onSaveUserClicked = async (e) => {
         e.preventDefault();
-        // console.log(username, password, roles);
         if (canSave) {
             const res = await addNewUser({ username, password, roles });
             console.log(res);
@@ -97,26 +86,6 @@ const CreateUserForm = () => {
     }
 
     const options = Object.values(ROLES).map((role, index) => {
-        // if (index === 1) {
-        //     return (
-        //         <option
-        //             key={role}
-        //             value={role}
-        //             selected
-        //         >
-        //             {role}
-        //         </option >
-        //     )
-        // } else {
-        //     return (
-        //         <option
-        //             key={role}
-        //             value={role}
-        //         >
-        //             {role}
-        //         </option >
-        //     )
-        // }
         return (
             <option
                 key={role}
@@ -126,9 +95,6 @@ const CreateUserForm = () => {
             </option >
         )
     })
-
-    console.log(options[0].props);
-    // options[0].props.selected = true;
 
     const errClass = isError ? "errmsg" : "offscreen";
     const validUserClass = !validUsername ? "incomplete" : "complete";
