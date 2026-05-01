@@ -2,16 +2,46 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROLES } from "../config/roles";
 
-const USER_REGEX = /^[A-z]{3,20}$/;
+const USER_REGEX = /^[A-z0-9]{3,20}$/;
 const PWD_REGEX = /^[A-z0-9!@#$%]{4,12}$/;
 
+async function addNewUser(user) {
+    try {
+        const res = await fetch("http://localhost:5000/users", {
+            method: "POST", 
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(user),
+        });
+        console.log(res.status);
+        console.log(res.ok);
+    
+        const data = await res.json();
+        // console.log(data);
+
+        if (res.ok) {
+            return {
+                success: res.ok, 
+                data
+            };
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const CreateUserForm = () => {
-    const [username, setUsername] = useState("");
+    // const [username, setUsername] = useState("");
+    const [username, setUsername] = useState("user7");
     const [validUsername, setValidUsername] = useState(true);
-    const [password, setPassword] = useState("");
+    // const [password, setPassword] = useState("");
+    const [password, setPassword] = useState("pass1237");
     const [validPassword, setValidPassword] = useState(true);
     const [roles, setRoles] = useState(["Employee"]);
-    let isSuccess = false;
+    const [isSuccess, setIsSuccess] = useState(false);
+    // let isSuccess = false;
     let isError = false;
     let error = {};
     let isLoading = false;
@@ -19,17 +49,17 @@ const CreateUserForm = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        console.log("useeffect1");
+        // console.log("useeffect1");
         setValidUsername(USER_REGEX.test(username));
     }, [username])
     
     useEffect(() => {
-        console.log("useeffect2");
+        // console.log("useeffect2");
         setValidPassword(PWD_REGEX.test(password));
     }, [password])
     
     useEffect(() => {
-        console.log("useeffect3");
+        // console.log("useeffect3");
         if (isSuccess) {
             setUsername("");
             setPassword("");
@@ -51,13 +81,18 @@ const CreateUserForm = () => {
 
     const canSave = [roles.length, validUsername, validPassword].every(Boolean) && !isLoading;
     // const canSave = [roles.length, validUsername, validPassword].every(Boolean);
-    // console.log([roles.length, validUsername, validPassword]);
+    console.log([roles.length, validUsername, validPassword]);
     // console.log(canSave);
 
     const onSaveUserClicked = async (e) => {
         e.preventDefault();
+        // console.log(username, password, roles);
         if (canSave) {
-            await addNewUser({ username, password, roles });
+            const res = await addNewUser({ username, password, roles });
+            console.log(res);
+            if (res.success) {
+                setIsSuccess(true);
+            }
         }
     }
 
@@ -66,8 +101,9 @@ const CreateUserForm = () => {
             <option
                 key={role}
                 value={role}
-
-            > {role}</option >
+            >
+                {role}
+            </option >
         )
     })
 

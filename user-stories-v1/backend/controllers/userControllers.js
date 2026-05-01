@@ -13,6 +13,7 @@ const getAllUsers = async (req, res) => {
 }
 
 const createNewUser = async (req, res) => {
+    // console.log(req.body);
     try {        
         const { username, password, roles } = req.body;
     
