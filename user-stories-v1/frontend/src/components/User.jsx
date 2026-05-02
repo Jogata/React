@@ -1,15 +1,13 @@
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
+
+import { Link } from "react-router-dom";
 
 const User = ({ user }) => {
-    // const user = {
-    //     username: "test", 
-    //     roles: ["role1", "role2", "role3"]
-    // };
-
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
+    // console.log(user._id);
 
     if (user) {
-        const handleEdit = () => navigate(`/dash/users/${user._Id}`);
+        // const handleEdit = () => navigate(`/dash/users/${user._Id}`);
 
         const userRolesString = user.roles.toString().replaceAll(",", ", ");
 
@@ -20,12 +18,15 @@ const User = ({ user }) => {
                 <td className={`table-cell ${cellStatus}`}>{user.username}</td>
                 <td className={`table-cell ${cellStatus}`}>{userRolesString}</td>
                 <td className={`table-cell user-edit ${cellStatus}`}>
-                    <button
+                    <Link
+                        to={`/dash/users/${user._id}`}
                         className="icon-button table-button"
-                        onClick={handleEdit}
+                        title="Edit"
+                        // onClick={handleEdit}
                     >
+                        Edit user
                         <i className="fa fa-pencil-square-o"></i>
-                    </button>
+                    </Link>
                 </td>
             </tr>
         )

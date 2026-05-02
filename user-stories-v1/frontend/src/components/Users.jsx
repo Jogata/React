@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import User from "./User";
 import Loader from "./Loader";
+import { Link } from "react-router-dom";
 
 async function getAllUsers(url, onSuccess) {
     try {
         const res = await fetch(url);
-        // console.log(res.status);
-        // console.log(res.ok);
-        // console.log(res);
     
         const data = await res.json();
         console.log("all users: ", data);
@@ -47,7 +45,6 @@ const Users = () => {
 
     let content;
 
-    // if (isLoading) content = <p>Loading...</p>
     if (isLoading) content = <Loader />
 
     if (isError) {
@@ -74,6 +71,19 @@ const Users = () => {
                 </thead>
                 <tbody>
                     {tableContent}
+                    <tr className="new-user-row">
+                        <th scope="row" colSpan="2">Create new user</th>
+                        <td>
+                            <Link 
+                                to="/dash/users/create"
+                                className="icon-button"
+                                title="Create new user"
+                            >
+                                Create new user
+                                <i className="fa fa-user-plus"></i>
+                            </Link>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         )
