@@ -9,11 +9,11 @@ const getAllUsers = async (req, res) => {
         return res.status(400).json({ message: "No users found" });
     }
 
-    setTimeout(() => {
-        res.json(users);
-    }, 5000);
+    // setTimeout(() => {
+    //     res.json(users);
+    // }, 5000);
 
-    // res.json(users);
+    res.json(users);
 }
 
 const createNewUser = async (req, res) => {
@@ -34,7 +34,7 @@ const createNewUser = async (req, res) => {
     
         const userObject = { username, "password": hashedPwd, roles };
     
-        const user = await User.create(userObject)
+        const user = await User.create(userObject);
     
         if (user) {
             res.status(201).json({ message: `New user ${username} created` });

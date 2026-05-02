@@ -16,13 +16,18 @@ async function addNewUser(user, url="http://localhost:5000/users") {
         });
     
         const data = await res.json();
+        console.log(data);
 
-        if (res.ok) {
+        // if (res.ok) {
             return {
                 success: res.ok, 
                 data
             };
-        }
+        // } else {
+            // return {
+                // console.log("else");
+            // }
+        // }
 
     } catch (error) {
         console.log(error);
@@ -31,15 +36,17 @@ async function addNewUser(user, url="http://localhost:5000/users") {
 
 const CreateUserForm = () => {
     // const [username, setUsername] = useState("");
-    const [username, setUsername] = useState("user8");
+    const [username, setUsername] = useState("user10");
     const [validUsername, setValidUsername] = useState(true);
     // const [password, setPassword] = useState("");
-    const [password, setPassword] = useState("pass1238");
+    const [password, setPassword] = useState("pass12310");
     const [validPassword, setValidPassword] = useState(true);
     const [roles, setRoles] = useState(["Employee"]);
     const [isSuccess, setIsSuccess] = useState(false);
-    let isError = false;
-    let error = {};
+    const [isError, setIsError] = useState(false);
+    const [error, setError] = useState(false);
+    // let isError = false;
+    // let error = {};
     let isLoading = false;
 
     const navigate = useNavigate();
@@ -81,11 +88,15 @@ const CreateUserForm = () => {
             console.log(res);
             if (res.success) {
                 setIsSuccess(true);
+                setIsError(false);
+            } else {
+                setIsError(true);
+                setError(res.data)
             }
         }
     }
 
-    const options = Object.values(ROLES).map((role, index) => {
+    const options = Object.values(ROLES).map(role => {
         return (
             <option
                 key={role}

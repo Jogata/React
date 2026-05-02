@@ -26,7 +26,16 @@ a {
   text-decoration: none;
   display: inline-block;
   padding: 0.2em 0.5em;
+  color: inherit;
   transition: color 300ms ease-in-out;
+}
+
+a:visited {
+  color: var(--LINK-COLOR);
+}
+
+a:hover {
+  color: #6cb0e8;
 }
 
 button {
@@ -140,16 +149,6 @@ body {
 a {
   display: inline-block;
   text-decoration: none;
-}
-
-a,
-a:visited {
-  color: var(--LINK-COLOR);
-}
-
-a:hover,
-a:focus-visible {
-  color: var(--LINK-HOVER);
 }
 
 .nowrap {
@@ -311,6 +310,19 @@ td {
   color: #78e778;
 }
 
+.invalid-user {
+  margin: auto;
+  font-size: 2rem;
+  text-align: center;
+}
 
+.invalid-user span {
+  display: block;
+  color: #ff6347;
+}
 
+.invalid-user a {
+  margin-top: 2rem;
+  font-size: 1.2rem;
+}
 
