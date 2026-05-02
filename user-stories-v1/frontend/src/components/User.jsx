@@ -1,14 +1,7 @@
-// import { useNavigate } from "react-router-dom";
-
 import { Link } from "react-router-dom";
 
 const User = ({ user }) => {
-    // const navigate = useNavigate();
-    // console.log(user._id);
-
     if (user) {
-        // const handleEdit = () => navigate(`/dash/users/${user._Id}`);
-
         const userRolesString = user.roles.toString().replaceAll(",", ", ");
 
         const cellStatus = user.active ? "active" : "inactive";
@@ -22,7 +15,6 @@ const User = ({ user }) => {
                         to={`/dash/users/${user._id}`}
                         className="icon-button table-button"
                         title="Edit"
-                        // onClick={handleEdit}
                     >
                         Edit user
                         <i className="fa fa-pencil-square-o"></i>

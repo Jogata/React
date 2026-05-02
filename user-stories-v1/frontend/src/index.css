@@ -206,6 +206,10 @@ main {
   margin-bottom: 0.5rem;
 }
 
+.form-label .form-checkbox {
+  margin-left: 0.5rem;
+}
+
 .icon-button {
   font-size: 0px;
 }
@@ -217,8 +221,12 @@ main {
   transition: color 300ms;
 }
 
-.icon-button i:hover {
+.icon-button:hover i {
   color: #6cb0e8;
+}
+
+.icon-button.delete-btn:hover i {
+  color: #ff6347;
 }
 
 .form-input {
@@ -302,7 +310,6 @@ td {
 .new-user-row td button:hover i {
   color: #78e778;
 }
-
 
 
 
