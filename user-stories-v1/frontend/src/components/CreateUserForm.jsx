@@ -5,29 +5,22 @@ import { ROLES } from "../config/roles";
 const USER_REGEX = /^[A-z0-9]{3,20}$/;
 const PWD_REGEX = /^[A-z0-9!@#$%]{4,12}$/;
 
-async function addNewUser(user, url="http://localhost:5000/users") {
+async function addNewUser(user, url = "http://localhost:5000/users") {
     try {
         const res = await fetch(url, {
-            method: "POST", 
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(user),
         });
-    
-        const data = await res.json();
-        console.log(data);
 
-        // if (res.ok) {
-            return {
-                success: res.ok, 
-                data
-            };
-        // } else {
-            // return {
-                // console.log("else");
-            // }
-        // }
+        const data = await res.json();
+
+        return {
+            success: res.ok,
+            data
+        };
 
     } catch (error) {
         console.log(error);
@@ -44,9 +37,7 @@ const CreateUserForm = () => {
     const [roles, setRoles] = useState(["Employee"]);
     const [isSuccess, setIsSuccess] = useState(false);
     const [isError, setIsError] = useState(false);
-    const [error, setError] = useState(false);
-    // let isError = false;
-    // let error = {};
+    const [error, setError] = useState({});
     let isLoading = false;
 
     const navigate = useNavigate();
@@ -54,11 +45,11 @@ const CreateUserForm = () => {
     useEffect(() => {
         setValidUsername(USER_REGEX.test(username));
     }, [username])
-    
+
     useEffect(() => {
         setValidPassword(PWD_REGEX.test(password));
     }, [password])
-    
+
     useEffect(() => {
         if (isSuccess) {
             setUsername("");

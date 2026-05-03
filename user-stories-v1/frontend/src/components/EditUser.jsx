@@ -25,7 +25,6 @@ const EditUser = () => {
     const [ exist, setExist ] = useState(true);
 
     useEffect(() => {
-        // setIsLoading(true);
         loadUser();
 
         async function loadUser() {
@@ -33,8 +32,7 @@ const EditUser = () => {
 
             if (Array.isArray(res)) {
                 const user = res.find(user => user._id == userId);
-                // const user = null;
-                console.log(user);
+                // console.log(user);
     
                 if (user) {
                     setExist(true);
@@ -45,17 +43,8 @@ const EditUser = () => {
             } else {
                 setExist(false);
             }
-            // setUsers(data);
-            // setIsLoading(false);
-            // setIsSuccess(true);
         }
     }, [])
-
-    // const user = null;
-    // const user = {
-    //     roles: ["Employee"], 
-    //     active: true
-    // };
 
     if (!exist) {
         return <UserDoesntExist id={userId} />;

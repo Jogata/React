@@ -238,6 +238,16 @@ main {
   background-color: transparent;
 }
 
+.form-input.valid, 
+.form-select.valid {
+  border: 1px solid var(--STATUS-COMPLETE);
+}
+
+.form-input.invalid, 
+.form-select.invalid {
+  border: 1px solid var(--STATUS-OPEN);
+}
+
 .form-select {
   width: 100%;
   max-width: 30ch;

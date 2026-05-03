@@ -2,10 +2,20 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROLES } from "../config/roles";
 
+const url = "http://localhost:5000/users";
 const USER_REGEX = /^[A-z0-9]{3,20}$/;
 const PWD_REGEX = /^[A-z0-9!@#$%]{4,12}$/;
 
 const EditUserForm = ({ user }) => {
+    const [username, setUsername] = useState(user.username);
+    // const [validUsername, setValidUsername] = useState(false);
+    const [password, setPassword] = useState("");
+    // const [validPassword, setValidPassword] = useState(false);
+    const [roles, setRoles] = useState(user.roles);
+    const [active, setActive] = useState(user.active);
+
+    const navigate = useNavigate();
+
     const {
         isLoading,
         isSuccess,
@@ -28,30 +38,32 @@ const EditUserForm = ({ user }) => {
         error: ""
     }
 
-    const updateUser = async () => {
-        console.log("todo updateUser");
+    const updateUser = async (user) => {
+        // console.log("todo updateUser");
+        // console.log(user);
+        const res = await fetch(url, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(user),
+        });
+        // console.log(res);
+        const data = await res.json();
+        console.log(data);
     }
     
     const deleteUser = async () => {
         console.log("todo deleteUser");
     }
 
-    const navigate = useNavigate();
+    // useEffect(() => {
+        // setValidUsername(USER_REGEX.test(username));
+    // }, [username])
 
-    const [username, setUsername] = useState(user.username);
-    const [validUsername, setValidUsername] = useState(false);
-    const [password, setPassword] = useState("");
-    const [validPassword, setValidPassword] = useState(false);
-    const [roles, setRoles] = useState(user.roles);
-    const [active, setActive] = useState(user.active);
-
-    useEffect(() => {
-        setValidUsername(USER_REGEX.test(username));
-    }, [username])
-
-    useEffect(() => {
-        setValidPassword(PWD_REGEX.test(password));
-    }, [password])
+    // useEffect(() => {
+        // setValidPassword(PWD_REGEX.test(password));
+    // }, [password])
 
     useEffect(() => {
         // console.log(isSuccess);
@@ -78,15 +90,16 @@ const EditUserForm = ({ user }) => {
     const onActiveChanged = () => setActive(prev => !prev);
 
     const onSaveUserClicked = async () => {
+        // console.log(user);
         if (password) {
-            await updateUser({ id: user.id, username, password, roles, active });
+            await updateUser({ id: user._id, username, password, roles, active });
         } else {
-            await updateUser({ id: user.id, username, roles, active });
+            await updateUser({ id: user._id, username, roles, active });
         }
     }
 
     const onDeleteUserClicked = async () => {
-        await deleteUser({ id: user.id });
+        await deleteUser({ id: user._id });
     }
 
     const options = Object.values(ROLES).map(role => {
@@ -101,19 +114,23 @@ const EditUserForm = ({ user }) => {
     })
 
     let canSave;
+    const validUsername = USER_REGEX.test(username);
+    const validPassword = PWD_REGEX.test(password);
+    // console.log("password =", validPassword );
+
+    const errClass = (isError || isDelError) ? "errmsg" : "offscreen";
+    const validUserClass = !validUsername ? "invalid" : "valid";
+    const validRolesClass = !Boolean(roles.length) ? "invalid" : "valid";
+    let validPwdClass = "not-included";
 
     if (password) {
+        validPwdClass = !validPassword ? "invalid" : "valid";
         canSave = [roles.length, validUsername, validPassword].every(Boolean) && !isLoading;
     } else {
         canSave = [roles.length, validUsername].every(Boolean) && !isLoading;
     }
 
-    const errClass = (isError || isDelError) ? "errmsg" : "offscreen";
-    const validUserClass = !validUsername ? "form-input-incomplete" : "";
-    const validPwdClass = password && !validPassword ? "form-input-incomplete" : "";
-    const validRolesClass = !Boolean(roles.length) ? "form-input-incomplete" : "";
-
-    const errContent = (error?.data?.message || delerror?.data?.message) ?? "";
+    const errContent = (error?.message || delerror?.message) ?? "";
 
     const content = (
         <>

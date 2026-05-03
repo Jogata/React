@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const Note = require("../models/Note");
+const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
 const getAllUsers = async (req, res) => {
@@ -49,8 +50,14 @@ const createNewUser = async (req, res) => {
 const updateUser = async (req, res) => {
     try {
         const { id, username, roles, active, password } = req.body;
+        // console.log(id);
+        // console.log(mongoose.isValidObjectId(id));
 
-        if (!id || !username || !Array.isArray(roles) || !roles.length || typeof active !== "boolean") {
+        if (!id || !mongoose.isValidObjectId(id)) {
+            return res.status(400).json({ message: "{Invalid id}" });
+        }
+
+        if (!username || !Array.isArray(roles) || !roles.length || typeof active !== "boolean") {
             return res.status(400).json({ message: "All fields except password are required" });
         }
     
@@ -78,7 +85,8 @@ const updateUser = async (req, res) => {
     
         res.json({ message: `${updatedUser.username} updated` });    
     } catch (error) {
-        console.log(error);
+        // console.log(error);
+        console.log(error.message);
     }
 }
 
