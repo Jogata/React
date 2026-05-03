@@ -8,10 +8,13 @@ const PWD_REGEX = /^[A-z0-9!@#$%]{4,12}$/;
 
 const EditUserForm = ({ user }) => {
     const [username, setUsername] = useState(user.username);
+    // const [username, setUsername] = useState("too long username - the input has to pulse");
     // const [validUsername, setValidUsername] = useState(false);
     const [password, setPassword] = useState("");
+    // const [password, setPassword] = useState("invalid password - the input has to pulse");
     // const [validPassword, setValidPassword] = useState(false);
     const [roles, setRoles] = useState(user.roles);
+    // const [roles, setRoles] = useState([]);
     const [active, setActive] = useState(user.active);
 
     const navigate = useNavigate();
@@ -39,8 +42,7 @@ const EditUserForm = ({ user }) => {
     }
 
     const updateUser = async (user) => {
-        // console.log("todo updateUser");
-        // console.log(user);
+        // console.log("updateUser", user);
         const res = await fetch(url, {
             method: "PATCH",
             headers: {
@@ -51,10 +53,32 @@ const EditUserForm = ({ user }) => {
         // console.log(res);
         const data = await res.json();
         console.log(data);
+
     }
     
     const deleteUser = async () => {
-        console.log("todo deleteUser");
+        console.log("deleteUser");
+        try {
+            const res = await fetch(url, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({id: user._id}),
+            });
+            // console.log(res);
+
+            const data = await res.json();
+            
+            if (res.ok) {
+                console.log(data);
+                navigate("/dash/users");
+            } else {
+                console.log(data);
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     // useEffect(() => {
@@ -77,6 +101,7 @@ const EditUserForm = ({ user }) => {
     }, [isSuccess, isDelSuccess, navigate])
 
     const onUsernameChanged = e => setUsername(e.target.value);
+    // console.log("onUsernameChanged");
     const onPasswordChanged = e => setPassword(e.target.value);
 
     const onRolesChanged = e => {

@@ -201,8 +201,16 @@ main {
 
 .form-label {
   display: block;
+  width: fit-content;
   margin-top: 1rem;
   margin-bottom: 0.5rem;
+}
+
+.form-label .nowrap {
+  display: block;
+  color: var(--INACTIVE);
+  font-size: 0.6em;
+  opacity: 0.6;
 }
 
 .form-label .form-checkbox {
@@ -245,7 +253,18 @@ main {
 
 .form-input.invalid, 
 .form-select.invalid {
-  border: 1px solid var(--STATUS-OPEN);
+  border: 2px solid var(--STATUS-OPEN);
+  animation: pulsing-border 1s linear infinite;
+  /* border-color: transparent; */
+}
+
+@keyframes pulsing-border {
+  /* 0%, 100% {
+    border: 1px solid var(--STATUS-OPEN);
+  } */
+  50% {
+    border-color: transparent;
+  }
 }
 
 .form-select {

@@ -50,11 +50,9 @@ const createNewUser = async (req, res) => {
 const updateUser = async (req, res) => {
     try {
         const { id, username, roles, active, password } = req.body;
-        // console.log(id);
-        // console.log(mongoose.isValidObjectId(id));
 
         if (!id || !mongoose.isValidObjectId(id)) {
-            return res.status(400).json({ message: "{Invalid id}" });
+            return res.status(400).json({ message: "Invalid user ID" });
         }
 
         if (!username || !Array.isArray(roles) || !roles.length || typeof active !== "boolean") {
@@ -97,6 +95,16 @@ const deleteUser = async (req, res) => {
         if (!id) {
             return res.status(400).json({ message: "User ID Required" });
         }
+
+        if (!mongoose.isValidObjectId(id)) {
+            return res.status(400).json({ message: "Invalid user ID" });
+        }
+
+        const user = await User.findById(id).exec();
+    
+        if (!user) {
+            return res.status(400).json({ message: "User not found" });
+        }
     
         const note = await Note.findOne({ user: id }).lean().exec();
     
@@ -104,17 +112,19 @@ const deleteUser = async (req, res) => {
             return res.status(400).json({ message: "User has assigned notes" });
         }
     
-        const user = await User.findById(id).exec();
+        // const user = await User.findById(id).exec();
     
-        if (!user) {
-            return res.status(400).json({ message: "User not found" });
-        }
+        // if (!user) {
+        //     return res.status(400).json({ message: "User not found" });
+        // }
     
-        const result = await user.deleteOne();
+        // const result = await user.deleteOne();
+        const result = await User.findByIdAndDelete(id);
+        console.log(result);
     
         const reply = `Username ${result.username} with ID ${result._id} deleted`;
     
-        res.json(reply);    
+        res.json(reply);
     } catch (error) {
         console.log(error);
     }
