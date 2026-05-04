@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROLES } from "../config/roles";
 
@@ -29,39 +29,28 @@ async function addNewUser(user, url = "http://localhost:5000/users") {
 
 const CreateUserForm = () => {
     // const [username, setUsername] = useState("");
-    const [username, setUsername] = useState("user 4");
-    // const [validUsername, setValidUsername] = useState(true);
+    const [username, setUsername] = useState("user6");
     // const [password, setPassword] = useState("");
-    const [password, setPassword] = useState("pass 1234");
-    // const [validPassword, setValidPassword] = useState(true);
+    const [password, setPassword] = useState("pass1236");
     const [roles, setRoles] = useState(["Employee"]);
     const [isSuccess, setIsSuccess] = useState(false);
-    const [isError, setIsError] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    // const [isError, setIsError] = useState(false);
     const [errors, setErrors] = useState([]);
-    let isLoading = false;
+    const [messages, setMessages] = useState([]);
+    const formSubmitedOnce = useRef(false);
+    // let isLoading = false;
+    console.log(isSuccess);
 
     const navigate = useNavigate();
-
-    // useEffect(() => {
-    //     setValidUsername(USER_REGEX.test(username));
-    // }, [username])
-
-    // useEffect(() => {
-    //     setValidPassword(PWD_REGEX.test(password));
-    // }, [password])
-
-    // useEffect(() => {
-    //     console.log("useEffect");
-    //     return () => setErrors([]);
-    // }, [errors.length])
 
     useEffect(() => {
         if (isSuccess) {
             // TOFIX
             setUsername("");
             setPassword("");
-            setRoles([]);
-            navigate("/dash/users");
+            setRoles(["Employee"]);
+            // navigate("/dash/users");
         }
     }, [isSuccess, navigate])
 
@@ -85,10 +74,18 @@ const CreateUserForm = () => {
     //     setErrors(old => old.push({message: "fix password"}));
     // }
     
-    const errClass = isError ? "errmsg" : "offscreen";       //TODO
-    const validUserClass = !validUsername ? "invalid" : "valid";
-    const validPwdClass = !validPassword ? "invalid" : "valid";
-    const validRolesClass = !Boolean(roles.length) ? "invalid" : "valid";
+    // const errClass = isError ? "errmsg" : "offscreen";
+    const errClass = errors.length ? "errmsg" : "offscreen";       //TODO
+    const successMsgClass = messages.length ? "successmsg" : "offscreen";       //TODO
+    let validUserClass = "initial";
+    let validPwdClass = "initial";
+    let validRolesClass = "initial";
+
+    if (formSubmitedOnce.current) {
+        validUserClass = !validUsername ? "invalid" : "valid";
+        validPwdClass = !validPassword ? "invalid" : "valid";
+        validRolesClass = !Boolean(roles.length) ? "invalid" : "valid";
+    }
 
     const canSave = [roles.length, validUsername, validPassword].every(Boolean) && !isLoading;
     // console.log(canSave, username);
@@ -96,39 +93,62 @@ const CreateUserForm = () => {
     const onSaveUserClicked = async (e) => {
         e.preventDefault();
         console.log("create user clicked");
-        if (canSave) {
-            console.log("create new user req sended");
-            const res = await addNewUser({ username, password, roles });
-            console.log(res);
-            if (res.success) {
-                setIsSuccess(true);
-                setIsError(false);
-            } else {
-                setIsError(true);
-                setErrors([res.data]);
-            }
+        if (isLoading) {
+            setErrors([{message: "A new user is created in the moment"}]);
         } else {
-            console.log("fix the form");
-            if (!validUsername) {
-                setErrors(old => {
-                    // console.log(old);
-                    // console.log("fix user");
-                    const newerr = [...old];
-                    newerr.push({message: "fix username"});
-                    console.log("fix user aded");
-                    console.log(newerr);
-                    return newerr;
-                });
-            }
-            if (!validPassword) {
-                setErrors(old => {
-                    // console.log("fix password");
-                    const newerr = [...old];
-                    newerr.push({message: "fix password"});
-                    console.log(newerr);
-                    console.log("fix password added");
-                    return newerr;
-                });
+            formSubmitedOnce.current = true;
+
+            if (canSave) {
+                console.log("create new user req sended");
+                setErrors([]);
+                const res = await addNewUser({ username, password, roles });
+                console.log(res);
+                if (res.success) {
+                    setIsSuccess(true);
+                    setMessages([res.data]);
+                    // setIsError(false);
+                    formSubmitedOnce.current = false;
+                    console.log(formSubmitedOnce.current);
+                } else {
+                    console.log("server errors");
+                    // setIsError(true);
+                    setIsSuccess(false);
+                    setErrors([res.data]);
+                }
+            } else {
+                console.log("fix the form");
+                setMessages([]);
+                setIsSuccess(false);
+                const formErrors = [];
+    
+                if (!validUsername) {
+                    // setErrors(old => {
+                    //     console.log(old);
+                    //     console.log("fix user");
+                    //     const newerr = [...old];
+                    //     newerr.push({message: "fix username"});
+                    //     console.log("fix user aded");
+                    //     console.log(newerr);
+                    //     return newerr;
+                    // });
+                    formErrors.push({message: "fix username"});
+                    console.log("fix username");
+                }
+    
+                if (!validPassword) {
+                    // setErrors(old => {
+                        // console.log("fix password");
+                    //     const newerr = [...old];
+                    //     newerr.push({message: "fix password"});
+                    //     console.log(newerr);
+                    //     console.log("fix password added");
+                    //     return newerr;
+                    // });
+                    formErrors.push({message: "fix password"});
+                    console.log("fix password aded");
+                }
+    
+                setErrors(formErrors);
             }
         }
     }
@@ -146,11 +166,18 @@ const CreateUserForm = () => {
 
     const content = (
         <>
-            {/* <p className={errClass}>{error.message}</p> */}
-            <div className={errClass}>
-                {errors.map((err, index) => {
-                    return <p key={index}>{err.message}</p>
-                })}
+            <div className="messages">
+                <div className={errClass}>
+                    {errors.map((err, index) => {
+                        return <p key={index}>{err.message}</p>
+                    })}
+                </div>
+
+                <div className={successMsgClass}>
+                    {messages.map((message, index) => {
+                        return <p key={index}>{message.message}</p>
+                    })}
+                </div>
             </div>
 
             <form className="form" onSubmit={onSaveUserClicked}>
