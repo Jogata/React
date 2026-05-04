@@ -42,7 +42,6 @@ const EditUserForm = ({ user }) => {
     }
 
     const updateUser = async (user) => {
-        // console.log("updateUser", user);
         const res = await fetch(url, {
             method: "PATCH",
             headers: {
@@ -50,10 +49,9 @@ const EditUserForm = ({ user }) => {
             },
             body: JSON.stringify(user),
         });
-        // console.log(res);
+
         const data = await res.json();
         console.log(data);
-
     }
     
     const deleteUser = async () => {
@@ -66,7 +64,6 @@ const EditUserForm = ({ user }) => {
                 },
                 body: JSON.stringify({id: user._id}),
             });
-            // console.log(res);
 
             const data = await res.json();
             
@@ -81,17 +78,9 @@ const EditUserForm = ({ user }) => {
         }
     }
 
-    // useEffect(() => {
-        // setValidUsername(USER_REGEX.test(username));
-    // }, [username])
-
-    // useEffect(() => {
-        // setValidPassword(PWD_REGEX.test(password));
-    // }, [password])
-
     useEffect(() => {
-        // console.log(isSuccess);
         if (isSuccess || isDelSuccess) {
+            // TOFIX
             setUsername("");
             setPassword("");
             setRoles([]);
@@ -101,7 +90,6 @@ const EditUserForm = ({ user }) => {
     }, [isSuccess, isDelSuccess, navigate])
 
     const onUsernameChanged = e => setUsername(e.target.value);
-    // console.log("onUsernameChanged");
     const onPasswordChanged = e => setPassword(e.target.value);
 
     const onRolesChanged = e => {
@@ -115,7 +103,6 @@ const EditUserForm = ({ user }) => {
     const onActiveChanged = () => setActive(prev => !prev);
 
     const onSaveUserClicked = async () => {
-        // console.log(user);
         if (password) {
             await updateUser({ id: user._id, username, password, roles, active });
         } else {
@@ -143,7 +130,7 @@ const EditUserForm = ({ user }) => {
     const validPassword = PWD_REGEX.test(password);
     // console.log("password =", validPassword );
 
-    const errClass = (isError || isDelError) ? "errmsg" : "offscreen";
+    const errClass = (isError || isDelError) ? "errmsg" : "offscreen";        //TODO
     const validUserClass = !validUsername ? "invalid" : "valid";
     const validRolesClass = !Boolean(roles.length) ? "invalid" : "valid";
     let validPwdClass = "not-included";

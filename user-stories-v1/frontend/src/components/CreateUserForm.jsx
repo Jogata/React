@@ -29,29 +29,35 @@ async function addNewUser(user, url = "http://localhost:5000/users") {
 
 const CreateUserForm = () => {
     // const [username, setUsername] = useState("");
-    const [username, setUsername] = useState("user4");
-    const [validUsername, setValidUsername] = useState(true);
+    const [username, setUsername] = useState("user 4");
+    // const [validUsername, setValidUsername] = useState(true);
     // const [password, setPassword] = useState("");
-    const [password, setPassword] = useState("pass1234");
-    const [validPassword, setValidPassword] = useState(true);
+    const [password, setPassword] = useState("pass 1234");
+    // const [validPassword, setValidPassword] = useState(true);
     const [roles, setRoles] = useState(["Employee"]);
     const [isSuccess, setIsSuccess] = useState(false);
     const [isError, setIsError] = useState(false);
-    const [error, setError] = useState({});
+    const [errors, setErrors] = useState([]);
     let isLoading = false;
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        setValidUsername(USER_REGEX.test(username));
-    }, [username])
+    // useEffect(() => {
+    //     setValidUsername(USER_REGEX.test(username));
+    // }, [username])
 
-    useEffect(() => {
-        setValidPassword(PWD_REGEX.test(password));
-    }, [password])
+    // useEffect(() => {
+    //     setValidPassword(PWD_REGEX.test(password));
+    // }, [password])
+
+    // useEffect(() => {
+    //     console.log("useEffect");
+    //     return () => setErrors([]);
+    // }, [errors.length])
 
     useEffect(() => {
         if (isSuccess) {
+            // TOFIX
             setUsername("");
             setPassword("");
             setRoles([]);
@@ -70,11 +76,28 @@ const CreateUserForm = () => {
         setRoles(values);
     }
 
+    // const validUserClass = !validUsername ? "incomplete" : "complete";
+    // const validRolesClass = !Boolean(roles.length) ? "incomplete" : "complete";
+    const validUsername = USER_REGEX.test(username);
+    const validPassword = PWD_REGEX.test(password);
+    // console.log("password =", validPassword );
+    // if (!validPassword) {
+    //     setErrors(old => old.push({message: "fix password"}));
+    // }
+    
+    const errClass = isError ? "errmsg" : "offscreen";       //TODO
+    const validUserClass = !validUsername ? "invalid" : "valid";
+    const validPwdClass = !validPassword ? "invalid" : "valid";
+    const validRolesClass = !Boolean(roles.length) ? "invalid" : "valid";
+
     const canSave = [roles.length, validUsername, validPassword].every(Boolean) && !isLoading;
+    // console.log(canSave, username);
 
     const onSaveUserClicked = async (e) => {
         e.preventDefault();
+        console.log("create user clicked");
         if (canSave) {
+            console.log("create new user req sended");
             const res = await addNewUser({ username, password, roles });
             console.log(res);
             if (res.success) {
@@ -82,7 +105,30 @@ const CreateUserForm = () => {
                 setIsError(false);
             } else {
                 setIsError(true);
-                setError(res.data)
+                setErrors([res.data]);
+            }
+        } else {
+            console.log("fix the form");
+            if (!validUsername) {
+                setErrors(old => {
+                    // console.log(old);
+                    // console.log("fix user");
+                    const newerr = [...old];
+                    newerr.push({message: "fix username"});
+                    console.log("fix user aded");
+                    console.log(newerr);
+                    return newerr;
+                });
+            }
+            if (!validPassword) {
+                setErrors(old => {
+                    // console.log("fix password");
+                    const newerr = [...old];
+                    newerr.push({message: "fix password"});
+                    console.log(newerr);
+                    console.log("fix password added");
+                    return newerr;
+                });
             }
         }
     }
@@ -98,14 +144,14 @@ const CreateUserForm = () => {
         )
     })
 
-    const errClass = isError ? "errmsg" : "offscreen";
-    const validUserClass = !validUsername ? "incomplete" : "complete";
-    const validPwdClass = !validPassword ? "incomplete" : "complete";
-    const validRolesClass = !Boolean(roles.length) ? "incomplete" : "complete";
-
     const content = (
         <>
-            <p className={errClass}>{error.message}</p>
+            {/* <p className={errClass}>{error.message}</p> */}
+            <div className={errClass}>
+                {errors.map((err, index) => {
+                    return <p key={index}>{err.message}</p>
+                })}
+            </div>
 
             <form className="form" onSubmit={onSaveUserClicked}>
                 <div className="form-header">
@@ -114,7 +160,7 @@ const CreateUserForm = () => {
                         <button
                             className="icon-button"
                             title="Save"
-                            disabled={!canSave}
+                            // disabled={!canSave}
                         >
                             save new user
                             <i className="fa fa-floppy-o"></i>
