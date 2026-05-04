@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const Home = () => {
     const content = (
-        <section className="home">
+        <div className="home">
             <header>
                 <h1>Welcome to <span className="nowrap">
                     Dan D. Repairs!
@@ -26,7 +26,7 @@ const Home = () => {
             <footer>
                 <Link to="/login">Employee Login</Link>
             </footer>
-        </section>
+        </div>
     )
 
     return content;

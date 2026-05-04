@@ -155,7 +155,7 @@ a {
   white-space: nowrap;
 }
 
-.home {
+.home, .dash-page {
   min-height: 100vh;
   display: flex;
   flex-direction: column;

@@ -22,17 +22,17 @@ async function addNewUser(user, url = "http://localhost:5000/users") {
             data
         };
 
-    } catch (error) {
+    } catch (error) {0
         console.log(error);
     }
 }
 
 const CreateUserForm = () => {
     // const [username, setUsername] = useState("");
-    const [username, setUsername] = useState("user2");
+    const [username, setUsername] = useState("user4");
     const [validUsername, setValidUsername] = useState(true);
     // const [password, setPassword] = useState("");
-    const [password, setPassword] = useState("pass1232");
+    const [password, setPassword] = useState("pass1234");
     const [validPassword, setValidPassword] = useState(true);
     const [roles, setRoles] = useState(["Employee"]);
     const [isSuccess, setIsSuccess] = useState(false);
