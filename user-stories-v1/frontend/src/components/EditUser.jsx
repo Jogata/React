@@ -32,7 +32,6 @@ const EditUser = () => {
 
             if (Array.isArray(res)) {
                 const user = res.find(user => user._id == userId);
-                // console.log(user);
     
                 if (user) {
                     setExist(true);

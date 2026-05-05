@@ -1,8 +1,8 @@
 const Notes = () => {
-    const isLoading = true;
+    const isLoading = false;
     const isError = false;
     const error = {};
-    const isSuccess = false;
+    const isSuccess = true;
     const tableContent = [];
 
     let content;
