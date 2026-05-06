@@ -1,6 +1,26 @@
 import { useEffect, useState } from "react";
 import Loader from "./Loader";
 
+async function getAllNotes(url, onSuccess) {
+    try {
+        const res = await fetch(url);
+        console.log(res);
+    
+        const data = await res.json();
+        console.log("all notes: ", data);
+
+        if (res.ok) {
+            // setTimeout(() => {
+            //     onSuccess(data.data);
+            // }, 5000);
+            onSuccess(data.data);
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const Notes = () => {
     const [notes, setNotes] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -8,15 +28,27 @@ const Notes = () => {
     const error = {};
     const [isSuccess, setIsSuccess] = useState(false);
 
-    let content;
+    useEffect(() => {
+        setIsLoading(true);
+        getAllNotes("http://localhost:5000/notes", onSuccess);
 
-    if (isLoading) content = <Loader />
+        function onSuccess(data) {
+            setNotes(data);
+            setIsLoading(false);
+            setIsSuccess(true);
+        }
+    }, [])
 
-    if (isError) {
+    let content = <Loader />;
+    let tableContent = [];
+
+    if (isLoading) {
+        content = <Loader />
+    } else if (isError) {
         content = <p>{error.message}</p>
-    }
-
-    if (isSuccess) {
+    } else if (notes.length == 0) {
+        return <p>No notes found</p>
+    } else if (isSuccess) {
         content = (
             <table className="table notes">
                 <thead className="table-thead">
