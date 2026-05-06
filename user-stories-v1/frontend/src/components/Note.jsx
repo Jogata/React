@@ -11,7 +11,7 @@ const Note = ({ noteId }) => {
 
         const updated = new Date(note.updatedAt).toLocaleString("en-US", { day: "numeric", month: "long" });
 
-        const handleEdit = () => navigate(`/dash/notes/${noteId}`)
+        const handleEdit = () => navigate(`/dash/notes/${noteId}`);
 
         return (
             <tr className="table-row">
@@ -29,10 +29,10 @@ const Note = ({ noteId }) => {
                 <td className="table-cell">
                     <button
                         className="icon-button table-button"
-                        title="Create"
+                        title="Edit"
                         onClick={handleEdit}
                     >
-                        create note
+                        edit note
                         <i className="fa fa-pencil-square-o"></i>
                     </button>
                 </td>
