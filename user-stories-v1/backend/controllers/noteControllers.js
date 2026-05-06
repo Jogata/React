@@ -5,7 +5,7 @@ const getAllNotes = async (req, res) => {
     const notes = await Note.find().lean();
 
     if (!notes?.length) {
-        return res.status(400).json({ message: "No notes found" });
+        return res.status(204).json({ message: "No notes found", data: []});
     }
 
     const notesWithUser = await Promise.all(notes.map(async (note) => {
@@ -13,7 +13,7 @@ const getAllNotes = async (req, res) => {
         return { ...note, username: user.username };
     }))
 
-    res.json(notesWithUser);
+    res.json({ message: "", data: notesWithUser});
 }
 
 const createNewNote = async (req, res) => {

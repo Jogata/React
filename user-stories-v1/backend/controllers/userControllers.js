@@ -10,10 +10,6 @@ const getAllUsers = async (req, res) => {
         return res.status(400).json({ message: "No users found" });
     }
 
-    // setTimeout(() => {
-    //     res.json(users);
-    // }, 5000);
-
     res.json(users);
 }
 
@@ -112,15 +108,7 @@ const deleteUser = async (req, res) => {
             return res.status(400).json({ message: "User has assigned notes" });
         }
     
-        // const user = await User.findById(id).exec();
-    
-        // if (!user) {
-        //     return res.status(400).json({ message: "User not found" });
-        // }
-    
-        // const result = await user.deleteOne();
         const result = await User.findByIdAndDelete(id);
-        console.log(result);
     
         const reply = `Username ${result.username} with ID ${result._id} deleted`;
     

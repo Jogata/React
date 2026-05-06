@@ -1,15 +1,15 @@
+import { useEffect, useState } from "react";
 import Loader from "./Loader";
 
 const Notes = () => {
-    const isLoading = false;
+    const [notes, setNotes] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const isError = false;
     const error = {};
-    const isSuccess = true;
-    const tableContent = [];
+    const [isSuccess, setIsSuccess] = useState(false);
 
     let content;
 
-    // if (isLoading) content = <p>Loading...</p>
     if (isLoading) content = <Loader />
 
     if (isError) {

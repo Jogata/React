@@ -22,7 +22,7 @@ app.use("/", express.static(path.join(__dirname, "public")));
 
 app.use("/", require("./routes/root"));
 app.use("/users", require("./routes/userRoutes"));
-// app.use("/notes", require("./routes/noteRoutes"));
+app.use("/notes", require("./routes/noteRoutes"));
 
 app.use("/*splat", (req, res) => {
     res.status(404);
