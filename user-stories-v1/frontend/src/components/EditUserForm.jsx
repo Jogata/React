@@ -9,10 +9,8 @@ const PWD_REGEX = /^[A-z0-9!@#$%]{4,12}$/;
 const EditUserForm = ({ user }) => {
     const [username, setUsername] = useState(user.username);
     // const [username, setUsername] = useState("too long username - the input has to pulse");
-    // const [validUsername, setValidUsername] = useState(false);
     const [password, setPassword] = useState("");
     // const [password, setPassword] = useState("invalid password - the input has to pulse");
-    // const [validPassword, setValidPassword] = useState(false);
     const [roles, setRoles] = useState(user.roles);
     // const [roles, setRoles] = useState([]);
     const [active, setActive] = useState(user.active);
@@ -128,7 +126,6 @@ const EditUserForm = ({ user }) => {
     let canSave;
     const validUsername = USER_REGEX.test(username);
     const validPassword = PWD_REGEX.test(password);
-    // console.log("password =", validPassword );
 
     const errClass = (isError || isDelError) ? "errmsg" : "offscreen";        //TODO
     const validUserClass = !validUsername ? "invalid" : "valid";

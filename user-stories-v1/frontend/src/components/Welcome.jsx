@@ -19,7 +19,7 @@ const Welcome = () => {
 
             <p><Link to="/dash/notes">View techNotes</Link></p>
 
-            <p><Link to="/dash/notes/new">Add New techNote</Link></p>
+            <p><Link to="/dash/notes/create">Add New techNote</Link></p>
 
             <p><Link to="/dash/users/create">Add New User</Link></p>
 

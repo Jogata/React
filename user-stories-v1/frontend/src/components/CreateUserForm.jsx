@@ -28,13 +28,13 @@ async function addNewUser(user, url = "http://localhost:5000/users") {
 }
 
 const CreateUserForm = () => {
-    // const [username, setUsername] = useState("");
-    const [username, setUsername] = useState("user6");
-    // const [password, setPassword] = useState("");
-    const [password, setPassword] = useState("pass1236");
+    const [username, setUsername] = useState("");
+    // const [username, setUsername] = useState("user6");
+    const [password, setPassword] = useState("");
+    // const [password, setPassword] = useState("pass1236");
     const [roles, setRoles] = useState(["Employee"]);
     const [isSuccess, setIsSuccess] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);    // TOFIX
     const [errors, setErrors] = useState([]);
     const [messages, setMessages] = useState([]);
     const formSubmitedOnce = useRef(false);

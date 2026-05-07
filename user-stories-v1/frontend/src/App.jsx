@@ -7,6 +7,7 @@ import Users from "./components/Users";
 import CreateUserForm from "./components/CreateUserForm";
 import EditUser from "./components/EditUser";
 import DashLayout from "./components/DashLayout";
+import NewNote from "./components/NewNote";
 
 function App() {
   return (
@@ -17,10 +18,13 @@ function App() {
 
         <Route path="/dash" element={<DashLayout />}>
           <Route index element={<Welcome />} />
-          <Route path="notes" element={<Notes />} />
+
           <Route path="users" element={<Users />} />
           <Route path="users/create" element={<CreateUserForm />} />
           <Route path="users/:userId" element={<EditUser />} />
+          
+          <Route path="notes" element={<Notes />} />
+          <Route path="notes/create" element={<NewNote />} />
         </Route>
       </Routes>
     </>

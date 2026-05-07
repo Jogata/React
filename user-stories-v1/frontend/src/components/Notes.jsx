@@ -4,15 +4,12 @@ import Loader from "./Loader";
 async function getAllNotes(url, onSuccess) {
     try {
         const res = await fetch(url);
-        console.log(res);
+        // console.log(res);
     
         const data = await res.json();
         console.log("all notes: ", data);
 
         if (res.ok) {
-            // setTimeout(() => {
-            //     onSuccess(data.data);
-            // }, 5000);
             onSuccess(data.data);
         }
 
@@ -40,8 +37,7 @@ const Notes = () => {
     }, [])
 
     let content = <Loader />;
-    let tableContent = [];
-
+    
     if (isLoading) {
         content = <Loader />
     } else if (isError) {
@@ -49,6 +45,8 @@ const Notes = () => {
     } else if (notes.length == 0) {
         return <p>No notes found</p>
     } else if (isSuccess) {
+        let tableContent = [];
+        
         content = (
             <table className="table notes">
                 <thead className="table-thead">
