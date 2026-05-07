@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import CreateNoteForm from "./CreateNoteForm";
 import Loader from "./Loader";
 
 async function getAllUsers(url, onSuccess) {
@@ -18,7 +19,6 @@ async function getAllUsers(url, onSuccess) {
 }
 
 const NewNote = () => {
-    // const users = [];
     const [users, setUsers] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     // const [isSuccess, setIsSuccess] = useState(false);
@@ -38,15 +38,9 @@ const NewNote = () => {
 
     if (!users?.length) return <p>Not Currently Available</p>
 
-    const content = <NewNoteForm users={users} />
+    const content = <CreateNoteForm users={users} />
 
     return content;
-}
-
-const NewNoteForm = ({ users }) => {
-    return (
-        <h1>New Note Form</h1>
-    )
 }
 
 export default NewNote;

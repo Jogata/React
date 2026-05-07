@@ -6,16 +6,20 @@ import { Link } from "react-router-dom";
 async function getAllUsers(url, onSuccess) {
     try {
         const res = await fetch(url);
+        console.log(res.ok);
     
         const data = await res.json();
-        console.log("all users: ", data);
+        console.log("all users: ", data.data);
 
         if (res.ok) {
-            onSuccess(data);
+            onSuccess(data.data);
+        } else {
+            throw new Error(data);
         }
 
     } catch (error) {
-        console.log(error);
+        // console.log(error);
+        onFail(error);
     }
 }
 
@@ -34,12 +38,18 @@ const Users = () => {
 
     useEffect(() => {
         setIsLoading(true);
-        getAllUsers("http://localhost:5000/users", onSuccess);
+        getAllUsers("http://localhost:5000/users", onSuccess, onFail);
 
         function onSuccess(data) {
             setUsers(data);
             setIsLoading(false);
             setIsSuccess(true);
+        }
+
+        function onFail(err) {
+            console.log(err.message);
+            setIsLoading(false);
+            setIsSuccess(false);
         }
     }, [])
 
@@ -57,7 +67,8 @@ const Users = () => {
                 <User user={user} key={user._id} />
             ))
         ) : (
-            <p>no users to display</p>
+            // <p>no users to display</p>
+            <EmptyRow />
         )
 
         content = (
@@ -90,6 +101,14 @@ const Users = () => {
     }
 
     return content;
+}
+
+const EmptyRow = () => {
+    return (
+        <tr className="empty-row">
+            <td colSpan="3">No users to display</td>
+        </tr>
+    )
 }
 
 export default Users;

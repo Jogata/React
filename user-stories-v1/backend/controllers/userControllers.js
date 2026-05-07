@@ -7,10 +7,10 @@ const getAllUsers = async (req, res) => {
     const users = await User.find().select("-password").lean();
 
     if (!users?.length) {
-        return res.status(400).json({ message: "No users found" });
+        return res.status(200).json({ message: "No users found", data: [] });
     }
 
-    res.json(users);
+    res.json({data: users});
 }
 
 const createNewUser = async (req, res) => {

@@ -28,10 +28,10 @@ async function addNewUser(user, url = "http://localhost:5000/users") {
 }
 
 const CreateUserForm = () => {
-    const [username, setUsername] = useState("");
-    // const [username, setUsername] = useState("user6");
-    const [password, setPassword] = useState("");
-    // const [password, setPassword] = useState("pass1236");
+    // const [username, setUsername] = useState("");
+    const [username, setUsername] = useState("user5");
+    // const [password, setPassword] = useState("");
+    const [password, setPassword] = useState("pass1235");
     const [roles, setRoles] = useState(["Employee"]);
     const [isSuccess, setIsSuccess] = useState(false);
     const [isLoading, setIsLoading] = useState(false);    // TOFIX
@@ -81,14 +81,14 @@ const CreateUserForm = () => {
 
     const onSaveUserClicked = async (e) => {
         e.preventDefault();
-        console.log("create user clicked");
+        // console.log("create user clicked");
         if (isLoading) {
-            setErrors([{message: "A new user is created in the moment"}]);
+            setErrors([{message: "A new user is being created right now"}]);
         } else {
             formSubmitedOnce.current = true;
 
             if (canSave) {
-                console.log("create new user req sended");
+                // console.log("create new user req sended");
                 setErrors([]);
                 const res = await addNewUser({ username, password, roles });
                 console.log(res);
@@ -96,14 +96,14 @@ const CreateUserForm = () => {
                     setIsSuccess(true);
                     setMessages([res.data]);
                     formSubmitedOnce.current = false;
-                    console.log(formSubmitedOnce.current);
+                    // console.log(formSubmitedOnce.current);
                 } else {
                     console.log("server errors");
                     setIsSuccess(false);
                     setErrors([res.data]);
                 }
             } else {
-                console.log("fix the form");
+                // console.log("fix the form");
                 setMessages([]);
                 setIsSuccess(false);
                 const formErrors = [];

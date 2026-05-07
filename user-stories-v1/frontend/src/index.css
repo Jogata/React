@@ -162,22 +162,13 @@ a {
   right: 2%;
   max-width: fit-content;
   margin-left: auto;
-  /* display: inline-block; */
-  /* margin-bottom: 0.5rem; */
-  /* padding: 0.5rem 1rem 0; */
-  /* color: var(--ERROR); */
   color: var(--COLOR);
-  /* border-radius: 6px; */
-  /* border: 1px solid; */
-  /* background-color: var(--TABLE-BGCOLOR); */
-  /* background-color: var(--ERROR); */
 }
 
 .messages p {
   margin-bottom: 0.5rem;
   padding: 0.5rem 1rem;
   border-radius: 6px;
-  /* background-color: var(--TABLE-BGCOLOR); */
 }
 
 .messages .errmsg p {
@@ -280,6 +271,11 @@ main {
   background-color: transparent;
 }
 
+.form-input.textarea {
+  padding: 0.5em;
+  border-radius: 6px;
+}
+
 .form-input.valid, 
 .form-select.valid {
   border: 1px solid var(--STATUS-COMPLETE);
@@ -290,15 +286,10 @@ main {
   outline: 2px solid transparent;
   border: 2px solid var(--STATUS-OPEN);
   animation: pulsing-border 1s linear infinite;
-  /* border-color: transparent; */
 }
 
 @keyframes pulsing-border {
-  /* 0%, 100% {
-    border: 1px solid var(--STATUS-OPEN);
-  } */
   50% {
-    /* border-color: transparent; */
     outline: 2px solid var(--STATUS-OPEN);
   }
 }
@@ -359,6 +350,17 @@ th,
 td {
   padding: 0.5rem 1rem;
   border: 1px solid rgb(160 160 160);
+}
+
+.empty-row {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.empty-row td {
+  /* width: 100%; */
+  padding: 1em 2%;
 }
 
 .new-user-row th {
