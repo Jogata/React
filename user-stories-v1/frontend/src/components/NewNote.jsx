@@ -28,7 +28,7 @@ const NewNote = () => {
         getAllUsers("http://localhost:5000/users", onSuccess);
 
         function onSuccess(data) {
-            setUsers(data);
+            setUsers(data.data);
             setIsLoading(false);
             // setIsSuccess(true);
         }
@@ -37,6 +37,11 @@ const NewNote = () => {
     if (isLoading) return <Loader />
 
     if (!users?.length) return <p>Not Currently Available</p>
+    // if (!users?.length) {
+    //     console.log(users);
+    //     return <p>Not Currently Available</p>
+    // }
+    
 
     const content = <CreateNoteForm users={users} />
 

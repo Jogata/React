@@ -6,11 +6,11 @@ const getAllNotes = async (req, res) => {
         const notes = await Note.find().lean();
 
         if (!notes?.length) {
-            setTimeout(() => {
-                res.status(200).json({ message: "No notes found", data: []});
-            }, 5000);
-            return;
-            // return res.status(200).json({ message: "No notes found", data: []});
+            // setTimeout(() => {
+            //     res.status(200).json({ message: "No notes found", data: []});
+            // }, 5000);
+            // return;
+            return res.status(200).json({ message: "No notes found", data: []});
         }
     
         const notesWithUser = await Promise.all(notes.map(async (note) => {
@@ -18,11 +18,11 @@ const getAllNotes = async (req, res) => {
             return { ...note, username: user.username };
         }))
     
-        setTimeout(() => {
-            res.json({ message: "", data: notesWithUser});
-        }, 5000);
+        // setTimeout(() => {
+        //     res.json({ message: "", data: notesWithUser});
+        // }, 5000);
     
-        // res.json({ message: "", data: notesWithUser});    
+        res.json({ message: "", data: notesWithUser});    
     } catch (error) {
         console.log(error.message);
     }
@@ -30,6 +30,25 @@ const getAllNotes = async (req, res) => {
 
 const createNewNote = async (req, res) => {
     console.log("todo createNewNote");
+    const { user, title, text } = req.body;
+
+    if (!user || !title || !text) {
+        return res.status(400).json({ message: "All fields are required" });
+    }
+    
+    const duplicate = await Note.findOne({ title }).lean().exec();
+    
+    if (duplicate) {
+        return res.status(409).json({ message: "Duplicate note title" });
+    }
+    
+    const note = await Note.create({ user, title, text });
+    
+    if (note) {
+        return res.status(201).json({ message: "New note created" });
+    } else {
+        return res.status(400).json({ message: "Invalid note data received" });
+    }    
 }
 
 const updateNote = async (req, res) => {

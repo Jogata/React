@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const addNewNote = async () => {
+const addNewNote = async (note, url = "http://localhost:5000/notes") => {
     console.log("todo addNewNote");
 }
 
@@ -12,7 +12,7 @@ const CreateNoteForm = ({ users }) => {
         isError,
         error
     } = {
-        isLoading: true,
+        isLoading: false,
         isSuccess: false,
         isError: false,
         error: []
@@ -24,7 +24,7 @@ const CreateNoteForm = ({ users }) => {
     const [title, setTitle] = useState("test note 1");
     // const [text, setText] = useState("");
     const [text, setText] = useState("text for test note 1");
-    const [userId, setUserId] = useState(users[0].id);
+    const [userId, setUserId] = useState(users[0]._id);
 
     useEffect(() => {
         // TOFIX
@@ -41,12 +41,12 @@ const CreateNoteForm = ({ users }) => {
     const onUserIdChanged = e => setUserId(e.target.value);
 
     const canSave = [title, text, userId].every(Boolean) && !isLoading;
+    console.log(title, text, userId, canSave);
 
     const onSaveNoteClicked = async (e) => {
         e.preventDefault();
-        console.log("submitted");
         if (canSave) {
-            await addNewNote({ user: userId, title, text });
+            const res = await addNewNote({ user: userId, title, text });
         }
     }
 
