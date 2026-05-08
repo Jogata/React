@@ -363,17 +363,17 @@ td {
   padding: 1em 2%;
 }
 
-.new-user-row th {
+.create-row th {
   text-align: right;
   border-right: 1px solid transparent;
 }
 
-.new-user-row td {
+.create-row td {
   text-align: center;
   border-left: 1px solid transparent;
 }
 
-.new-user-row td button:hover i {
+.create-row td button:hover i {
   color: #78e778;
 }
 

@@ -67,7 +67,6 @@ const Users = () => {
                 <User user={user} key={user._id} />
             ))
         ) : (
-            // <p>no users to display</p>
             <EmptyRow />
         )
 
@@ -82,7 +81,7 @@ const Users = () => {
                 </thead>
                 <tbody>
                     {tableContent}
-                    <tr className="new-user-row">
+                    <tr className="create-row">
                         <th scope="row" colSpan="2">Create new user</th>
                         <td>
                             <Link 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Loader from "./Loader";
+import { Link } from "react-router-dom";
 
 async function getAllNotes(url, onSuccess) {
     try {
@@ -30,7 +31,8 @@ const Notes = () => {
         getAllNotes("http://localhost:5000/notes", onSuccess);
 
         function onSuccess(data) {
-            setNotes(data);
+            // setNotes(data);
+            setNotes([]);
             setIsLoading(false);
             setIsSuccess(true);
         }
@@ -42,10 +44,13 @@ const Notes = () => {
         content = <Loader />
     } else if (isError) {
         content = <p>{error.message}</p>
-    } else if (notes.length == 0) {
-        return <p>No notes found</p>
-    } else if (isSuccess) {
-        let tableContent = [];
+    } 
+    // else if (notes.length == 0) {
+    //     return <p>No notes found</p>
+    // } 
+    else if (isSuccess) {
+        // let tableContent = <EmptyRow />;
+        const tableContent = notes.length ? <TableRows notes={notes} /> : <EmptyRow />
         
         content = (
             <table className="table notes">
@@ -61,12 +66,46 @@ const Notes = () => {
                 </thead>
                 <tbody>
                     {tableContent}
+                    <tr className="create-row">
+                        <th scope="row" colSpan="5">Create new note</th>
+                        <td>
+                            <Link 
+                                to="/dash/notes/create"
+                                className="icon-button"
+                                title="Create new note"
+                            >
+                                Create new note
+                                <i className="fa fa-file-text-o"></i>
+                            </Link>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         )
     }
 
     return content;
+}
+
+const EmptyRow = () => {
+    return (
+        <tr className="empty-row">
+            <td colSpan="6">No notes to display</td>
+        </tr>
+    )
+}
+
+const TableRows = ({ notes }) => {
+    const tableContent = notes.map(note => {
+        return (
+            <tr key={note._id}>
+                <th>{note.title}</th>
+                <td>{note.text}</td>
+            </tr>
+        )
+    })
+
+    return tableContent;
 }
 
 export default Notes;

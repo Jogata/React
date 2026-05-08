@@ -40,9 +40,9 @@ const CreateNoteForm = ({ users }) => {
     const navigate = useNavigate();
 
     // const [title, setTitle] = useState("");
-    const [title, setTitle] = useState("test note 1");
+    const [title, setTitle] = useState("test note 2");
     // const [text, setText] = useState("");
-    const [text, setText] = useState("text for test note 1");
+    const [text, setText] = useState("text for test note 2");
     const [userId, setUserId] = useState(users[0]._id);
 
     useEffect(() => {

@@ -41,7 +41,6 @@ const NewNote = () => {
     //     console.log(users);
     //     return <p>Not Currently Available</p>
     // }
-    
 
     const content = <CreateNoteForm users={users} />
 
