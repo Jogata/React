@@ -2,7 +2,26 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const addNewNote = async (note, url = "http://localhost:5000/notes") => {
-    console.log("todo addNewNote");
+    // console.log("todo addNewNote");
+    try {
+        const res = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(note),
+        });
+
+        const data = await res.json();
+
+        return {
+            success: res.ok,
+            data
+        };
+
+    } catch (error) {
+        console.log(error.message);
+    }
 }
 
 const CreateNoteForm = ({ users }) => {
@@ -45,8 +64,13 @@ const CreateNoteForm = ({ users }) => {
 
     const onSaveNoteClicked = async (e) => {
         e.preventDefault();
+        // console.log("submitted");
         if (canSave) {
+            // console.log("submitted");
             const res = await addNewNote({ user: userId, title, text });
+            console.log(res);
+            // const data = await res.json();
+            // console.log(data);
         }
     }
 
