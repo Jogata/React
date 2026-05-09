@@ -1,17 +1,17 @@
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
-const Note = ({ noteId }) => {
+import { Link } from "react-router-dom";
 
-    const note = null;
-
-    const navigate = useNavigate();
+const Note = ({ note }) => {
+    // const note = null;
+    // const navigate = useNavigate();
 
     if (note) {
         const created = new Date(note.createdAt).toLocaleString("en-US", { day: "numeric", month: "long" });
 
         const updated = new Date(note.updatedAt).toLocaleString("en-US", { day: "numeric", month: "long" });
 
-        const handleEdit = () => navigate(`/dash/notes/${noteId}`);
+        // const handleEdit = () => navigate(`/dash/notes/${note}`);
 
         return (
             <tr className="table-row">
@@ -27,14 +27,23 @@ const Note = ({ noteId }) => {
                 <td className="table-cell note-username">{note.username}</td>
 
                 <td className="table-cell">
-                    <button
+                    <Link
+                        to={`/dash/notes/${note._id}`} 
+                        className="icon-button table-button"
+                        title="Edit"
+                        // onClick={handleEdit}
+                    >
+                        edit note
+                        <i className="fa fa-pencil-square-o"></i>
+                    </Link>
+                    {/* <button
                         className="icon-button table-button"
                         title="Edit"
                         onClick={handleEdit}
                     >
                         edit note
                         <i className="fa fa-pencil-square-o"></i>
-                    </button>
+                    </button> */}
                 </td>
             </tr>
         )

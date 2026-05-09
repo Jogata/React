@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Loader from "./Loader";
 import { Link } from "react-router-dom";
+import Note from "./Note";
 
 async function getAllNotes(url, onSuccess) {
     try {
@@ -31,8 +32,8 @@ const Notes = () => {
         getAllNotes("http://localhost:5000/notes", onSuccess);
 
         function onSuccess(data) {
-            // setNotes(data);
-            setNotes([]);
+            setNotes(data);
+            // setNotes([]);
             setIsLoading(false);
             setIsSuccess(true);
         }
@@ -44,12 +45,7 @@ const Notes = () => {
         content = <Loader />
     } else if (isError) {
         content = <p>{error.message}</p>
-    } 
-    // else if (notes.length == 0) {
-    //     return <p>No notes found</p>
-    // } 
-    else if (isSuccess) {
-        // let tableContent = <EmptyRow />;
+    } else if (isSuccess) {
         const tableContent = notes.length ? <TableRows notes={notes} /> : <EmptyRow />
         
         content = (
@@ -98,10 +94,11 @@ const EmptyRow = () => {
 const TableRows = ({ notes }) => {
     const tableContent = notes.map(note => {
         return (
-            <tr key={note._id}>
-                <th>{note.title}</th>
-                <td>{note.text}</td>
-            </tr>
+            // <tr key={note._id}>
+            //     <th>{note.title}</th>
+            //     <td>{note.text}</td>
+            // </tr>
+            <Note note={note} key={note._id} />
         )
     })
 

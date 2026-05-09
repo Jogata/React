@@ -8,6 +8,7 @@ import CreateUserForm from "./components/CreateUserForm";
 import EditUser from "./components/EditUser";
 import DashLayout from "./components/DashLayout";
 import NewNote from "./components/NewNote";
+import CreateNoteForm from "./components/CreateNoteForm";
 
 function App() {
   return (
@@ -22,9 +23,10 @@ function App() {
           <Route path="users" element={<Users />} />
           <Route path="users/create" element={<CreateUserForm />} />
           <Route path="users/:userId" element={<EditUser />} />
-          
+
           <Route path="notes" element={<Notes />} />
           <Route path="notes/create" element={<NewNote />} />
+          <Route path="notes/:id" element={<CreateNoteForm />} />
         </Route>
       </Routes>
     </>
