@@ -12,47 +12,65 @@ const addNewNote = async (note, url = "http://localhost:5000/notes") => {
         });
 
         const data = await res.json();
+        console.log(data);
 
-        return {
-            success: res.ok,
-            data
-        };
+        // return data;
+
+        if (res.ok) {
+            return { success: true, data };
+        } else {
+            return {success: false, data};
+        }
+
+        // return {
+        //     success: res.ok,
+        //     data
+        // };
 
     } catch (error) {
-        console.log(error.message);
+        console.log(error);
+        // return error;
     }
 }
 
 const CreateNoteForm = ({ users }) => {
     const {
-        isLoading,
-        isSuccess,
-        isError,
-        error
+        // isLoading,
+        // isSuccess,
+        // isError,
+        // error
     } = {
-        isLoading: false,
-        isSuccess: false,
-        isError: false,
-        error: []
+        // isLoading: false,
+        // isSuccess: false,
+        // isError: false,
+        // error: []
     }
 
     const navigate = useNavigate();
 
     // const [title, setTitle] = useState("");
-    const [title, setTitle] = useState("test note 3");
+    const [title, setTitle] = useState("test note 11");
     // const [text, setText] = useState("");
-    const [text, setText] = useState("text for test note 3");
+    const [text, setText] = useState("text for test note 11");
     const [userId, setUserId] = useState(users[0]._id);
+    // const [isSuccess, setIsSuccess] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);    // TOFIX
+    const [errors, setErrors] = useState([]);
+    const [messages, setMessages] = useState([]);
 
     useEffect(() => {
         // TOFIX
-        if (isSuccess) {
+        // if (isSuccess) {
+            console.log("start reset form", messages.length);
+        if (messages.length) {
+            console.log("reset form");
             setTitle("");
             setText("");
-            setUserId("");
+            setUserId(users[0]._id);
             // navigate("/dash/notes");
         }
-    }, [isSuccess, navigate])
+    // }, [isSuccess, navigate])
+    }, [messages, navigate])
 
     const onTitleChanged = e => setTitle(e.target.value);
     const onTextChanged = e => setText(e.target.value);
@@ -67,7 +85,19 @@ const CreateNoteForm = ({ users }) => {
         if (canSave) {
             // console.log("submitted");
             const res = await addNewNote({ user: userId, title, text });
-            console.log(res);
+            if (res.success) {
+                console.log("if success", res);
+                setIsLoading(false);
+                // setIsSuccess(true);
+                setMessages([res.data.message]);
+                setErrors([]);
+            } else {
+                console.log("else fail", res);
+                setIsLoading(false);
+                // setIsSuccess(false);
+                setMessages([]);
+                setErrors([res.data.message]);
+            }
         }
     }
 
@@ -82,13 +112,31 @@ const CreateNoteForm = ({ users }) => {
         )
     })
 
-    const errClass = isError ? "errmsg" : "offscreen"
+    // const errClass = isError ? "errmsg" : "offscreen";
+    const errClass = errors.length ? "errmsg" : "offscreen";
+    const messagesClass = messages.length ? "successmsg" : "offscreen";
     const validTitleClass = !title ? "invalid" : "valid";
     const validTextClass = !text ? "invalid" : "valid";
 
     const content = (
         <>
-            <p className={errClass}>{error?.data?.message}</p>
+            <div className="messages">
+                {/* <p className={errClass}>{error?.data?.message}</p> */}
+                <div className={errClass}>
+                    {errors.map((err, index) => {
+                        return (
+                            <p key={index}>{err}</p>
+                        )
+                    })}
+                </div>
+                <div className={messagesClass}>
+                    {messages.map((message, index) => {
+                        return (
+                            <p key={index}>{message}</p>
+                        )
+                    })}
+                </div>
+            </div>
 
             <form className="form" onSubmit={onSaveNoteClicked}>
                 <div className="form-header">

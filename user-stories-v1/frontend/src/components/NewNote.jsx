@@ -23,6 +23,7 @@ const NewNote = () => {
     const [users, setUsers] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     // const [isSuccess, setIsSuccess] = useState(false);
+    // const [isError, setIsError] = useState(false);              TODO
 
     useEffect(() => {
         setIsLoading(true);
