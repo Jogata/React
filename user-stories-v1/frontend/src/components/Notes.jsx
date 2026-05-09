@@ -52,7 +52,7 @@ const Notes = () => {
             <table className="table notes">
                 <thead className="table-thead">
                     <tr>
-                        <th className="table-th note-status">Username</th>
+                        <th className="table-th note-status">Status</th>
                         <th className="table-th note-created">Created</th>
                         <th className="table-th note-updated">Updated</th>
                         <th className="table-th note-title">Title</th>

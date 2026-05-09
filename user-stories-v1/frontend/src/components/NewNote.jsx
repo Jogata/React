@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import CreateNoteForm from "./CreateNoteForm";
 import Loader from "./Loader";
+import { Link } from "react-router-dom";
 
 async function getAllUsers(url, onSuccess) {
     try {
@@ -29,6 +30,7 @@ const NewNote = () => {
 
         function onSuccess(data) {
             setUsers(data.data);
+            // setUsers([])
             setIsLoading(false);
             // setIsSuccess(true);
         }
@@ -36,15 +38,27 @@ const NewNote = () => {
 
     if (isLoading) return <Loader />
 
-    if (!users?.length) return <p>Not Currently Available</p>
-    // if (!users?.length) {
-    //     console.log(users);
-    //     return <p>Not Currently Available</p>
-    // }
+    if (!users?.length) return <NotAvailableSection />
 
     const content = <CreateNoteForm users={users} />
 
     return content;
+}
+
+const NotAvailableSection = () => {
+    return (
+        <section className="not-available-section">
+            <h1>Not Currently Available</h1>
+            <div className="links">
+                <Link to="/dash/users/create" className="redirect-link">
+                    Create New User
+                </Link>
+                <Link to="/dash" className="redirect-link">
+                    Dashboard
+                </Link>
+            </div>
+        </section>
+    )
 }
 
 export default NewNote;

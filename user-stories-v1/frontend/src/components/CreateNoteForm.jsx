@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const addNewNote = async (note, url = "http://localhost:5000/notes") => {
-    // console.log("todo addNewNote");
     try {
         const res = await fetch(url, {
             method: "POST",
@@ -40,9 +39,9 @@ const CreateNoteForm = ({ users }) => {
     const navigate = useNavigate();
 
     // const [title, setTitle] = useState("");
-    const [title, setTitle] = useState("test note 2");
+    const [title, setTitle] = useState("test note 3");
     // const [text, setText] = useState("");
-    const [text, setText] = useState("text for test note 2");
+    const [text, setText] = useState("text for test note 3");
     const [userId, setUserId] = useState(users[0]._id);
 
     useEffect(() => {
@@ -69,8 +68,6 @@ const CreateNoteForm = ({ users }) => {
             // console.log("submitted");
             const res = await addNewNote({ user: userId, title, text });
             console.log(res);
-            // const data = await res.json();
-            // console.log(data);
         }
     }
 

@@ -10,7 +10,7 @@ const User = ({ user }) => {
             <tr className="table-row user">
                 <td className={`table-cell ${cellStatus}`}>{user.username}</td>
                 <td className={`table-cell ${cellStatus}`}>{userRolesString}</td>
-                <td className={`table-cell user-edit ${cellStatus}`}>
+                <td className={`table-cell edit-col ${cellStatus}`}>
                     <Link
                         to={`/dash/users/${user._id}`}
                         className="icon-button table-button"

@@ -26,7 +26,7 @@ function App() {
 
           <Route path="notes" element={<Notes />} />
           <Route path="notes/create" element={<NewNote />} />
-          <Route path="notes/:id" element={<CreateNoteForm />} />
+          <Route path="notes/edit/:id" element={<CreateNoteForm />} />
         </Route>
       </Routes>
     </>

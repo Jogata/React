@@ -1,17 +1,11 @@
-// import { useNavigate } from "react-router-dom";
-
 import { Link } from "react-router-dom";
 
 const Note = ({ note }) => {
-    // const note = null;
-    // const navigate = useNavigate();
-
     if (note) {
-        const created = new Date(note.createdAt).toLocaleString("en-US", { day: "numeric", month: "long" });
-
-        const updated = new Date(note.updatedAt).toLocaleString("en-US", { day: "numeric", month: "long" });
-
-        // const handleEdit = () => navigate(`/dash/notes/${note}`);
+        const created = new Date(note.createdAt)
+            .toLocaleString("en-US", { day: "numeric", month: "long" });
+        const updated = new Date(note.updatedAt)
+            .toLocaleString("en-US", { day: "numeric", month: "long" });
 
         return (
             <tr className="table-row">
@@ -26,24 +20,15 @@ const Note = ({ note }) => {
                 <td className="table-cell note-title">{note.title}</td>
                 <td className="table-cell note-username">{note.username}</td>
 
-                <td className="table-cell">
+                <td className="table-cell edit-col">
                     <Link
-                        to={`/dash/notes/${note._id}`} 
+                        to={`/dash/notes/edit/${note._id}`} 
                         className="icon-button table-button"
                         title="Edit"
-                        // onClick={handleEdit}
                     >
                         edit note
                         <i className="fa fa-pencil-square-o"></i>
                     </Link>
-                    {/* <button
-                        className="icon-button table-button"
-                        title="Edit"
-                        onClick={handleEdit}
-                    >
-                        edit note
-                        <i className="fa fa-pencil-square-o"></i>
-                    </button> */}
                 </td>
             </tr>
         )
