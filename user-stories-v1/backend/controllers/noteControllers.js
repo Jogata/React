@@ -29,7 +29,7 @@ const getAllNotes = async (req, res) => {
 }
 
 const createNewNote = async (req, res) => {
-    console.log("todo createNewNote");
+    // console.log("todo createNewNote");
     const { user, title, text } = req.body;
 
     if (!user || !title || !text) {

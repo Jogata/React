@@ -40,6 +40,7 @@ const EditUser = () => {
                     setExist(false);
                 }
             } else {
+                // TODO
                 setExist(false);
             }
         }
@@ -49,7 +50,7 @@ const EditUser = () => {
         return <UserDoesntExist id={userId} />;
     }
 
-    const content = user ? <EditUserForm user={user} /> : <Loader />
+    const content = user ? <EditUserForm user={user} /> : <Loader />;
 
     return content;
 }
