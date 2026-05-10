@@ -1,6 +1,32 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+const url = "http://localhost:5000/notes";
+
+const deleteNote = async (body) => {
+    console.log("deleteNote req sended");
+    try {
+        const res = await fetch(url, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
+        });
+
+        const data = await res.json();
+        
+        if (res.ok) {
+            console.log(data);
+            navigate("/dash/users");
+        } else {
+            console.log(data);
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const EditNoteForm = ({ note, users }) => {
     const {
         isLoading,
@@ -56,7 +82,9 @@ const EditNoteForm = ({ note, users }) => {
     }
 
     const onDeleteNoteClicked = async () => {
-        await deleteNote({ id: note.id });
+        console.log("delete note clicked");
+        const result = await deleteNote({ id: note.id });
+        console.log(result);
     }
 
     const created = new Date(note.createdAt)

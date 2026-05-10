@@ -56,7 +56,24 @@ const updateNote = async (req, res) => {
 }
 
 const deleteNote = async (req, res) => {
-    console.log("todo deleteNote");
+    // console.log("todo deleteNote");
+    const { id } = req.body;
+
+    if (!id) {
+        return res.status(400).json({ message: "Note ID required" });
+    }
+    
+    const note = await Note.findById(id).exec();
+    
+    if (!note) {
+        return res.status(400).json({ message: "Note not found" });
+    }
+    
+    const result = await note.deleteOne();
+    
+    const reply = `Note "${result.title}" with ID ${result._id} deleted`;
+    
+    res.json(reply);
 }
 
 module.exports = {
