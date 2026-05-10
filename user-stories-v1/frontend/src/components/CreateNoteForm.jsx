@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 const addNewNote = async (note, url = "http://localhost:5000/notes") => {
     try {
@@ -11,21 +11,16 @@ const addNewNote = async (note, url = "http://localhost:5000/notes") => {
             body: JSON.stringify(note),
         });
 
-        const data = await res.json();
-        console.log(data);
+        // return res;
 
-        // return data;
+        const data = await res.json();
+        // console.log(data);
 
         if (res.ok) {
             return { success: true, data };
         } else {
             return {success: false, data};
         }
-
-        // return {
-        //     success: res.ok,
-        //     data
-        // };
 
     } catch (error) {
         console.log(error);
@@ -34,26 +29,13 @@ const addNewNote = async (note, url = "http://localhost:5000/notes") => {
 }
 
 const CreateNoteForm = ({ users }) => {
-    const {
-        // isLoading,
-        // isSuccess,
-        // isError,
-        // error
-    } = {
-        // isLoading: false,
-        // isSuccess: false,
-        // isError: false,
-        // error: []
-    }
-
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     // const [title, setTitle] = useState("");
-    const [title, setTitle] = useState("test note 11");
+    const [title, setTitle] = useState("test note 13");
     // const [text, setText] = useState("");
-    const [text, setText] = useState("text for test note 11");
+    const [text, setText] = useState("text for test note 14");
     const [userId, setUserId] = useState(users[0]._id);
-    // const [isSuccess, setIsSuccess] = useState(false);
     const [isLoading, setIsLoading] = useState(false);    // TOFIX
     const [errors, setErrors] = useState([]);
     const [messages, setMessages] = useState([]);
@@ -61,43 +43,47 @@ const CreateNoteForm = ({ users }) => {
     useEffect(() => {
         // TOFIX
         // if (isSuccess) {
-            console.log("start reset form", messages.length);
+            // console.log("start reset form", messages.length);
         if (messages.length) {
-            console.log("reset form");
+            // console.log("reset form");
             setTitle("");
             setText("");
             setUserId(users[0]._id);
             // navigate("/dash/notes");
         }
     // }, [isSuccess, navigate])
-    }, [messages, navigate])
+    // }, [messages, navigate])
+    }, [messages])
 
     const onTitleChanged = e => setTitle(e.target.value);
     const onTextChanged = e => setText(e.target.value);
     const onUserIdChanged = e => setUserId(e.target.value);
 
     const canSave = [title, text, userId].every(Boolean) && !isLoading;
-    // console.log(title, text, userId, canSave);
 
     const onSaveNoteClicked = async (e) => {
         e.preventDefault();
-        // console.log("submitted");
+
+        const note = { user: userId, title, text };
+        const url = "http://localhost:5000/notes";
+
         if (canSave) {
-            // console.log("submitted");
-            const res = await addNewNote({ user: userId, title, text });
+            const res = await addNewNote(note, url);
+            // console.log(res);
+
             if (res.success) {
-                console.log("if success", res);
+                // console.log("if success", res);
                 setIsLoading(false);
-                // setIsSuccess(true);
                 setMessages([res.data.message]);
                 setErrors([]);
             } else {
-                console.log("else fail", res);
+                // console.log("else fail", res);
                 setIsLoading(false);
-                // setIsSuccess(false);
                 setMessages([]);
                 setErrors([res.data.message]);
             }
+        } else {
+            console.log("user must fix the form data");
         }
     }
 
@@ -112,7 +98,6 @@ const CreateNoteForm = ({ users }) => {
         )
     })
 
-    // const errClass = isError ? "errmsg" : "offscreen";
     const errClass = errors.length ? "errmsg" : "offscreen";
     const messagesClass = messages.length ? "successmsg" : "offscreen";
     const validTitleClass = !title ? "invalid" : "valid";
@@ -121,7 +106,6 @@ const CreateNoteForm = ({ users }) => {
     const content = (
         <>
             <div className="messages">
-                {/* <p className={errClass}>{error?.data?.message}</p> */}
                 <div className={errClass}>
                     {errors.map((err, index) => {
                         return (
@@ -145,7 +129,6 @@ const CreateNoteForm = ({ users }) => {
                         <button
                             className="icon-button"
                             title="Save"
-                            // disabled={!canSave}
                         >
                             save new note
                             <i className="fa fa-floppy-o"></i>

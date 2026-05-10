@@ -153,7 +153,7 @@ const EditUserForm = ({ user }) => {
                             className="icon-button"
                             title="Save"
                             onClick={onSaveUserClicked}
-                            disabled={!canSave}
+                            // disabled={!canSave}
                         >
                             save changes
                             <i className="fa fa-floppy-o"></i>
