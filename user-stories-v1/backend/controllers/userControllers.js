@@ -99,7 +99,7 @@ const deleteUser = async (req, res) => {
         const user = await User.findById(id).exec();
     
         if (!user) {
-            return res.status(400).json({ message: "User not found" });
+            return res.status(404).json({ message: "User not found" });
         }
     
         const note = await Note.findOne({ user: id }).lean().exec();
@@ -110,9 +110,9 @@ const deleteUser = async (req, res) => {
     
         const result = await User.findByIdAndDelete(id);
     
-        const reply = `Username ${result.username} with ID ${result._id} deleted`;
+        const message = `Username ${result.username} with ID ${result._id} deleted`;
     
-        res.json(reply);
+        res.status(200).json({message});
     } catch (error) {
         console.log(error);
     }

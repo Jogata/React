@@ -18,18 +18,13 @@ const getAllNotes = async (req, res) => {
             return { ...note, username: user.username };
         }))
     
-        // setTimeout(() => {
-        //     res.json({ message: "", data: notesWithUser});
-        // }, 5000);
-    
-        res.json({ message: "", data: notesWithUser});    
+        res.json({ data: notesWithUser });
     } catch (error) {
         console.log(error.message);
     }
 }
 
 const createNewNote = async (req, res) => {
-    // console.log("todo createNewNote");
     const { user, title, text } = req.body;
 
     if (!user || !title || !text) {
@@ -62,18 +57,22 @@ const deleteNote = async (req, res) => {
     if (!id) {
         return res.status(400).json({ message: "Note ID required" });
     }
+
+    if (!mongoose.isValidObjectId(id)) {
+        return res.status(400).json({ message: "Invalid note ID" });
+    }
     
     const note = await Note.findById(id).exec();
     
     if (!note) {
-        return res.status(400).json({ message: "Note not found" });
+        return res.status(404).json({ message: "Note not found" });
     }
     
-    const result = await note.deleteOne();
+    const result = await note.findByIdAndDelete();
     
-    const reply = `Note "${result.title}" with ID ${result._id} deleted`;
+    const message = `Note "${result.title}" with ID ${result._id} deleted`;
     
-    res.json(reply);
+    res.status(200).json({message});
 }
 
 module.exports = {

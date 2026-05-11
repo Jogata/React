@@ -11,8 +11,8 @@ async function getAllUsers(url, onSuccess) {
         console.log("all users: ", data);
 
         if (res.ok) {
-            // onSuccess(data);
-            onSuccess({data: []});
+            onSuccess(data);
+            // onSuccess({data: []});
             return data;
         }
 
@@ -41,17 +41,14 @@ const EditNote = () => {
     const { id } = useParams();
     const [users, setUsers] = useState([]);
     const [notes, setNotes] = useState([]);
-    // console.log(id);
 
     let note = null;
     if (notes.length) {
         note = notes.find(note => note._id == id);
         console.log(note);
     }
-    // const users = [];
 
     useEffect(() => {
-        // setIsLoading(true);
         setUpInitialData();
 
         async function setUpInitialData() {
@@ -64,16 +61,10 @@ const EditNote = () => {
 
             function onGetUsersSuccess(data) {
                 setUsers(data.data);
-                // setUsers([])
-                // setIsLoading(false);
-                // setIsSuccess(true);
             }
     
             function onGetNotesSuccess(data) {
                 setNotes(data.data);
-                // setUsers([])
-                // setIsLoading(false);
-                // setIsSuccess(true);
             }
         }
     }, [])
@@ -87,12 +78,6 @@ const EditNote = () => {
             content = <EditNoteForm note={note} users={users} />;
         }
     }
-
-    // const content = note && users.length ? (
-    //     <EditNoteForm note={note} users={users} />
-    // ) : (
-    //     <Loader />
-    // )
 
     return content;
 }
