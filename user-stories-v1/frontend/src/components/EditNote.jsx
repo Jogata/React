@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import EditNoteForm from "./EditNoteForm";
 import Loader from "./Loader";
 
@@ -11,7 +11,9 @@ async function getAllUsers(url, onSuccess) {
         console.log("all users: ", data);
 
         if (res.ok) {
-            onSuccess(data);
+            // onSuccess(data);
+            onSuccess({data: []});
+            return data;
         }
 
     } catch (error) {
@@ -50,32 +52,65 @@ const EditNote = () => {
 
     useEffect(() => {
         // setIsLoading(true);
-        getAllUsers("http://localhost:5000/users", onGetUsersSuccess);
-        getAllNotes("http://localhost:5000/notes", onGetNotesSuccess);
+        setUpInitialData();
 
-        function onGetUsersSuccess(data) {
-            setUsers(data.data);
-            // setUsers([])
-            // setIsLoading(false);
-            // setIsSuccess(true);
-        }
+        async function setUpInitialData() {
+            const res = await getAllUsers("http://localhost:5000/users", onGetUsersSuccess);
+            console.log(res);
 
-        function onGetNotesSuccess(data) {
-            setNotes(data.data);
-            // setUsers([])
-            // setIsLoading(false);
-            // setIsSuccess(true);
+            if (res.data.length) {
+                await getAllNotes("http://localhost:5000/notes", onGetNotesSuccess);
+            }
+
+            function onGetUsersSuccess(data) {
+                setUsers(data.data);
+                // setUsers([])
+                // setIsLoading(false);
+                // setIsSuccess(true);
+            }
+    
+            function onGetNotesSuccess(data) {
+                setNotes(data.data);
+                // setUsers([])
+                // setIsLoading(false);
+                // setIsSuccess(true);
+            }
         }
     }, [])
 
-    const content = note && users.length ? (
-        <EditNoteForm note={note} users={users} />
-    ) : (
-        // <p>Loading...</p>
-        <Loader />
-    )
+    let content = <Loader />;
+
+    if (users) {
+        if (users.length == 0) {
+            content = <NotAvailableSection />;
+        } else if (note) {
+            content = <EditNoteForm note={note} users={users} />;
+        }
+    }
+
+    // const content = note && users.length ? (
+    //     <EditNoteForm note={note} users={users} />
+    // ) : (
+    //     <Loader />
+    // )
 
     return content;
+}
+
+const NotAvailableSection = () => {
+    return (
+        <section className="not-available-section">
+            <h1>Not Currently Available</h1>
+            <div className="links">
+                <Link to="/dash/users/create" className="redirect-link">
+                    Create New User
+                </Link>
+                <Link to="/dash" className="redirect-link">
+                    Dashboard
+                </Link>
+            </div>
+        </section>
+    )
 }
 
 export default EditNote;
