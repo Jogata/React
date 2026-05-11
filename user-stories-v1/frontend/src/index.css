@@ -193,7 +193,7 @@ footer {
 main {
   position: relative;
   flex: 1;
-  padding: 1rem;
+  padding: 3rem 1rem;
   border-top: 2px solid var(--BORDER-COLOR);
   border-bottom: 2px solid var(--BORDER-COLOR);
 }

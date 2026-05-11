@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const url = "http://localhost:5000/notes";
 
 const deleteNote = async (body) => {
-    console.log("deleteNote req sended");
+    // console.log("deleteNote req sended");
     try {
         const res = await fetch(url, {
             method: "DELETE",
@@ -15,13 +15,26 @@ const deleteNote = async (body) => {
         });
 
         const data = await res.json();
+
+        const result = {
+            data, 
+            success: res.ok
+        };
         
-        if (res.ok) {
-            console.log(data);
-            navigate("/dash/users");
-        } else {
-            console.log(data);
-        }
+        // if (res.ok) {
+            // result.success = res.ok;
+            // result.data = data;
+            // console.log("ok", data);
+            // navigate("/dash/users");
+        // } else {
+            // result.success = res.ok;
+            // console.log(res.status, data);
+            // console.log(data);
+            // result.data = data;
+        // }
+
+        return result;
+
     } catch (error) {
         console.log(error);
     }
@@ -30,24 +43,26 @@ const deleteNote = async (body) => {
 const EditNoteForm = ({ note, users }) => {
     const {
         isLoading,
-        isSuccess,
-        isError,
-        error
+        // isSuccess,
+        // isError,
+        // error,
+        messages
     } = {
         isLoading: true, 
-        isSuccess: false,
-        isError: false, 
-        error: {}
+        // isSuccess: false,
+        // isError: false, 
+        // error: {},
+        messages: []
     }
 
     const {
-        isSuccess: isDelSuccess,
-        isError: isDelError,
-        error: delerror
+        // isSuccess: isDelSuccess,
+        // isError: isDelError,
+        // error: delerror
     } = {
-        isSuccess: false,
-        isError: false, 
-        error: {}
+        // isSuccess: false,
+        // isError: false, 
+        // error: {}
     }
 
     const navigate = useNavigate();
@@ -55,18 +70,22 @@ const EditNoteForm = ({ note, users }) => {
     const [title, setTitle] = useState(note.title);
     const [text, setText] = useState(note.text);
     const [completed, setCompleted] = useState(note.completed);
-    const [userId, setUserId] = useState(note.user);
+    const [userId, setUserId] = useState(note.username);
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [isError, setIsError] = useState(false);
+    const [errors, setErrors] = useState([]);
 
     useEffect(() => {
-
-        if (isSuccess || isDelSuccess) {
-            setTitle("");
-            setText("");
-            setUserId("");
+        // if (isSuccess || isDelSuccess) {
+        if (isSuccess) {
+            // setTitle("");
+            // setText("");
+            // setUserId("");
             // navigate("/dash/notes");
         }
 
-    }, [isSuccess, isDelSuccess, navigate])
+    // }, [isSuccess, isDelSuccess, navigate])
+    }, [isSuccess, navigate])
 
     const onTitleChanged = e => setTitle(e.target.value);
     const onTextChanged = e => setText(e.target.value);
@@ -82,9 +101,19 @@ const EditNoteForm = ({ note, users }) => {
     }
 
     const onDeleteNoteClicked = async () => {
-        console.log("delete note clicked");
+        // console.log("delete note clicked");
         const result = await deleteNote({ id: note.id });
-        console.log(result);
+        // console.log(result);
+        if (result.success) {
+            setIsSuccess(true);
+            setIsError(false);
+            setErrors([]);
+        } else {
+            // console.log(result.data.message);
+            setIsSuccess(false);
+            setIsError(true);
+            setErrors([result.data]);
+        }
     }
 
     const created = new Date(note.createdAt)
@@ -98,19 +127,19 @@ const EditNoteForm = ({ note, users }) => {
         })
 
     const updated = new Date(note.updatedAt)
-    .toLocaleString("en-US", { 
-        day: "numeric", 
-        month: "long", 
-        year: "numeric", 
-        hour: "numeric", 
-        minute: "numeric", 
-        second: "numeric" 
-    })
+        .toLocaleString("en-US", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric"
+        })
 
     const options = users.map(user => {
         return (
             <option
-                key={user.id}
+                key={user._id}
                 value={user.id}
             >
                 {user.username}
@@ -118,12 +147,13 @@ const EditNoteForm = ({ note, users }) => {
         )
     })
 
-    const errClass = (isError || isDelError) ? "errmsg" : "offscreen";
+    // const errClass = (isError || isDelError) ? "errmsg" : "offscreen";
+    const errClass = isError ? "errmsg" : "offscreen";
+    const successMsgClass = messages.length ? "successmsg" : "offscreen";
     const validTitleClass = !title ? "incomplete" : "";
     const validTextClass = !text ? "incomplete" : "";
 
-    const errContent = (error?.data?.message || delerror?.data?.message) ?? "";
-
+    // const errContent = (error?.data?.message || delerror?.data?.message) ?? "";
 
     const deleteButton = (
         <button
@@ -138,7 +168,21 @@ const EditNoteForm = ({ note, users }) => {
 
     const content = (
         <>
-            <p className={errClass}>{errContent}</p>
+            {/* <p className={errClass}>{errContent}</p> */}
+            <div className="messages">
+                <div className={errClass}>
+                    {errors.map((err, index) => {
+                        // console.log(err);
+                        return <p key={index}>{err.message}</p>
+                    })}
+                </div>
+
+                <div className={successMsgClass}>
+                    {messages.map((message, index) => {
+                        return <p key={index}>{message.message}</p>
+                    })}
+                </div>
+            </div>
 
             <form className="form" onSubmit={e => e.preventDefault()}>
                 <div className="form-title-row">
@@ -196,7 +240,8 @@ const EditNoteForm = ({ note, users }) => {
                         </label>
 
                         <label className="form-label form-checkbox-container" htmlFor="note-username">
-                            ASSIGNED TO:</label>
+                            ASSIGNED TO:
+                        </label>
                         <select
                             id="note-username"
                             name="username"
