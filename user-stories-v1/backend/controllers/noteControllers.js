@@ -80,6 +80,7 @@ const updateNote = async (req, res) => {
 const deleteNote = async (req, res) => {
     // console.log("todo deleteNote");
     const { id } = req.body;
+    console.log(id);
 
     if (!id) {
         return res.status(400).json({ message: "Note ID required" });
@@ -95,7 +96,8 @@ const deleteNote = async (req, res) => {
         return res.status(404).json({ message: "Note not found" });
     }
     
-    const result = await note.findByIdAndDelete();
+    const result = await Note.findByIdAndDelete(id);
+    // console.log(result);
     
     const message = `Note "${result.title}" with ID ${result._id} deleted`;
     

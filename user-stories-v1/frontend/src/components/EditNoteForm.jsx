@@ -14,26 +14,15 @@ const deleteNote = async (body) => {
             body: JSON.stringify(body),
         });
 
-        const data = await res.json();
+        // const data = await res.json();
 
-        const result = {
-            data, 
-            success: res.ok
-        };
-        
-        // if (res.ok) {
-            // result.success = res.ok;
-            // result.data = data;
-            // console.log("ok", data);
-            // navigate("/dash/users");
-        // } else {
-            // result.success = res.ok;
-            // console.log(res.status, data);
-            // console.log(data);
-            // result.data = data;
-        // }
+        // const result = {
+        //     data, 
+        //     success: res.ok
+        // };
 
-        return result;
+        // return result;
+        return res;
 
     } catch (error) {
         console.log(error);
@@ -46,13 +35,13 @@ const EditNoteForm = ({ note, users }) => {
         // isSuccess,
         // isError,
         // error,
-        messages
+        // messages
     } = {
         isLoading: true, 
         // isSuccess: false,
         // isError: false, 
         // error: {},
-        messages: []
+        // messages: []
     }
 
     const {
@@ -73,6 +62,7 @@ const EditNoteForm = ({ note, users }) => {
     const [userId, setUserId] = useState(note.username);
     const [isSuccess, setIsSuccess] = useState(false);
     const [isError, setIsError] = useState(false);
+    const [messages, setMessages] = useState([]);
     const [errors, setErrors] = useState([]);
 
     useEffect(() => {
@@ -102,17 +92,23 @@ const EditNoteForm = ({ note, users }) => {
 
     const onDeleteNoteClicked = async () => {
         // console.log("delete note clicked");
-        const result = await deleteNote({ id: note.id });
-        // console.log(result);
-        if (result.success) {
+        const res = await deleteNote({ id: note._id });
+        // const res = await deleteNote({id: "6a034d6c98a7ab393aee3236"});
+        // console.log(res);
+        const result = await res.json();
+        console.log(result);
+
+        if (res.ok) {
             setIsSuccess(true);
             setIsError(false);
+            setMessages([result]);
             setErrors([]);
         } else {
             // console.log(result.data.message);
             setIsSuccess(false);
             setIsError(true);
-            setErrors([result.data]);
+            setMessages([]);
+            setErrors([result]);
         }
     }
 
@@ -155,49 +151,55 @@ const EditNoteForm = ({ note, users }) => {
 
     // const errContent = (error?.data?.message || delerror?.data?.message) ?? "";
 
-    const deleteButton = (
-        <button
-            className="icon-button"
-            title="Delete"
-            onClick={onDeleteNoteClicked}
-        >
-            delete note
-            <i className="fa fa-trash-o"></i>
-        </button>
-    )
+    // const deleteButton = (
+    //     <button
+    //         className="icon-button delete-btn"
+    //         title="Delete"
+    //         onClick={onDeleteNoteClicked}
+    //     >
+    //         delete note
+    //         <i className="fa fa-trash-o"></i>
+    //     </button>
+    // )
 
     const content = (
         <>
-            {/* <p className={errClass}>{errContent}</p> */}
             <div className="messages">
                 <div className={errClass}>
                     {errors.map((err, index) => {
-                        // console.log(err);
                         return <p key={index}>{err.message}</p>
                     })}
                 </div>
 
                 <div className={successMsgClass}>
                     {messages.map((message, index) => {
+                        // console.log(message);
                         return <p key={index}>{message.message}</p>
                     })}
                 </div>
             </div>
 
             <form className="form" onSubmit={e => e.preventDefault()}>
-                <div className="form-title-row">
+                <div className="form-header">
                     <h2>Edit Note #{note.ticket}</h2>
                     <div className="form-action-buttons">
                         <button
                             className="icon-button"
                             title="Save"
                             onClick={onSaveNoteClicked}
-                            // disabled={!canSave}
                         >
                             save changes
                             <i className="fa fa-floppy-o"></i>
                         </button>
-                        {deleteButton}
+                        {/* {deleteButton} */}
+                        <button
+                            className="icon-button delete-btn"
+                            title="Delete"
+                            onClick={onDeleteNoteClicked}
+                        >
+                            delete note
+                            <i className="fa fa-trash-o"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -227,7 +229,10 @@ const EditNoteForm = ({ note, users }) => {
 
                 <div className="form-row">
                     <div className="form-divider">
-                        <label className="form-label form-checkbox-container" htmlFor="note-completed">
+                        <label 
+                            className="form-label form-checkbox-container" 
+                            htmlFor="note-completed"
+                        >
                             WORK COMPLETE:
                             <input
                                 className="form-checkbox"
@@ -239,7 +244,10 @@ const EditNoteForm = ({ note, users }) => {
                             />
                         </label>
 
-                        <label className="form-label form-checkbox-container" htmlFor="note-username">
+                        <label 
+                            className="form-label form-checkbox-container" 
+                            htmlFor="note-username"
+                        >
                             ASSIGNED TO:
                         </label>
                         <select

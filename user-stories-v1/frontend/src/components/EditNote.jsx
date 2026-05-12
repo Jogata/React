@@ -39,11 +39,11 @@ async function getAllNotes(url, onSuccess) {
 
 const EditNote = () => {
     const { id } = useParams();
-    const [users, setUsers] = useState([]);
-    const [notes, setNotes] = useState([]);
+    const [users, setUsers] = useState(null);
+    const [notes, setNotes] = useState(null);
 
     let note = null;
-    if (notes.length) {
+    if (notes) {
         note = notes.find(note => note._id == id);
         console.log(note);
     }
@@ -76,6 +76,8 @@ const EditNote = () => {
             content = <NotAvailableSection />;
         } else if (note) {
             content = <EditNoteForm note={note} users={users} />;
+        } else {
+            content = <NoteDoesntExist id={id} />;
         }
     }
 
@@ -95,6 +97,17 @@ const NotAvailableSection = () => {
                 </Link>
             </div>
         </section>
+    )
+}
+
+const NoteDoesntExist = ({ id }) => {
+    return (
+        <div className="invalid-user">
+            <p>
+                Note with id <span>{`${id}`}</span> doesn't exist
+            </p>
+            <Link to="/dash/notes">Browse All Notes</Link>
+        </div>
     )
 }
 
