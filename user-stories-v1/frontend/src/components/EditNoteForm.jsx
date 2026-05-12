@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 const url = "http://localhost:5000/notes";
 
 const deleteNote = async (body) => {
-    // console.log("deleteNote req sended");
     try {
         const res = await fetch(url, {
             method: "DELETE",
@@ -14,14 +13,6 @@ const deleteNote = async (body) => {
             body: JSON.stringify(body),
         });
 
-        // const data = await res.json();
-
-        // const result = {
-        //     data, 
-        //     success: res.ok
-        // };
-
-        // return result;
         return res;
 
     } catch (error) {
@@ -91,24 +82,30 @@ const EditNoteForm = ({ note, users }) => {
     }
 
     const onDeleteNoteClicked = async () => {
-        // console.log("delete note clicked");
-        const res = await deleteNote({ id: note._id });
-        // const res = await deleteNote({id: "6a034d6c98a7ab393aee3236"});
-        // console.log(res);
-        const result = await res.json();
-        console.log(result);
+        try {
+            const res = await deleteNote({ id: note._id });
+            console.log(res);
 
-        if (res.ok) {
-            setIsSuccess(true);
-            setIsError(false);
-            setMessages([result]);
-            setErrors([]);
-        } else {
-            // console.log(result.data.message);
-            setIsSuccess(false);
-            setIsError(true);
-            setMessages([]);
-            setErrors([result]);
+            if (res.status) {
+                const result = await res.json();
+                // console.log(result);
+        
+                if (res.ok) {
+                    setIsSuccess(true);
+                    setIsError(false);
+                    setMessages([result]);
+                    setErrors([]);
+                } else {
+                    // console.log(result.data.message);
+                    setIsSuccess(false);
+                    setIsError(true);
+                    setMessages([]);
+                    setErrors([result]);
+                }    
+            }
+
+        } catch (error) {
+            console.log(error);
         }
     }
 
@@ -151,17 +148,6 @@ const EditNoteForm = ({ note, users }) => {
 
     // const errContent = (error?.data?.message || delerror?.data?.message) ?? "";
 
-    // const deleteButton = (
-    //     <button
-    //         className="icon-button delete-btn"
-    //         title="Delete"
-    //         onClick={onDeleteNoteClicked}
-    //     >
-    //         delete note
-    //         <i className="fa fa-trash-o"></i>
-    //     </button>
-    // )
-
     const content = (
         <>
             <div className="messages">
@@ -191,7 +177,6 @@ const EditNoteForm = ({ note, users }) => {
                             save changes
                             <i className="fa fa-floppy-o"></i>
                         </button>
-                        {/* {deleteButton} */}
                         <button
                             className="icon-button delete-btn"
                             title="Delete"

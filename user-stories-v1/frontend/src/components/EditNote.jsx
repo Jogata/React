@@ -41,11 +41,12 @@ const EditNote = () => {
     const { id } = useParams();
     const [users, setUsers] = useState(null);
     const [notes, setNotes] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     let note = null;
     if (notes) {
         note = notes.find(note => note._id == id);
-        console.log(note);
+        // console.log(note);
     }
 
     useEffect(() => {
@@ -57,6 +58,7 @@ const EditNote = () => {
 
             if (res.data.length) {
                 await getAllNotes("http://localhost:5000/notes", onGetNotesSuccess);
+                setIsLoading(false);
             }
 
             function onGetUsersSuccess(data) {
@@ -69,9 +71,11 @@ const EditNote = () => {
         }
     }, [])
 
-    let content = <Loader />;
+    let content = null;
 
-    if (users) {
+    if (isLoading) {
+        content = <Loader />;
+    } else if (users) {
         if (users.length == 0) {
             content = <NotAvailableSection />;
         } else if (note) {
