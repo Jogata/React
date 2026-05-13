@@ -20,6 +20,23 @@ const deleteNote = async (body) => {
     }
 }
 
+const updateNote = async (body) => {
+    try {
+        const res = await fetch(url, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
+        });
+
+        return res;
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const EditNoteForm = ({ note, users }) => {
     const {
         isLoading,
@@ -28,7 +45,7 @@ const EditNoteForm = ({ note, users }) => {
         // error,
         // messages
     } = {
-        isLoading: true, 
+        isLoading: false, 
         // isSuccess: false,
         // isError: false, 
         // error: {},
@@ -74,10 +91,18 @@ const EditNoteForm = ({ note, users }) => {
     const onUserIdChanged = e => setUserId(e.target.value);
 
     const canSave = [title, text, userId].every(Boolean) && !isLoading;
+    // console.log(title, text, userId, isLoading);
 
-    const onSaveNoteClicked = async (e) => {
+    const onSaveNoteClicked = async () => {
+        // console.log(canSave);
         if (canSave) {
-            await updateNote({ id: note.id, user: userId, title, text, completed });
+            // console.log(canSave);
+            // console.log("updated started");
+            // console.log(note._id);
+            const res = await updateNote({ id: note._id, user: userId, title, text, completed });
+            console.log(res);
+            const json = await res.json();
+            console.log(json);
         }
     }
 

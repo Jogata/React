@@ -56,6 +56,7 @@ const updateNote = async (req, res) => {
     }
     
     const note = await Note.findById(id).exec();
+    // console.log(note);
     
     if (!note) {
         return res.status(400).json({ message: "Note not found" });
@@ -67,6 +68,7 @@ const updateNote = async (req, res) => {
         return res.status(409).json({ message: "Duplicate note title" });
     }
     
+    // console.log(user);
     note.user = user;
     note.title = title;
     note.text = text;
