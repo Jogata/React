@@ -1,4 +1,4 @@
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 const DashLayout = () => {
     return (
@@ -13,11 +13,20 @@ const DashLayout = () => {
 }
 
 const DashHeader = () => {
-    return (
-        <header>
-        <h1>dash header</h1>
+    const content = (
+        <header className="dash-header">
+            <div className="dash-header-container">
+                <Link to="/dash">
+                    <h1 className="dash-header-title">techNotes</h1>
+                </Link>
+                <nav className="dash-header-nav">
+                    {/* TODO add nav buttons */}
+                </nav>
+            </div>
         </header>
     )
+
+    return content;
 }
 
 const DashFooter = () => {
