@@ -30,32 +30,14 @@ const DashHeader = () => {
 }
 
 const DashFooter = () => {
-    // const { pathname } = useLocation();
-
-    // let goHomeButton = null;
-
-    // if (pathname !== "/dash") {
-    //     goHomeButton = (
-    //         <Link 
-    //             to="/dash"
-    //             className="dash-footer-button icon-button"
-    //             title="Home"
-    //         >
-    //             home
-    //             <i className="fa fa-home"></i>
-    //         </Link>
-    //     )
-    // }
-
     const content = (
         <footer className="dash-footer">
-            {/* {goHomeButton} */}
             <Link 
                 to="/dash"
                 className="dash-footer-button icon-button"
-                title="Home"
+                title="Dashboard"
             >
-                home
+                to Dashboard
                 <i className="fa fa-home"></i>
             </Link>
             <p>Current User:</p>

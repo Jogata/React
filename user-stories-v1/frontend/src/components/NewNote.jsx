@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import CreateNoteForm from "./CreateNoteForm";
 import Loader from "./Loader";
 import { Link } from "react-router-dom";

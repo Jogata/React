@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 // import { useNavigate } from "react-router-dom";
 
 const addNewNote = async (note, url = "http://localhost:5000/notes") => {
@@ -39,6 +39,7 @@ const CreateNoteForm = ({ users }) => {
     const [isLoading, setIsLoading] = useState(false);    // TOFIX
     const [errors, setErrors] = useState([]);
     const [messages, setMessages] = useState([]);
+    const isFormSubmitted = useRef(false);
 
     useEffect(() => {
         // TOFIX
@@ -63,6 +64,7 @@ const CreateNoteForm = ({ users }) => {
 
     const onSaveNoteClicked = async (e) => {
         e.preventDefault();
+        isFormSubmitted.current = true;
 
         const note = { user: userId, title, text };
         const url = "http://localhost:5000/notes";
@@ -76,14 +78,18 @@ const CreateNoteForm = ({ users }) => {
                 setIsLoading(false);
                 setMessages([res.data.message]);
                 setErrors([]);
+                isFormSubmitted.current = false;
             } else {
                 // console.log("else fail", res);
                 setIsLoading(false);
                 setMessages([]);
                 setErrors([res.data.message]);
+                // isFormSubmitted.current = true;
             }
         } else {
             console.log("user must fix the form data");
+            // isFormSubmitted.current = true;
+            setErrors(["user must fix the form data"]);
         }
     }
 
@@ -100,8 +106,16 @@ const CreateNoteForm = ({ users }) => {
 
     const errClass = errors.length ? "errmsg" : "offscreen";
     const messagesClass = messages.length ? "successmsg" : "offscreen";
-    const validTitleClass = !title ? "invalid" : "valid";
-    const validTextClass = !text ? "invalid" : "valid";
+    // const validTitleClass = !title ? "invalid" : "valid";
+    // const validTextClass = !text ? "invalid" : "valid";
+
+    let validTitleClass = "initial";
+    let validTextClass = "initial";
+
+    if (isFormSubmitted.current) {
+        validTitleClass = !title ? "invalid" : "valid";
+        validTextClass = !text ? "invalid" : "valid";
+    }
 
     const content = (
         <>
