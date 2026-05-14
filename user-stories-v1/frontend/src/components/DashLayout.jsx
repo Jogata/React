@@ -1,4 +1,4 @@
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
 const DashLayout = () => {
     return (
@@ -30,30 +30,34 @@ const DashHeader = () => {
 }
 
 const DashFooter = () => {
-    // const navigate = useNavigate();
-    const { pathname } = useLocation();
+    // const { pathname } = useLocation();
 
-    // const onGoHomeClicked = () => navigate("/dash");
+    // let goHomeButton = null;
 
-    let goHomeButton = null;
+    // if (pathname !== "/dash") {
+    //     goHomeButton = (
+    //         <Link 
+    //             to="/dash"
+    //             className="dash-footer-button icon-button"
+    //             title="Home"
+    //         >
+    //             home
+    //             <i className="fa fa-home"></i>
+    //         </Link>
+    //     )
+    // }
 
-    if (pathname !== "/dash") {
-        goHomeButton = (
+    const content = (
+        <footer className="dash-footer">
+            {/* {goHomeButton} */}
             <Link 
                 to="/dash"
                 className="dash-footer-button icon-button"
                 title="Home"
-                // onClick={onGoHomeClicked}
             >
                 home
                 <i className="fa fa-home"></i>
             </Link>
-        )
-    }
-
-    const content = (
-        <footer className="dash-footer">
-            {goHomeButton}
             <p>Current User:</p>
             <p>Status:</p>
         </footer>
@@ -62,32 +66,21 @@ const DashFooter = () => {
     return content;
 }
 
+export const WelcomeDashLayout = () => {
+    return (
+        <div className="dash-page">
+            <DashHeader />
+            <main>
+                <Outlet />
+            </main>
+            <WelcomeDashFooter />
+        </div>
+    )
+}
+
 const WelcomeDashFooter = () => {
-    // const { pathname } = useLocation();
-
-    // let goHomeButton = null;
-    //     goHomeButton = (
-    //         <button
-    //             className="dash-footer-button icon-button"
-    //             title="Home"
-    //             onClick={onGoHomeClicked}
-    //         >
-    //             home
-    //             <i className="fa fa-home"></i>
-    //         </button>
-    //     )
-
     const content = (
         <footer className="dash-footer">
-            {/* <Link
-                to="/dash"
-                className="dash-footer-button icon-button"
-                title="Home"
-                onClick={onGoHomeClicked}
-            >
-                home
-                <i className="fa fa-home"></i>
-            </Link> */}
             <p>Current User:</p>
             <p>Status:</p>
         </footer>

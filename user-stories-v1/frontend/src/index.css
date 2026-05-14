@@ -179,7 +179,7 @@ a {
   background-color: var(--STATUS-COMPLETE);
 }
 
-.home, .dash-page {
+.dash-page {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -209,6 +209,14 @@ main {
 
 .addr span {
   display: block;
+  margin-bottom: 0.5rem;
+}
+
+.welcome h1 {
+  margin: 2rem 0;
+}
+
+.welcome p {
   margin-bottom: 0.5rem;
 }
 

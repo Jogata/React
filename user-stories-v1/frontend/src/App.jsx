@@ -6,7 +6,7 @@ import Notes from "./components/Notes";
 import Users from "./components/Users";
 import CreateUserForm from "./components/CreateUserForm";
 import EditUser from "./components/EditUser";
-import DashLayout from "./components/DashLayout";
+import DashLayout, { WelcomeDashLayout } from "./components/DashLayout";
 import NewNote from "./components/NewNote";
 import EditNote from "./components/EditNote";
 
@@ -17,8 +17,12 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
 
-        <Route path="/dash" element={<DashLayout />}>
+        <Route path="/dash" element={<WelcomeDashLayout />}>
           <Route index element={<Welcome />} />
+        </Route>
+
+        <Route path="/dash" element={<DashLayout />}>
+          {/* <Route index element={<Welcome />} /> */}
 
           <Route path="users" element={<Users />} />
           <Route path="users/create" element={<CreateUserForm />} />
