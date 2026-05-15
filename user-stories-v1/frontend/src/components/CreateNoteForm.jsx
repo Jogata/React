@@ -60,17 +60,38 @@ const CreateNoteForm = ({ users }) => {
     const onTextChanged = e => setText(e.target.value);
     const onUserIdChanged = e => setUserId(e.target.value);
 
-    const canSave = [title.length > 4, text.length > 4, userId].every(Boolean) && !isLoading;
+    // const canSave = [title.length > 4, text.length > 4, userId].every(Boolean) && !isLoading;
 
     const onSaveNoteClicked = async (e) => {
         e.preventDefault();
         isFormSubmitted.current = true;
-        console.log(canSave);
+        // console.log(canSave);
+        const validationErrors = [];
 
-        const note = { user: userId, title, text };
-        const url = "http://localhost:5000/notes";
+        if (title.length == 0) {
+            validationErrors.push("Each note must have a title");
+        }
 
-        if (canSave) {
+        if (title.length <= 2) {
+            validationErrors.push("The title of a note must be atleast 3 characters");
+        }
+
+        if (text.length == 0) {
+            validationErrors.push("Each note must have a text description");
+        }
+
+        if (text.length <= 2) {
+            validationErrors.push("The text description of a note must be atleast 3 characters");
+        }
+
+        // const note = { user: userId, title, text };
+        // const url = "http://localhost:5000/notes";
+
+        // if (canSave) {
+        if (validationErrors.length == 0) {
+            const note = { user: userId, title, text };
+            const url = "http://localhost:5000/notes";
+    
             const res = await addNewNote(note, url);
             // console.log(res);
 
@@ -88,25 +109,25 @@ const CreateNoteForm = ({ users }) => {
         } else {
             // console.log("user must fix the form data");
             // isFormSubmitted.current = true;
-            const errors = [];
-            if (title.length == 0) {
-                errors.push("Each note must have a title");
-            }
+            // const validationErrors = [];
+            // if (title.length == 0) {
+            //     validationErrors.push("Each note must have a title");
+            // }
 
-            if (title.length <= 2) {
-                errors.push("The title of a note must be atleast 3 characters");
-            }
+            // if (title.length <= 2) {
+            //     validationErrors.push("The title of a note must be atleast 3 characters");
+            // }
 
-            if (text.length == 0) {
-                errors.push("Each note must have a text description");
-            }
+            // if (text.length == 0) {
+            //     validationErrors.push("Each note must have a text description");
+            // }
 
-            if (text.length <= 2) {
-                errors.push("The text description of a note must be atleast 3 characters");
-            }
+            // if (text.length <= 2) {
+            //     validationErrors.push("The text description of a note must be atleast 3 characters");
+            // }
 
             // setErrors(["All fields are required"]);
-            setErrors(errors);
+            setErrors(validationErrors);
         }
     }
 
@@ -130,9 +151,7 @@ const CreateNoteForm = ({ users }) => {
     let validTextClass = "initial";
 
     if (isFormSubmitted.current) {
-        // validTitleClass = !title ? "invalid" : "valid";
         validTitleClass = title.length <= 2 ? "invalid" : "valid";
-        // validTextClass = !text ? "invalid" : "valid";
         validTextClass = text.length <= 2 ? "invalid" : "valid";
     }
 
