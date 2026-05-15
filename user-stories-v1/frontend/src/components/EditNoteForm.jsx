@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 const url = "http://localhost:5000/notes";
@@ -63,15 +63,18 @@ const EditNoteForm = ({ note, users }) => {
     }
 
     const navigate = useNavigate();
+    console.log(note);
 
     const [title, setTitle] = useState(note.title);
     const [text, setText] = useState(note.text);
     const [completed, setCompleted] = useState(note.completed);
-    const [userId, setUserId] = useState(note.username);
+    const [userId, setUserId] = useState(note.user);
+    // const [userId, setUserId] = useState("5");
     const [isSuccess, setIsSuccess] = useState(false);
     const [isError, setIsError] = useState(false);
     const [messages, setMessages] = useState([]);
     const [errors, setErrors] = useState([]);
+    const isFormSubmitted = useRef(false);
 
     useEffect(() => {
         // if (isSuccess || isDelSuccess) {
@@ -99,10 +102,19 @@ const EditNoteForm = ({ note, users }) => {
             // console.log(canSave);
             // console.log("updated started");
             // console.log(note._id);
+            console.log(userId);
             const res = await updateNote({ id: note._id, user: userId, title, text, completed });
             console.log(res);
             const json = await res.json();
             console.log(json);
+
+            if (res.ok) {
+                setMessages([json]);
+                setErrors([]);
+            } else {
+                setMessages([]);
+                setErrors([json]);
+            }
         }
     }
 
@@ -158,7 +170,7 @@ const EditNoteForm = ({ note, users }) => {
         return (
             <option
                 key={user._id}
-                value={user.id}
+                value={user._id}
             >
                 {user.username}
             </option >
@@ -166,10 +178,18 @@ const EditNoteForm = ({ note, users }) => {
     })
 
     // const errClass = (isError || isDelError) ? "errmsg" : "offscreen";
-    const errClass = isError ? "errmsg" : "offscreen";
+    const errClass = errors.length ? "errmsg" : "offscreen";
     const successMsgClass = messages.length ? "successmsg" : "offscreen";
-    const validTitleClass = !title ? "incomplete" : "";
-    const validTextClass = !text ? "incomplete" : "";
+    // const validTitleClass = !title ? "incomplete" : "";
+    // const validTextClass = !text ? "incomplete" : "";
+    let validTitleClass = "initial";
+    let validTextClass = "initial";
+
+    if (isFormSubmitted.current) {
+        validTitleClass = title.length <= 2 ? "invalid" : "valid";
+        validTextClass = text.length <= 2 ? "invalid" : "valid";
+    }
+
 
     // const errContent = (error?.data?.message || delerror?.data?.message) ?? "";
 
@@ -178,13 +198,14 @@ const EditNoteForm = ({ note, users }) => {
             <div className="messages">
                 <div className={errClass}>
                     {errors.map((err, index) => {
+                        console.log(err);
                         return <p key={index}>{err.message}</p>
                     })}
                 </div>
 
                 <div className={successMsgClass}>
                     {messages.map((message, index) => {
-                        // console.log(message);
+                        console.log(message);
                         return <p key={index}>{message.message}</p>
                     })}
                 </div>
@@ -230,7 +251,7 @@ const EditNoteForm = ({ note, users }) => {
                     Text:
                 </label>
                 <textarea
-                    className={`form-input text ${validTextClass}`}
+                    className={`form-input textarea ${validTextClass}`}
                     id="note-text"
                     name="text"
                     value={text}

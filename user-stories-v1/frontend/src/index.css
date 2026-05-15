@@ -272,7 +272,8 @@ main {
 .form-input {
   width: 100%;
   max-width: 30ch;
-  padding: 0.25em 1em;
+  /* padding: 0.25em 1em; */
+  padding: 0.5em 1em;
   color: inherit;
   border-radius: 10em;
   border: 1px solid #444;
@@ -308,7 +309,8 @@ main {
   padding: 0.5em;
   color: inherit;
   border: 1px solid #444;
-  background-color: transparent;
+  /* background-color: transparent; */
+  background-color: var(--BGCOLOR);
 }
 
 .form-select option {

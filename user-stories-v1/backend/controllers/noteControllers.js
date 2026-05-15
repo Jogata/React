@@ -52,7 +52,11 @@ const updateNote = async (req, res) => {
     }
 
     if (!mongoose.isValidObjectId(id)) {
-        return res.status(400).json({ message: "Invalid note ID" });
+        return res.status(404).json({ message: "Invalid note ID" });
+    }
+
+    if (!mongoose.isValidObjectId(user)) {
+        return res.status(404).json({ message: "Invalid user ID" });
     }
     
     const note = await Note.findById(id).exec();

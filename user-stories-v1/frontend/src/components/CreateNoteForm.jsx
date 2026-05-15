@@ -70,17 +70,13 @@ const CreateNoteForm = ({ users }) => {
 
         if (title.length == 0) {
             validationErrors.push("Each note must have a title");
-        }
-
-        if (title.length <= 2) {
+        } else if (title.length <= 2) {
             validationErrors.push("The title of a note must be atleast 3 characters");
         }
 
         if (text.length == 0) {
             validationErrors.push("Each note must have a text description");
-        }
-
-        if (text.length <= 2) {
+        } else if (text.length <= 2) {
             validationErrors.push("The text description of a note must be atleast 3 characters");
         }
 
@@ -91,6 +87,7 @@ const CreateNoteForm = ({ users }) => {
         if (validationErrors.length == 0) {
             const note = { user: userId, title, text };
             const url = "http://localhost:5000/notes";
+            // console.log(note);
     
             const res = await addNewNote(note, url);
             // console.log(res);
@@ -128,6 +125,7 @@ const CreateNoteForm = ({ users }) => {
 
             // setErrors(["All fields are required"]);
             setErrors(validationErrors);
+            setMessages([]);
         }
     }
 
@@ -144,8 +142,6 @@ const CreateNoteForm = ({ users }) => {
 
     const errClass = errors.length ? "errmsg" : "offscreen";
     const messagesClass = messages.length ? "successmsg" : "offscreen";
-    // const validTitleClass = !title ? "invalid" : "valid";
-    // const validTextClass = !text ? "invalid" : "valid";
 
     let validTitleClass = "initial";
     let validTextClass = "initial";
