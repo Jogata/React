@@ -7,16 +7,21 @@ const noteSchema = new mongoose.Schema(
         user: {
             type: mongoose.Schema.Types.ObjectId,
             // type: mongoose.SchemaTypes.ObjectId,
-            required: true,
+            required: [true, "User is required"],
+            // required: true,
             ref: "User"
         },
-        title: {
+        title: { 
             type: String,
-            required: true
+            minlength: [3, "Note title must be at least 3 characters long"],
+            required: [true, "Note title is required"]    
+            // required: true
         },
         text: {
             type: String,
-            required: true
+            minlength: [3, "Text must be at least 3 characters long"],
+            required: [true, "Text is required"] 
+            // required: true
         },
         completed: {
             type: Boolean,
