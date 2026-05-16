@@ -39,25 +39,32 @@ const createNewNote = async (req, res) => {
     if (text.length <= 2) {
         return res.status(400).json({message: "The text description of a note must be atleast 3 characters"});
     }
-    
-    const duplicate = await Note.findOne({ title }).lean().exec();
-    
-    if (duplicate) {
-        return res.status(409).json({ message: "Duplicate note title" });
-    }
 
-    const user = await User.findById(userId).exec();
+    try {
+        const duplicate = await Note.findOne({ title }).lean().exec();
     
-    if (!user) {
-        return res.status(404).json({ message: "User not found" });
-    }
+        if (duplicate) {
+            return res.status(409).json({ message: "Duplicate note title" });
+        }
     
-    const note = await Note.create({ userId, title, text });
-    
-    if (note) {
-        return res.status(201).json({ message: "New note created" });
-    } else {
-        return res.status(400).json({ message: "Invalid note data received" });
+        const user = await User.findById(userId).exec();
+        
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        
+        const note = await Note.create({ userId, title, text });
+        
+        if (note) {
+            return res.status(201).json({ message: "New note created" });
+        } else {
+            return res.status(400).json({ message: "Invalid note data received" });
+        }        
+    } catch (error) {
+        if (error.name == "ValidationError") {
+            // console.log(error.message);
+            res.status(400).json({message: error.message});
+        }
     }    
 }
 
@@ -85,40 +92,47 @@ const updateNote = async (req, res) => {
         return res.status(400).json({message: "The text description of a note must be atleast 3 characters"});
     }
     
-    const note = await Note.findById(id).exec();
-    // console.log(note);
+    try {
+        const note = await Note.findById(id).exec();
+        // console.log(note);
+        
+        if (!note) {
+            return res.status(400).json({ message: "Note not found" });
+        }
+        
+        const duplicate = await Note.findOne({ title }).lean().exec();
+        
+        if (duplicate && duplicate?._id.toString() !== id) {
+            return res.status(409).json({ message: "Duplicate note title" });
+        }
     
-    if (!note) {
-        return res.status(400).json({ message: "Note not found" });
+        const user = await User.findById(userId).exec();
+        
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        
+        // console.log(user);
+        note.user = userId;
+        note.title = title;
+        note.text = text;
+        note.completed = completed;
+        
+        const updatedNote = await note.save();
+        
+        res.json({message: `"${updatedNote.title}" updated`});        
+    } catch (error) {
+        if (error.name == "ValidationError") {
+            // console.log(error.message);
+            res.status(400).json({message: error.message});
+        }
     }
-    
-    const duplicate = await Note.findOne({ title }).lean().exec();
-    
-    if (duplicate && duplicate?._id.toString() !== id) {
-        return res.status(409).json({ message: "Duplicate note title" });
-    }
-
-    const user = await User.findById(userId).exec();
-    
-    if (!user) {
-        return res.status(404).json({ message: "User not found" });
-    }
-    
-    // console.log(user);
-    note.user = userId;
-    note.title = title;
-    note.text = text;
-    note.completed = completed;
-    
-    const updatedNote = await note.save();
-    
-    res.json({message: `"${updatedNote.title}" updated`});    
 }
 
 const deleteNote = async (req, res) => {
     // console.log("todo deleteNote");
     const { id } = req.body;
-    console.log(id);
+    // console.log(id);
 
     if (!id) {
         return res.status(400).json({ message: "Note ID required" });

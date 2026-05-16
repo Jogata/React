@@ -19,8 +19,8 @@ const noteSchema = new mongoose.Schema(
         },
         text: {
             type: String,
-            minlength: [3, "Text must be at least 3 characters long"],
-            required: [true, "Text is required"] 
+            minlength: [3, "Note text must be at least 3 characters long"],
+            required: [true, "Note text is required"] 
             // required: true
         },
         completed: {

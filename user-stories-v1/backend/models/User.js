@@ -5,12 +5,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         unique: true, 
         minlength: [3, "Username must be at least 3 characters long"],
+        maxlength: [20, "Username must be max 20 characters long"],
         required: [true, "Username is required"]
     },
     password: {
         type: String,
         required: true, 
         minlength: [6, "Password must be at least 6 characters long"],
+        maxlength: [12, "Password must be max 12 characters long"],
         select: false
     },
     roles: [{

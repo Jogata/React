@@ -20,6 +20,14 @@ const createNewUser = async (req, res) => {
         if (!username || !password || !Array.isArray(roles) || !roles.length) {
             return res.status(400).json({ message: "All fields are required" });
         }
+
+        if (username.length < 3) {
+            return res.status(400).json({message: "The username must be atleast 3 characters"});
+        }
+    
+        if (password.length < 6) {
+            return res.status(400).json({message: "The password must be atleast 6 characters"});
+        }
     
         const duplicate = await User.findOne({ username }).lean().exec();
     
@@ -39,7 +47,12 @@ const createNewUser = async (req, res) => {
             res.status(400).json({ message: "Invalid user data received" });
         }
     } catch (error) {
-        console.log(error);
+        // console.log(error);
+        // console.log(error.name);
+        if (error.name == "ValidationError") {
+            // console.log(error.message);
+            res.status(400).json({message: error.message});
+        }
     }
 }
 
@@ -55,13 +68,13 @@ const updateUser = async (req, res) => {
             return res.status(400).json({ message: "All fields except password are required" });
         }
 
-        if (username.length <= 2) {
+        if (username.length < 3) {
             return res.status(400).json({message: "The username must be atleast 3 characters"});
         }
     
-        if (password.length <= 5) {
-            return res.status(400).json({message: "The password must be atleast 3 characters"});
-        }    
+        if (password.length < 6) {
+            return res.status(400).json({message: "The password must be atleast 6 characters"});
+        }
     
         const user = await User.findById(id).exec();
     
@@ -88,7 +101,12 @@ const updateUser = async (req, res) => {
         res.json({ message: `${updatedUser.username} updated` });    
     } catch (error) {
         // console.log(error);
-        console.log(error.message);
+        // console.log(error.message);
+        // console.log(error);
+        if (error.name == "ValidationError") {
+            // console.log(error.message);
+            res.status(400).json({message: error.message});
+        }
     }
 }
 
