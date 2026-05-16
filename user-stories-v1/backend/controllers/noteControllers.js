@@ -22,10 +22,22 @@ const getAllNotes = async (req, res) => {
 }
 
 const createNewNote = async (req, res) => {
-    const { user, title, text } = req.body;
+    const { userId, title, text } = req.body;
 
-    if (!user || !title || !text) {
+    if (!userId || !title || !text) {
         return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if (!mongoose.isValidObjectId(userId)) {
+        return res.status(404).json({ message: "Invalid user ID" });
+    }
+
+    if (title.length <= 2) {
+        return res.status(400).json({message: "The title of a note must be atleast 3 characters"});
+    }
+
+    if (text.length <= 2) {
+        return res.status(400).json({message: "The text description of a note must be atleast 3 characters"});
     }
     
     const duplicate = await Note.findOne({ title }).lean().exec();
@@ -33,8 +45,14 @@ const createNewNote = async (req, res) => {
     if (duplicate) {
         return res.status(409).json({ message: "Duplicate note title" });
     }
+
+    const user = await User.findById(userId).exec();
     
-    const note = await Note.create({ user, title, text });
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
+    
+    const note = await Note.create({ userId, title, text });
     
     if (note) {
         return res.status(201).json({ message: "New note created" });
@@ -45,9 +63,9 @@ const createNewNote = async (req, res) => {
 
 const updateNote = async (req, res) => {
     // console.log("todo updateNote");
-    const { id, user, title, text, completed } = req.body;
+    const { id, userId, title, text, completed } = req.body;
 
-    if (!id || !user || !title || !text || typeof completed !== "boolean") {
+    if (!id || !userId || !title || !text || typeof completed !== "boolean") {
         return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -55,8 +73,16 @@ const updateNote = async (req, res) => {
         return res.status(404).json({ message: "Invalid note ID" });
     }
 
-    if (!mongoose.isValidObjectId(user)) {
+    if (!mongoose.isValidObjectId(userId)) {
         return res.status(404).json({ message: "Invalid user ID" });
+    }
+
+    if (title.length <= 2) {
+        return res.status(400).json({message: "The title of a note must be atleast 3 characters"});
+    }
+
+    if (text.length <= 2) {
+        return res.status(400).json({message: "The text description of a note must be atleast 3 characters"});
     }
     
     const note = await Note.findById(id).exec();
@@ -71,9 +97,15 @@ const updateNote = async (req, res) => {
     if (duplicate && duplicate?._id.toString() !== id) {
         return res.status(409).json({ message: "Duplicate note title" });
     }
+
+    const user = await User.findById(userId).exec();
+    
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
     
     // console.log(user);
-    note.user = user;
+    note.user = userId;
     note.title = title;
     note.text = text;
     note.completed = completed;

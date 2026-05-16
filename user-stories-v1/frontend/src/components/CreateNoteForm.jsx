@@ -85,7 +85,7 @@ const CreateNoteForm = ({ users }) => {
 
         // if (canSave) {
         if (validationErrors.length == 0) {
-            const note = { user: userId, title, text };
+            const note = { userId, title, text };
             const url = "http://localhost:5000/notes";
             // console.log(note);
     

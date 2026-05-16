@@ -54,6 +54,14 @@ const updateUser = async (req, res) => {
         if (!username || !Array.isArray(roles) || !roles.length || typeof active !== "boolean") {
             return res.status(400).json({ message: "All fields except password are required" });
         }
+
+        if (username.length <= 2) {
+            return res.status(400).json({message: "The username must be atleast 3 characters"});
+        }
+    
+        if (password.length <= 5) {
+            return res.status(400).json({message: "The password must be atleast 3 characters"});
+        }    
     
         const user = await User.findById(id).exec();
     

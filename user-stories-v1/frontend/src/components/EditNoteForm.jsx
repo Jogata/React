@@ -121,7 +121,7 @@ const EditNoteForm = ({ note, users }) => {
             // console.log(note._id);
             // console.log(userId);
             try {
-                const res = await updateNote({ id: note._id, user: userId, title, text, completed });
+                const res = await updateNote({ id: note._id, userId, title, text, completed });
                 console.log(res);
                 const json = await res.json();
                 console.log(json);
