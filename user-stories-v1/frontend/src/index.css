@@ -222,7 +222,13 @@ main {
 
 .form {
   max-width: 600px;
-  padding: 1rem;
+  /* padding: 1rem; */
+  margin: auto;
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid aliceblue;
+  box-shadow: 3px 3px 3px #0005, 
+            -3px -3px 3px #fff2;
 }
 
 .form-header {
@@ -327,6 +333,21 @@ option:checked {
 
 option:hover {
   color: #6cb0e8;;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem 2rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.form-divider {
+  margin-top: auto;
+}
+
+.form-divider dt {
+  margin-top: 1rem;
 }
 
 .table {

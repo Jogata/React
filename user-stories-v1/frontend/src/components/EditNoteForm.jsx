@@ -63,7 +63,7 @@ const EditNoteForm = ({ note, users }) => {
     }
 
     const navigate = useNavigate();
-    console.log(note);
+    // console.log(note);
 
     const [title, setTitle] = useState(note.title);
     const [text, setText] = useState(note.text);
@@ -98,23 +98,48 @@ const EditNoteForm = ({ note, users }) => {
 
     const onSaveNoteClicked = async () => {
         // console.log(canSave);
-        if (canSave) {
+        isFormSubmitted.current = true;
+        // console.log(canSave);
+        const validationErrors = [];
+
+        if (title.length == 0) {
+            validationErrors.push("Each note must have a title");
+        } else if (title.length <= 2) {
+            validationErrors.push("The title of a note must be atleast 3 characters");
+        }
+
+        if (text.length == 0) {
+            validationErrors.push("Each note must have a text description");
+        } else if (text.length <= 2) {
+            validationErrors.push("The text description of a note must be atleast 3 characters");
+        }
+
+        // if (canSave) {
+        if (validationErrors.length == 0) {
             // console.log(canSave);
             // console.log("updated started");
             // console.log(note._id);
-            console.log(userId);
-            const res = await updateNote({ id: note._id, user: userId, title, text, completed });
-            console.log(res);
-            const json = await res.json();
-            console.log(json);
-
-            if (res.ok) {
-                setMessages([json]);
-                setErrors([]);
-            } else {
-                setMessages([]);
-                setErrors([json]);
+            // console.log(userId);
+            try {
+                const res = await updateNote({ id: note._id, user: userId, title, text, completed });
+                console.log(res);
+                const json = await res.json();
+                console.log(json);
+    
+                if (res.ok) {
+                    setMessages([json]);
+                    setErrors([]);
+                    isFormSubmitted.current = false;
+                } else {
+                    setMessages([]);
+                    setErrors([json]);
+                }                
+            } catch (error) {
+                console.log(error);
             }
+        } else {
+            setErrors(validationErrors);
+            setMessages([]);
         }
     }
 
@@ -138,7 +163,7 @@ const EditNoteForm = ({ note, users }) => {
                     setIsError(true);
                     setMessages([]);
                     setErrors([result]);
-                }    
+                }
             }
 
         } catch (error) {
@@ -189,7 +214,6 @@ const EditNoteForm = ({ note, users }) => {
         validTitleClass = title.length <= 2 ? "invalid" : "valid";
         validTextClass = text.length <= 2 ? "invalid" : "valid";
     }
-
 
     // const errContent = (error?.data?.message || delerror?.data?.message) ?? "";
 
@@ -291,10 +315,14 @@ const EditNoteForm = ({ note, users }) => {
                             {options}
                         </select>
                     </div>
-                    <div className="form-divider">
-                        <p className="form-created">Created:<br />{created}</p>
-                        <p className="form-updated">Updated:<br />{updated}</p>
-                    </div>
+                    <dl className="form-divider">
+                        {/* <p className="form-created">Created:<br />{created}</p> */}
+                        <dt className="form-created">Created:</dt>
+                        <dd>{created}</dd>
+                        {/* <p className="form-updated">Updated:<br />{updated}</p> */}
+                        <dt className="form-updated">Updated:</dt>
+                        <dd>{updated}</dd>
+                    </dl>
                 </div>
             </form>
         </>
