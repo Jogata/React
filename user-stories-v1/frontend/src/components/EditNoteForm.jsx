@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 const url = "http://localhost:5000/notes";
@@ -70,30 +70,32 @@ const EditNoteForm = ({ note, users }) => {
     const [completed, setCompleted] = useState(note.completed);
     const [userId, setUserId] = useState(note.user);
     // const [userId, setUserId] = useState("5");
-    const [isSuccess, setIsSuccess] = useState(false);
+    // const [isSuccess, setIsSuccess] = useState(false);
+    const [isPending, setIsPending] = useState(false);
     const [isError, setIsError] = useState(false);
     const [messages, setMessages] = useState([]);
     const [errors, setErrors] = useState([]);
     const isFormSubmitted = useRef(false);
 
-    useEffect(() => {
+    // useEffect(() => {
         // if (isSuccess || isDelSuccess) {
-        if (isSuccess) {
+        // if (messages.length > 0) {
             // setTitle("");
             // setText("");
             // setUserId("");
             // navigate("/dash/notes");
-        }
+        // }
 
     // }, [isSuccess, isDelSuccess, navigate])
-    }, [isSuccess, navigate])
+    // }, [isSuccess, navigate])
+    // }, [messages])
 
     const onTitleChanged = e => setTitle(e.target.value);
     const onTextChanged = e => setText(e.target.value);
     const onCompletedChanged = e => setCompleted(prev => !prev);
     const onUserIdChanged = e => setUserId(e.target.value);
 
-    const canSave = [title, text, userId].every(Boolean) && !isLoading;
+    // const canSave = [title, text, userId].every(Boolean) && !isLoading;
     // console.log(title, text, userId, isLoading);
 
     const onSaveNoteClicked = async () => {
@@ -103,36 +105,47 @@ const EditNoteForm = ({ note, users }) => {
         const validationErrors = [];
 
         if (title.length == 0) {
-            validationErrors.push("Each note must have a title");
+            validationErrors.push({
+                message: "Each note must have a title"
+            });
         } else if (title.length <= 2) {
-            validationErrors.push("The title of a note must be atleast 3 characters");
+            validationErrors.push({
+                message: "The title of a note must be atleast 3 characters"
+            });
         }
 
         if (text.length == 0) {
-            validationErrors.push("Each note must have a text description");
+            validationErrors.push({
+                message: "Each note must have a text description"
+            });
         } else if (text.length <= 2) {
-            validationErrors.push("The text description of a note must be atleast 3 characters");
+            validationErrors.push({
+                message: "The text description of a note must be atleast 3 characters"
+            });
         }
 
         // if (canSave) {
         if (validationErrors.length == 0) {
+            setIsPending(true);
             // console.log(canSave);
             // console.log("updated started");
             // console.log(note._id);
             // console.log(userId);
             try {
                 const res = await updateNote({ id: note._id, userId, title, text, completed });
-                console.log(res);
+                // console.log(res);
                 const json = await res.json();
                 console.log(json);
     
                 if (res.ok) {
                     setMessages([json]);
                     setErrors([]);
+                    setIsPending(false);
                     isFormSubmitted.current = false;
                 } else {
                     setMessages([]);
                     setErrors([json]);
+                    setIsPending(false);
                 }                
             } catch (error) {
                 console.log(error);
@@ -144,6 +157,7 @@ const EditNoteForm = ({ note, users }) => {
     }
 
     const onDeleteNoteClicked = async () => {
+        setIsPending(true);
         try {
             const res = await deleteNote({ id: note._id });
             console.log(res);
@@ -153,16 +167,26 @@ const EditNoteForm = ({ note, users }) => {
                 // console.log(result);
         
                 if (res.ok) {
-                    setIsSuccess(true);
-                    setIsError(false);
-                    setMessages([result]);
-                    setErrors([]);
+                    // setIsSuccess(true);
+                    // setIsError(false);
+                    // setMessages([result]);
+                    // setErrors([]);
+                    // setIsPending(false);
+                    // console.log("res is ok");
+                    // navigate({
+                    //     pathname: "/dash/notes",
+                    //     state: { message: "deleted" }
+                    // });
+                    navigate("/dash/notes", { 
+                        state: result
+                    });
                 } else {
                     // console.log(result.data.message);
-                    setIsSuccess(false);
+                    // setIsSuccess(false);
                     setIsError(true);
                     setMessages([]);
                     setErrors([result]);
+                    setIsPending(false);
                 }
             }
 
@@ -210,7 +234,7 @@ const EditNoteForm = ({ note, users }) => {
     let validTitleClass = "initial";
     let validTextClass = "initial";
 
-    if (isFormSubmitted.current) {
+    if (isFormSubmitted.current && !isPending) {
         validTitleClass = title.length <= 2 ? "invalid" : "valid";
         validTextClass = text.length <= 2 ? "invalid" : "valid";
     }
@@ -222,14 +246,14 @@ const EditNoteForm = ({ note, users }) => {
             <div className="messages">
                 <div className={errClass}>
                     {errors.map((err, index) => {
-                        console.log(err);
+                        // console.log(err);
                         return <p key={index}>{err.message}</p>
                     })}
                 </div>
 
                 <div className={successMsgClass}>
                     {messages.map((message, index) => {
-                        console.log(message);
+                        // console.log(message);
                         return <p key={index}>{message.message}</p>
                     })}
                 </div>

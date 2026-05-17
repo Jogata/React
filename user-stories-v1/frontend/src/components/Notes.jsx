@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Loader from "./Loader";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Note from "./Note";
 
 async function getAllNotes(url, onSuccess) {
@@ -26,6 +26,7 @@ const Notes = () => {
     const isError = false;
     const error = {};
     const [isSuccess, setIsSuccess] = useState(false);
+    const location = useLocation();
 
     useEffect(() => {
         setIsLoading(true);
@@ -38,6 +39,15 @@ const Notes = () => {
             setIsSuccess(true);
         }
     }, [])
+
+    const messages = [];
+    // console.log(location);
+
+    if (location.state?.message) {
+        messages.push(location.state.message);
+    }
+
+    const messagesClass = messages.length ? "successmsg" : "offscreen";
 
     let content = <Loader />;
     
@@ -80,7 +90,21 @@ const Notes = () => {
         )
     }
 
-    return content;
+    return (
+        <>
+            <div className="messages">
+                <div className={messagesClass}>
+                    {messages.map((message, index) => {
+                        return (
+                            <p key={index}>{message}</p>
+                        )
+                    })}
+                </div>
+            </div>
+
+            {content}
+        </>
+    );
 }
 
 const EmptyRow = () => {

@@ -24,6 +24,7 @@ const getAllNotes = async (req, res) => {
 
 const createNewNote = async (req, res) => {
     const { userId, title, text } = req.body;
+    console.log(userId);
 
     if (!userId || !title || !text) {
         return res.status(400).json({ message: "All fields are required" });
@@ -54,7 +55,7 @@ const createNewNote = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
         
-        const note = await Note.create({ userId, title, text });
+        const note = await Note.create({ user: userId, title, text });
         
         if (note) {
             return res.status(201).json({ message: "New note created" });

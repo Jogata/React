@@ -68,7 +68,7 @@ const CreateNoteForm = ({ users }) => {
         if (isPending) {
             setMessages["A new note is created in the moment"];
         }
-        
+
         isFormSubmitted.current = true;
         // console.log(canSave);
         const validationErrors = [];
@@ -99,10 +99,16 @@ const CreateNoteForm = ({ users }) => {
             // console.log(res);
 
             if (res.success) {
-                setIsPending(false);
-                setMessages([res.data.message]);
-                setErrors([]);
-                isFormSubmitted.current = false;
+                // setIsPending(false);
+                // setMessages([res.data.message]);
+                // setErrors([]);
+                // isFormSubmitted.current = false;
+                setTimeout(() => {
+                    setIsPending(false);
+                    setMessages([res.data.message]);
+                    setErrors([]);
+                    isFormSubmitted.current = false;
+                }, 5000);
             } else {
                 setIsPending(false);
                 setMessages([]);
@@ -152,7 +158,8 @@ const CreateNoteForm = ({ users }) => {
     let validTitleClass = "initial";
     let validTextClass = "initial";
 
-    if (isFormSubmitted.current) {
+    // if (isFormSubmitted.current) {
+    if (isFormSubmitted.current && !isPending) {
         validTitleClass = title.length <= 2 ? "invalid" : "valid";
         validTextClass = text.length <= 2 ? "invalid" : "valid";
     }
