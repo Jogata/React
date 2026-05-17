@@ -7,11 +7,11 @@ async function getAllUsers(url) {
     try {
         const res = await fetch(url);
     
-        const data = await res.json();
-        console.log("all users: ", data);
+        const result = await res.json();
+        console.log("all users: ", result.data);
 
         if (res.ok) {
-            return data;
+            return result.data;
         }
 
     } catch (error) {

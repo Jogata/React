@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 // import { useNavigate } from "react-router-dom";
 
 const addNewNote = async (note, url = "http://localhost:5000/notes") => {
@@ -36,7 +37,7 @@ const CreateNoteForm = ({ users }) => {
     // const [text, setText] = useState("");
     const [text, setText] = useState("text for test note 14");
     const [userId, setUserId] = useState(users[0]._id);
-    const [isPending, setIsPending] = useState(false);    // TOFIX
+    const [isPending, setIsPending] = useState(false);
     const [errors, setErrors] = useState([]);
     const [messages, setMessages] = useState([]);
     const isFormSubmitted = useRef(false);
@@ -99,16 +100,10 @@ const CreateNoteForm = ({ users }) => {
             // console.log(res);
 
             if (res.success) {
-                // setIsPending(false);
-                // setMessages([res.data.message]);
-                // setErrors([]);
-                // isFormSubmitted.current = false;
-                setTimeout(() => {
-                    setIsPending(false);
-                    setMessages([res.data.message]);
-                    setErrors([]);
-                    isFormSubmitted.current = false;
-                }, 5000);
+                setIsPending(false);
+                setMessages([res.data.message]);
+                setErrors([]);
+                isFormSubmitted.current = false;
             } else {
                 setIsPending(false);
                 setMessages([]);
@@ -234,8 +229,13 @@ const CreateNoteForm = ({ users }) => {
                 >
                     {options}
                 </select>
-
             </form>
+
+            <div className="links">
+                <Link to="/dash/notes" className="redirect-link">
+                    Browse all notes
+                </Link>
+            </div>
         </>
     )
 

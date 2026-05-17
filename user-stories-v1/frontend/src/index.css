@@ -435,7 +435,17 @@ td {
   margin-bottom: 2rem;
 }
 
-.not-available-section .links .redirect-link {
+.form + .links {
+  margin-top: 2rem;
+}
+
+.links {
+  /* margin-top: 2rem; */
+  text-align: center;
+}
+
+/* .not-available-section .links .redirect-link { */
+.links .redirect-link {
   position: relative;
   display: inline-block;
   margin: 0 1rem;

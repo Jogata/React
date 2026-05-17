@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 // import { useNavigate } from "react-router-dom";
 import { ROLES } from "../config/roles";
+import { Link } from "react-router-dom";
 
 const USER_REGEX = /^[A-z0-9]{3,20}$/;
 const PWD_REGEX = /^[A-z0-9!@#$%]{6,12}$/;
@@ -29,12 +30,14 @@ async function addNewUser(user, url = "http://localhost:5000/users") {
 
 const CreateUserForm = () => {
     // const [username, setUsername] = useState("");
-    const [username, setUsername] = useState("user5");
+    const [username, setUsername] = useState("user8 ");
+    // const [username, setUsername] = useState({});
     // const [password, setPassword] = useState("");
-    const [password, setPassword] = useState("pass1235");
+    const [password, setPassword] = useState("pass1238");
     const [roles, setRoles] = useState(["Employee"]);
-    const [isSuccess, setIsSuccess] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);    // TOFIX
     const [isLoading, setIsLoading] = useState(false);    // TOFIX
+    const [isPending, setIsPending] = useState(false);
     const [errors, setErrors] = useState([]);
     const [messages, setMessages] = useState([]);
     const formSubmitedOnce = useRef(false);
@@ -43,13 +46,15 @@ const CreateUserForm = () => {
     // const navigate = useNavigate();
 
     useEffect(() => {
-        if (isSuccess) {
+        // if (isSuccess) {
+        if (messages.length > 0) {
             // TOFIX
             setUsername("");
             setPassword("");
             setRoles(["Employee"]);
         }
-    }, [isSuccess])
+    // }, [isSuccess])
+    }, [messages])
 
     const onUsernameChanged = e => setUsername(e.target.value);
     const onPasswordChanged = e => setPassword(e.target.value);
@@ -71,54 +76,98 @@ const CreateUserForm = () => {
     let validPwdClass = "initial";
     let validRolesClass = "initial";
 
-    if (formSubmitedOnce.current) {
+    if (formSubmitedOnce.current && !isPending) {
         validUserClass = !validUsername ? "invalid" : "valid";
+        // validUserClass = username.length < 3 ? "invalid" : "valid";
         validPwdClass = !validPassword ? "invalid" : "valid";
+        // validPwdClass = password.length < 6 ? "invalid" : "valid";
         validRolesClass = !Boolean(roles.length) ? "invalid" : "valid";
     }
 
-    const canSave = [roles.length, validUsername, validPassword].every(Boolean) && !isLoading;
+    // const canSave = [roles.length, validUsername, validPassword].every(Boolean) && !isLoading;
 
     const onSaveUserClicked = async (e) => {
         e.preventDefault();
         // console.log("create user clicked");
-        if (isLoading) {
+        // console.log(username.length);
+
+        const validationErrors = [];
+
+        if (username.length == 0) {
+            validationErrors.push({
+                message: "Each user must have a name"
+            });
+        } else if (username.length < 3) {
+            validationErrors.push({
+                message: "The name of the user must be atleast 3 characters"
+            });
+        }
+        
+        if (!USER_REGEX.test(username)) {
+            validationErrors.push({
+                message: "The name of the user must contains only letters and numbers"
+            });
+        }
+
+        if (password.length == 0) {
+            validationErrors.push({
+                message: "Each user must have a password"
+            });
+        } else if (password.length < 6) {
+            validationErrors.push({
+                message: "The password must be atleast 6 characters"
+            });
+        }
+        
+        if (!PWD_REGEX.test(password)) {
+            validationErrors.push({
+                message: "The password contains inappropriate symbols"
+            });
+        }
+
+        if (isPending) {
             setErrors([{message: "A new user is being created right now"}]);
         } else {
             formSubmitedOnce.current = true;
 
-            if (canSave) {
+            if (validationErrors.length == 0) {
                 // console.log("create new user req sended");
-                setErrors([]);
+                // setErrors([]);
+                setIsPending(true);
                 const res = await addNewUser({ username, password, roles });
-                console.log(res);
+                // console.log(res);
                 if (res.success) {
-                    setIsSuccess(true);
+                    // setIsSuccess(true);
+                    setIsPending(false);
                     setMessages([res.data]);
+                    setErrors([]);
                     formSubmitedOnce.current = false;
                     // console.log(formSubmitedOnce.current);
                 } else {
                     console.log("server errors");
-                    setIsSuccess(false);
+                    // setIsSuccess(false);
+                    setIsPending(false);
+                    setMessages([]);
                     setErrors([res.data]);
                 }
             } else {
                 // console.log("fix the form");
                 setMessages([]);
-                setIsSuccess(false);
-                const formErrors = [];
+                // setIsSuccess(false);
+                // const formErrors = [];
     
-                if (!validUsername) {
-                    formErrors.push({message: "fix username"});
-                    console.log("fix username");
-                }
+                // if (!validUsername) {
+                //     formErrors.push({message: "fix username"});
+                //     console.log("fix username");
+                // }
     
-                if (!validPassword) {
-                    formErrors.push({message: "fix password"});
-                    console.log("fix password aded");
-                }
+                // if (!validPassword) {
+                //     formErrors.push({message: "fix password"});
+                //     console.log("fix password aded");
+                // }
     
-                setErrors(formErrors);
+                // setErrors(formErrors);
+                setErrors(validationErrors);
             }
         }
     }
@@ -178,7 +227,7 @@ const CreateUserForm = () => {
                 />
 
                 <label htmlFor="password" className="form-label">
-                    Password: <span className="nowrap">[4-12 chars incl. !@#$%]</span>
+                    Password: <span className="nowrap">[6-12 chars incl. !@#$%]</span>
                 </label>
                 <input
                     className={`form-input ${validPwdClass}`}
@@ -203,8 +252,13 @@ const CreateUserForm = () => {
                 >
                     {options}
                 </select>
-
             </form>
+
+            <div className="links">
+                <Link to="/dash/users" className="redirect-link">
+                    Browse all users
+                </Link>
+            </div>
         </>
     )
 

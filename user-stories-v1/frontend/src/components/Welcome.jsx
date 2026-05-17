@@ -21,7 +21,9 @@ const Welcome = () => {
 
             {/* <p><Link to="/dash/notes/create">Add New techNote</Link></p> */}
 
-            <p><Link to="/dash/users/create">Add New User</Link></p>
+            <p><Link to="/dash/users">View all users</Link></p>
+
+            {/* <p><Link to="/dash/users/create">Add New User</Link></p> */}
 
         </section>
     )
