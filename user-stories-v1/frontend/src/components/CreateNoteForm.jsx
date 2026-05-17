@@ -36,7 +36,7 @@ const CreateNoteForm = ({ users }) => {
     // const [text, setText] = useState("");
     const [text, setText] = useState("text for test note 14");
     const [userId, setUserId] = useState(users[0]._id);
-    const [isLoading, setIsLoading] = useState(false);    // TOFIX
+    const [isPending, setIsPending] = useState(false);    // TOFIX
     const [errors, setErrors] = useState([]);
     const [messages, setMessages] = useState([]);
     const isFormSubmitted = useRef(false);
@@ -64,6 +64,11 @@ const CreateNoteForm = ({ users }) => {
 
     const onSaveNoteClicked = async (e) => {
         e.preventDefault();
+
+        if (isPending) {
+            setMessages["A new note is created in the moment"];
+        }
+        
         isFormSubmitted.current = true;
         // console.log(canSave);
         const validationErrors = [];
@@ -88,17 +93,18 @@ const CreateNoteForm = ({ users }) => {
             const note = { userId, title, text };
             const url = "http://localhost:5000/notes";
             // console.log(note);
+            setIsPending(true);
     
             const res = await addNewNote(note, url);
             // console.log(res);
 
             if (res.success) {
-                setIsLoading(false);
+                setIsPending(false);
                 setMessages([res.data.message]);
                 setErrors([]);
                 isFormSubmitted.current = false;
             } else {
-                setIsLoading(false);
+                setIsPending(false);
                 setMessages([]);
                 setErrors([res.data.message]);
                 // isFormSubmitted.current = true;

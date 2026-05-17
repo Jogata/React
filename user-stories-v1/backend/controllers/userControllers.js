@@ -4,33 +4,38 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
 const getAllUsers = async (req, res) => {
-    const users = await User.find().select("-password").lean();
-
-    if (!users?.length) {
-        return res.status(200).json({ message: "No users found", data: [] });
+    try {
+        const users = await User.find().select("-password").lean();
+    
+        if (!users?.length) {
+            return res.status(200).json({ message: "No users found", data: [] });
+        }
+    
+        res.json({data: users});
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({message: "Server error"});
     }
-
-    res.json({data: users});
 }
 
 const createNewUser = async (req, res) => {
-    try {        
-        const { username, password, roles } = req.body;
+    const { username, password, roles } = req.body;
     
-        if (!username || !password || !Array.isArray(roles) || !roles.length) {
-            return res.status(400).json({ message: "All fields are required" });
-        }
-
-        if (username.length < 3) {
-            return res.status(400).json({message: "The username must be atleast 3 characters"});
-        }
+    if (!username || !password || !Array.isArray(roles) || !roles.length) {
+        return res.status(400).json({ message: "All fields are required" });
+    }
     
-        if (password.length < 6) {
-            return res.status(400).json({message: "The password must be atleast 6 characters"});
-        }
+    if (username.length < 3) {
+        return res.status(400).json({message: "The username must be atleast 3 characters"});
+    }
     
+    if (password.length < 6) {
+        return res.status(400).json({message: "The password must be atleast 6 characters"});
+    }
+    
+    try {
         const duplicate = await User.findOne({ username }).lean().exec();
-    
+        
         if (duplicate) {
             return res.status(409).json({ message: "Duplicate username" });
         }
@@ -47,35 +52,35 @@ const createNewUser = async (req, res) => {
             res.status(400).json({ message: "Invalid user data received" });
         }
     } catch (error) {
-        // console.log(error);
-        // console.log(error.name);
         if (error.name == "ValidationError") {
-            // console.log(error.message);
             res.status(400).json({message: error.message});
+        } else {
+            console.log(error.message);
+            res.status(500).json({message: "Server error"});
         }
     }
 }
 
 const updateUser = async (req, res) => {
+    const { id, username, roles, active, password } = req.body;
+    
+    if (!id || !mongoose.isValidObjectId(id)) {
+        return res.status(400).json({ message: "Invalid user ID" });
+    }
+    
+    if (!username || !Array.isArray(roles) || !roles.length || typeof active !== "boolean") {
+        return res.status(400).json({ message: "All fields except password are required" });
+    }
+    
+    if (username.length < 3) {
+        return res.status(400).json({message: "The username must be atleast 3 characters"});
+    }
+    
+    if (password.length < 6) {
+        return res.status(400).json({message: "The password must be atleast 6 characters"});
+    }
+    
     try {
-        const { id, username, roles, active, password } = req.body;
-
-        if (!id || !mongoose.isValidObjectId(id)) {
-            return res.status(400).json({ message: "Invalid user ID" });
-        }
-
-        if (!username || !Array.isArray(roles) || !roles.length || typeof active !== "boolean") {
-            return res.status(400).json({ message: "All fields except password are required" });
-        }
-
-        if (username.length < 3) {
-            return res.status(400).json({message: "The username must be atleast 3 characters"});
-        }
-    
-        if (password.length < 6) {
-            return res.status(400).json({message: "The password must be atleast 6 characters"});
-        }
-    
         const user = await User.findById(id).exec();
     
         if (!user) {
@@ -100,34 +105,33 @@ const updateUser = async (req, res) => {
     
         res.json({ message: `${updatedUser.username} updated` });    
     } catch (error) {
-        // console.log(error);
-        // console.log(error.message);
-        // console.log(error);
         if (error.name == "ValidationError") {
-            // console.log(error.message);
             res.status(400).json({message: error.message});
+        } else {
+            console.log(error.message);
+            res.status(500).json({message: "Server error"});
         }
     }
 }
 
 const deleteUser = async (req, res) => {
+    const { id } = req.body;
+    
+    if (!id) {
+        return res.status(400).json({ message: "User ID Required" });
+    }
+    
+    if (!mongoose.isValidObjectId(id)) {
+        return res.status(400).json({ message: "Invalid user ID" });
+    }
+    
+    const user = await User.findById(id).exec();
+    
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
+    
     try {
-        const { id } = req.body;
-
-        if (!id) {
-            return res.status(400).json({ message: "User ID Required" });
-        }
-
-        if (!mongoose.isValidObjectId(id)) {
-            return res.status(400).json({ message: "Invalid user ID" });
-        }
-
-        const user = await User.findById(id).exec();
-    
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-    
         const note = await Note.findOne({ user: id }).lean().exec();
     
         if (note) {
@@ -140,7 +144,8 @@ const deleteUser = async (req, res) => {
     
         res.status(200).json({message});
     } catch (error) {
-        console.log(error);
+        console.log(error.message);
+        res.status(500).json({message: "Server error"});
     }
 }
 

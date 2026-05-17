@@ -18,6 +18,7 @@ const getAllNotes = async (req, res) => {
         res.json({ data: notesWithUser });
     } catch (error) {
         console.log(error.message);
+        res.status(500).json({message: "Server error"});
     }
 }
 
@@ -62,14 +63,15 @@ const createNewNote = async (req, res) => {
         }        
     } catch (error) {
         if (error.name == "ValidationError") {
-            // console.log(error.message);
             res.status(400).json({message: error.message});
+        } else {
+            console.log(error.message);
+            res.status(500).json({message: "Server error"});
         }
     }    
 }
 
 const updateNote = async (req, res) => {
-    // console.log("todo updateNote");
     const { id, userId, title, text, completed } = req.body;
 
     if (!id || !userId || !title || !text || typeof completed !== "boolean") {
@@ -94,7 +96,6 @@ const updateNote = async (req, res) => {
     
     try {
         const note = await Note.findById(id).exec();
-        // console.log(note);
         
         if (!note) {
             return res.status(400).json({ message: "Note not found" });
@@ -112,7 +113,6 @@ const updateNote = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
         
-        // console.log(user);
         note.user = userId;
         note.title = title;
         note.text = text;
@@ -123,16 +123,16 @@ const updateNote = async (req, res) => {
         res.json({message: `"${updatedNote.title}" updated`});        
     } catch (error) {
         if (error.name == "ValidationError") {
-            // console.log(error.message);
             res.status(400).json({message: error.message});
+        } else {
+            console.log(error.message);
+            res.status(500).json({message: "Server error"});
         }
     }
 }
 
 const deleteNote = async (req, res) => {
-    // console.log("todo deleteNote");
     const { id } = req.body;
-    // console.log(id);
 
     if (!id) {
         return res.status(400).json({ message: "Note ID required" });
@@ -142,18 +142,22 @@ const deleteNote = async (req, res) => {
         return res.status(400).json({ message: "Invalid note ID" });
     }
     
-    const note = await Note.findById(id).exec();
-    
-    if (!note) {
-        return res.status(404).json({ message: "Note not found" });
+    try {
+        const note = await Note.findById(id).exec();
+        
+        if (!note) {
+            return res.status(404).json({ message: "Note not found" });
+        }
+        
+        const result = await Note.findByIdAndDelete(id);
+        
+        const message = `Note "${result.title}" with ID ${result._id} deleted`;
+        
+        res.status(200).json({message});
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({message: "Server error"});
     }
-    
-    const result = await Note.findByIdAndDelete(id);
-    // console.log(result);
-    
-    const message = `Note "${result.title}" with ID ${result._id} deleted`;
-    
-    res.status(200).json({message});
 }
 
 module.exports = {
