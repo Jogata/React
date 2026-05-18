@@ -12,28 +12,17 @@ async function getAllUsers(url) {
         // const result = await res.json();
         console.log("all users: ", res);
 
-        // throw new Error("test message");
-        
-        // if (!res.ok) {
-        //     throw new Error(`HTTP error! status: ${res.status}`);
-        // }
-
         // if (res.ok) {
         //     onSuccess(result.data);
         // } else {
         //     throw new Error(data);
         // }
         
-        // const result = await res.json();
-
         return res;
 
     } catch (error) {
         console.log(error.message);
         // onFail(error);
-        // return new Promise((resolve, reject) => {
-            // resolve({message: error.message});
-        // });
     }
 }
 

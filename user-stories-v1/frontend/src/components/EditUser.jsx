@@ -7,12 +7,14 @@ async function getAllUsers(url) {
     try {
         const res = await fetch(url);
     
-        const result = await res.json();
-        console.log("all users: ", result.data);
+        // const result = await res.json();
+        console.log("all users: ", res);
 
-        if (res.ok) {
-            return result.data;
-        }
+        // if (res.ok) {
+            // return result.data;
+        // }
+
+        return res;
 
     } catch (error) {
         console.log(error);
@@ -22,7 +24,9 @@ async function getAllUsers(url) {
 const EditUser = () => {
     const { userId } = useParams();
     const [ user, setUser ] = useState(null);
-    const [ exist, setExist ] = useState(true);
+    // const [ exist, setExist ] = useState(true);
+    const [ status, setStatus ] = useState("loading");
+    const [messages, setMessages] = useState([]);
 
     useEffect(() => {
         loadUser();
@@ -30,27 +34,45 @@ const EditUser = () => {
         async function loadUser() {
             const res = await getAllUsers("http://localhost:5000/users");
 
-            if (Array.isArray(res)) {
-                const user = res.find(user => user._id == userId);
-    
-                if (user) {
-                    setExist(true);
-                    setUser(user);
-                } else {
-                    setExist(false);
-                }
+            if (!res.ok) {
+                setStatus("error");
             } else {
-                // TODO
-                setExist(false);
+                const result = await res.json();
+                const users = result.data;
+
+                if (Array.isArray(users)) {
+                    const user = users.find(user => user._id == userId);
+        
+                    if (user) {
+                        // setExist(true);
+                        setStatus("success");
+                        setUser(user);
+                    } else {
+                        setStatus("fail");
+                        // setExist(false);
+                        setMessages(["User doesn't exist"]);
+                    }
+                } else {
+                    // TODO
+                    // setExist(false);
+                    setStatus("error");
+                    setMessages([result.message]);
+                }
             }
+
         }
     }, [])
 
-    if (!exist) {
+    if (status == "loading") {
+        return <Loader />;
+    }
+
+    // if (!exist) {
+    if (status == "fail") {
         return <UserDoesntExist id={userId} />;
     }
 
-    const content = user ? <EditUserForm user={user} /> : <Loader />;
+    const content = status == "success" ? <EditUserForm user={user} /> : <p>{messages[0]}</p>;
 
     return content;
 }

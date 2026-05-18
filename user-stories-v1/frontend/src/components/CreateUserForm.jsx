@@ -16,13 +16,15 @@ async function addNewUser(user, url = "http://localhost:5000/users") {
             body: JSON.stringify(user),
         });
 
-        const data = await res.json();
-
-        return {
-            success: res.ok,
-            data
-        };
-
+        // const data = await res.json();
+        
+        // return {
+        //     success: res.ok,
+        //     data
+        // };
+            
+        return res;
+        
     } catch (error) {
         console.log(error.message);
     }
