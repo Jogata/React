@@ -3,30 +3,46 @@ import User from "./User";
 import Loader from "./Loader";
 import { Link } from "react-router-dom";
 
-async function getAllUsers(url, onSuccess) {
+// async function getAllUsers(url, onSuccess, onFail) {
+async function getAllUsers(url) {
     try {
         const res = await fetch(url);
         console.log(res.ok);
     
-        const data = await res.json();
-        console.log("all users: ", data.data);
+        // const result = await res.json();
+        console.log("all users: ", res);
 
-        if (res.ok) {
-            onSuccess(data.data);
-        } else {
-            throw new Error(data);
-        }
+        // throw new Error("test message");
+        
+        // if (!res.ok) {
+        //     throw new Error(`HTTP error! status: ${res.status}`);
+        // }
+
+        // if (res.ok) {
+        //     onSuccess(result.data);
+        // } else {
+        //     throw new Error(data);
+        // }
+        
+        // const result = await res.json();
+
+        return res;
 
     } catch (error) {
-        // console.log(error);
-        onFail(error);
+        console.log(error.message);
+        // onFail(error);
+        // return new Promise((resolve, reject) => {
+            // resolve({message: error.message});
+        // });
     }
 }
 
 const Users = () => {
     const [users, setUsers] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [isSuccess, setIsSuccess] = useState(false);
+    const [messages, setMessages] = useState([]);
+    const [status, setStatus] = useState("loading");
+    // const [isLoading, setIsLoading] = useState(false);
+    // const [isSuccess, setIsSuccess] = useState(false);
 
     const {
         isError,
@@ -37,31 +53,55 @@ const Users = () => {
     };
 
     useEffect(() => {
-        setIsLoading(true);
-        getAllUsers("http://localhost:5000/users", onSuccess, onFail);
+        // getAllUsers("http://localhost:5000/users", onSuccess, onFail);
+        setUpData();
+        
+        async function setUpData() {
+            // setIsLoading(true);
+            setStatus("loading");
+            const res = await getAllUsers("http://localhost:5000/users");
+            console.log(res);
+            const result = await res.json();
+            console.log(result);
 
-        function onSuccess(data) {
-            setUsers(data);
-            setIsLoading(false);
-            setIsSuccess(true);
+            if (!res.ok) {
+                setStatus("error");
+                setMessages([result.message]);
+                // setIsLoading(false);
+            } else {
+                setStatus("success");
+                setUsers(result.data);
+                // setIsLoading(false);
+                // setIsSuccess(true);
+            }
         }
 
-        function onFail(err) {
-            console.log(err.message);
-            setIsLoading(false);
-            setIsSuccess(false);
-        }
+        // function onSuccess(data) {
+        //     setUsers(data);
+        //     setIsLoading(false);
+        //     setIsSuccess(true);
+        // }
+
+        // function onFail(err) {
+        //     console.log(err.message);
+        //     setIsLoading(false);
+        //     setIsSuccess(false);
+        // }
     }, [])
 
     let content;
 
-    if (isLoading) content = <Loader />
+    // if (isLoading) content = <Loader />
+    if (status == "loading") content = <Loader />
 
-    if (isError) {
-        content = <p>{error.message}</p>
+    // if (isError) {
+    if (status == "error") {
+        // content = <p>{error.message}</p>
+        content = <p>{messages[0]}</p>
     }
 
-    if (isSuccess) {
+    // if (isSuccess) {
+    if (status == "success") {
         const tableContent = users.length > 0 ? (
             users.map(user => (
                 <User user={user} key={user._id} />
