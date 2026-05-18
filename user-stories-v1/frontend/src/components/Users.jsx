@@ -33,13 +33,13 @@ const Users = () => {
     // const [isLoading, setIsLoading] = useState(false);
     // const [isSuccess, setIsSuccess] = useState(false);
 
-    const {
-        isError,
-        error
-    } = {
-        isError: false,
-        error: {}
-    };
+    // const {
+    //     isError,
+    //     error
+    // } = {
+    //     isError: false,
+    //     error: {}
+    // };
 
     useEffect(() => {
         // getAllUsers("http://localhost:5000/users", onSuccess, onFail);

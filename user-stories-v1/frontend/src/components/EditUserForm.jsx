@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { ROLES } from "../config/roles";
 
 const url = "http://localhost:5000/users";
@@ -14,6 +14,10 @@ const EditUserForm = ({ user }) => {
     const [roles, setRoles] = useState(user.roles);
     // const [roles, setRoles] = useState([]);
     const [active, setActive] = useState(user.active);
+    const [isPending, setIsPending] = useState(false);
+    const [errors, setErrors] = useState([]);
+    const [messages, setMessages] = useState([]);
+    const formSubmitedOnce = useRef(false);
 
     const navigate = useNavigate();
 
@@ -40,20 +44,25 @@ const EditUserForm = ({ user }) => {
     }
 
     const updateUser = async (user) => {
-        const res = await fetch(url, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(user),
-        });
+        try {
+            const res = await fetch(url, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(user),
+            });
+    
+            const data = await res.json();
+            console.log(data);
 
-        const data = await res.json();
-        console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
     }
     
     const deleteUser = async () => {
-        console.log("deleteUser");
+        // console.log("deleteUser");
         try {
             const res = await fetch(url, {
                 method: "DELETE",
@@ -63,14 +72,17 @@ const EditUserForm = ({ user }) => {
                 body: JSON.stringify({id: user._id}),
             });
 
-            const data = await res.json();
+            // const data = await res.json();
             
-            if (res.ok) {
-                console.log(data);
-                navigate("/dash/users");
-            } else {
-                console.log(data);
-            }
+            // if (res.ok) {
+            //     console.log(data);
+            //     navigate("/dash/users");
+            // } else {
+            //     console.log(data);
+            // }
+
+            return res;
+
         } catch (error) {
             console.log(error);
         }
@@ -82,7 +94,7 @@ const EditUserForm = ({ user }) => {
             setUsername("");
             setPassword("");
             setRoles([]);
-            navigate("/dash/users");
+            // navigate("/dash/users");
         }
 
     }, [isSuccess, isDelSuccess, navigate])
@@ -109,7 +121,18 @@ const EditUserForm = ({ user }) => {
     }
 
     const onDeleteUserClicked = async () => {
-        await deleteUser({ id: user._id });
+        try {
+            const res = await deleteUser({ id: user._id });
+            console.log(res);
+            const result = await res.json();
+            if (res.ok) {
+                console.log("todo redirect to all users");
+            } else {
+                console.log(result.message);
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const options = Object.values(ROLES).map(role => {
@@ -127,7 +150,9 @@ const EditUserForm = ({ user }) => {
     const validUsername = USER_REGEX.test(username);
     const validPassword = PWD_REGEX.test(password);
 
-    const errClass = (isError || isDelError) ? "errmsg" : "offscreen";        //TODO
+    // const errClass = (isError || isDelError) ? "errmsg" : "offscreen";
+    const errClass = errors.length > 0 ? "errmsg" : "offscreen";
+    const successMsgClass = messages.length > 0 ? "errmsg" : "offscreen";
     const validUserClass = !validUsername ? "invalid" : "valid";
     const validRolesClass = !Boolean(roles.length) ? "invalid" : "valid";
     let validPwdClass = "not-included";
@@ -139,11 +164,24 @@ const EditUserForm = ({ user }) => {
         canSave = [roles.length, validUsername].every(Boolean) && !isLoading;
     }
 
-    const errContent = (error?.message || delerror?.message) ?? "";
+    // const errContent = (error?.message || delerror?.message) ?? "";
 
     const content = (
         <>
-            <p className={errClass}>{errContent}</p>
+            {/* <p className={errClass}>{errContent}</p> */}
+            <div className="messages">
+                <div className={errClass}>
+                    {errors.map((err, index) => {
+                        return <p key={index}>{err.message}</p>
+                    })}
+                </div>
+
+                <div className={successMsgClass}>
+                    {messages.map((message, index) => {
+                        return <p key={index}>{message.message}</p>
+                    })}
+                </div>
+            </div>
 
             <form className="form" onSubmit={e => e.preventDefault()}>
                 <div className="form-header">
@@ -220,6 +258,12 @@ const EditUserForm = ({ user }) => {
                 </select>
 
             </form>
+
+            <div className="links">
+                <Link to="/dash/users" className="redirect-link">
+                    Browse all users
+                </Link>
+            </div>
         </>
     )
 
