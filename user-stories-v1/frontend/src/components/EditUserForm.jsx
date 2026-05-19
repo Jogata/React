@@ -61,15 +61,16 @@ const EditUserForm = ({ user }) => {
         }
     }
     
-    const deleteUser = async () => {
+    const deleteUser = async ({id}) => {
         // console.log("deleteUser");
         try {
+            throw new Error("test");
             const res = await fetch(url, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({id: user._id}),
+                body: JSON.stringify({id}),
             });
 
             // const data = await res.json();
@@ -85,6 +86,7 @@ const EditUserForm = ({ user }) => {
 
         } catch (error) {
             console.log(error);
+            setErrors([{message: error.message}]);
         }
     }
 
@@ -113,6 +115,7 @@ const EditUserForm = ({ user }) => {
     const onActiveChanged = () => setActive(prev => !prev);
 
     const onSaveUserClicked = async () => {
+        setIsPending(true);
         if (password) {
             await updateUser({ id: user._id, username, password, roles, active });
         } else {
@@ -122,13 +125,26 @@ const EditUserForm = ({ user }) => {
 
     const onDeleteUserClicked = async () => {
         try {
+            setIsPending(true);
             const res = await deleteUser({ id: user._id });
+            // const res = await deleteUser({ id: "5" });
             console.log(res);
             const result = await res.json();
+
             if (res.ok) {
-                console.log("todo redirect to all users");
+                // console.log("todo redirect to all users");
+                // setMessages([result.message]);
+                // setErrors([]);
+                navigate("/dash/users", {
+                    state: {message: result}
+                })
             } else {
-                console.log(result.message);
+                // console.log(result.message);
+                console.log("server errors");
+                // setIsSuccess(false);
+                setIsPending(false);
+                setMessages([]);
+                setErrors([result]);
             }
         } catch (error) {
             console.log(error);

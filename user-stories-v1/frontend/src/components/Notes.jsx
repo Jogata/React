@@ -22,6 +22,7 @@ async function getAllNotes(url, onSuccess) {
 
 const Notes = () => {
     const [notes, setNotes] = useState([]);
+    // tofix
     const [isLoading, setIsLoading] = useState(true);
     const isError = false;
     const error = {};

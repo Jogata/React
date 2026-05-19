@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import User from "./User";
 import Loader from "./Loader";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 // async function getAllUsers(url, onSuccess, onFail) {
 async function getAllUsers(url) {
@@ -32,14 +32,6 @@ const Users = () => {
     const [status, setStatus] = useState("loading");
     // const [isLoading, setIsLoading] = useState(false);
     // const [isSuccess, setIsSuccess] = useState(false);
-
-    // const {
-    //     isError,
-    //     error
-    // } = {
-    //     isError: false,
-    //     error: {}
-    // };
 
     useEffect(() => {
         // getAllUsers("http://localhost:5000/users", onSuccess, onFail);
