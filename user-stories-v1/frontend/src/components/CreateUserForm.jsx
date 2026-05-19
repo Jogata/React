@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-// import { useNavigate } from "react-router-dom";
 import { ROLES } from "../config/roles";
 import { Link } from "react-router-dom";
 
@@ -16,24 +15,19 @@ async function addNewUser(user, url = "http://localhost:5000/users") {
             body: JSON.stringify(user),
         });
 
-        // const data = await res.json();
-        
-        // return {
-        //     success: res.ok,
-        //     data
-        // };
+        // throw new Error("test");
             
         return res;
 
     } catch (error) {
         console.log(error.message);
+        throw new Error(error.message);
     }
 }
 
 const CreateUserForm = () => {
     // const [username, setUsername] = useState("");
     const [username, setUsername] = useState("user8 ");
-    // const [username, setUsername] = useState({});
     // const [password, setPassword] = useState("");
     const [password, setPassword] = useState("pass1238");
     const [roles, setRoles] = useState(["Employee"]);
@@ -43,19 +37,13 @@ const CreateUserForm = () => {
     const [errors, setErrors] = useState([]);
     const [messages, setMessages] = useState([]);
     const formSubmitedOnce = useRef(false);
-    // console.log(isSuccess);
-
-    // const navigate = useNavigate();
 
     useEffect(() => {
-        // if (isSuccess) {
         if (messages.length > 0) {
-            // TOFIX
             setUsername("");
             setPassword("");
             setRoles(["Employee"]);
         }
-    // }, [isSuccess])
     }, [messages])
 
     const onUsernameChanged = e => setUsername(e.target.value);
@@ -86,12 +74,8 @@ const CreateUserForm = () => {
         validRolesClass = !Boolean(roles.length) ? "invalid" : "valid";
     }
 
-    // const canSave = [roles.length, validUsername, validPassword].every(Boolean) && !isLoading;
-
     const onSaveUserClicked = async (e) => {
         e.preventDefault();
-        // console.log("create user clicked");
-        // console.log(username.length);
 
         const validationErrors = [];
 
@@ -133,44 +117,34 @@ const CreateUserForm = () => {
             formSubmitedOnce.current = true;
 
             if (validationErrors.length == 0) {
-                // console.log("create new user req sended");
-                // setErrors([]);
-                setIsPending(true);
-                const res = await addNewUser({ username, password, roles });
-                // console.log(res);
-                const result = await res.json();
+                try {
+                    setIsPending(true);
 
-                if (res.ok) {
-                    // setIsSuccess(true);
-                    setIsPending(false);
-                    setMessages([result]);
-                    setErrors([]);
+                    const res = await addNewUser({ username, password, roles });
+                    const result = await res.json();
+    
+                    if (res.ok) {
+                        console.log("browser errors", result);
+                        setIsPending(false);
+                        setMessages([result]);
+                        setErrors([]);
+                        formSubmitedOnce.current = false;
+                    } else {
+                        console.log("server errors", result);
+                        setIsPending(false);
+                        setMessages([]);
+                        setErrors([result]);
+                        // formSubmitedOnce.current = false;
+                    }
+                } catch (error) {
+                    console.log(error.message);
                     formSubmitedOnce.current = false;
-                    // console.log(formSubmitedOnce.current);
-                } else {
-                    console.log("server errors", result);
-                    // setIsSuccess(false);
                     setIsPending(false);
                     setMessages([]);
-                    setErrors([result]);
+                    setErrors([error]);
                 }
             } else {
-                // console.log("fix the form");
                 setMessages([]);
-                // setIsSuccess(false);
-                // const formErrors = [];
-    
-                // if (!validUsername) {
-                //     formErrors.push({message: "fix username"});
-                //     console.log("fix username");
-                // }
-    
-                // if (!validPassword) {
-                //     formErrors.push({message: "fix password"});
-                //     console.log("fix password aded");
-                // }
-    
-                // setErrors(formErrors);
                 setErrors(validationErrors);
             }
         }

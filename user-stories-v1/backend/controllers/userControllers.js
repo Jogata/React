@@ -33,6 +33,16 @@ const createNewUser = async (req, res) => {
         return res.status(400).json({message: "The password must be atleast 6 characters"});
     }
 
+    const USER_REGEX = /^[A-z0-9]{3,20}$/;
+    if (!USER_REGEX.test(username)) {
+        return res.status(400).json({message: "The username can contains only letters and numbers"});
+    }
+    
+    const PWD_REGEX = /^[A-z0-9!@#$%]{6,12}$/;
+    if (!PWD_REGEX.test(password)) {
+        return res.status(400).json({message: "The password can contains only letters, numbers and !@#$%"});
+    }
+    
     try {
         const duplicate = await User.findOne({ username }).lean().exec();
         
@@ -76,8 +86,20 @@ const updateUser = async (req, res) => {
         return res.status(400).json({message: "The username must be atleast 3 characters"});
     }
 
-    if (password.length < 6) {
-        return res.status(400).json({message: "The password must be atleast 6 characters"});
+    const USER_REGEX = /^[A-z0-9]{3,20}$/;
+    if (!USER_REGEX.test(username)) {
+        return res.status(400).json({message: "The username can contains only letters and numbers"});
+    }
+
+    if (password) {
+        if (password.length < 6) {
+            return res.status(400).json({message: "The password must be atleast 6 characters"});
+        }
+        
+        const PWD_REGEX = /^[A-z0-9!@#$%]{6,12}$/;
+        if (!PWD_REGEX.test(password)) {
+            return res.status(400).json({message: "The password can contains only letters, numbers and !@#$%"});
+        }
     }
 
     try {
