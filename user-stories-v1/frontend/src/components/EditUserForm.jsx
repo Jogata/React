@@ -64,7 +64,7 @@ const EditUserForm = ({ user }) => {
     const deleteUser = async ({id}) => {
         // console.log("deleteUser");
         try {
-            throw new Error("test");
+            // throw new Error("test");
             const res = await fetch(url, {
                 method: "DELETE",
                 headers: {
@@ -86,7 +86,8 @@ const EditUserForm = ({ user }) => {
 
         } catch (error) {
             console.log(error);
-            setErrors([{message: error.message}]);
+            throw new Error(error.message);
+            // setErrors([{message: error.message}]);
         }
     }
 
@@ -128,7 +129,7 @@ const EditUserForm = ({ user }) => {
             setIsPending(true);
             const res = await deleteUser({ id: user._id });
             // const res = await deleteUser({ id: "5" });
-            console.log(res);
+            // console.log(res);
             const result = await res.json();
 
             if (res.ok) {
@@ -136,7 +137,7 @@ const EditUserForm = ({ user }) => {
                 // setMessages([result.message]);
                 // setErrors([]);
                 navigate("/dash/users", {
-                    state: {message: result}
+                    state: {message: result.message}
                 })
             } else {
                 // console.log(result.message);
@@ -148,6 +149,7 @@ const EditUserForm = ({ user }) => {
             }
         } catch (error) {
             console.log(error);
+            setErrors([{message: error.message}]);
         }
     }
 
@@ -162,7 +164,7 @@ const EditUserForm = ({ user }) => {
         )
     })
 
-    let canSave;
+    // let canSave;
     const validUsername = USER_REGEX.test(username);
     const validPassword = PWD_REGEX.test(password);
 
@@ -175,10 +177,11 @@ const EditUserForm = ({ user }) => {
 
     if (password) {
         validPwdClass = !validPassword ? "invalid" : "valid";
-        canSave = [roles.length, validUsername, validPassword].every(Boolean) && !isLoading;
-    } else {
-        canSave = [roles.length, validUsername].every(Boolean) && !isLoading;
+        // canSave = [roles.length, validUsername, validPassword].every(Boolean) && !isLoading;
     }
+    //  else {
+        // canSave = [roles.length, validUsername].every(Boolean) && !isLoading;
+    // }
 
     // const errContent = (error?.message || delerror?.message) ?? "";
 

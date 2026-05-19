@@ -32,7 +32,7 @@ const createNewUser = async (req, res) => {
     if (password.length < 6) {
         return res.status(400).json({message: "The password must be atleast 6 characters"});
     }
-    
+
     try {
         const duplicate = await User.findOne({ username }).lean().exec();
         
@@ -75,11 +75,11 @@ const updateUser = async (req, res) => {
     if (username.length < 3) {
         return res.status(400).json({message: "The username must be atleast 3 characters"});
     }
-    
+
     if (password.length < 6) {
         return res.status(400).json({message: "The password must be atleast 6 characters"});
     }
-    
+
     try {
         const user = await User.findById(id).exec();
     

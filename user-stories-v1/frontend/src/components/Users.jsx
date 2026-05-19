@@ -10,12 +10,12 @@ async function getAllUsers(url) {
         console.log(res.ok);
     
         // const result = await res.json();
-        console.log("all users: ", res);
+        // console.log("all users: ", res);
 
         // if (res.ok) {
         //     onSuccess(result.data);
         // } else {
-        //     throw new Error(data);
+            // throw new Error("test");
         // }
         
         return res;
@@ -23,12 +23,26 @@ async function getAllUsers(url) {
     } catch (error) {
         console.log(error.message);
         // onFail(error);
+        throw new Error(error.message)
     }
 }
 
+const setUpMessages = (location) => {
+    const initialState = location.state;
+    
+    if (initialState && initialState.message) {
+        return [initialState];
+    }
+
+    return [];
+}
+
 const Users = () => {
+    const location = useLocation();
+    // console.log(location);
     const [users, setUsers] = useState([]);
-    const [messages, setMessages] = useState([]);
+    const [errors, setErrors] = useState([]);
+    const messages = setUpMessages(location);
     const [status, setStatus] = useState("loading");
     // const [isLoading, setIsLoading] = useState(false);
     // const [isSuccess, setIsSuccess] = useState(false);
@@ -39,21 +53,27 @@ const Users = () => {
         
         async function setUpData() {
             // setIsLoading(true);
-            setStatus("loading");
-            const res = await getAllUsers("http://localhost:5000/users");
-            console.log(res);
-            const result = await res.json();
-            console.log(result);
-
-            if (!res.ok) {
+            try {
+                setStatus("loading");
+                const res = await getAllUsers("http://localhost:5000/users");
+                // console.log(res);
+                const result = await res.json();
+                // console.log(result);
+    
+                if (!res.ok) {
+                    setStatus("error");
+                    setErrors([result]);
+                    // setIsLoading(false);
+                } else {
+                    setStatus("success");
+                    setUsers(result.data);
+                    // setIsLoading(false);
+                    // setIsSuccess(true);
+                }
+            } catch (error) {
+                console.log("server error");
                 setStatus("error");
-                setMessages([result.message]);
-                // setIsLoading(false);
-            } else {
-                setStatus("success");
-                setUsers(result.data);
-                // setIsLoading(false);
-                // setIsSuccess(true);
+                setErrors([error.message]);
             }
         }
 
@@ -70,6 +90,9 @@ const Users = () => {
         // }
     }, [])
 
+    // const errClass = errors.length > 0 ? "errmsg" : "offscreen";
+    const successMsgClass = messages.length > 0 ? "successmsg" : "offscreen";
+
     let content;
 
     // if (isLoading) content = <Loader />
@@ -78,7 +101,7 @@ const Users = () => {
     // if (isError) {
     if (status == "error") {
         // content = <p>{error.message}</p>
-        content = <p>{messages[0]}</p>
+        content = <p>{errors[0]}</p>
     }
 
     // if (isSuccess) {
@@ -120,7 +143,24 @@ const Users = () => {
         )
     }
 
-    return content;
+    return (
+        <>
+            <div className="messages">
+                {/* <div className={errClass}>
+                    {errors.map((err, index) => {
+                        return <p key={index}>{err.message}</p>
+                    })}
+                </div> */}
+                <div className={successMsgClass}>
+                    {messages.map((message, index) => {
+                        // console.log(message);
+                        return <p key={index}>{message.message}</p>
+                    })}
+                </div>
+            </div>
+            {content}
+        </>
+    );
 }
 
 const EmptyRow = () => {
