@@ -6,18 +6,7 @@ import Note from "./Note";
 async function getAllNotes(url) {
     try {
         const res = await fetch(url);
-        // console.log(res);
-    
-        // const data = await res.json();
-        // console.log("all notes: ", data);
-
-        // if (res.ok) {
-        //     onSuccess(data.data);
-        // }
-        // throw new Error("test");
-
         return res;
-
     } catch (error) {
         console.log(error);
         throw new Error(error.message);
@@ -36,25 +25,13 @@ const setUpMessages = (location) => {
 
 const Notes = () => {
     const [notes, setNotes] = useState([]);
-    // tofix
-    // const [isLoading, setIsLoading] = useState(true);
-    // const isError = false;
-    // const error = {};
-    // const [isSuccess, setIsSuccess] = useState(false);
     const [status, setStatus] = useState("loading");
     const [errors, setErrors] = useState([]);
     
     const location = useLocation();
-    // const messages = [];
-    // console.log(location);
     const messages = setUpMessages(location);
 
-    // if (location.state?.message) {
-    //     messages.push(location.state.message);
-    // }
-
     useEffect(() => {
-        // setIsLoading(true);
         setUpData();
 
         async function setUpData() {
@@ -68,12 +45,6 @@ const Notes = () => {
                     setStatus("success");
                     setNotes(result.data);
                 }
-                // function onSuccess(data) {
-                    // setNotes(data);
-                    // setNotes([]);
-                    // setIsLoading(false);
-                    // setIsSuccess(true);
-                // }
             } catch (error) {
                 console.log(error.message);
                 setStatus("error");
@@ -91,7 +62,11 @@ const Notes = () => {
     } else if (status == "error") {
         content = <p>{errors[0].message}</p>
     } else if (status == "success") {
-        const tableContent = notes.length ? <TableRows notes={notes} /> : <EmptyRow />
+        const tableContent = notes.length ? (
+            <TableRows notes={notes} />
+        ) : (
+            <EmptyRow />
+        )
         
         content = (
             <table className="table notes">

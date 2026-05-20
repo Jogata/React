@@ -3,37 +3,44 @@ import { Link, useParams } from "react-router-dom";
 import EditNoteForm from "./EditNoteForm";
 import Loader from "./Loader";
 
-async function getAllUsers(url, onSuccess) {
+async function getAllUsers(url) {
     try {
         const res = await fetch(url);
     
-        const data = await res.json();
-        console.log("all users: ", data);
+        // const data = await res.json();
+        // console.log("all users: ", data);
 
-        if (res.ok) {
-            onSuccess(data);
-            // onSuccess({data: []});
-            return data;
-        }
+        // if (res.ok) {
+        //     onSuccess(data);
+        //     return data;
+        // }
+        // throw new Error("test users");
+
+        return res;
 
     } catch (error) {
         console.log(error);
+        throw new Error(error.message);
     }
 }
 
-async function getAllNotes(url, onSuccess) {
+async function getAllNotes(url) {
     try {
         const res = await fetch(url);
     
-        const data = await res.json();
-        console.log("all notes: ", data);
+        // const data = await res.json();
+        // console.log("all notes: ", data);
 
-        if (res.ok) {
-            onSuccess(data);
-        }
+        // if (res.ok) {
+        //     onSuccess(data);
+        // }
+        // throw new Error("test notes");
+
+        return res;
 
     } catch (error) {
         console.log(error);
+        throw new Error(error.message);
     }
 }
 
@@ -41,40 +48,70 @@ const EditNote = () => {
     const { id } = useParams();
     const [users, setUsers] = useState(null);
     const [notes, setNotes] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
+    // const [isLoading, setIsLoading] = useState(true);
+    const [status, setStatus] = useState("loading");
+    const [errors, setErrors] = useState([]);
 
     let note = null;
     if (notes) {
         note = notes.find(note => note._id == id);
-        // console.log(note);
     }
 
     useEffect(() => {
         setUpInitialData();
 
         async function setUpInitialData() {
-            const res = await getAllUsers("http://localhost:5000/users", onGetUsersSuccess);
-            console.log(res);
-
-            if (res.data.length) {
-                await getAllNotes("http://localhost:5000/notes", onGetNotesSuccess);
-                setIsLoading(false);
+            try {
+                // const res = await getAllUsers("http://localhost:5000/users", onGetUsersSuccess);
+                const res = await getAllUsers("http://localhost:5000/users");
+                
+                if (res.ok) {
+                    const result = await res.json();
+                    // console.log(result);
+                    setUsers(result.data);
+                    
+                    if (result.data.length) {
+                        // const result = await getAllNotes("http://localhost:5000/notes", onGetNotesSuccess);
+                        const res = await getAllNotes("http://localhost:5000/notes");
+                        
+                        if (res.ok) {
+                            const result = await res.json();
+                            setNotes(result.data);
+                            setStatus("success");
+                        } else {
+                            setStatus("error");
+                            setErrors([res.message]);
+                        }
+                    }
+                } else {
+                    setStatus("error");
+                    setErrors([res.message]);
+                }
+                
+                // setIsLoading(false);
+                // setStatus();
+            } catch (error) {
+                console.log(error.message);
+                setStatus("error");
+                setErrors([error.message]);
             }
 
-            function onGetUsersSuccess(data) {
-                setUsers(data.data);
-            }
+            // function onGetUsersSuccess(data) {
+            //     setUsers(data.data);
+            // }
     
-            function onGetNotesSuccess(data) {
-                setNotes(data.data);
-            }
+            // function onGetNotesSuccess(data) {
+            //     setNotes(data.data);
+            // }
         }
     }, [])
 
     let content = null;
 
-    if (isLoading) {
+    if (status == "loading") {
         content = <Loader />;
+    } else if (status == "error") {
+        content = <p>{errors[0]}</p>
     } else if (users) {
         if (users.length == 0) {
             content = <NotAvailableSection />;
