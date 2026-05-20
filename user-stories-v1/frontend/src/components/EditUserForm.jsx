@@ -6,6 +6,56 @@ const url = "http://localhost:5000/users";
 const USER_REGEX = /^[A-z0-9]{3,20}$/;
 const PWD_REGEX = /^[A-z0-9!@#$%]{4,12}$/;
 
+const updateUser = async (user) => {
+    try {
+        const res = await fetch(url, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(user),
+        });
+
+        // const data = await res.json();
+        // console.log(data);
+        return res;
+
+    } catch (error) {
+        console.log(error);
+        throw new Error(error.message);
+    }
+}
+
+const deleteUser = async ({id}) => {
+    // console.log("deleteUser");
+    try {
+        // throw new Error("test");
+        const res = await fetch(url, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({id}),
+        });
+
+        // const data = await res.json();
+        
+        // if (res.ok) {
+        //     console.log(data);
+        //     navigate("/dash/users");
+        // } else {
+        //     console.log(data);
+        // }
+
+        return res;
+
+    } catch (error) {
+        console.log(error);
+        throw new Error(error.message);
+        // setErrors([{message: error.message}]);
+    }
+}
+
 const EditUserForm = ({ user }) => {
     const [username, setUsername] = useState(user.username);
     // const [username, setUsername] = useState("too long username - the input has to pulse");
@@ -22,15 +72,15 @@ const EditUserForm = ({ user }) => {
     const navigate = useNavigate();
 
     const {
-        isLoading,
+        // isLoading,
         isSuccess,
-        isError,
-        error
+        // isError,
+        // error
     } = {
-        isLoading: false, 
+        // isLoading: false, 
         isSuccess: false, 
-        isError: false, 
-        error: ""
+        // isError: false, 
+        // error: ""
     }
 
     const {
@@ -41,54 +91,6 @@ const EditUserForm = ({ user }) => {
         isSuccess: false, 
         isError: false, 
         error: ""
-    }
-
-    const updateUser = async (user) => {
-        try {
-            const res = await fetch(url, {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(user),
-            });
-    
-            const data = await res.json();
-            console.log(data);
-
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    
-    const deleteUser = async ({id}) => {
-        // console.log("deleteUser");
-        try {
-            // throw new Error("test");
-            const res = await fetch(url, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({id}),
-            });
-
-            // const data = await res.json();
-            
-            // if (res.ok) {
-            //     console.log(data);
-            //     navigate("/dash/users");
-            // } else {
-            //     console.log(data);
-            // }
-
-            return res;
-
-        } catch (error) {
-            console.log(error);
-            throw new Error(error.message);
-            // setErrors([{message: error.message}]);
-        }
     }
 
     useEffect(() => {
@@ -116,12 +118,77 @@ const EditUserForm = ({ user }) => {
     const onActiveChanged = () => setActive(prev => !prev);
 
     const onSaveUserClicked = async () => {
-        setIsPending(true);
-        if (password) {
-            await updateUser({ id: user._id, username, password, roles, active });
-        } else {
-            await updateUser({ id: user._id, username, roles, active });
-        }
+        // setIsPending(true);
+        // if (password) {
+        //     await updateUser({ id: user._id, username, password, roles, active });
+        // } else {
+        //     await updateUser({ id: user._id, username, roles, active });
+        // }
+            const validationErrors = [];
+
+            if (username.length == 0) {
+                validationErrors.push({
+                    message: "Each user must have a name"
+                });
+            } else if (username.length < 3) {
+                validationErrors.push({
+                    message: "The name of the user must be atleast 3 characters"
+                });
+            } else if (!USER_REGEX.test(username)) {
+                validationErrors.push({
+                    message: "The name of the user must contains only letters and numbers"
+                });
+            }
+    
+            if (password.length > 0) {
+                if (password.length < 6) {
+                    validationErrors.push({
+                        message: "The password must be atleast 6 characters"
+                    });
+                } else if (!PWD_REGEX.test(password)) {
+                    validationErrors.push({
+                        message: "The password contains inappropriate symbols"
+                    });
+                }
+            }
+    
+            if (isPending) {
+                setErrors([{message: "A user is being updated right now"}]);
+            } else {
+                formSubmitedOnce.current = true;
+    
+                if (validationErrors.length == 0) {
+                    try {
+                        setIsPending(true);
+    
+                        const res = await updateUser({ id: user._id, username, password, roles, active });
+                        const result = await res.json();
+        
+                        if (res.ok) {
+                            setIsPending(false);
+                            setMessages([result]);
+                            setErrors([]);
+                            formSubmitedOnce.current = false;
+                        } else {
+                            console.log("server errors", result);
+                            setIsPending(false);
+                            setMessages([]);
+                            setErrors([result]);
+                            // formSubmitedOnce.current = false;
+                        }
+                    } catch (error) {
+                        console.log(error.message);
+                        formSubmitedOnce.current = false;
+                        setIsPending(false);
+                        setMessages([]);
+                        setErrors([error]);
+                    }
+                } else {
+                    console.log("browser errors");
+                    setMessages([]);
+                    setErrors(validationErrors);
+                }
+            }    
     }
 
     const onDeleteUserClicked = async () => {
@@ -165,20 +232,36 @@ const EditUserForm = ({ user }) => {
     })
 
     // let canSave;
-    const validUsername = USER_REGEX.test(username);
-    const validPassword = PWD_REGEX.test(password);
+    // const validUsername = USER_REGEX.test(username);
+    // const validPassword = PWD_REGEX.test(password);
 
     // const errClass = (isError || isDelError) ? "errmsg" : "offscreen";
     const errClass = errors.length > 0 ? "errmsg" : "offscreen";
-    const successMsgClass = messages.length > 0 ? "errmsg" : "offscreen";
-    const validUserClass = !validUsername ? "invalid" : "valid";
-    const validRolesClass = !Boolean(roles.length) ? "invalid" : "valid";
+    const successMsgClass = messages.length > 0 ? "successmsg" : "offscreen";
+    // const validUserClass = !validUsername ? "invalid" : "valid";
+    // const validRolesClass = !Boolean(roles.length) ? "invalid" : "valid";
+    let validUserClass = "initial";
     let validPwdClass = "not-included";
+    let validRolesClass = "initial";
 
-    if (password) {
-        validPwdClass = !validPassword ? "invalid" : "valid";
-        // canSave = [roles.length, validUsername, validPassword].every(Boolean) && !isLoading;
+    if (formSubmitedOnce.current && !isPending) {
+        // console.log("formSubmitedOnce", formSubmitedOnce.current);
+        // console.log("isPending", isPending);
+        const validUsername = USER_REGEX.test(username);
+        validUserClass = !validUsername ? "invalid" : "valid";
+        // validUserClass = username.length < 3 ? "invalid" : "valid";
+        if (password) {
+            const validPassword = PWD_REGEX.test(password);
+            validPwdClass = !validPassword ? "invalid" : "valid";
+        }
+        // validPwdClass = password.length < 6 ? "invalid" : "valid";
+        validRolesClass = !Boolean(roles.length) ? "invalid" : "valid";
     }
+
+    // if (password) {
+        // validPwdClass = !validPassword ? "invalid" : "valid";
+        // canSave = [roles.length, validUsername, validPassword].every(Boolean) && !isLoading;
+    // }
     //  else {
         // canSave = [roles.length, validUsername].every(Boolean) && !isLoading;
     // }

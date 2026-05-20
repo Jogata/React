@@ -27,9 +27,9 @@ async function addNewUser(user, url = "http://localhost:5000/users") {
 
 const CreateUserForm = () => {
     // const [username, setUsername] = useState("");
-    const [username, setUsername] = useState("user8 ");
+    const [username, setUsername] = useState("user5");
     // const [password, setPassword] = useState("");
-    const [password, setPassword] = useState("pass1238");
+    const [password, setPassword] = useState("pass1235");
     const [roles, setRoles] = useState(["Employee"]);
     const [isSuccess, setIsSuccess] = useState(false);    // TOFIX
     const [isLoading, setIsLoading] = useState(false);    // TOFIX
@@ -79,37 +79,37 @@ const CreateUserForm = () => {
 
         const validationErrors = [];
 
-        // if (username.length == 0) {
-        //     validationErrors.push({
-        //         message: "Each user must have a name"
-        //     });
-        // } else if (username.length < 3) {
-        //     validationErrors.push({
-        //         message: "The name of the user must be atleast 3 characters"
-        //     });
-        // }
+        if (username.length == 0) {
+            validationErrors.push({
+                message: "Each user must have a name"
+            });
+        } else if (username.length < 3) {
+            validationErrors.push({
+                message: "The name of the user must be atleast 3 characters"
+            });
+        }
         
-        // if (!USER_REGEX.test(username)) {
-        //     validationErrors.push({
-        //         message: "The name of the user must contains only letters and numbers"
-        //     });
-        // }
+        if (!USER_REGEX.test(username)) {
+            validationErrors.push({
+                message: "The name of the user must contains only letters and numbers"
+            });
+        }
 
-        // if (password.length == 0) {
-        //     validationErrors.push({
-        //         message: "Each user must have a password"
-        //     });
-        // } else if (password.length < 6) {
-        //     validationErrors.push({
-        //         message: "The password must be atleast 6 characters"
-        //     });
-        // }
+        if (password.length == 0) {
+            validationErrors.push({
+                message: "Each user must have a password"
+            });
+        } else if (password.length < 6) {
+            validationErrors.push({
+                message: "The password must be atleast 6 characters"
+            });
+        }
         
-        // if (!PWD_REGEX.test(password)) {
-        //     validationErrors.push({
-        //         message: "The password contains inappropriate symbols"
-        //     });
-        // }
+        if (!PWD_REGEX.test(password)) {
+            validationErrors.push({
+                message: "The password contains inappropriate symbols"
+            });
+        }
 
         if (isPending) {
             setErrors([{message: "A new user is being created right now"}]);
@@ -124,7 +124,6 @@ const CreateUserForm = () => {
                     const result = await res.json();
     
                     if (res.ok) {
-                        console.log("browser errors", result);
                         setIsPending(false);
                         setMessages([result]);
                         setErrors([]);
@@ -144,6 +143,7 @@ const CreateUserForm = () => {
                     setErrors([error]);
                 }
             } else {
+                console.log("browser errors");
                 setMessages([]);
                 setErrors(validationErrors);
             }
