@@ -3,60 +3,94 @@ import Loader from "./Loader";
 import { Link, useLocation } from "react-router-dom";
 import Note from "./Note";
 
-async function getAllNotes(url, onSuccess) {
+async function getAllNotes(url) {
     try {
         const res = await fetch(url);
         // console.log(res);
     
-        const data = await res.json();
-        console.log("all notes: ", data);
+        // const data = await res.json();
+        // console.log("all notes: ", data);
 
-        if (res.ok) {
-            onSuccess(data.data);
-        }
+        // if (res.ok) {
+        //     onSuccess(data.data);
+        // }
+        // throw new Error("test");
+
+        return res;
 
     } catch (error) {
         console.log(error);
+        throw new Error(error.message);
     }
+}
+
+const setUpMessages = (location) => {
+    const initialState = location.state;
+    
+    if (initialState && initialState.message) {
+        return [initialState];
+    }
+
+    return [];
 }
 
 const Notes = () => {
     const [notes, setNotes] = useState([]);
     // tofix
-    const [isLoading, setIsLoading] = useState(true);
-    const isError = false;
-    const error = {};
-    const [isSuccess, setIsSuccess] = useState(false);
+    // const [isLoading, setIsLoading] = useState(true);
+    // const isError = false;
+    // const error = {};
+    // const [isSuccess, setIsSuccess] = useState(false);
+    const [status, setStatus] = useState("loading");
+    const [errors, setErrors] = useState([]);
+    
     const location = useLocation();
+    // const messages = [];
+    // console.log(location);
+    const messages = setUpMessages(location);
+
+    // if (location.state?.message) {
+    //     messages.push(location.state.message);
+    // }
 
     useEffect(() => {
-        setIsLoading(true);
-        getAllNotes("http://localhost:5000/notes", onSuccess);
+        // setIsLoading(true);
+        setUpData();
 
-        function onSuccess(data) {
-            setNotes(data);
-            // setNotes([]);
-            setIsLoading(false);
-            setIsSuccess(true);
+        async function setUpData() {
+            try {
+                setStatus("loading");
+                const res = await getAllNotes("http://localhost:5000/notes");
+        
+                const result = await res.json();
+        
+                if (res.ok) {
+                    setStatus("success");
+                    setNotes(result.data);
+                }
+                // function onSuccess(data) {
+                    // setNotes(data);
+                    // setNotes([]);
+                    // setIsLoading(false);
+                    // setIsSuccess(true);
+                // }
+            } catch (error) {
+                console.log(error.message);
+                setStatus("error");
+                setErrors([error]);
+            }
         }
     }, [])
 
-    const messages = [];
-    // console.log(location);
-
-    if (location.state?.message) {
-        messages.push(location.state.message);
-    }
-
     const messagesClass = messages.length ? "successmsg" : "offscreen";
 
-    let content = <Loader />;
+    let content = null;
     
-    if (isLoading) {
+    if (status == "loading") {
         content = <Loader />
-    } else if (isError) {
-        content = <p>{error.message}</p>
-    } else if (isSuccess) {
+    } else if (status == "error") {
+        content = <p>{errors[0].message}</p>
+    } else if (status == "success") {
         const tableContent = notes.length ? <TableRows notes={notes} /> : <EmptyRow />
         
         content = (
@@ -97,7 +131,7 @@ const Notes = () => {
                 <div className={messagesClass}>
                     {messages.map((message, index) => {
                         return (
-                            <p key={index}>{message}</p>
+                            <p key={index}>{message.message}</p>
                         )
                     })}
                 </div>
@@ -119,10 +153,6 @@ const EmptyRow = () => {
 const TableRows = ({ notes }) => {
     const tableContent = notes.map(note => {
         return (
-            // <tr key={note._id}>
-            //     <th>{note.title}</th>
-            //     <td>{note.text}</td>
-            // </tr>
             <Note note={note} key={note._id} />
         )
     })

@@ -124,92 +124,86 @@ const EditUserForm = ({ user }) => {
         // } else {
         //     await updateUser({ id: user._id, username, roles, active });
         // }
-            const validationErrors = [];
+        const validationErrors = [];
 
-            if (username.length == 0) {
+        if (username.length == 0) {
+            validationErrors.push({
+                message: "Each user must have a name"
+            });
+        } else if (username.length < 3) {
+            validationErrors.push({
+                message: "The name of the user must be atleast 3 characters"
+            });
+        } else if (!USER_REGEX.test(username)) {
+            validationErrors.push({
+                message: "The name of the user must contains only letters and numbers"
+            });
+        }
+
+        if (password.length > 0) {
+            if (password.length < 6) {
                 validationErrors.push({
-                    message: "Each user must have a name"
+                    message: "The password must be atleast 6 characters"
                 });
-            } else if (username.length < 3) {
+            } else if (!PWD_REGEX.test(password)) {
                 validationErrors.push({
-                    message: "The name of the user must be atleast 3 characters"
-                });
-            } else if (!USER_REGEX.test(username)) {
-                validationErrors.push({
-                    message: "The name of the user must contains only letters and numbers"
+                    message: "The password contains inappropriate symbols"
                 });
             }
-    
-            if (password.length > 0) {
-                if (password.length < 6) {
-                    validationErrors.push({
-                        message: "The password must be atleast 6 characters"
-                    });
-                } else if (!PWD_REGEX.test(password)) {
-                    validationErrors.push({
-                        message: "The password contains inappropriate symbols"
-                    });
-                }
-            }
-    
-            if (isPending) {
-                setErrors([{message: "A user is being updated right now"}]);
-            } else {
-                formSubmitedOnce.current = true;
-    
-                if (validationErrors.length == 0) {
-                    try {
-                        setIsPending(true);
-    
-                        const res = await updateUser({ id: user._id, username, password, roles, active });
-                        const result = await res.json();
-        
-                        if (res.ok) {
-                            setIsPending(false);
-                            setMessages([result]);
-                            setErrors([]);
-                            formSubmitedOnce.current = false;
-                        } else {
-                            console.log("server errors", result);
-                            setIsPending(false);
-                            setMessages([]);
-                            setErrors([result]);
-                            // formSubmitedOnce.current = false;
-                        }
-                    } catch (error) {
-                        console.log(error.message);
+        }
+
+        if (isPending) {
+            setErrors([{ message: "A user is being updated right now" }]);
+        } else {
+            formSubmitedOnce.current = true;
+
+            if (validationErrors.length == 0) {
+                try {
+                    setIsPending(true);
+
+                    const res = await updateUser({ id: user._id, username, password, roles, active });
+                    const result = await res.json();
+
+                    if (res.ok) {
+                        setIsPending(false);
+                        setMessages([result]);
+                        setErrors([]);
                         formSubmitedOnce.current = false;
+                    } else {
+                        console.log("server errors", result);
                         setIsPending(false);
                         setMessages([]);
-                        setErrors([error]);
+                        setErrors([result]);
+                        // formSubmitedOnce.current = false;
                     }
-                } else {
-                    console.log("browser errors");
+                } catch (error) {
+                    console.log(error.message);
+                    formSubmitedOnce.current = false;
+                    setIsPending(false);
                     setMessages([]);
-                    setErrors(validationErrors);
+                    setErrors([error]);
                 }
-            }    
+            } else {
+                console.log("browser errors");
+                setMessages([]);
+                setErrors(validationErrors);
+            }
+        }
     }
 
     const onDeleteUserClicked = async () => {
         try {
             setIsPending(true);
             const res = await deleteUser({ id: user._id });
-            // const res = await deleteUser({ id: "5" });
-            // console.log(res);
+
             const result = await res.json();
 
             if (res.ok) {
-                // console.log("todo redirect to all users");
-                // setMessages([result.message]);
-                // setErrors([]);
                 navigate("/dash/users", {
                     state: {message: result.message}
                 })
             } else {
-                // console.log(result.message);
                 console.log("server errors");
-                // setIsSuccess(false);
                 setIsPending(false);
                 setMessages([]);
                 setErrors([result]);

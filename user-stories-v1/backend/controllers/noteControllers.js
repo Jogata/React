@@ -15,7 +15,7 @@ const getAllNotes = async (req, res) => {
             return { ...note, username: user.username };
         }))
     
-        res.json({ data: notesWithUser });
+        res.status(200).json({ data: notesWithUser });
     } catch (error) {
         console.log(error.message);
         res.status(500).json({message: "Server error"});

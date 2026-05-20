@@ -3,26 +3,12 @@ import User from "./User";
 import Loader from "./Loader";
 import { Link, useLocation } from "react-router-dom";
 
-// async function getAllUsers(url, onSuccess, onFail) {
 async function getAllUsers(url) {
     try {
-        const res = await fetch(url);
-        console.log(res.ok);
-    
-        // const result = await res.json();
-        // console.log("all users: ", res);
-
-        // if (res.ok) {
-        //     onSuccess(result.data);
-        // } else {
-            // throw new Error("test");
-        // }
-        
+        const res = await fetch(url);            
         return res;
-
     } catch (error) {
         console.log(error.message);
-        // onFail(error);
         throw new Error(error.message)
     }
 }
@@ -38,37 +24,28 @@ const setUpMessages = (location) => {
 }
 
 const Users = () => {
-    const location = useLocation();
-    // console.log(location);
     const [users, setUsers] = useState([]);
-    const [errors, setErrors] = useState([]);
-    const messages = setUpMessages(location);
     const [status, setStatus] = useState("loading");
-    // const [isLoading, setIsLoading] = useState(false);
-    // const [isSuccess, setIsSuccess] = useState(false);
+    const [errors, setErrors] = useState([]);
+
+    const location = useLocation();
+    const messages = setUpMessages(location);
 
     useEffect(() => {
-        // getAllUsers("http://localhost:5000/users", onSuccess, onFail);
         setUpData();
         
         async function setUpData() {
-            // setIsLoading(true);
             try {
                 setStatus("loading");
                 const res = await getAllUsers("http://localhost:5000/users");
-                // console.log(res);
                 const result = await res.json();
-                // console.log(result);
     
                 if (!res.ok) {
                     setStatus("error");
                     setErrors([result]);
-                    // setIsLoading(false);
                 } else {
                     setStatus("success");
                     setUsers(result.data);
-                    // setIsLoading(false);
-                    // setIsSuccess(true);
                 }
             } catch (error) {
                 console.log("server error");
@@ -76,35 +53,18 @@ const Users = () => {
                 setErrors([error.message]);
             }
         }
-
-        // function onSuccess(data) {
-        //     setUsers(data);
-        //     setIsLoading(false);
-        //     setIsSuccess(true);
-        // }
-
-        // function onFail(err) {
-        //     console.log(err.message);
-        //     setIsLoading(false);
-        //     setIsSuccess(false);
-        // }
     }, [])
 
-    // const errClass = errors.length > 0 ? "errmsg" : "offscreen";
     const successMsgClass = messages.length > 0 ? "successmsg" : "offscreen";
 
     let content;
 
-    // if (isLoading) content = <Loader />
     if (status == "loading") content = <Loader />
 
-    // if (isError) {
     if (status == "error") {
-        // content = <p>{error.message}</p>
         content = <p>{errors[0]}</p>
     }
 
-    // if (isSuccess) {
     if (status == "success") {
         const tableContent = users.length > 0 ? (
             users.map(user => (
@@ -146,14 +106,8 @@ const Users = () => {
     return (
         <>
             <div className="messages">
-                {/* <div className={errClass}>
-                    {errors.map((err, index) => {
-                        return <p key={index}>{err.message}</p>
-                    })}
-                </div> */}
                 <div className={successMsgClass}>
                     {messages.map((message, index) => {
-                        // console.log(message);
                         return <p key={index}>{message.message}</p>
                     })}
                 </div>
