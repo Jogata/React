@@ -225,7 +225,14 @@ main {
 }
 
 .fa-location-arrow {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--COLOR);
   transform: rotate(45deg);
+  /* transition: color 300ms; */
+}
+
+a:hover .fa-location-arrow {
+  -webkit-text-stroke: 1px #6cb0e8;
 }
 
 .form {
