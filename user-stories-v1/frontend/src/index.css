@@ -220,6 +220,14 @@ main {
   margin-bottom: 0.5rem;
 }
 
+.welcome p a span {
+  margin-left: 0.5rem;
+}
+
+.fa-location-arrow {
+  transform: rotate(45deg);
+}
+
 .form {
   max-width: 600px;
   /* padding: 1rem; */
@@ -284,6 +292,10 @@ main {
   border-radius: 10em;
   border: 1px solid #444;
   background-color: transparent;
+}
+
+.edit-form .form-input {
+  max-width: 100%;
 }
 
 .form-input.textarea {

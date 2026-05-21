@@ -17,13 +17,33 @@ const Welcome = () => {
 
             <h1>Welcome {username}!</h1>
 
-            <p><Link to="/dash/notes">View techNotes</Link></p>
+            <p>
+                <Link to="/dash/notes">
+                    View techNotes
+                    <span><i className="fa fa-location-arrow" aria-hidden="true"></i></span>
+                </Link>
+            </p>
 
-            {/* <p><Link to="/dash/notes/create">Add New techNote</Link></p> */}
+            <p>
+                <Link to="/dash/notes/create">
+                    Add New techNote
+                    <span><i className="fa fa-location-arrow" aria-hidden="true"></i></span>
+                </Link>
+            </p>
 
-            <p><Link to="/dash/users">View all users</Link></p>
+            <p>
+                <Link to="/dash/users">
+                    View All Users
+                    <span><i className="fa fa-location-arrow" aria-hidden="true"></i></span>
+                </Link>
+            </p>
 
-            {/* <p><Link to="/dash/users/create">Add New User</Link></p> */}
+            <p>
+                <Link to="/dash/users/create">
+                    Add New User
+                    <span><i className="fa fa-location-arrow" aria-hidden="true"></i></span>
+                </Link>
+            </p>
 
         </section>
     )

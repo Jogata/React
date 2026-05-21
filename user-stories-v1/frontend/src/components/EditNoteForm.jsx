@@ -99,9 +99,7 @@ const EditNoteForm = ({ note, users }) => {
     // console.log(title, text, userId, isLoading);
 
     const onSaveNoteClicked = async () => {
-        // console.log(canSave);
         isFormSubmitted.current = true;
-        // console.log(canSave);
         const validationErrors = [];
 
         if (title.length == 0) {
@@ -124,18 +122,13 @@ const EditNoteForm = ({ note, users }) => {
             });
         }
 
-        // if (canSave) {
         if (validationErrors.length == 0) {
             setIsPending(true);
-            // console.log(canSave);
-            // console.log("updated started");
-            // console.log(note._id);
-            // console.log(userId);
+
             try {
                 const res = await updateNote({ id: note._id, userId, title, text, completed });
-                // console.log(res);
                 const json = await res.json();
-                console.log(json);
+                // console.log(json);
     
                 if (res.ok) {
                     setMessages([json]);
@@ -164,25 +157,12 @@ const EditNoteForm = ({ note, users }) => {
 
             if (res.status) {
                 const result = await res.json();
-                // console.log(result);
         
                 if (res.ok) {
-                    // setIsSuccess(true);
-                    // setIsError(false);
-                    // setMessages([result]);
-                    // setErrors([]);
-                    // setIsPending(false);
-                    // console.log("res is ok");
-                    // navigate({
-                    //     pathname: "/dash/notes",
-                    //     state: { message: "deleted" }
-                    // });
                     navigate("/dash/notes", { 
                         state: result
                     });
                 } else {
-                    // console.log(result.data.message);
-                    // setIsSuccess(false);
                     setIsError(true);
                     setMessages([]);
                     setErrors([result]);
@@ -246,20 +226,18 @@ const EditNoteForm = ({ note, users }) => {
             <div className="messages">
                 <div className={errClass}>
                     {errors.map((err, index) => {
-                        // console.log(err);
                         return <p key={index}>{err.message}</p>
                     })}
                 </div>
 
                 <div className={successMsgClass}>
                     {messages.map((message, index) => {
-                        // console.log(message);
                         return <p key={index}>{message.message}</p>
                     })}
                 </div>
             </div>
 
-            <form className="form" onSubmit={e => e.preventDefault()}>
+            <form className="form edit-form" onSubmit={e => e.preventDefault()}>
                 <div className="form-header">
                     <h2>Edit Note #{note.ticket}</h2>
                     <div className="form-action-buttons">
@@ -302,6 +280,7 @@ const EditNoteForm = ({ note, users }) => {
                     className={`form-input textarea ${validTextClass}`}
                     id="note-text"
                     name="text"
+                    rows="5"
                     value={text}
                     onChange={onTextChanged}
                 />
