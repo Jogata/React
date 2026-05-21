@@ -7,15 +7,6 @@ async function getAllUsers(url) {
     try {
         const res = await fetch(url);
     
-        // const data = await res.json();
-        // console.log("all users: ", data);
-
-        // if (res.ok) {
-        //     onSuccess(data);
-        //     return data;
-        // }
-        // throw new Error("test users");
-
         return res;
 
     } catch (error) {
@@ -28,14 +19,6 @@ async function getAllNotes(url) {
     try {
         const res = await fetch(url);
     
-        // const data = await res.json();
-        // console.log("all notes: ", data);
-
-        // if (res.ok) {
-        //     onSuccess(data);
-        // }
-        // throw new Error("test notes");
-
         return res;
 
     } catch (error) {
@@ -45,7 +28,7 @@ async function getAllNotes(url) {
 }
 
 const EditNote = () => {
-    const { id } = useParams();
+    const { noteId } = useParams();
     const [users, setUsers] = useState(null);
     const [notes, setNotes] = useState(null);
     // const [isLoading, setIsLoading] = useState(true);
@@ -54,7 +37,7 @@ const EditNote = () => {
 
     let note = null;
     if (notes) {
-        note = notes.find(note => note._id == id);
+        note = notes.find(note => note._id == noteId);
     }
 
     useEffect(() => {
@@ -62,16 +45,13 @@ const EditNote = () => {
 
         async function setUpInitialData() {
             try {
-                // const res = await getAllUsers("http://localhost:5000/users", onGetUsersSuccess);
                 const res = await getAllUsers("http://localhost:5000/users");
                 
                 if (res.ok) {
                     const result = await res.json();
-                    // console.log(result);
                     setUsers(result.data);
                     
                     if (result.data.length) {
-                        // const result = await getAllNotes("http://localhost:5000/notes", onGetNotesSuccess);
                         const res = await getAllNotes("http://localhost:5000/notes");
                         
                         if (res.ok) {
@@ -87,22 +67,11 @@ const EditNote = () => {
                     setStatus("error");
                     setErrors([res.message]);
                 }
-                
-                // setIsLoading(false);
-                // setStatus();
             } catch (error) {
                 console.log(error.message);
                 setStatus("error");
                 setErrors([error.message]);
             }
-
-            // function onGetUsersSuccess(data) {
-            //     setUsers(data.data);
-            // }
-    
-            // function onGetNotesSuccess(data) {
-            //     setNotes(data.data);
-            // }
         }
     }, [])
 

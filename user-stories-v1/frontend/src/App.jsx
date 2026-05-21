@@ -9,6 +9,7 @@ import EditUser from "./components/EditUser";
 import DashLayout, { WelcomeDashLayout } from "./components/DashLayout";
 import NewNote from "./components/NewNote";
 import EditNote from "./components/EditNote";
+import User from "./components/User";
 
 function App() {
   return (
@@ -17,20 +18,27 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
 
+<Route element={<User />}>
+        <Route path="/test" element={<Login />} />
+</Route>
         <Route path="/dash" element={<WelcomeDashLayout />}>
           <Route index element={<Welcome />} />
         </Route>
 
         <Route path="/dash" element={<DashLayout />}>
-          {/* <Route index element={<Welcome />} /> */}
+          {/* <Route path="users" element={<Users />} /> */}
+          <Route path="users">
+            <Route index element={<Users />} />
+            <Route path="create" element={<CreateUserForm />} />
+            <Route path="edit/:userId" element={<EditUser />} />
+          </Route>
 
-          <Route path="users" element={<Users />} />
-          <Route path="users/create" element={<CreateUserForm />} />
-          <Route path="users/:userId" element={<EditUser />} />
-
-          <Route path="notes" element={<Notes />} />
-          <Route path="notes/create" element={<NewNote />} />
-          <Route path="notes/edit/:id" element={<EditNote />} />
+          {/* <Route path="notes" element={<Notes />} /> */}
+          <Route path="notes">
+            <Route index element={<Notes />} />
+            <Route path="create" element={<NewNote />} />
+            <Route path="edit/:noteId" element={<EditNote />} />
+          </Route>
         </Route>
       </Routes>
     </>

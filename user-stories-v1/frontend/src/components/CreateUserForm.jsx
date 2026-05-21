@@ -15,8 +15,6 @@ async function addNewUser(user, url = "http://localhost:5000/users") {
             body: JSON.stringify(user),
         });
 
-        // throw new Error("test");
-            
         return res;
 
     } catch (error) {

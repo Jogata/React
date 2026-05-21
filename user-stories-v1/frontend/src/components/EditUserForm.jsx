@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ROLES } from "../config/roles";
 
@@ -16,8 +16,6 @@ const updateUser = async (user) => {
             body: JSON.stringify(user),
         });
 
-        // const data = await res.json();
-        // console.log(data);
         return res;
 
     } catch (error) {
@@ -27,9 +25,7 @@ const updateUser = async (user) => {
 }
 
 const deleteUser = async ({id}) => {
-    // console.log("deleteUser");
     try {
-        // throw new Error("test");
         const res = await fetch(url, {
             method: "DELETE",
             headers: {
@@ -38,21 +34,11 @@ const deleteUser = async ({id}) => {
             body: JSON.stringify({id}),
         });
 
-        // const data = await res.json();
-        
-        // if (res.ok) {
-        //     console.log(data);
-        //     navigate("/dash/users");
-        // } else {
-        //     console.log(data);
-        // }
-
         return res;
 
     } catch (error) {
         console.log(error);
         throw new Error(error.message);
-        // setErrors([{message: error.message}]);
     }
 }
 
@@ -71,38 +57,38 @@ const EditUserForm = ({ user }) => {
 
     const navigate = useNavigate();
 
-    const {
+    // const {
         // isLoading,
-        isSuccess,
+        // isSuccess,
         // isError,
         // error
-    } = {
+    // } = {
         // isLoading: false, 
-        isSuccess: false, 
+        // isSuccess: false, 
         // isError: false, 
         // error: ""
-    }
+    // }
 
-    const {
-        isSuccess: isDelSuccess,
-        isError: isDelError,
-        error: delerror
-    } = {
-        isSuccess: false, 
-        isError: false, 
-        error: ""
-    }
+    // const {
+    //     isSuccess: isDelSuccess,
+    //     isError: isDelError,
+    //     error: delerror
+    // } = {
+    //     isSuccess: false, 
+    //     isError: false, 
+    //     error: ""
+    // }
 
-    useEffect(() => {
-        if (isSuccess || isDelSuccess) {
+    // useEffect(() => {
+        // if (isSuccess || isDelSuccess) {
             // TOFIX
-            setUsername("");
-            setPassword("");
-            setRoles([]);
+            // setUsername("");
+            // setPassword("");
+            // setRoles([]);
             // navigate("/dash/users");
-        }
+        // }
 
-    }, [isSuccess, isDelSuccess, navigate])
+    // }, [isSuccess, isDelSuccess, navigate])
 
     const onUsernameChanged = e => setUsername(e.target.value);
     const onPasswordChanged = e => setPassword(e.target.value);
@@ -170,18 +156,18 @@ const EditUserForm = ({ user }) => {
                         setErrors([]);
                         formSubmitedOnce.current = false;
                     } else {
-                        console.log("server errors", result);
+                        // console.log("server errors", result);
                         setIsPending(false);
                         setMessages([]);
                         setErrors([result]);
                         // formSubmitedOnce.current = false;
                     }
                 } catch (error) {
-                    console.log(error.message);
-                    formSubmitedOnce.current = false;
+                    // console.log(error.message);
                     setIsPending(false);
                     setMessages([]);
                     setErrors([error]);
+                    formSubmitedOnce.current = false;
                 }
             } else {
                 console.log("browser errors");
@@ -239,32 +225,19 @@ const EditUserForm = ({ user }) => {
     let validRolesClass = "initial";
 
     if (formSubmitedOnce.current && !isPending) {
-        // console.log("formSubmitedOnce", formSubmitedOnce.current);
-        // console.log("isPending", isPending);
         const validUsername = USER_REGEX.test(username);
         validUserClass = !validUsername ? "invalid" : "valid";
-        // validUserClass = username.length < 3 ? "invalid" : "valid";
+
         if (password) {
             const validPassword = PWD_REGEX.test(password);
             validPwdClass = !validPassword ? "invalid" : "valid";
         }
-        // validPwdClass = password.length < 6 ? "invalid" : "valid";
+
         validRolesClass = !Boolean(roles.length) ? "invalid" : "valid";
     }
 
-    // if (password) {
-        // validPwdClass = !validPassword ? "invalid" : "valid";
-        // canSave = [roles.length, validUsername, validPassword].every(Boolean) && !isLoading;
-    // }
-    //  else {
-        // canSave = [roles.length, validUsername].every(Boolean) && !isLoading;
-    // }
-
-    // const errContent = (error?.message || delerror?.message) ?? "";
-
     const content = (
         <>
-            {/* <p className={errClass}>{errContent}</p> */}
             <div className="messages">
                 <div className={errClass}>
                     {errors.map((err, index) => {

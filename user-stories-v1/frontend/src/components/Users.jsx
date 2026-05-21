@@ -5,11 +5,11 @@ import { Link, useLocation } from "react-router-dom";
 
 async function getAllUsers(url) {
     try {
-        const res = await fetch(url);            
+        const res = await fetch(url);
         return res;
     } catch (error) {
         console.log(error.message);
-        throw new Error(error.message)
+        throw new Error(error.message);
     }
 }
 
@@ -32,9 +32,9 @@ const Users = () => {
     const messages = setUpMessages(location);
 
     useEffect(() => {
-        setUpData();
+        setUpStates();
         
-        async function setUpData() {
+        async function setUpStates() {
             try {
                 setStatus("loading");
                 const res = await getAllUsers("http://localhost:5000/users");
