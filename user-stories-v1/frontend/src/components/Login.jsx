@@ -29,17 +29,81 @@ const Login = () => {
         e.preventDefault();
         // console.log("form submitted");
 
-        // const url = "http://localhost:5000/auth";
+        const validationErrors = [];
 
-        const res = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({}),
-        });
-        const result = await res.text();
-        console.log(result);
+        if (username.length == 0) {
+            validationErrors.push({
+                message: "Each user must have a name"
+            });
+        } else if (username.length < 3) {
+            validationErrors.push({
+                message: "The name of the user must be atleast 3 characters"
+            });
+        } else if (!USER_REGEX.test(username)) {
+            validationErrors.push({
+                message: "The name of the user must contains only letters and numbers"
+            });
+        }
+
+        if (password.length == 0) {
+            validationErrors.push({
+                message: "Each user must have a password"
+            });
+        } else if (password.length < 6) {
+            validationErrors.push({
+                message: "The password must be atleast 6 characters"
+            });
+        } else if (!PWD_REGEX.test(password)) {
+            validationErrors.push({
+                message: "The password contains inappropriate symbols"
+            });
+        }
+
+        if (isPending) {
+            setErrors([{ message: "Wait" }]);
+        } else {
+            formSubmitedOnce.current = true;
+
+            if (validationErrors.length == 0) {
+                try {
+                    setIsPending(true);
+
+                    const res = await fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ username, password }),
+                    });
+
+                    const result = await res.text();
+                    console.log(result);
+
+                    if (res.ok) {
+                        setIsPending(false);
+                        // setMessages([result]);
+                        setErrors([]);
+                        formSubmitedOnce.current = false;
+                    } else {
+                        console.log("server errors", result);
+                        setIsPending(false);
+                        // setMessages([]);
+                        setErrors([result]);
+                        // formSubmitedOnce.current = false;
+                    }
+                } catch (error) {
+                    console.log(error.message);
+                    formSubmitedOnce.current = false;
+                    setIsPending(false);
+                    // setMessages([]);
+                    setErrors([error]);
+                }
+            } else {
+                console.log("browser errors");
+                // setMessages([]);
+                setErrors(validationErrors);
+            }
+        }
     }
 
     const validUsername = USER_REGEX.test(username);
@@ -49,14 +113,14 @@ const Login = () => {
     // const successMsgClass = messages.length ? "successmsg" : "offscreen";
     let validUserClass = "initial";
     let validPwdClass = "initial";
-    let validRolesClass = "initial";
+    // let validRolesClass = "initial";
 
     if (formSubmitedOnce.current && !isPending) {
         validUserClass = !validUsername ? "invalid" : "valid";
         // validUserClass = username.length < 3 ? "invalid" : "valid";
         validPwdClass = !validPassword ? "invalid" : "valid";
         // validPwdClass = password.length < 6 ? "invalid" : "valid";
-        validRolesClass = !Boolean(roles.length) ? "invalid" : "valid";
+        // validRolesClass = !Boolean(roles.length) ? "invalid" : "valid";
     }
 
     const content = (
@@ -66,11 +130,14 @@ const Login = () => {
             </header>
             <main className="login">
                 <form className="form" onSubmit={handleSubmit}>
-                    <label htmlFor="username">Username:</label>
+                    <label htmlFor="username"  className="form-label">
+                        Username:
+                    </label>
                     <input
                         type="text"
                         id="username"
-                        className="form-input"
+                        // className="form-input"
+                        className={`form-input ${validUserClass}`}
                         ref={userRef}
                         value={username}
                         onChange={handleUserInput}
@@ -78,18 +145,20 @@ const Login = () => {
                         // required
                     />
 
-                    <label htmlFor="password">Password:</label>
+                    <label htmlFor="password"  className="form-label">
+                        Password:
+                    </label>
                     <input
                         type="password"
                         id="password"
-                        className="form-input"
+                        // className="form-input"
+                        className={`form-input ${validPwdClass}`}
                         value={password}
                         onChange={handlePwdInput}
                         // required
                     />
 
                     <button className="submit-button">Sign In</button>
-
 
                     <label htmlFor="persist" className="form-persist">
                         <input

@@ -240,6 +240,7 @@ a:hover .fa-location-arrow {
   /* padding: 1rem; */
   margin: auto;
   padding: 2rem;
+  white-space: wrap;
   border-radius: 12px;
   border: 1px solid aliceblue;
   box-shadow: 3px 3px 3px #0005, 
@@ -254,9 +255,10 @@ a:hover .fa-location-arrow {
 }
 
 .form-label {
-  display: block;
-  width: fit-content;
-  margin-top: 1rem;
+  /* display: block; */
+  display: inline-block;
+  /* width: fit-content; */
+  /* margin-top: 1rem; */
   margin-bottom: 0.5rem;
 }
 
@@ -291,8 +293,10 @@ a:hover .fa-location-arrow {
 }
 
 .form-input {
+  display: block;
   width: 100%;
   max-width: 30ch;
+  margin-bottom: 1rem;
   /* padding: 0.25em 1em; */
   padding: 0.5em 1em;
   color: inherit;
@@ -352,6 +356,45 @@ option:checked {
 
 option:hover {
   color: #6cb0e8;;
+}
+
+.login .form {
+  max-width: 400px;
+  text-align: center;
+}
+
+.login .form .form-input {
+  margin: 0 auto 1rem;
+}
+
+.submit-button {
+  margin: 1.5rem 0;
+  padding: 0.8em 2em;
+  color: var(--COLOR);
+  font-weight: bold;
+  border-radius: 10em;
+  border: 1px solid;
+  transform: color 300ms;
+}
+
+.submit-button:hover {
+  color: #6cb0e8;
+  /* background-color: var(--COLOR); */
+}
+
+.form-persist {
+  display: block;
+  margin-top: 1rem;
+  transform: color 300ms;
+  cursor: pointer;
+}
+
+.form-persist:hover {
+  color: #6cb0e8;
+}
+
+.form-persist input {
+  margin-right: 0.5rem;
 }
 
 .form-row {
