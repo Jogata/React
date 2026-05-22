@@ -7,9 +7,9 @@ const PWD_REGEX = /^[A-z0-9!@#$%]{6,12}$/;
 
 const Login = () => {
     // const [username, setUsername] = useState("");
-    const [username, setUsername] = useState("user1");
+    const [username, setUsername] = useState("user5");
     // const [password, setPassword] = useState("");
-    const [password, setPassword] = useState("123test1");
+    const [password, setPassword] = useState("pass1235");
     const [persist, setPersist] = useState([]);
     const [isPending, setIsPending] = useState(false);
     const [errors, setErrors] = useState([]);
@@ -76,10 +76,11 @@ const Login = () => {
                         body: JSON.stringify({ username, password }),
                     });
 
-                    const result = await res.text();
+                    const result = await res.json();
                     console.log(result);
 
                     if (res.ok) {
+                        console.log("redirect");
                         setIsPending(false);
                         // setMessages([result]);
                         setErrors([]);
@@ -89,7 +90,7 @@ const Login = () => {
                         setIsPending(false);
                         // setMessages([]);
                         setErrors([result]);
-                        // formSubmitedOnce.current = false;
+                        formSubmitedOnce.current = false;
                     }
                 } catch (error) {
                     console.log(error.message);
@@ -129,8 +130,22 @@ const Login = () => {
                 <h1>Employee Login</h1>
             </header>
             <main className="login">
+                <div className="messages">
+                    <div className={errClass}>
+                        {errors.map((err, index) => {
+                            return <p key={index}>{err.message}</p>
+                        })}
+                    </div>
+
+                    {/* <div className={successMsgClass}>
+                    {messages.map((message, index) => {
+                        return <p key={index}>{message.message}</p>
+                    })}
+                </div> */}
+                </div>
+
                 <form className="form" onSubmit={handleSubmit}>
-                    <label htmlFor="username"  className="form-label">
+                    <label htmlFor="username" className="form-label">
                         Username:
                     </label>
                     <input
@@ -142,10 +157,10 @@ const Login = () => {
                         value={username}
                         onChange={handleUserInput}
                         autoComplete="off"
-                        // required
+                    // required
                     />
 
-                    <label htmlFor="password"  className="form-label">
+                    <label htmlFor="password" className="form-label">
                         Password:
                     </label>
                     <input
@@ -155,7 +170,7 @@ const Login = () => {
                         className={`form-input ${validPwdClass}`}
                         value={password}
                         onChange={handlePwdInput}
-                        // required
+                    // required
                     />
 
                     <button className="submit-button">Sign In</button>
@@ -178,24 +193,25 @@ const Login = () => {
         </section>
     )
 
-    return (
-        <>
-            <div className="messages">
-                <div className={errClass}>
-                    {errors.map((err, index) => {
-                        return <p key={index}>{err.message}</p>
-                    })}
-                </div>
+    return content;
+    // (
+    //     <>
+    //         <div className="messages">
+    //             <div className={errClass}>
+    //                 {errors.map((err, index) => {
+    //                     return <p key={index}>{err.message}</p>
+    //                 })}
+    //             </div>
 
                 {/* <div className={successMsgClass}>
                     {messages.map((message, index) => {
                         return <p key={index}>{message.message}</p>
                     })}
                 </div> */}
-            </div>
-            {content}
-        </>
-    );
+    //         </div>
+    //         {content}
+    //     </>
+    // );
 }
 
 export default Login;

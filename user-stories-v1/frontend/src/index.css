@@ -248,6 +248,7 @@ a:hover .fa-location-arrow {
 }
 
 .form-header {
+  margin-bottom: 1rem;
   display: flex;
   gap: 2rem;
   flex-wrap: wrap;
@@ -255,8 +256,8 @@ a:hover .fa-location-arrow {
 }
 
 .form-label {
-  /* display: block; */
-  display: inline-block;
+  display: block;
+  /* display: inline-block; */
   /* width: fit-content; */
   /* margin-top: 1rem; */
   margin-bottom: 0.5rem;
