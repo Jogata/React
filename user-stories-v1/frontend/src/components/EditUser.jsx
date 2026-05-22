@@ -6,14 +6,6 @@ import EditUserForm from "./EditUserForm";
 async function getAllUsers(url) {
     try {
         const res = await fetch(url);
-    
-        // const result = await res.json();
-        console.log("all users: ", res);
-
-        // if (res.ok) {
-            // return result.data;
-        // }
-
         return res;
 
     } catch (error) {
@@ -24,7 +16,6 @@ async function getAllUsers(url) {
 const EditUser = () => {
     const { userId } = useParams();
     const [ user, setUser ] = useState(null);
-    // const [ exist, setExist ] = useState(true);
     const [ status, setStatus ] = useState("loading");
     const [messages, setMessages] = useState([]);
 
@@ -44,17 +35,14 @@ const EditUser = () => {
                     const user = users.find(user => user._id == userId);
         
                     if (user) {
-                        // setExist(true);
                         setStatus("success");
                         setUser(user);
                     } else {
                         setStatus("fail");
-                        // setExist(false);
                         setMessages(["User doesn't exist"]);
                     }
                 } else {
                     // TODO
-                    // setExist(false);
                     setStatus("error");
                     setMessages([result.message]);
                 }
@@ -67,7 +55,6 @@ const EditUser = () => {
         return <Loader />;
     }
 
-    // if (!exist) {
     if (status == "fail") {
         return <UserDoesntExist id={userId} />;
     }

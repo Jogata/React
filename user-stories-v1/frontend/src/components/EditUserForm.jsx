@@ -4,7 +4,7 @@ import { ROLES } from "../config/roles";
 
 const url = "http://localhost:5000/users";
 const USER_REGEX = /^[A-z0-9]{3,20}$/;
-const PWD_REGEX = /^[A-z0-9!@#$%]{4,12}$/;
+const PWD_REGEX = /^[A-z0-9!@#$%]{6,12}$/;
 
 const updateUser = async (user) => {
     try {
