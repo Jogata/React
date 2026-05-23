@@ -375,18 +375,17 @@ option:hover {
   font-weight: bold;
   border-radius: 10em;
   border: 1px solid;
-  transform: color 300ms;
+  transition: color 300ms;
 }
 
 .submit-button:hover {
   color: #6cb0e8;
-  /* background-color: var(--COLOR); */
 }
 
 .form-persist {
   display: block;
   margin-top: 1rem;
-  transform: color 300ms;
+  transition: color 300ms;
   cursor: pointer;
 }
 
