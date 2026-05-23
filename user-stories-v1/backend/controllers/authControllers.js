@@ -32,7 +32,7 @@ const login = async (req, res) => {
     if (!foundUser || !foundUser.active) {
         return res.status(401).json({ message: "Unauthorized" });
     }
-    console.log(password, foundUser);
+    // console.log(password, foundUser);
 
     const match = await bcrypt.compare(password, foundUser.password);
 
@@ -57,7 +57,7 @@ const login = async (req, res) => {
 
     res.cookie("jwt", refreshToken, {
         httpOnly: true,
-        secure: true,
+        // secure: true,    tofix
         sameSite: "None",
         maxAge: 7 * 24 * 60 * 60 * 1000
     })
@@ -101,8 +101,12 @@ const refresh = (req, res) => {
 }
 
 const logout = (req, res) => {
-    console.log("todo logout");
-    res.send("todo logout");
+    // console.log("todo logout");
+    // res.send("todo logout");
+    const cookies = req.cookies;
+    if (!cookies?.jwt) return res.sendStatus(204);
+    res.clearCookie("jwt", { httpOnly: true, sameSite: "None", secure: true });
+    res.json({ message: "Cookie cleared" });
 }
 
 module.exports = {
