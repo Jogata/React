@@ -41,6 +41,7 @@ const Users = () => {
                 const result = await res.json();
     
                 if (!res.ok) {
+                    console.log(result);
                     setStatus("error");
                     setErrors([result]);
                 } else {
@@ -50,7 +51,7 @@ const Users = () => {
             } catch (error) {
                 console.log("server error");
                 setStatus("error");
-                setErrors([error.message]);
+                setErrors([error]);
             }
         }
     }, [])
@@ -62,7 +63,7 @@ const Users = () => {
     if (status == "loading") content = <Loader />
 
     if (status == "error") {
-        content = <p>{errors[0]}</p>
+        content = <p>{errors[0].message}</p>
     }
 
     if (status == "success") {

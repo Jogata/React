@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
-const url = "http://localhost:5000/auth/refresh";
+const url = "http://localhost:5000/auth";
 const USER_REGEX = /^[A-z0-9]{3,20}$/;
 const PWD_REGEX = /^[A-z0-9!@#$%]{6,12}$/;
 
@@ -69,11 +69,11 @@ const Login = () => {
                     setIsPending(true);
 
                     const res = await fetch(url, {
-                        // method: "POST",
-                        // headers: {
-                        //     "Content-Type": "application/json",
-                        // },
-                        // body: JSON.stringify({ username, password }),
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ username, password }),
                     });
 
                     const result = await res.json();
