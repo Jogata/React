@@ -3,7 +3,8 @@ import Home from "./components/Home";
 import Login from "./components/Login";
 import Welcome from "./components/Welcome";
 import Notes from "./components/Notes";
-import Users from "./components/Users";
+// import Users from "./components/Users";
+import { Test } from "./components/Users";
 import CreateUserForm from "./components/CreateUserForm";
 import EditUser from "./components/EditUser";
 import DashLayout, { WelcomeDashLayout } from "./components/DashLayout";
@@ -15,7 +16,7 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
+        {/* <Route path="/login" element={<Login />} />
 
         <Route path="/dash" element={<WelcomeDashLayout />}>
           <Route index element={<Welcome />} />
@@ -33,7 +34,8 @@ function App() {
             <Route path="create" element={<NewNote />} />
             <Route path="edit/:noteId" element={<EditNote />} />
           </Route>
-        </Route>
+        </Route> */}
+        <Route path="/login" element={<Test.LoginTest />} />
       </Routes>
     </>
   )
