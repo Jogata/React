@@ -137,6 +137,7 @@ const NavigationTest = () => (
             <li><Link to="/">Home</Link></li>
             <li><Link to="/protected">Protected</Link></li>
             <li><Link to="/register">Register</Link></li>
+            <li><Link to="/login">Login</Link></li>
             <li>
                 <button
                     title="Logout"
@@ -148,6 +149,65 @@ const NavigationTest = () => (
         </ul>
     </nav>
 )
+
+const RegisterTest = () => {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const navigate = useNavigate();
+
+    const handleSubmit = async e => {
+        e.preventDefault();
+        const result = await (await fetch("http://localhost:5000/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password,
+            }),
+        })).json();
+        if (!result.error) {
+            console.log(result.message);
+            navigate("/");
+        } else {
+            console.log(result.error);
+        }
+    };
+
+    const handleChange = e => {
+        if (e.currentTarget.name === "username") {
+            setUsername(e.currentTarget.value);
+        } else {
+            setPassword(e.currentTarget.value);
+        }
+    };
+
+    return (
+        <div className="login-wrapper">
+            <form onSubmit={handleSubmit}>
+                <div>Register</div>
+                <div className="login-input">
+                    <input
+                        type="text"
+                        name="username"
+                        value={username}
+                        onChange={handleChange}
+                        placeholder="Username"
+                    />
+                    <input
+                        type="password"
+                        name="password"
+                        value={password}
+                        onChange={handleChange}
+                        placeholder="Password"
+                    />
+                    <button type="submit">Register</button>
+                </div>
+            </form>
+        </div>
+    );
+};
 
 const LoginTest = () => {
     const [user, setUser] = useState({});
@@ -217,17 +277,17 @@ const LoginTest = () => {
     );
 };
 
-export const Content = () => {
+const Content = () => {
   const [user] = [{accesstoken: "donot"}];
   if (!user.accesstoken) {
     console.log("redirect");
-    return <Navigate from="" to="/login" noThrow />
+    return <Navigate to="/login" />
   }
   return <div>This is the content.</div>;
 }
 
 export const Test = {
-    NavigationTest,
-    LoginTest, 
-    Content
+    NavigationTest, 
+    RegisterTest, 
+    LoginTest
 }

@@ -36,8 +36,9 @@ function App() {
             <Route path="edit/:noteId" element={<EditNote />} />
           </Route>
         </Route> */}
+        <Route path="/register" element={<Test.RegisterTest />} />
         <Route path="/login" element={<Test.LoginTest />} />
-        <Route path="/test" element={<Test.Content />} />
+        {/* <Route path="/test" element={<Test.Content />} /> */}
       </Routes>
     </>
   )
