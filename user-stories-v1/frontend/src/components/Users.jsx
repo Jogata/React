@@ -129,7 +129,25 @@
 // export default Users;
 
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+
+const NavigationTest = () => (
+    <nav>
+        <ul role="list">
+            <li><Link to="/">Home</Link></li>
+            <li><Link to="/protected">Protected</Link></li>
+            <li><Link to="/register">Register</Link></li>
+            <li>
+                <button
+                    title="Logout"
+                    onClick={() => console.log("todo logout")}
+                >
+                    Log Out
+                </button>
+            </li>
+        </ul>
+    </nav>
+)
 
 const LoginTest = () => {
     const [user, setUser] = useState({});
@@ -183,7 +201,7 @@ const LoginTest = () => {
                         name="username"
                         value={username}
                         onChange={handleChange}
-                        placeholder="username"
+                        placeholder="Username"
                     />
                     <input
                         type="password"
@@ -199,6 +217,17 @@ const LoginTest = () => {
     );
 };
 
+export const Content = () => {
+  const [user] = [{accesstoken: "donot"}];
+  if (!user.accesstoken) {
+    console.log("redirect");
+    return <Navigate from="" to="/login" noThrow />
+  }
+  return <div>This is the content.</div>;
+}
+
 export const Test = {
-    LoginTest
+    NavigationTest,
+    LoginTest, 
+    Content
 }

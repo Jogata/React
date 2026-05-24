@@ -532,3 +532,73 @@ td {
 .redirect-link:hover::after {
   transform: scale(1);
 }
+
+
+
+nav {
+  padding: 1rem;
+  /* display: flex; */
+  box-shadow: 3px 3px 3px #0005;
+}
+
+ul {
+  list-style: none;
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+nav li:last-child {
+  margin-left: auto;
+}
+
+button {
+  color: #FFF;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 0.5em 1em;
+}
+
+.login-wrapper {
+  text-align: center;
+  min-width: 300px;
+  min-height: 200px;
+  padding: 2rem;
+  /* color: #000; */
+  font-size: 2rem;
+  font-weight: bold;
+  /* border-top: 5px lightblue solid; */
+  /* background: #fff; */
+}
+
+.login-wrapper form {
+  max-width: 400px;
+  margin: auto;
+  padding: 2rem 1rem;
+  border-radius: 12px;
+  /* border: 1px solid steelblue; */
+  box-shadow: 3px 3px 3px #0005, 
+            -3px -3px 3px #fff2;
+}
+
+.login-input button {
+  display: block;
+  margin: auto;
+  /* width: 100%; */
+  /* height: 50px; */
+  padding: 0.5em 1em;
+  background-color: steelblue;
+}
+
+.login-input input {
+  display: block;
+  /* width: 100%; */
+  /* height: 50px; */
+  margin: 10px auto;
+  padding: 0.5em 1em;
+  color: #FFF;
+  background-color: transparent;
+  box-sizing: border-box;
+}

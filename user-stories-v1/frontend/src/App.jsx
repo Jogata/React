@@ -14,6 +14,7 @@ import EditNote from "./components/EditNote";
 function App() {
   return (
     <>
+      <Test.NavigationTest />
       <Routes>
         <Route path="/" element={<Home />} />
         {/* <Route path="/login" element={<Login />} />
@@ -36,6 +37,7 @@ function App() {
           </Route>
         </Route> */}
         <Route path="/login" element={<Test.LoginTest />} />
+        <Route path="/test" element={<Test.Content />} />
       </Routes>
     </>
   )
