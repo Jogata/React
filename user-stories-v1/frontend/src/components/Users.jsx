@@ -157,6 +157,7 @@ const RegisterTest = () => {
 
     const handleSubmit = async e => {
         e.preventDefault();
+        // console.log(username);
         const result = await (await fetch("http://localhost:5000/register", {
             method: "POST",
             headers: {

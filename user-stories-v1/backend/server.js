@@ -8,6 +8,7 @@ const connectDB = require("./config/dbConn");
 const mongoose = require("mongoose");
 
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const PORT = process.env.PORT || 5000;
 
@@ -31,27 +32,78 @@ const fakeDB = [];
 
 app.post("/register", async (req, res) => {
     const { username, password } = req.body;
-  
+    console.log(username);
+
     try {
-      const user = fakeDB.find(user => user.username === username);
-      
-      if (user) throw new Error("User already exist");
+        const user = fakeDB.find(user => user.username === username);
 
-      const hashedPassword = await bcrypt.hash(password, 10);
+        if (user) throw new Error("User already exist");
 
-      fakeDB.push({
-        id: fakeDB.length,
-        email,
-        password: hashedPassword,
-      });
-      res.send({ message: "User Created" });
-      console.log(fakeDB);
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        fakeDB.push({
+            id: fakeDB.length,
+            username,
+            password: hashedPassword,
+        });
+        res.send({ message: "User Created" });
+        console.log(fakeDB);
     } catch (err) {
-      res.send({
-        error: err.message,
-      });
+        res.send({
+            error: err.message,
+        });
     }
-  });
+});
+
+app.post("/login", async (req, res) => {
+    const { username, password } = req.body;
+
+    const createAccessToken = userId => {
+        return jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, {
+          expiresIn: "15m",
+        });
+      };
+      
+      const createRefreshToken = userId => {
+        return jwt.sign({ userId }, process.env.REFRESH_TOKEN_SECRET, {
+          expiresIn: "7d",
+        });
+      };
+      
+      const sendAccessToken = (res, req, accesstoken) => {
+        res.send({
+          accesstoken,
+          email: req.body.username,
+        });
+      };
+      
+      const sendRefreshToken = (res, token) => {
+        res.cookie("refreshtoken", token, {
+          httpOnly: true,
+          path: "/refresh-token",
+        });
+      };
+
+    try {
+        const user = fakeDB.find(user => user.username === username);
+        if (!user) throw new Error("User does not exist");
+
+        const valid = await bcrypt.compare(password, user.password);
+        if (!valid) throw new Error("Password not correct");
+
+        const accesstoken = createAccessToken(user.id);
+        const refreshtoken = createRefreshToken(user.id);
+
+        user.refreshtoken = refreshtoken;
+
+        sendRefreshToken(res, refreshtoken);
+        sendAccessToken(res, req, accesstoken);
+    } catch (err) {
+        res.send({
+            error: err.message,
+        });
+    }
+});
 
 app.use("/*splat", (req, res) => {
     res.status(404);

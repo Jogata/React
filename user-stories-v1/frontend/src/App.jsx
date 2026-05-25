@@ -15,9 +15,10 @@ import { useState } from "react";
 
 function App() {
   const [user, setUser] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  console.log(user);
 
   const logout = async () => {
     await fetch("http://localhost:5000/logout", {
