@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import Home from "./components/Home";
 import Login from "./components/Login";
 import Welcome from "./components/Welcome";
@@ -11,12 +11,30 @@ import DashLayout, { WelcomeDashLayout } from "./components/DashLayout";
 import NewNote from "./components/NewNote";
 import EditNote from "./components/EditNote";
 
+import { useState } from "react";
+
 function App() {
+  const [user, setUser] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
+
+  const logout = async () => {
+    await fetch("http://localhost:5000/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+    setUser({});
+    navigate("/");
+  }
+
+  if (loading) return <div>Loading ...</div>
+
   return (
     <>
-      <Test.NavigationTest />
+      <Test.NavigationTest logout={logout} />
       <Routes>
-        <Route path="/" element={<Home />} />
+        {/* <Route path="/" element={<Home />} /> */}
         {/* <Route path="/login" element={<Login />} />
 
         <Route path="/dash" element={<WelcomeDashLayout />}>
@@ -36,9 +54,11 @@ function App() {
             <Route path="edit/:noteId" element={<EditNote />} />
           </Route>
         </Route> */}
+        
+        <Route path="/" element={<Test.HomeTest />} />
         <Route path="/register" element={<Test.RegisterTest />} />
-        <Route path="/login" element={<Test.LoginTest />} />
-        {/* <Route path="/test" element={<Test.Content />} /> */}
+        <Route path="/login" element={<Test.LoginTest setUser={setUser} />} />
+        <Route path="/protected" element={<Test.ProtectedComponent user={user} />} />
       </Routes>
     </>
   )

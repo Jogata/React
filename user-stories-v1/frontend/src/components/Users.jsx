@@ -131,7 +131,7 @@
 import { useState, useEffect } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
-const NavigationTest = () => (
+const NavigationTest = ({ logout }) => (
     <nav>
         <ul role="list">
             <li><Link to="/">Home</Link></li>
@@ -141,7 +141,7 @@ const NavigationTest = () => (
             <li>
                 <button
                     title="Logout"
-                    onClick={() => console.log("todo logout")}
+                    onClick={logout}
                 >
                     Log Out
                 </button>
@@ -209,8 +209,8 @@ const RegisterTest = () => {
     );
 };
 
-const LoginTest = () => {
-    const [user, setUser] = useState({});
+const LoginTest = ({ setUser }) => {
+    // const [user, setUser] = useState({});
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
@@ -224,8 +224,8 @@ const LoginTest = () => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                username: username,
-                password: password,
+                username,
+                password,
             }),
         })).json();
 
@@ -239,9 +239,9 @@ const LoginTest = () => {
         }
     };
 
-    useEffect(() => {
-        console.log(user);
-    }, [user])
+    // useEffect(() => {
+    //     console.log(user);
+    // }, [user])
 
     const handleChange = e => {
         if (e.currentTarget.name === "username") {
@@ -277,8 +277,8 @@ const LoginTest = () => {
     );
 };
 
-const ProtectedComponent = () => {
-    const [user] = useState({});
+const ProtectedComponent = ({ user }) => {
+    // const [user] = useState({});
     const [content, setContent] = useState("You need to login");
   
     useEffect(() => {
@@ -298,17 +298,18 @@ const ProtectedComponent = () => {
     return <div>{content}</div>;
   }
 
-const Content = () => {
-  const [user] = [{accesstoken: "donot"}];
-  if (!user.accesstoken) {
-    console.log("redirect");
-    return <Navigate to="/login" />
-  }
-  return <div>This is the content.</div>;
+const HomeTest = () => {
+//   const [user] = [{}];
+//   if (!user.accesstoken) {
+//     console.log("redirect");
+//     return <Navigate to="/login" />
+//   }
+  return <h1>Home Page</h1>;
 }
 
 export const Test = {
     NavigationTest, 
+    HomeTest, 
     RegisterTest, 
     ProtectedComponent, 
     LoginTest
