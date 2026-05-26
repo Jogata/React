@@ -153,6 +153,31 @@ app.post("/refresh-token", (req, res) => {
     return res.send({ accesstoken });
 });
 
+app.post("/protected", async (req, res) => {
+    const isAuth = req => {
+        const authorization = req.headers["authorization"];
+        if (!authorization) throw new Error("You need to login from server.");
+
+        const token = authorization.split(" ")[1];
+        const { userId } = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        return userId;
+    };
+
+    try {
+        const userId = isAuth(req);
+
+        if (userId !== null) {
+            res.send({
+                data: "This is protected data.",
+            });
+        }
+    } catch (err) {
+        res.send({
+            error: err.message,
+        });
+    }
+});
+
 app.use("/*splat", (req, res) => {
     res.status(404);
     if (req.accepts("html")) {
