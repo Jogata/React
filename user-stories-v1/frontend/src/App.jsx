@@ -25,7 +25,7 @@ function App() {
       method: "POST",
       credentials: "include",
     });
-    setUser({});
+    // setUser({});
     navigate("/");
   }
 

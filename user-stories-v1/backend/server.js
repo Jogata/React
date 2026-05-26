@@ -178,6 +178,13 @@ app.post("/protected", async (req, res) => {
     }
 });
 
+app.post("/logout", (_req, res) => {
+    res.clearCookie("refreshtoken", { path: "/refresh_token" });
+    return res.send({
+        message: "Logged out",
+    });
+});
+
 app.use("/*splat", (req, res) => {
     res.status(404);
     if (req.accepts("html")) {
