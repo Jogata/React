@@ -278,27 +278,6 @@ const LoginTest = ({ setUser }) => {
     );
 };
 
-const ProtectedComponent = ({ user }) => {
-    // const [user] = useState({});
-    const [content, setContent] = useState("You need to login");
-  
-    useEffect(() => {
-      async function fetchProtected() {
-        const result = await (await fetch("http://localhost:5000/protected", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${user.accesstoken}`,
-          },
-        })).json();
-        if (result.data) setContent(result.data);
-      }
-      fetchProtected();
-    }, [user])
-  
-    return <div>{content}</div>;
-  }
-
 const HomeTest = () => {
 //   const [user] = [{}];
 //   if (!user.accesstoken) {

@@ -70,10 +70,10 @@ app.post("/login", async (req, res) => {
         });
       };
       
-      const sendAccessToken = (res, req, accesstoken) => {
+      const sendAccessToken = (res, username, accesstoken) => {
         res.send({
           accesstoken,
-          email: req.body.username,
+          username,
         });
       };
       
@@ -97,12 +97,60 @@ app.post("/login", async (req, res) => {
         user.refreshtoken = refreshtoken;
 
         sendRefreshToken(res, refreshtoken);
-        sendAccessToken(res, req, accesstoken);
+        sendAccessToken(res, username, accesstoken);
     } catch (err) {
         res.send({
             error: err.message,
         });
     }
+});
+
+app.post("/refresh-token", (req, res) => {
+    const token = req.cookies.refreshtoken;
+
+    if (!token) return res.send({ accesstoken: "" });
+
+    let payload = null;
+
+    try {
+        payload = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+    } catch (err) {
+        return res.send({ accesstoken: "" });
+    }
+
+    const user = fakeDB.find(user => user.id === payload.userId);
+    if (!user) return res.send({ accesstoken: "" });
+
+    if (user.refreshtoken !== token) {
+        return res.send({ accesstoken: "" });
+    }
+
+    const createAccessToken = userId => {
+        return jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, {
+            expiresIn: "15m",
+        });
+    };
+
+    const createRefreshToken = userId => {
+        return jwt.sign({ userId }, process.env.REFRESH_TOKEN_SECRET, {
+            expiresIn: "7d",
+        });
+    };
+
+    const sendRefreshToken = (res, token) => {
+        res.cookie("refreshtoken", token, {
+            httpOnly: true,
+            path: "/refresh-token",
+        });
+    };
+
+    const accesstoken = createAccessToken(user.id);
+    const refreshtoken = createRefreshToken(user.id);
+
+    user.refreshtoken = refreshtoken;
+
+    sendRefreshToken(res, refreshtoken);
+    return res.send({ accesstoken });
 });
 
 app.use("/*splat", (req, res) => {
@@ -116,7 +164,6 @@ app.use("/*splat", (req, res) => {
     }
 })
 
-// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 mongoose.connection.once("open", () => {
     console.log("Connected to MongoDB");
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

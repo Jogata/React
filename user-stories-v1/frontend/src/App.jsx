@@ -11,11 +11,11 @@ import DashLayout, { WelcomeDashLayout } from "./components/DashLayout";
 import NewNote from "./components/NewNote";
 import EditNote from "./components/EditNote";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
   const [user, setUser] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
   console.log(user);
@@ -28,6 +28,25 @@ function App() {
     setUser({});
     navigate("/");
   }
+
+  useEffect(() => {
+    async function checkRefreshToken() {
+      const result = await (await fetch("http://localhost:5000/refresh-token", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      })).json();
+      
+      setUser({
+        accesstoken: result.accesstoken,
+      });
+      setLoading(false);
+    }
+
+    checkRefreshToken();
+  }, []);
 
   if (loading) return <div>Loading ...</div>
 
