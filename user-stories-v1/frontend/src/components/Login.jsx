@@ -21,6 +21,16 @@ const Login = () => {
         userRef.current.focus();
     }, [])
 
+    useEffect(() => {
+        // console.log("effect");
+        async function setcoockie() {
+            const res = await fetch("http://localhost:5000/testsetcoockie");
+            const result = await res.text();
+            console.log(result);
+        }
+        setcoockie();
+    }, [])
+
     const handleUserInput = (e) => setUsername(e.target.value);
     const handlePwdInput = (e) => setPassword(e.target.value);
     const handleToggle = () => setPersist(prev => !prev);

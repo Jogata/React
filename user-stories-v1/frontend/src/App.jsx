@@ -1,61 +1,23 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
 import Login from "./components/Login";
 import Welcome from "./components/Welcome";
 import Notes from "./components/Notes";
-// import Users from "./components/Users";
-import { Test } from "./components/Users";
+import Users from "./components/Users";
 import CreateUserForm from "./components/CreateUserForm";
 import EditUser from "./components/EditUser";
 import DashLayout, { WelcomeDashLayout } from "./components/DashLayout";
 import NewNote from "./components/NewNote";
 import EditNote from "./components/EditNote";
 
-import { useEffect, useState } from "react";
-
 function App() {
-  const [user, setUser] = useState({});
-  const [loading, setLoading] = useState(true);
-
-  const navigate = useNavigate();
-  console.log(user);
-
-  const logout = async () => {
-    await fetch("http://localhost:5000/logout", {
-      method: "POST",
-      credentials: "include",
-    });
-    // setUser({});
-    navigate("/");
-  }
-
-  useEffect(() => {
-    async function checkRefreshToken() {
-      const result = await (await fetch("http://localhost:5000/refresh-token", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        }
-      })).json();
-      
-      setUser({
-        accesstoken: result.accesstoken,
-      });
-      setLoading(false);
-    }
-
-    checkRefreshToken();
-  }, []);
-
-  if (loading) return <div>Loading ...</div>
-
   return (
     <>
-      <Test.NavigationTest logout={logout} />
       <Routes>
-        {/* <Route path="/" element={<Home />} /> */}
-        {/* <Route path="/login" element={<Login />} />
+      <Route path="/testwithout" element={<Login />} />
+
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
 
         <Route path="/dash" element={<WelcomeDashLayout />}>
           <Route index element={<Welcome />} />
@@ -73,12 +35,7 @@ function App() {
             <Route path="create" element={<NewNote />} />
             <Route path="edit/:noteId" element={<EditNote />} />
           </Route>
-        </Route> */}
-        
-        <Route path="/" element={<Test.HomeTest />} />
-        <Route path="/register" element={<Test.RegisterTest />} />
-        <Route path="/login" element={<Test.LoginTest setUser={setUser} />} />
-        <Route path="/protected" element={<Test.ProtectedComponent user={user} />} />
+        </Route>
       </Routes>
     </>
   )

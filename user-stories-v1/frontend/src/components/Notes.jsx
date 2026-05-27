@@ -44,6 +44,10 @@ const Notes = () => {
                 if (res.ok) {
                     setStatus("success");
                     setNotes(result.data);
+                } else {
+                    // console.log(result);
+                    setStatus("error");
+                    setErrors([result]);
                 }
             } catch (error) {
                 console.log(error.message);
@@ -56,6 +60,8 @@ const Notes = () => {
     const messagesClass = messages.length ? "successmsg" : "offscreen";
 
     let content = null;
+
+    console.log(status);
     
     if (status == "loading") {
         content = <Loader />
