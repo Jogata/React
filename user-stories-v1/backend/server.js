@@ -7,6 +7,8 @@ const corsOptions = require("./config/corsOptions");
 const connectDB = require("./config/dbConn");
 const mongoose = require("mongoose");
 
+const jwt = require("jsonwebtoken");
+
 const PORT = process.env.PORT || 5000;
 
 const app = express();
@@ -16,38 +18,44 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
-const testwith = (req, res) => {
-    const cookies = req.cookies;
-    console.log(cookies);
-    const headers = req.headers.test;
-    console.log(headers);
-    res.send("testwith");
-}
+// =========================================================================================
+let refreshTokens = [];
 
-const testwithout = (req, res) => {
-    const cookies = req.cookies;
-    console.log(cookies);
-    // const headers = req.headers.test;
-    // console.log(headers);
-    res.send("testwithout");
-}
+app.post("/token", (req, res) => {
+  const refreshToken = req.body.token;
+  if (refreshToken == null) return res.sendStatus(401);
+  if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403);
+    const accessToken = generateAccessToken({ name: user.name });
+    res.json({ accessToken: accessToken });
+  })
+})
 
-const setcoockie = (req, res) => {
-    console.log(req.body);
-    res.cookie("testhttpOnly", "tokenvaluehttpOnly", {
-        httpOnly: true,
-        // secure: true,    tofix
-        // sameSite: "None",
-        maxAge: 7 * 24 * 60 * 60 * 1000
-    })
-    res.cookie("test", "tokenvalue", {
-        // httpOnly: true,
-        // secure: true,    tofix
-        // sameSite: "None",
-        maxAge: 7 * 24 * 60 * 60 * 1000
-    })
-    res.send("Cookie has been set successfully!");
+app.delete("/logout", (req, res) => {
+  refreshTokens = refreshTokens.filter(token => token !== req.body.token);
+  res.sendStatus(204);
+})
+
+app.post("/login", (req, res) => {
+  const username = req.body.username;
+  console.log(req.body.username);
+  if (!req.body.username) {
+    res.status(401).json({message: "Login"});
+  }
+  const user = { name: username };
+
+  const accessToken = generateAccessToken(user);
+  const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+  refreshTokens.push(refreshToken);
+  console.log(refreshTokens);
+  res.json({ accessToken: accessToken, refreshToken: refreshToken });
+})
+
+function generateAccessToken(user) {
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15s" });
 }
+// =========================================================================================
 
 app.use("/", express.static(path.join(__dirname, "public")));
 
@@ -55,13 +63,6 @@ app.use("/", require("./routes/root"));
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/users", require("./routes/userRoutes"));
 app.use("/notes", require("./routes/noteRoutes"));
-
-app.get("/testwithout", testwithout);
-app.get("/testwith", testwith);
-app.get("/test", (req, res) => {
-    req.body;
-});
-app.get("/testsetcoockie", setcoockie);
 
 app.use("/*splat", (req, res) => {
     res.status(404);

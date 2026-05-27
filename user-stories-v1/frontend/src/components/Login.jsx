@@ -17,49 +17,39 @@ const Login = () => {
     const formSubmitedOnce = useRef(false);
     const userRef = useRef();
 
+    const [tokens, setTokens] = useState({});
+    console.log(tokens);
+
     useEffect(() => {
         userRef.current.focus();
     }, [])
 
     useEffect(() => {
-        // console.log("effect");
-        async function setcoockie() {
-            const res = await fetch("http://localhost:5000/testsetcoockie", {
-                credentials: "include"
-            });
-            console.log(res);
-            const result = await res.text();
-            console.log(result);
+        const url = "http://localhost:5000/login";
+        const logintest = async () => {
+            try {
+                const res = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ username: "user4" }),
+                });
+    
+                if (res.ok) {
+                    const result = await res.json(res);
+                    // console.log(result);
+                    setTokens(result);
+                } else {
+                    const result = await res.json(res);
+                    console.log(result);
+                }
+            } catch (error) {
+                console.log(error.message);
+            }
         }
-        setcoockie();
+        logintest();
     }, [])
-
-    // useEffect(() => {
-    //     async function testwithout() {
-    //         const res = await fetch("http://localhost:5000/testwithout", {
-    //             method: "GET", 
-    //             credentials: "omit"
-    //         });
-    //         const result = await res.text();
-    //         console.log(result);
-    //     }
-    //     testwithout();
-    // })
-
-    // useEffect(() => {
-    //     async function testwith() {
-    //         const res = await fetch("http://localhost:5000/testwith", {
-    //             method: "GET", 
-    //             credentials: "include", 
-    //             headers: {
-    //                 test: "testwith header value"
-    //             }
-    //         });
-    //         const result = await res.text();
-    //         console.log(result);
-    //     }
-    //     testwith();
-    // })
 
     const handleUserInput = (e) => setUsername(e.target.value);
     const handlePwdInput = (e) => setPassword(e.target.value);
@@ -234,24 +224,6 @@ const Login = () => {
     )
 
     return content;
-    // (
-    //     <>
-    //         <div className="messages">
-    //             <div className={errClass}>
-    //                 {errors.map((err, index) => {
-    //                     return <p key={index}>{err.message}</p>
-    //                 })}
-    //             </div>
-
-                // {<div className={successMsgClass}>
-                //     {messages.map((message, index) => {
-                //         return <p key={index}>{message.message}</p>
-                //     })}
-                // </div>}
-    //         </div>
-    //         {content}
-    //     </>
-    // );
 }
 
 export default Login;
