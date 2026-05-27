@@ -57,6 +57,33 @@ const CreateNoteForm = ({ users }) => {
     // }, [messages, navigate])
     }, [messages])
 
+    useEffect(() => {
+        async function testwithout() {
+            const res = await fetch("http://localhost:5000/testwithout", {
+                method: "GET", 
+                credentials: "omit"
+            });
+            const result = await res.text();
+            console.log(result);
+        }
+        testwithout();
+    })
+
+    useEffect(() => {
+        async function testwith() {
+            const res = await fetch("http://localhost:5000/testwith", {
+                method: "GET", 
+                credentials: "include", 
+                headers: {
+                    test: "testwith header value"
+                }
+            });
+            const result = await res.text();
+            console.log(result);
+        }
+        testwith();
+    })
+
     const onTitleChanged = e => setTitle(e.target.value);
     const onTextChanged = e => setText(e.target.value);
     const onUserIdChanged = e => setUserId(e.target.value);

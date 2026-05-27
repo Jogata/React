@@ -24,12 +24,42 @@ const Login = () => {
     useEffect(() => {
         // console.log("effect");
         async function setcoockie() {
-            const res = await fetch("http://localhost:5000/testsetcoockie");
+            const res = await fetch("http://localhost:5000/testsetcoockie", {
+                credentials: "include"
+            });
+            console.log(res);
             const result = await res.text();
             console.log(result);
         }
         setcoockie();
     }, [])
+
+    // useEffect(() => {
+    //     async function testwithout() {
+    //         const res = await fetch("http://localhost:5000/testwithout", {
+    //             method: "GET", 
+    //             credentials: "omit"
+    //         });
+    //         const result = await res.text();
+    //         console.log(result);
+    //     }
+    //     testwithout();
+    // })
+
+    // useEffect(() => {
+    //     async function testwith() {
+    //         const res = await fetch("http://localhost:5000/testwith", {
+    //             method: "GET", 
+    //             credentials: "include", 
+    //             headers: {
+    //                 test: "testwith header value"
+    //             }
+    //         });
+    //         const result = await res.text();
+    //         console.log(result);
+    //     }
+    //     testwith();
+    // })
 
     const handleUserInput = (e) => setUsername(e.target.value);
     const handlePwdInput = (e) => setPassword(e.target.value);
