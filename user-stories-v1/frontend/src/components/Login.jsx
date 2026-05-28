@@ -53,6 +53,64 @@ const Login = () => {
         tokentest();
     }
 
+    const getposts = (e) => {
+        e.preventDefault();
+        const url = "http://localhost:5000/posts";
+        const tokentest = async () => {
+            try {
+                const res = await fetch(url, {
+                    method: "GET",
+                    headers: {
+                        // "Content-Type": "application/json",
+                        "Authorization": `Bearer ${tokens.accessToken}`
+                    },
+                    // body: JSON.stringify({ token: tokens.accessToken }),
+                });
+    
+                if (res.ok) {
+                    const result = await res.json(res);
+                    console.log(result);
+                    // setTokens({...tokens, accessToken: result.accessToken});
+                } else {
+                    const result = await res.json(res);
+                    console.log("Error: ", result);
+                }
+            } catch (error) {
+                console.log(error.message);
+            }
+        }
+        tokentest();
+    }
+
+    const logout = (e) => {
+        e.preventDefault();
+        const url = "http://localhost:5000/logout";
+        const tokentest = async () => {
+            try {
+                const res = await fetch(url, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        // "Authorization": `Bearer ${tokens.accessToken}`
+                    },
+                    body: JSON.stringify({ token: tokens.refreshToken }),
+                });
+    
+                if (res.ok) {
+                    // const result = await res.json(res);
+                    console.log(res.status);
+                    // setTokens({...tokens, accessToken: result.accessToken});
+                } else {
+                    // const result = await res.json(res);
+                    console.log("Error: ", res.message);
+                }
+            } catch (error) {
+                console.log(error.message);
+            }
+        }
+        tokentest();
+    }
+
     useEffect(() => {
         const url = "http://localhost:5000/login";
         const logintest = async () => {
@@ -62,7 +120,7 @@ const Login = () => {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ username: "user4" }),
+                    body: JSON.stringify({ username: "Kyle" }),
                 });
     
                 if (res.ok) {
@@ -239,8 +297,17 @@ const Login = () => {
                     >
                         refresh token
                     </button>
-                    <button className="submit-button">
-                        todo get post
+                    <button 
+                        className="submit-button"
+                        onClick={getposts}
+                    >
+                        get post
+                    </button>
+                    <button 
+                        className="submit-button"
+                        onClick={logout}
+                    >
+                        logout
                     </button>
 
                     <label htmlFor="persist" className="form-persist">
