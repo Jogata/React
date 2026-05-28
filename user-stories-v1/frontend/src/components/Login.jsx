@@ -18,11 +18,40 @@ const Login = () => {
     const userRef = useRef();
 
     const [tokens, setTokens] = useState({});
-    console.log(tokens);
+    console.log(tokens.accessToken);
 
     useEffect(() => {
         userRef.current.focus();
     }, [])
+
+
+    const refresh = (e) => {
+        e.preventDefault();
+        const url = "http://localhost:5000/token";
+        const tokentest = async () => {
+            try {
+                const res = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ token: tokens.refreshToken }),
+                });
+    
+                if (res.ok) {
+                    const result = await res.json(res);
+                    // console.log(result);
+                    setTokens({...tokens, accessToken: result.accessToken});
+                } else {
+                    const result = await res.json(res);
+                    console.log(result);
+                }
+            } catch (error) {
+                console.log(error.message);
+            }
+        }
+        tokentest();
+    }
 
     useEffect(() => {
         const url = "http://localhost:5000/login";
@@ -204,6 +233,15 @@ const Login = () => {
                     />
 
                     <button className="submit-button">Sign In</button>
+                    <button 
+                        className="submit-button"
+                        onClick={refresh}
+                    >
+                        refresh token
+                    </button>
+                    <button className="submit-button">
+                        todo get post
+                    </button>
 
                     <label htmlFor="persist" className="form-persist">
                         <input
