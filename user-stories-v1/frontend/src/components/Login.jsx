@@ -17,125 +17,8 @@ const Login = () => {
     const formSubmitedOnce = useRef(false);
     const userRef = useRef();
 
-    const [tokens, setTokens] = useState({});
-    console.log(tokens.accessToken);
-
     useEffect(() => {
         userRef.current.focus();
-    }, [])
-
-
-    const refresh = (e) => {
-        e.preventDefault();
-        const url = "http://localhost:5000/token";
-        const tokentest = async () => {
-            try {
-                const res = await fetch(url, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ token: tokens.refreshToken }),
-                });
-    
-                if (res.ok) {
-                    const result = await res.json(res);
-                    // console.log(result);
-                    setTokens({...tokens, accessToken: result.accessToken});
-                } else {
-                    const result = await res.json(res);
-                    console.log(result);
-                }
-            } catch (error) {
-                console.log(error.message);
-            }
-        }
-        tokentest();
-    }
-
-    const getposts = (e) => {
-        e.preventDefault();
-        const url = "http://localhost:5000/posts";
-        const tokentest = async () => {
-            try {
-                const res = await fetch(url, {
-                    method: "GET",
-                    headers: {
-                        // "Content-Type": "application/json",
-                        "Authorization": `Bearer ${tokens.accessToken}`
-                    },
-                    // body: JSON.stringify({ token: tokens.accessToken }),
-                });
-    
-                if (res.ok) {
-                    const result = await res.json(res);
-                    console.log(result);
-                    // setTokens({...tokens, accessToken: result.accessToken});
-                } else {
-                    const result = await res.json(res);
-                    console.log("Error: ", result);
-                }
-            } catch (error) {
-                console.log(error.message);
-            }
-        }
-        tokentest();
-    }
-
-    const logout = (e) => {
-        e.preventDefault();
-        const url = "http://localhost:5000/logout";
-        const tokentest = async () => {
-            try {
-                const res = await fetch(url, {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type": "application/json",
-                        // "Authorization": `Bearer ${tokens.accessToken}`
-                    },
-                    body: JSON.stringify({ token: tokens.refreshToken }),
-                });
-    
-                if (res.ok) {
-                    // const result = await res.json(res);
-                    console.log(res.status);
-                    // setTokens({...tokens, accessToken: result.accessToken});
-                } else {
-                    // const result = await res.json(res);
-                    console.log("Error: ", res.message);
-                }
-            } catch (error) {
-                console.log(error.message);
-            }
-        }
-        tokentest();
-    }
-
-    useEffect(() => {
-        const url = "http://localhost:5000/login";
-        const logintest = async () => {
-            try {
-                const res = await fetch(url, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ username: "Kyle" }),
-                });
-    
-                if (res.ok) {
-                    const result = await res.json(res);
-                    // console.log(result);
-                    setTokens(result);
-                } else {
-                    const result = await res.json(res);
-                    console.log(result);
-                }
-            } catch (error) {
-                console.log(error.message);
-            }
-        }
-        logintest();
     }, [])
 
     const handleUserInput = (e) => setUsername(e.target.value);
@@ -268,13 +151,11 @@ const Login = () => {
                     <input
                         type="text"
                         id="username"
-                        // className="form-input"
                         className={`form-input ${validUserClass}`}
                         ref={userRef}
                         value={username}
                         onChange={handleUserInput}
                         autoComplete="off"
-                    // required
                     />
 
                     <label htmlFor="password" className="form-label">
@@ -283,32 +164,12 @@ const Login = () => {
                     <input
                         type="password"
                         id="password"
-                        // className="form-input"
                         className={`form-input ${validPwdClass}`}
                         value={password}
                         onChange={handlePwdInput}
-                    // required
                     />
 
                     <button className="submit-button">Sign In</button>
-                    <button 
-                        className="submit-button"
-                        onClick={refresh}
-                    >
-                        refresh token
-                    </button>
-                    <button 
-                        className="submit-button"
-                        onClick={getposts}
-                    >
-                        get post
-                    </button>
-                    <button 
-                        className="submit-button"
-                        onClick={logout}
-                    >
-                        logout
-                    </button>
 
                     <label htmlFor="persist" className="form-persist">
                         <input

@@ -57,39 +57,6 @@ const EditUserForm = ({ user }) => {
 
     const navigate = useNavigate();
 
-    // const {
-        // isLoading,
-        // isSuccess,
-        // isError,
-        // error
-    // } = {
-        // isLoading: false, 
-        // isSuccess: false, 
-        // isError: false, 
-        // error: ""
-    // }
-
-    // const {
-    //     isSuccess: isDelSuccess,
-    //     isError: isDelError,
-    //     error: delerror
-    // } = {
-    //     isSuccess: false, 
-    //     isError: false, 
-    //     error: ""
-    // }
-
-    // useEffect(() => {
-        // if (isSuccess || isDelSuccess) {
-            // TOFIX
-            // setUsername("");
-            // setPassword("");
-            // setRoles([]);
-            // navigate("/dash/users");
-        // }
-
-    // }, [isSuccess, isDelSuccess, navigate])
-
     const onUsernameChanged = e => setUsername(e.target.value);
     const onPasswordChanged = e => setPassword(e.target.value);
 

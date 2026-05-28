@@ -10,11 +10,15 @@ import DashLayout, { WelcomeDashLayout } from "./components/DashLayout";
 import NewNote from "./components/NewNote";
 import EditNote from "./components/EditNote";
 
+
+import { Test } from "./components/User";
+
 function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Home />} />
+      <Route path="/" element={<Test.Home />} />
+        {/* <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
 
         <Route path="/dash" element={<WelcomeDashLayout />}>
@@ -33,7 +37,7 @@ function App() {
             <Route path="create" element={<NewNote />} />
             <Route path="edit/:noteId" element={<EditNote />} />
           </Route>
-        </Route>
+        </Route> */}
       </Routes>
     </>
   )
