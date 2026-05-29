@@ -127,7 +127,7 @@ function Register() {
                     onChange={onPasswordChanged}
                 />
                 <button
-                    className="button"
+                    className="submit-button"
                     title="Register"
                 >
                     Register
@@ -205,7 +205,7 @@ function Login() {
                     onChange={onPasswordChanged}
                 />
                 <button
-                    className="button"
+                    className="submit-button"
                     title="Login"
                 >
                     Login
