@@ -31,6 +31,8 @@ export default User;
 
 
 
+
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Home() {
@@ -46,7 +48,7 @@ function Home() {
         });
         console.log("Response: ", response);
     };
- 
+
     return (
         <>
             <h1>Welcome Home Bud!</h1>
@@ -64,6 +66,87 @@ function Home() {
             </button>
         </>
     );
-} 
- 
-export const Test = { Home };
+}
+
+
+function Login() {
+    const [error, setError] = useState("");
+    const [username, setUsername] = useState("user5");
+    //   const [password, setPassword] = useState("");
+    const [password, setPassword] = useState("pass1235");
+    //   const [password, setPassword] = useState("");
+
+    const handleSubmit = async (values) => {
+        console.log("Values: ", values);
+        setError("");
+
+        try {
+            const response = await fetch(
+                "http://localhost:9000/api/v1/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(values),
+            }
+            );
+
+            signIn({
+                token: response.data.token,
+                expiresIn: 3600,
+                tokenType: "Bearer",
+                authState: { email: values.email },
+            });
+        } catch (err) {
+            console.log("Error: ", err);
+            setError(err.message);
+        }
+    };
+
+    const onUsernameChanged = e => setUsername(e.target.value);
+    const onPasswordChanged = e => setPassword(e.target.value);
+
+    return (
+        <>
+            <form onSubmit={handleSubmit}>
+                <h1>Welcome Back!</h1>
+                <p style={{ color: "red" }}>{error}</p>
+                <label htmlFor="username" className="form-label">
+                    Username:
+                </label>
+                <input
+                    className="form-input"
+                    id="username"
+                    name="username"
+                    type="text"
+                    autoComplete="off"
+                    value={username}
+                    onChange={onUsernameChanged}
+                />
+                <label htmlFor="password" className="form-label">
+                    Password:
+                </label>
+                <input
+                    className="form-input"
+                    id="password"
+                    name="password"
+                    type="password"
+                    value={password}
+                    onChange={onPasswordChanged}
+                />
+                <button
+                    className="button"
+                    title="Login"
+                >
+                    Login
+                </button>
+
+            </form>
+        </>
+    );
+}
+
+export const Test = { 
+    Home, 
+    Login
+ };
