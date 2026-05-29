@@ -18,6 +18,7 @@ function App() {
     <>
       <Routes>
       <Route path="/" element={<Test.Home />} />
+      <Route path="/register" element={<Test.Register />} />
       <Route path="/login" element={<Test.Login />} />
         {/* <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

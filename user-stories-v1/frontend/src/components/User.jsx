@@ -68,6 +68,75 @@ function Home() {
     );
 }
 
+function Register() {
+    const [error, setError] = useState("");
+    const [username, setUsername] = useState("user5");
+    //   const [password, setPassword] = useState("");
+    const [password, setPassword] = useState("pass1235");
+    //   const [password, setPassword] = useState("");
+
+    const handleSubmit = async (values) => {
+        console.log("Values: ", values);
+        setError("");
+
+        try {
+            const response = await fetch(
+                "http://localhost:5000/api/v1/register", {
+                method: "POST",
+                credentials: "include", 
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(values),
+            });
+        } catch (err) {
+            console.log("Error: ", err);
+            setError(err.message);
+        }
+    };
+
+    const onUsernameChanged = e => setUsername(e.target.value);
+    const onPasswordChanged = e => setPassword(e.target.value);
+
+    return (
+        <>
+            <form onSubmit={handleSubmit}>
+                <h1>Welcome Back!</h1>
+                <p style={{ color: "red" }}>{error}</p>
+                <label htmlFor="username" className="form-label">
+                    Username:
+                </label>
+                <input
+                    className="form-input"
+                    id="username"
+                    name="username"
+                    type="text"
+                    autoComplete="off"
+                    value={username}
+                    onChange={onUsernameChanged}
+                />
+                <label htmlFor="password" className="form-label">
+                    Password:
+                </label>
+                <input
+                    className="form-input"
+                    id="password"
+                    name="password"
+                    type="password"
+                    value={password}
+                    onChange={onPasswordChanged}
+                />
+                <button
+                    className="button"
+                    title="Register"
+                >
+                    Register
+                </button>
+
+            </form>
+        </>
+    );
+}
 
 function Login() {
     const [error, setError] = useState("");
@@ -84,6 +153,7 @@ function Login() {
             const response = await fetch(
                 "http://localhost:9000/api/v1/login", {
                 method: "POST",
+                credentials: "include", 
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -148,5 +218,6 @@ function Login() {
 
 export const Test = { 
     Home, 
+    Register, 
     Login
  };
