@@ -20,6 +20,7 @@ function App() {
       <Route path="/" element={<Test.Home />} />
       <Route path="/register" element={<Test.Register />} />
       <Route path="/login" element={<Test.Login />} />
+      <Route path="/dash" element={<Test.Dashboard />} />
       
         {/* <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
