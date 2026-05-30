@@ -33,7 +33,7 @@ export default User;
 
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Home() {
     const navigate = useNavigate();
@@ -219,5 +219,5 @@ function Login() {
 export const Test = { 
     Home, 
     Register, 
-    Login
+    Login, 
  };
