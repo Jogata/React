@@ -89,6 +89,8 @@ function Register() {
                 },
                 body: JSON.stringify(values),
             });
+            const result = await response.json();
+            console.log(result);
         } catch (err) {
             console.log("Error: ", err);
             setError(err.message);
@@ -151,7 +153,7 @@ function Login() {
 
         try {
             const response = await fetch(
-                "http://localhost:9000/api/v1/login", {
+                "http://localhost:5000/api/v1/login", {
                 method: "POST",
                 credentials: "include", 
                 headers: {

@@ -38,7 +38,7 @@ app.get("/payment", (req, res) => {
   res.send("it's working");
 });
 
-app.post("/login", async (req, res) => {
+app.post("/api/v1/login", async (req, res) => {
   const { username, password } = req.body;
 
   const user = users.find(user => user.username == username);
@@ -52,12 +52,40 @@ app.post("/login", async (req, res) => {
   }
 
   const token = jwt.sign({
-    id, 
+    id: user.id, 
     username
   }, 
   "secret");
 
   res.status(200).json({message: "Welcome back", token});
+})
+
+app.post("/api/v1/register", async (req, res) => {
+  const { username, password } = req.body;
+
+  const user = users.find(user => user.username == username);
+
+  if (!username) {
+    res.status(400).json({message: "Missing username"});
+  }
+
+  if (!password) {
+    res.status(400).json({message: "Missing password"});
+  }
+
+  if (user.username == username) {
+    res.status(400).json({message: "Username exist"});
+  }
+
+  const newUser = {
+    id: username, 
+    username, 
+    password,
+  }
+
+  users.push(newUser);
+
+  res.status(200).json({message: "Welcome"});
 })
 // =============================================================
 
