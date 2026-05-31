@@ -245,7 +245,8 @@ function Dashboard() {
         try {
             const getPayment = async () => {
                 const response = await fetch("http://localhost:5000/api/v1/payment", {
-                    withCredentials: true,
+                    // withCredentials: true, 
+                    credentials: "include"
                 });
                 // console.log("Response: ", response);
                 const result = await response.text();

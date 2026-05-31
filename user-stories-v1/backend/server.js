@@ -35,7 +35,26 @@ const users = [
 ];
 
 app.get("/api/v1/payment", (req, res) => {
-  res.send("it's working");
+  const cookie = req.cookies;
+  console.log(cookie);
+  const token = req.cookies.token;
+  // console.log(token);
+  // res.send("it's working");
+
+  if (!token) {
+    return res.status(403).json({ message: "Forbidden 45" });
+  }
+
+  jwt.verify(
+    token,
+    "secret",
+    async (err, decoded) => {
+      if (err) {
+        return res.status(403).json({ message: "Forbidden 53" });
+      }
+      res.json({ message: "payment succesful" });
+    }
+  )
 });
 
 app.post("/api/v1/login", async (req, res) => {
@@ -66,15 +85,15 @@ app.post("/api/v1/login", async (req, res) => {
   }, 
   "secret");
 
-  res.cookie("cannot", token, {
+  res.cookie("token", token, {
     httpOnly: true,
     // secure: true,
     // sameSite: "None",
     maxAge: 7 * 24 * 60 * 60 * 1000
   })
 
-  res.cookie("can1", "bfvhsdvfhk");
-  res.cookie("can2", "nvjbdvfkdbk");
+  // res.cookie("can1", "bfvhsdvfhk");
+  // res.cookie("can2", "nvjbdvfkdbk");
   
   res.status(200).json({message: "Welcome back", token});
 })
