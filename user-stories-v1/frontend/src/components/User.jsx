@@ -32,8 +32,8 @@ export default User;
 
 
 
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
 function Home() {
     const navigate = useNavigate();
@@ -42,22 +42,25 @@ function Home() {
         navigate("/login");
     };
  
-    const getPayment = async () => {
-        const response = await fetch("http://localhost:5000/payment", {
-            withCredentials: true,
-        });
-        console.log("Response: ", response);
-    };
+    // const getPayment = async () => {
+    //     const response = await fetch("http://localhost:5000/payment", {
+    //         withCredentials: true,
+    //     });
+    //     console.log("Response: ", response);
+    // };
 
     return (
         <>
             <h1>Welcome Home Bud!</h1>
-            <button 
+            {/* <button 
                 className="submit-button"
                 onClick={getPayment}
             >
                 Get Payment
-            </button>
+            </button> */}
+            <Link to="/dash">
+                Dashboard
+            </Link>
             <button 
                 className="submit-button"
                 onClick={logout}
@@ -136,17 +139,22 @@ function Register() {
                     Register
                 </button>
 
+                <Link className="redirect-link" to="/login">
+                    Login
+                </Link>
+
             </form>
         </>
     );
 }
 
-function Login() {
+function Login(props) {
     const [error, setError] = useState("");
     const [username, setUsername] = useState("user5");
     //   const [password, setPassword] = useState("");
     const [password, setPassword] = useState("pass1235");
     //   const [password, setPassword] = useState("");
+    const setUser = props.setUser;
 
     const handleSubmit = async (e, values) => {
         e.preventDefault();
@@ -170,12 +178,10 @@ function Login() {
                 console.log(result);
             // }
 
-            // signIn({
-            //     token: response.data.token,
-            //     expiresIn: 3600,
-            //     tokenType: "Bearer",
-            //     authState: { email: values.email },
-            // });
+            if (response.ok) {
+                setUser({isAuth: true});
+            }
+
         } catch (err) {
             console.log("Error: ", err);
             setError(err.message);
@@ -220,12 +226,37 @@ function Login() {
                     Login
                 </button>
 
+                <Link className="redirect-link" to="/register">
+                    Register
+                </Link>
+
             </form>
+            <div className="links">
+                <Link className="redirect-link" to="/dash">
+                    Dashboard
+                </Link>
+            </div>
         </>
     );
 }
 
 function Dashboard() {
+    useEffect(() => {
+        try {
+            const getPayment = async () => {
+                const response = await fetch("http://localhost:5000/api/v1/payment", {
+                    withCredentials: true,
+                });
+                // console.log("Response: ", response);
+                const result = await response.text();
+                console.log(result);
+            };
+            getPayment();
+        } catch (error) {
+            console.log(error.message);
+        }
+    }, [])
+
     const date = new Date();
     const today = new Intl.DateTimeFormat(
         "en-US", { 
@@ -276,9 +307,49 @@ function Dashboard() {
     return content;
 }
 
+function Protected(props) {
+    const user = props.user;
+    // console.log(props);
+
+    // const test = {
+    //     has: 1
+    // }
+
+    // console.log(Object.hasOwn(test, "has"));
+    // console.log(Object.hasOwn(test, "hass"));
+    // console.log(Object.hasOwn(props, "user"));
+
+    if (!Object.hasOwn(props, "user")) {
+        console.log("Missing user prop");
+        return (
+            <div>
+                <h1>Missing user</h1>
+                <Link to="/">Home</Link>
+            </div>
+        )
+    }
+
+    if (user) {
+        const isAuth = user.isAuth;
+
+        if (isAuth) {
+            return <Outlet />
+        }
+    }
+
+    console.log("unautorised");
+    return (
+        <div>
+            <h1>You must log in</h1>
+            <Link to="/login">Login</Link>
+        </div>
+    )
+}
+
 export const Test = { 
     Home, 
     Register, 
     Login, 
-    Dashboard
+    Dashboard, 
+    Protected
 };

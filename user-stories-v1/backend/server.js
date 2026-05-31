@@ -34,7 +34,7 @@ const users = [
   }
 ];
 
-app.get("/payment", (req, res) => {
+app.get("/api/v1/payment", (req, res) => {
   res.send("it's working");
 });
 
@@ -66,13 +66,16 @@ app.post("/api/v1/login", async (req, res) => {
   }, 
   "secret");
 
-  res.cookie("token", token, {
+  res.cookie("cannot", token, {
     httpOnly: true,
     // secure: true,
     // sameSite: "None",
     maxAge: 7 * 24 * 60 * 60 * 1000
   })
 
+  res.cookie("can1", "bfvhsdvfhk");
+  res.cookie("can2", "nvjbdvfkdbk");
+  
   res.status(200).json({message: "Welcome back", token});
 })
 

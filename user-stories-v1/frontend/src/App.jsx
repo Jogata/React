@@ -12,15 +12,20 @@ import EditNote from "./components/EditNote";
 
 
 import { Test } from "./components/User";
+import { useState } from "react";
 
 function App() {
+  const [user, setUser] = useState(null);
+
   return (
     <>
       <Routes>
       <Route path="/" element={<Test.Home />} />
       <Route path="/register" element={<Test.Register />} />
-      <Route path="/login" element={<Test.Login />} />
-      <Route path="/dash" element={<Test.Dashboard />} />
+      <Route path="/login" element={<Test.Login setUser={setUser} />} />
+      <Route path="/dash" element={<Test.Protected user={user} />}>
+        <Route index element={<Test.Dashboard />} />
+      </Route>
       
         {/* <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
