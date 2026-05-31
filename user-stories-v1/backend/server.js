@@ -40,41 +40,60 @@ app.get("/payment", (req, res) => {
 
 app.post("/api/v1/login", async (req, res) => {
   const { username, password } = req.body;
+  console.log(username, password);
+
+  if (!username) {
+    return res.status(400).json({message: "Username missing"});
+  }
+
+  if (!password) {
+    return res.status(400).json({message: "Password missing"});
+  }
 
   const user = users.find(user => user.username == username);
 
   if (!user) {
-    res.status(400).json({message: "Username or password incorrect"});
+    return res.status(400).json({message: "Username or password incorrect"});
   }
-
+  
   if (user.password !== password) {
-    res.status(400).json({message: "Username or password incorrect"});
+    return res.status(400).json({message: "Username or password incorrect"});
   }
-
+  
   const token = jwt.sign({
     id: user.id, 
     username
   }, 
   "secret");
 
+  res.cookie("token", token, {
+    httpOnly: true,
+    // secure: true,
+    // sameSite: "None",
+    maxAge: 7 * 24 * 60 * 60 * 1000
+  })
+
   res.status(200).json({message: "Welcome back", token});
 })
 
 app.post("/api/v1/register", async (req, res) => {
+  // console.log(req.body);
   const { username, password } = req.body;
+  // const { username, password } = {};
+  console.log(username);
+
+  if (!username) {
+    return res.status(400).json({message: "Missing username"});
+  }
+  
+  if (!password) {
+    return res.status(400).json({message: "Missing password"});
+  }
 
   const user = users.find(user => user.username == username);
 
-  if (!username) {
-    res.status(400).json({message: "Missing username"});
-  }
-
-  if (!password) {
-    res.status(400).json({message: "Missing password"});
-  }
-
-  if (user.username == username) {
-    res.status(400).json({message: "Username exist"});
+  if (user && user.username == username) {
+    return res.status(400).json({message: "Username exist"});
   }
 
   const newUser = {

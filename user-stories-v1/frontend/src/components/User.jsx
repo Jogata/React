@@ -75,7 +75,8 @@ function Register() {
     const [password, setPassword] = useState("pass1235");
     //   const [password, setPassword] = useState("");
 
-    const handleSubmit = async (values) => {
+    const handleSubmit = async (e, values) => {
+        e.preventDefault();
         console.log("Values: ", values);
         setError("");
 
@@ -102,7 +103,7 @@ function Register() {
 
     return (
         <>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={(e) => handleSubmit(e, {username, password})}>
                 <h1>Welcome Back!</h1>
                 <p style={{ color: "red" }}>{error}</p>
                 <label htmlFor="username" className="form-label">
@@ -147,7 +148,8 @@ function Login() {
     const [password, setPassword] = useState("pass1235");
     //   const [password, setPassword] = useState("");
 
-    const handleSubmit = async (values) => {
+    const handleSubmit = async (e, values) => {
+        e.preventDefault();
         console.log("Values: ", values);
         setError("");
 
@@ -160,15 +162,20 @@ function Login() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(values),
-            }
-            );
-
-            signIn({
-                token: response.data.token,
-                expiresIn: 3600,
-                tokenType: "Bearer",
-                authState: { email: values.email },
             });
+            console.log(response);
+            
+            // if (response.ok) {
+                const result = await response.json();
+                console.log(result);
+            // }
+
+            // signIn({
+            //     token: response.data.token,
+            //     expiresIn: 3600,
+            //     tokenType: "Bearer",
+            //     authState: { email: values.email },
+            // });
         } catch (err) {
             console.log("Error: ", err);
             setError(err.message);
@@ -180,7 +187,7 @@ function Login() {
 
     return (
         <>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={(e) => handleSubmit(e, {username, password})}>
                 <h1>Welcome Back!</h1>
                 <p style={{ color: "red" }}>{error}</p>
                 <label htmlFor="username" className="form-label">
