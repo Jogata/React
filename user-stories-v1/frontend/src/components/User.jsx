@@ -333,7 +333,7 @@ function Dashboard() {
 
 function Protected(props) {
     const user = props.user;
-    const setUser = props.setUser;
+    // const setUser = props.setUser;
     // console.log(props);
     const navigate = useNavigate();
 
@@ -346,6 +346,10 @@ function Protected(props) {
     // console.log(Object.hasOwn(props, "user"));
 
     useEffect(() => {
+        console.log("protected mounted");
+        // const user = props.user;
+        const setUser = props.setUser;
+    
         try {
             const check = async () => {
                 const response = await fetch("http://localhost:5000/api/v1/protected", {
@@ -358,14 +362,18 @@ function Protected(props) {
 
                 if (!response.ok) {
                     setUser({});
-                    navigate("/");
+                    // navigate("/");
                 }
             };
             check();
         } catch (error) {
             console.log(error.message);
         }
-    }, [user])
+
+        return () => {
+            console.log("cleanup protected");
+        }
+    }, [])
 
 
     if (!Object.hasOwn(props, "user")) {
