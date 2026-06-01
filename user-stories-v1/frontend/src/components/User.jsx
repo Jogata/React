@@ -38,7 +38,22 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 function Home() {
     const navigate = useNavigate();
 
-    const logout = () => {
+    const logout = async () => {
+        try {
+            const response = await fetch(
+                "http://localhost:5000/api/v1/logout", {
+                credentials: "include", 
+            });
+            const result = await response.json();
+            console.log(result);
+
+            if (response.ok) {
+                console.log("logout success from browser");
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+
         navigate("/login");
     };
  
@@ -299,6 +314,12 @@ function Dashboard() {
                 <Link to="/dash/users/create">
                     Add New User
                     <span><i className="fa fa-location-arrow" aria-hidden="true"></i></span>
+                </Link>
+            </p>
+
+            <p>
+                <Link to="/">
+                    Home
                 </Link>
             </p>
 

@@ -35,8 +35,8 @@ const users = [
 ];
 
 app.get("/api/v1/payment", (req, res) => {
-  const cookie = req.cookies;
-  console.log(cookie);
+  // const cookie = req.cookies;
+  // console.log(cookie);
   const token = req.cookies.token;
   // console.log(token);
   // res.send("it's working");
@@ -128,6 +128,35 @@ app.post("/api/v1/register", async (req, res) => {
 
   res.status(200).json({message: "Welcome"});
 })
+
+app.get("/api/v1/logout", (req, res) => {
+  const cookies = req.cookies;
+
+  if (cookies) {
+    const token = cookies.token;
+
+    jwt.verify(
+      token,
+      "secret",
+      async (err, decoded) => {
+        if (err) {
+          return res.status(200).json({ message: "Yuo are not loged in" });
+        }
+        
+        res.cookie("token", "", {
+          httpOnly: true,
+          // secure: true,
+          // sameSite: "None",
+          maxAge: 0
+        })
+
+        res.status(200).json({ message: "logout success from server" });
+      }
+    )  
+  }
+  res.send("logout succesful");
+})
+
 // =============================================================
 
 app.use("/*splat", (req, res) => {
