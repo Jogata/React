@@ -35,8 +35,9 @@ export default User;
 import { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 
-function Home() {
+function Home(props) {
     const navigate = useNavigate();
+    const setUser = props.setUser;
 
     const logout = async () => {
         try {
@@ -49,6 +50,7 @@ function Home() {
 
             if (response.ok) {
                 console.log("logout success from browser");
+                setUser({});
             }
         } catch (error) {
             console.log(error.message);
@@ -331,7 +333,9 @@ function Dashboard() {
 
 function Protected(props) {
     const user = props.user;
+    const setUser = props.setUser;
     // console.log(props);
+    const navigate = useNavigate();
 
     // const test = {
     //     has: 1
@@ -340,6 +344,29 @@ function Protected(props) {
     // console.log(Object.hasOwn(test, "has"));
     // console.log(Object.hasOwn(test, "hass"));
     // console.log(Object.hasOwn(props, "user"));
+
+    useEffect(() => {
+        try {
+            const check = async () => {
+                const response = await fetch("http://localhost:5000/api/v1/protected", {
+                    // withCredentials: true, 
+                    credentials: "include"
+                });
+                // console.log("Response: ", response);
+                const result = await response.text();
+                console.log(result);
+
+                if (!response.ok) {
+                    setUser({});
+                    navigate("/");
+                }
+            };
+            check();
+        } catch (error) {
+            console.log(error.message);
+        }
+    }, [user])
+
 
     if (!Object.hasOwn(props, "user")) {
         console.log("Missing user prop");

@@ -20,10 +20,10 @@ function App() {
   return (
     <>
       <Routes>
-      <Route path="/" element={<Test.Home />} />
+      <Route path="/" element={<Test.Home setUser={setUser} />} />
       <Route path="/register" element={<Test.Register />} />
       <Route path="/login" element={<Test.Login setUser={setUser} />} />
-      <Route path="/dash" element={<Test.Protected user={user} />}>
+      <Route path="/dash" element={<Test.Protected user={user} setUser={setUser} />}>
         <Route index element={<Test.Dashboard />} />
       </Route>
       

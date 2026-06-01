@@ -34,8 +34,8 @@ const users = [
   }
 ];
 
-app.get("/api/v1/payment", (req, res) => {
-  // const cookie = req.cookies;
+app.get("/api/v1/protected", (req, res) => {
+    // const cookie = req.cookies;
   // console.log(cookie);
   const token = req.cookies.token;
   // console.log(token);
@@ -50,7 +50,37 @@ app.get("/api/v1/payment", (req, res) => {
     "secret",
     async (err, decoded) => {
       if (err) {
+        res.cookie("token", "", {
+          httpOnly: true,
+          // secure: true,
+          // sameSite: "None",
+          maxAge: 0
+        })
+
         return res.status(403).json({ message: "Forbidden 53" });
+      }
+      res.json({ message: "check succesful" });
+    }
+  )
+})
+
+app.get("/api/v1/payment", (req, res) => {
+  // const cookie = req.cookies;
+  // console.log(cookie);
+  const token = req.cookies.token;
+  // console.log(token);
+  // res.send("it's working");
+
+  if (!token) {
+    return res.status(403).json({ message: "Forbidden 68" });
+  }
+
+  jwt.verify(
+    token,
+    "secret",
+    async (err, decoded) => {
+      if (err) {
+        return res.status(403).json({ message: "Forbidden 76" });
       }
       res.json({ message: "payment succesful" });
     }
@@ -135,12 +165,22 @@ app.get("/api/v1/logout", (req, res) => {
   if (cookies) {
     const token = cookies.token;
 
+    if (!token) {
+      return res.status(200).json({ message: "You are not loged in" });
+    }
+
     jwt.verify(
       token,
       "secret",
       async (err, decoded) => {
         if (err) {
-          return res.status(200).json({ message: "Yuo are not loged in" });
+          const newError = {
+            message: "You are not loged in", 
+            type: err.name, 
+            server: err.message
+          }
+          // return res.status(200).json({ message: "Yuo are not loged in" });
+          return res.status(200).json(newError);
         }
         
         res.cookie("token", "", {
