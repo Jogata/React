@@ -8,6 +8,7 @@ const connectDB = require("./config/dbConn");
 const mongoose = require("mongoose");
 
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 const PORT = process.env.PORT || 5000;
 
@@ -35,11 +36,7 @@ const users = [
 ];
 
 app.get("/api/v1/protected", (req, res) => {
-    // const cookie = req.cookies;
-  // console.log(cookie);
   const token = req.cookies.token;
-  // console.log(token);
-  // res.send("it's working");
 
   if (!token) {
     return res.status(403).json({ message: "Forbidden 45" });
@@ -52,8 +49,6 @@ app.get("/api/v1/protected", (req, res) => {
       if (err) {
         res.cookie("token", "", {
           httpOnly: true,
-          // secure: true,
-          // sameSite: "None",
           maxAge: 0
         })
 
@@ -65,11 +60,7 @@ app.get("/api/v1/protected", (req, res) => {
 })
 
 app.get("/api/v1/payment", (req, res) => {
-  // const cookie = req.cookies;
-  // console.log(cookie);
   const token = req.cookies.token;
-  // console.log(token);
-  // res.send("it's working");
 
   if (!token) {
     return res.status(403).json({ message: "Forbidden 68" });
@@ -117,47 +108,59 @@ app.post("/api/v1/login", async (req, res) => {
 
   res.cookie("token", token, {
     httpOnly: true,
-    // secure: true,
-    // sameSite: "None",
     maxAge: 7 * 24 * 60 * 60 * 1000
   })
-
-  // res.cookie("can1", "bfvhsdvfhk");
-  // res.cookie("can2", "nvjbdvfkdbk");
   
   res.status(200).json({message: "Welcome back", token});
 })
 
-app.post("/api/v1/register", async (req, res) => {
-  // console.log(req.body);
+app.post("/register", (req, res) => {
   const { username, password } = req.body;
-  // const { username, password } = {};
-  console.log(username);
+  bcrypt.hash(password, 10)
+    .then((hash) => {
+      users.push({
+        username: username,
+        password: hash,
+      })
+        .then(() => {
+          res.json("USER REGISTERED");
+        })
+        .catch((err) => {
+          if (err) {
+            res.status(400).json({ error: err });
+          }
+        });
+    });
+});
 
-  if (!username) {
-    return res.status(400).json({message: "Missing username"});
-  }
+// app.post("/api/v1/register", async (req, res) => {
+//   const { username, password } = req.body;
+//   console.log(username);
+
+//   if (!username) {
+//     return res.status(400).json({message: "Missing username"});
+//   }
   
-  if (!password) {
-    return res.status(400).json({message: "Missing password"});
-  }
+//   if (!password) {
+//     return res.status(400).json({message: "Missing password"});
+//   }
 
-  const user = users.find(user => user.username == username);
+//   const user = users.find(user => user.username == username);
 
-  if (user && user.username == username) {
-    return res.status(400).json({message: "Username exist"});
-  }
+//   if (user && user.username == username) {
+//     return res.status(400).json({message: "Username exist"});
+//   }
 
-  const newUser = {
-    id: username, 
-    username, 
-    password,
-  }
+//   const newUser = {
+//     id: username, 
+//     username, 
+//     password,
+//   }
 
-  users.push(newUser);
+//   users.push(newUser);
 
-  res.status(200).json({message: "Welcome"});
-})
+//   res.status(200).json({message: "Welcome"});
+// })
 
 app.get("/api/v1/logout", (req, res) => {
   const cookies = req.cookies;
@@ -179,14 +182,11 @@ app.get("/api/v1/logout", (req, res) => {
             type: err.name, 
             server: err.message
           }
-          // return res.status(200).json({ message: "Yuo are not loged in" });
           return res.status(200).json(newError);
         }
         
         res.cookie("token", "", {
           httpOnly: true,
-          // secure: true,
-          // sameSite: "None",
           maxAge: 0
         })
 
