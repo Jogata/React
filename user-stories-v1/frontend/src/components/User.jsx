@@ -35,7 +35,7 @@ export default User;
 import { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 
-function Home(props) {
+function Navigation(props) {
     const navigate = useNavigate();
     const setUser = props.setUser;
 
@@ -58,6 +58,62 @@ function Home(props) {
 
         navigate("/login");
     };
+
+    return (
+        <nav>
+            <ul className="list-style-none">
+                <li>
+                    <Link to="/">Home</Link>
+                </li>
+                <li>
+                    <Link to="/login">Login</Link>
+                </li>
+                <li>
+                    <Link to="/register">Register</Link>
+                </li>
+                <li>
+                    <Link to="/dash">Dashboard</Link>
+                </li>
+                <li>
+                    <Link to="/dash2">Dashboard 2</Link>
+                </li>
+                <li>
+                    <button
+                        className="submit-button"
+                        title="Logout"
+                        onClick={logout}
+                    >
+                        Logout
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    )
+}
+
+function Home() {
+    // const navigate = useNavigate();
+    // const setUser = props.setUser;
+
+    // const logout = async () => {
+    //     try {
+    //         const response = await fetch(
+    //             "http://localhost:5000/api/v1/logout", {
+    //             credentials: "include", 
+    //         });
+    //         const result = await response.json();
+    //         console.log(result);
+
+    //         if (response.ok) {
+    //             console.log("logout success from browser");
+    //             setUser({});
+    //         }
+    //     } catch (error) {
+    //         console.log(error.message);
+    //     }
+
+    //     navigate("/login");
+    // };
  
     // const getPayment = async () => {
     //     const response = await fetch("http://localhost:5000/payment", {
@@ -75,15 +131,15 @@ function Home(props) {
             >
                 Get Payment
             </button> */}
-            <Link to="/dash">
+            {/* <Link to="/dash">
                 Dashboard
-            </Link>
-            <button 
+            </Link> */}
+            {/* <button 
                 className="submit-button"
                 onClick={logout}
             >
                 Logout
-            </button>
+            </button> */}
         </>
     );
 }
@@ -331,6 +387,10 @@ function Dashboard() {
     return content;
 }
 
+function Dashboard2() {
+    return <h1>Dash2</h1>
+}
+
 function Protected(props) {
     const user = props.user;
     // const setUser = props.setUser;
@@ -404,9 +464,11 @@ function Protected(props) {
 }
 
 export const Test = { 
+    Navigation, 
     Home, 
     Register, 
     Login, 
     Dashboard, 
+    Dashboard2, 
     Protected
 };

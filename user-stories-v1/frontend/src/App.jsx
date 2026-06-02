@@ -19,12 +19,14 @@ function App() {
 
   return (
     <>
+      <Test.Navigation setUser={setUser} />
       <Routes>
       <Route path="/" element={<Test.Home setUser={setUser} />} />
       <Route path="/register" element={<Test.Register />} />
       <Route path="/login" element={<Test.Login setUser={setUser} />} />
-      <Route path="/dash" element={<Test.Protected user={user} setUser={setUser} />}>
-        <Route index element={<Test.Dashboard />} />
+      <Route element={<Test.Protected user={user} setUser={setUser} />}>
+        <Route path="/dash" element={<Test.Dashboard />} />
+        <Route path="/dash2" element={<Test.Dashboard2 />} />
       </Route>
       
         {/* <Route path="/" element={<Home />} />

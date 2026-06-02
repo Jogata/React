@@ -556,3 +556,15 @@ form h1 {
 form input {
   margin: auto;
 }
+
+nav ul {
+  /* list-style: none; */
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.list-style-none ::marker {
+  font-size: 0;
+}
