@@ -24,8 +24,18 @@ function App() {
       <Route path="/" element={<Test.Home setUser={setUser} />} />
       <Route path="/register" element={<Test.Register />} />
       <Route path="/login" element={<Test.Login setUser={setUser} />} />
-      <Route element={<Test.Protected user={user} setUser={setUser} />}>
+      {/* <Route element={<Test.Protected user={user} setUser={setUser} />}>
         <Route path="/dash" element={<Test.Dashboard />} />
+        <Route path="/dash2" element={<Test.Dashboard2 />} />
+      </Route> */}
+      
+      <Route element={<Test.Protected user={user} setUser={setUser} key="p1" clean="p1" />}>
+        <Route path="/dash" element={<Test.Dashboard />} />
+        {/* <Route path="/dash2" element={<Test.Dashboard2 />} /> */}
+      </Route>
+      
+      <Route element={<Test.Protected user={user} setUser={setUser} key="p2" clean="p2" />}>
+        {/* <Route path="/dash" element={<Test.Dashboard />} /> */}
         <Route path="/dash2" element={<Test.Dashboard2 />} />
       </Route>
       
