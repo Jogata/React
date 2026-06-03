@@ -135,44 +135,30 @@ app.post("/login", async (req, res) => {
     });
 });
 
-// app.post("/api/v1/login", async (req, res) => {
-//   const { username, password } = req.body;
-//   console.log(username, password);
-
-//   if (!username) {
-//     return res.status(400).json({message: "Username missing"});
-//   }
-
-//   if (!password) {
-//     return res.status(400).json({message: "Password missing"});
-//   }
-
-//   const user = users.find(user => user.username == username);
-
-//   if (!user) {
-//     return res.status(400).json({message: "Username or password incorrect"});
-//   }
-  
-//   if (user.password !== password) {
-//     return res.status(400).json({message: "Username or password incorrect"});
-//   }
-  
-//   const token = jwt.sign({
-//     id: user.id, 
-//     username
-//   }, 
-//   "secret");
-
-//   res.cookie("token", token, {
-//     httpOnly: true,
-//     maxAge: 7 * 24 * 60 * 60 * 1000
-//   })
-  
-//   res.status(200).json({message: "Welcome back", token});
-// })
-
 app.post("/register", (req, res) => {
   const { username, password } = req.body;
+  console.log(username);
+  
+  if (!username) {
+    return res.status(400).json({message: "Missing username"});
+  }
+  
+  if (!password) {
+    return res.status(400).json({message: "Missing password"});
+  }
+
+  const user = users.find(user => user.username == username);
+  
+  if (user && user.username == username) {
+    return res.status(400).json({message: "Username exist"});
+  }
+
+  // const newUser = {
+  //   id: username, 
+  //   username, 
+  //   password,
+  // }
+
   bcrypt.hash(password, 10)
     .then((hash) => {
       users.push({
