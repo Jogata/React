@@ -78,41 +78,98 @@ app.get("/api/v1/payment", (req, res) => {
   )
 });
 
-app.post("/api/v1/login", async (req, res) => {
-  const { username, password } = req.body;
-  console.log(username, password);
-
-  if (!username) {
-    return res.status(400).json({message: "Username missing"});
-  }
-
-  if (!password) {
-    return res.status(400).json({message: "Password missing"});
-  }
-
-  const user = users.find(user => user.username == username);
-
-  if (!user) {
-    return res.status(400).json({message: "Username or password incorrect"});
-  }
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body; 
   
-  if (user.password !== password) {
-    return res.status(400).json({message: "Username or password incorrect"});
-  }
+  console.log(username, password); 
+ 
+  if (!username) { 
+    return res.status(400).json({message: "Username missing"}); 
+  } 
   
-  const token = jwt.sign({
-    id: user.id, 
-    username
-  }, 
-  "secret");
+  if (!password) { 
+    return res.status(400).json({message: "Password missing"}); 
+  } 
+ 
+  const user = users.find(user => user.username == username); 
+ 
+  if (!user) { 
+    return res.status(400).json({message: "Username or password incorrect"}); 
+  } 
+   
+  if (user.password !== password) { 
+    return res.status(400).json({message: "Username or password incorrect"}); 
+  } 
+ 
+  if (!user) { 
+    return res.status(400).json({ error: "User Doesn't Exist" }); 
+  } 
+ 
+  const dbPassword = user.password;
 
-  res.cookie("token", token, {
-    httpOnly: true,
-    maxAge: 7 * 24 * 60 * 60 * 1000
-  })
+  bcrypt.compare(password, dbPassword)
+    .then(match => {
+      if (!match) {
+        res
+          .status(400)
+          .json({ error: "Wrong Username and Password Combination!" });
+      } else {
+        function createTokens(user) {
+            const token = jwt.sign({
+              id: user.id, 
+              username: user.username
+            }, 
+            "jwtsecretplschange");
+            return token;
+        }
+
+        const accessToken = createTokens(user);
+
+        res.cookie("access-token", accessToken, {
+          httpOnly: true,
+          maxAge: 60 * 60 * 24 * 30 * 1000,
+        });
+
+        res.json("LOGGED IN");
+      }
+    });
+});
+
+// app.post("/api/v1/login", async (req, res) => {
+//   const { username, password } = req.body;
+//   console.log(username, password);
+
+//   if (!username) {
+//     return res.status(400).json({message: "Username missing"});
+//   }
+
+//   if (!password) {
+//     return res.status(400).json({message: "Password missing"});
+//   }
+
+//   const user = users.find(user => user.username == username);
+
+//   if (!user) {
+//     return res.status(400).json({message: "Username or password incorrect"});
+//   }
   
-  res.status(200).json({message: "Welcome back", token});
-})
+//   if (user.password !== password) {
+//     return res.status(400).json({message: "Username or password incorrect"});
+//   }
+  
+//   const token = jwt.sign({
+//     id: user.id, 
+//     username
+//   }, 
+//   "secret");
+
+//   res.cookie("token", token, {
+//     httpOnly: true,
+//     maxAge: 7 * 24 * 60 * 60 * 1000
+//   })
+  
+//   res.status(200).json({message: "Welcome back", token});
+// })
 
 app.post("/register", (req, res) => {
   const { username, password } = req.body;
