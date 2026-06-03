@@ -176,34 +176,26 @@ app.post("/register", (req, res) => {
     });
 });
 
-// app.post("/api/v1/register", async (req, res) => {
-//   const { username, password } = req.body;
-//   console.log(username);
+const validateToken = (req, res, next) => {
+  const accessToken = req.cookies["access-token"];
 
-//   if (!username) {
-//     return res.status(400).json({message: "Missing username"});
-//   }
-  
-//   if (!password) {
-//     return res.status(400).json({message: "Missing password"});
-//   }
+  if (!accessToken)
+    return res.status(400).json({ error: "User not Authenticated!" });
 
-//   const user = users.find(user => user.username == username);
+  try {
+    const validToken = verify(accessToken, "jwtsecretplschange");
+    if (validToken) {
+      req.authenticated = true;
+      return next();
+    }
+  } catch (err) {
+    return res.status(400).json({ error: err });
+  }
+};
 
-//   if (user && user.username == username) {
-//     return res.status(400).json({message: "Username exist"});
-//   }
-
-//   const newUser = {
-//     id: username, 
-//     username, 
-//     password,
-//   }
-
-//   users.push(newUser);
-
-//   res.status(200).json({message: "Welcome"});
-// })
+app.get("/profile", validateToken, (req, res) => {
+  res.json("profile");
+});
 
 app.get("/api/v1/logout", (req, res) => {
   const cookies = req.cookies;
