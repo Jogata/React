@@ -34,6 +34,7 @@ export default User;
 
 import { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
+import Loader from "./Loader";
 
 function Navigation(props) {
     const navigate = useNavigate();
@@ -42,7 +43,7 @@ function Navigation(props) {
     const logout = async () => {
         try {
             const response = await fetch(
-                "http://localhost:5000/api/v1/logout", {
+                "http://localhost:5000/logout", {
                 credentials: "include", 
             });
             const result = await response.json();
@@ -98,7 +99,7 @@ function Home() {
     // const logout = async () => {
     //     try {
     //         const response = await fetch(
-    //             "http://localhost:5000/api/v1/logout", {
+    //             "http://localhost:5000/logout", {
     //             credentials: "include", 
     //         });
     //         const result = await response.json();
@@ -158,7 +159,7 @@ function Register() {
 
         try {
             const response = await fetch(
-                "http://localhost:5000/api/v1/register", {
+                "http://localhost:5000/register", {
                 method: "POST",
                 credentials: "include", 
                 headers: {
@@ -221,6 +222,58 @@ function Register() {
     );
 }
 
+function Profile() {
+    const [profile, setProfile] = useState({});
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        async function getProfile() {            
+            try {
+                const response = await fetch(
+                    "http://localhost:5000/profile", {
+                    // method: "POST",
+                    credentials: "include", 
+                    // headers: {
+                    //     "Content-Type": "application/json",
+                    // },
+                    // body: JSON.stringify(values),
+                });
+                console.log(response);
+                        
+                if (!response.ok) {
+                    // setUser({isAuth: true});
+                    console.log("unautorized");
+                    navigate("/");
+                }
+                
+                // if (response.ok) {
+                    const result = await response.json();
+                    console.log(result);
+                    setProfile(result);
+                    setLoading(false);
+                // }                
+        
+            } catch (err) {
+                console.log("Error: ", err);
+                setError(err.message);
+            }
+        }
+
+        getProfile();
+    }, [])
+
+    if (loading) {
+        return <Loader />
+    }
+
+    return (
+        <div className="profile">
+            <h1>{profile.username}</h1>
+        </div>
+    )
+};
+
 function Login(props) {
     const [error, setError] = useState("");
     const [username, setUsername] = useState("user5");
@@ -236,7 +289,7 @@ function Login(props) {
 
         try {
             const response = await fetch(
-                "http://localhost:5000/api/v1/login", {
+                "http://localhost:5000/login", {
                 method: "POST",
                 credentials: "include", 
                 headers: {
@@ -317,7 +370,7 @@ function Dashboard() {
     useEffect(() => {
         try {
             const getPayment = async () => {
-                const response = await fetch("http://localhost:5000/api/v1/payment", {
+                const response = await fetch("http://localhost:5000/payment", {
                     // withCredentials: true, 
                     credentials: "include"
                 });
@@ -465,7 +518,7 @@ function Protected(props) {
     
         try {
             const check = async () => {
-                const response = await fetch("http://localhost:5000/api/v1/protected", {
+                const response = await fetch("http://localhost:5000/protected", {
                     // withCredentials: true, 
                     credentials: "include"
                 });
@@ -523,5 +576,6 @@ export const Test = {
     Login, 
     Dashboard, 
     Dashboard2, 
-    Protected
+    Protected, 
+    Profile
 };

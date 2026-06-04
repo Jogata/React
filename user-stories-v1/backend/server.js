@@ -97,9 +97,9 @@ app.post("/login", async (req, res) => {
     return res.status(400).json({message: "Username or password incorrect"}); 
   } 
    
-  if (user.password !== password) { 
-    return res.status(400).json({message: "Username or password incorrect"}); 
-  } 
+  // if (user.password !== password) { 
+  //   return res.status(400).json({message: "Username or password incorrect"}); 
+  // } 
  
   if (!user) { 
     return res.status(400).json({ error: "User Doesn't Exist" }); 
@@ -161,19 +161,15 @@ app.post("/register", (req, res) => {
 
   bcrypt.hash(password, 10)
     .then((hash) => {
-      users.push({
-        username: username,
-        password: hash,
-      })
-        .then(() => {
-          res.json("USER REGISTERED");
-        })
-        .catch((err) => {
-          if (err) {
-            res.status(400).json({ error: err });
-          }
-        });
+      users.push({username: username, password: hash,});
+      res.json("USER REGISTERED");
+    })
+    .catch((err) => {
+      if (err) {
+        res.status(400).json({ error: err });
+      }
     });
+    // });
 });
 
 const validateToken = (req, res, next) => {
@@ -183,7 +179,7 @@ const validateToken = (req, res, next) => {
     return res.status(400).json({ error: "User not Authenticated!" });
 
   try {
-    const validToken = verify(accessToken, "jwtsecretplschange");
+    const validToken = jwt.verify(accessToken, "jwtsecretplschange");
     if (validToken) {
       req.authenticated = true;
       return next();
