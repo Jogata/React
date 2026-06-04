@@ -33,7 +33,7 @@ export default User;
 
 
 import { useEffect, useState } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";
 import Loader from "./Loader";
 
 function Navigation(props) {
@@ -262,6 +262,12 @@ function Profile() {
 
         getProfile();
     }, [])
+
+    if (!profile.username) {
+        console.log("will redirect");
+        // return navigate("/login");
+        return <Navigate to="login" replace />
+    }
 
     if (loading) {
         return <Loader />

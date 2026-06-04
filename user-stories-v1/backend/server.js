@@ -91,7 +91,7 @@ app.post("/login", async (req, res) => {
     return res.status(400).json({message: "Password missing"}); 
   } 
  
-  const user = users.find(user => user.username == username); 
+  const user = users.find(user => user.username == username);
  
   if (!user) { 
     return res.status(400).json({message: "Username or password incorrect"}); 
@@ -180,43 +180,60 @@ const validateToken = (req, res, next) => {
 
   try {
     const validToken = jwt.verify(accessToken, "jwtsecretplschange");
-    if (validToken) {
-      req.authenticated = true;
-      return next();
+
+    // if (validToken) {
+    //   req.authenticated = true;
+    //   return next();
+    // }
+
+    if (!validToken) {
+      return res.status(400).json({ error: "User not Authorized 190!" });
     }
+
+    // if (validToken) {
+      const payload = jwt.decode(accessToken);
+      const user = users.find(user => user.username == payload.username);
+
+      if (!user) {
+        return res.status(400).json({ error: "User not Authorized! 198" });
+      }
+      req.username = username;
+    // }
   } catch (err) {
     return res.status(400).json({ error: err });
   }
 };
 
 app.get("/profile", validateToken, (req, res) => {
-  res.json("profile");
+  const username = req.username;
+  res.json({username});;
 });
 
-app.get("/api/v1/logout", (req, res) => {
+app.get("/logout", (req, res) => {
   const cookies = req.cookies;
 
   if (cookies) {
-    const token = cookies.token;
+    // const token = cookies.token;
+    const token = req.cookies["access-token"];
 
     if (!token) {
-      return res.status(200).json({ message: "You are not loged in" });
+      return res.status(200).json({ message: "You are not loged in  from server" });
     }
 
     jwt.verify(
       token,
-      "secret",
+      "jwtsecretplschange",
       async (err, decoded) => {
         if (err) {
           const newError = {
-            message: "You are not loged in", 
-            type: err.name, 
-            server: err.message
+            message: "You are not loged in from server", 
+            // type: err.name, 
+            // server: err.message
           }
           return res.status(200).json(newError);
         }
         
-        res.cookie("token", "", {
+        res.cookie("access-token", "", {
           httpOnly: true,
           maxAge: 0
         })
