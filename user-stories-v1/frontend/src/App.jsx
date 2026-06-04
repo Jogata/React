@@ -19,6 +19,7 @@ function App() {
 
   return (
     <>
+    <Test.AuthProvider>
       <Test.Navigation setUser={setUser} />
       <Routes>
       <Route path="/" element={<Test.Home setUser={setUser} />} />
@@ -61,6 +62,7 @@ function App() {
           </Route>
         </Route> */}
       </Routes>
+      </Test.AuthProvider>
     </>
   )
 }

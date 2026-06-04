@@ -32,7 +32,7 @@ export default User;
 
 
 
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";
 import Loader from "./Loader";
 
@@ -575,7 +575,76 @@ function Protected(props) {
     )
 }
 
+const AuthContext = createContext(null);
+
+const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    const logout = () => setUser(null);
+
+    const checkAuth = async () => {
+        try {
+            const res = await fetch("http://localhost:5000/me", { 
+                credentials: "include" 
+            });
+            
+            if (res.status === 401) {
+                logout();
+            } else if (res.ok) {
+                const data = await res.json();
+                setUser(data);
+            }
+        } catch (err) {
+            logout();
+        } finally {
+            setTimeout(() => {
+                setLoading(false);
+            }, 5000);
+        }
+    };
+
+    const fetchWithAuth = async (url, options = {}) => {
+        options.credentials = "include";
+
+        const response = await fetch(url, options);
+
+        if (response.status === 401) {
+            logout();
+            throw new Error("Unauthorized session");
+        }
+
+        return response;
+    };
+
+    useEffect(() => {
+        checkAuth();
+
+        const handleVisibility = () => {
+            if (document.visibilityState === "visible") {
+                checkAuth();
+            }
+        };
+
+        document.addEventListener("visibilitychange", handleVisibility);
+
+        return () => document.removeEventListener("visibilitychange", handleVisibility);
+    }, []);
+
+    if (loading) {
+        return <Loader />
+    }
+
+    return (
+        <AuthContext.Provider value={{ user, loading, logout, fetchWithAuth }}>
+            {children}
+        </AuthContext.Provider>
+    );
+};
+
 export const Test = { 
+    useAuth: () => useContext(AuthContext), 
+    AuthProvider, 
     Navigation, 
     Home, 
     Register, 
@@ -583,5 +652,5 @@ export const Test = {
     Dashboard, 
     Dashboard2, 
     Protected, 
-    Profile
+    Profile, 
 };
