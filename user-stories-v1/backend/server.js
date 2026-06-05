@@ -27,263 +27,83 @@ app.use("/users", require("./routes/userRoutes"));
 app.use("/notes", require("./routes/noteRoutes"));
 
 // =============================================================
-const users = [
-  {
-    id: "user1",
-    username: "user1", 
-    password: "1234"
-  }
-];
 
-app.get("/api/v1/protected", (req, res) => {
-  const token = req.cookies.token;
-
-  if (!token) {
-    return res.status(403).json({ message: "Forbidden 45" });
-  }
-
-  jwt.verify(
-    token,
-    "secret",
-    async (err, decoded) => {
-      if (err) {
-        res.cookie("token", "", {
-          httpOnly: true,
-          maxAge: 0
-        })
-
-        return res.status(403).json({ message: "Forbidden 53" });
-      }
-      res.json({ message: "check succesful" });
+const db = {
+  users: [
+    {
+      username: "harblaith@harb.com",
+      password: "asdasdas"
     }
-  )
-})
+  ],
+  publicPosts: [
+    {
+      title: "Free Tips on Development",
+      content: "These are some tips"
+    }
+  ],
+  privatePosts: [
+    {
+      title: "Paid Tips on Development",
+      content: "These are some tips"
+    }
+  ]
+}
 
-app.get("/api/v1/payment", (req, res) => {
-  const token = req.cookies.token;
+app.post("/signup", async (req, res) => {
+    const { email, password } = req.body;
 
-  if (!token) {
-    return res.status(403).json({ message: "Forbidden 68" });
+    if (!username.length || !password.length) {
+      return res.status(422).json({ message: "All fields are required" });
   }
 
-  jwt.verify(
-    token,
-    "secret",
-    async (err, decoded) => {
-      if (err) {
-        return res.status(403).json({ message: "Forbidden 76" });
-      }
-      res.json({ message: "payment succesful" });
-    }
-  )
-});
-
-app.post("/login", async (req, res) => {
-  const { username, password } = req.body; 
+  if (username.length < 3) {
+      return res.status(422).json({message: "The username must be atleast 3 characters"});
+  }
   
-  console.log(username, password); 
- 
-  if (!username) { 
-    return res.status(400).json({message: "Username missing"}); 
-  } 
+  if (password.length < 6) {
+      return res.status(422).json({message: "The password must be atleast 6 characters"});
+  }
+
+  const USER_REGEX = /^[A-z0-9]{3,20}$/;
+  if (!USER_REGEX.test(username)) {
+      return res.status(422).json({message: "The username can contains only letters and numbers"});
+  }
   
-  if (!password) { 
-    return res.status(400).json({message: "Password missing"}); 
-  } 
- 
-  const user = users.find(user => user.username == username);
- 
-  if (!user) { 
-    return res.status(400).json({message: "Username or password incorrect"}); 
-  } 
-   
-  // if (user.password !== password) { 
-  //   return res.status(400).json({message: "Username or password incorrect"}); 
-  // } 
- 
-  if (!user) { 
-    return res.status(400).json({ error: "User Doesn't Exist" }); 
-  } 
- 
-  const dbPassword = user.password;
+  const PWD_REGEX = /^[A-z0-9!@#$%]{6,12}$/;
+  if (!PWD_REGEX.test(password)) {
+      return res.status(422).json({message: "The password can contains only letters, numbers and !@#$%"});
+  }
 
-  bcrypt.compare(password, dbPassword)
-    .then(match => {
-      if (!match) {
-        res
-          .status(400)
-          .json({ error: "Wrong Username and Password Combination!" });
-      } else {
-        function createTokens(user) {
-            const token = jwt.sign({
-              id: user.id, 
-              username: user.username
-            }, 
-            "jwtsecretplschange");
-            return token;
-        }
-
-        const accessToken = createTokens(user);
-
-        res.cookie("access-token", accessToken, {
-          httpOnly: true,
-          maxAge: 60 * 60 * 24 * 30 * 1000,
-        });
-
-        res.json("LOGGED IN");
-      }
+    let user = db.users.find((user) => {
+        return user.username === username;
     });
-});
 
-app.post("/register", (req, res) => {
-  const { username, password } = req.body;
-  console.log(username);
-  
-  if (!username) {
-    return res.status(400).json({message: "Missing username"});
-  }
-  
-  if (!password) {
-    return res.status(400).json({message: "Missing password"});
-  }
+    if(user) {
+        return res.status(422).json({
+            errors: [
+                {
+                    msg: "This user already exists",
+                }
+            ]
+        })
+    }
 
-  const user = users.find(user => user.username == username);
-  
-  if (user && user.username == username) {
-    return res.status(400).json({message: "Username exist"});
-  }
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-  // const newUser = {
-  //   id: username, 
-  //   username, 
-  //   password,
-  // }
+    db.users.push({
+        username,
+        password: hashedPassword
+    });
 
-  bcrypt.hash(password, 10)
-    .then((hash) => {
-      users.push({username: username, password: hash,});
-      res.json("USER REGISTERED");
+    const token = jwt.sign({ username }, "nfb32iur32ibfqfvi3vf932bg932g932", {expiresIn: 360000});
+
+    res.json({
+        token
     })
-    .catch((err) => {
-      if (err) {
-        res.status(400).json({ error: err });
-      }
-    });
-    // });
-});
-
-const validateToken = (req, res, next) => {
-  const accessToken = req.cookies["access-token"];
-
-  if (!accessToken)
-    return res.status(400).json({ error: "User not Authenticated!" });
-
-  try {
-    const validToken = jwt.verify(accessToken, "jwtsecretplschange");
-
-    // if (validToken) {
-    //   req.authenticated = true;
-    //   return next();
-    // }
-
-    if (!validToken) {
-      return res.status(400).json({ error: "User not Authorized 190!" });
-    }
-
-    // if (validToken) {
-      const payload = jwt.decode(accessToken);
-      const user = users.find(user => user.username == payload.username);
-
-      if (!user) {
-        return res.status(400).json({ error: "User not Authorized! 198" });
-      }
-      req.username = username;
-    // }
-  } catch (err) {
-    return res.status(400).json({ error: err });
-  }
-};
-
-const validateToken2 = (req, res, next) => {
-  const accessToken = req.cookies["access-token"];
-
-  if (!accessToken)
-    return res.status(401).json({ error: "User not Authenticated!" });
-
-  try {
-    const validToken = jwt.verify(accessToken, "jwtsecretplschange");
-
-    // if (validToken) {
-    //   req.authenticated = true;
-    //   return next();
-    // }
-
-    if (!validToken) {
-      return res.status(401).json({ error: "User not Authenticated 222!" });
-    }
-
-    // if (validToken) {
-      const payload = jwt.decode(accessToken);
-      const user = users.find(user => user.username == payload.username);
-
-      if (!user) {
-        return res.status(409).json({ error: "User not Authorized! 230" });
-      }
-      req.username = username;
-      next();
-    // }
-  } catch (err) {
-    return res.status(400).json({ error: err });
-  }
-};
-
-app.get("/profile", validateToken, (req, res) => {
-  const username = req.username;
-  res.json({username, secretInfo: "bvaykugay"});;
-});
-
-app.get("/me", validateToken2, (req, res) => {
-  const username = req.username;
-  res.json({username});;
-});
-
-app.get("/logout", (req, res) => {
-  const cookies = req.cookies;
-
-  if (cookies) {
-    // const token = cookies.token;
-    const token = req.cookies["access-token"];
-
-    if (!token) {
-      return res.status(200).json({ message: "You are not loged in  from server" });
-    }
-
-    jwt.verify(
-      token,
-      "jwtsecretplschange",
-      async (err, decoded) => {
-        if (err) {
-          const newError = {
-            message: "You are not loged in from server", 
-            // type: err.name, 
-            // server: err.message
-          }
-          return res.status(200).json(newError);
-        }
-        
-        res.cookie("access-token", "", {
-          httpOnly: true,
-          maxAge: 0
-        })
-
-        res.status(200).json({ message: "logout success from server" });
-      }
-    )  
-  }
-  res.send("logout succesful");
 })
 
 // =============================================================
+
 
 app.use("/*splat", (req, res) => {
     res.status(404);
