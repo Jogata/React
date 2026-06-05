@@ -50,29 +50,33 @@ const db = {
 }
 
 app.post("/signup", async (req, res) => {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
+    
+    if (!username || !password) {
+      return res.status(422).json({ message: "All fields are required" });
+    }
 
     if (!username.length || !password.length) {
       return res.status(422).json({ message: "All fields are required" });
-  }
-
-  if (username.length < 3) {
-      return res.status(422).json({message: "The username must be atleast 3 characters"});
-  }
+    }
+    
+    if (username.length < 3) {
+        return res.status(422).json({message: "The username must be atleast 3 characters"});
+    }
+    
+    if (password.length < 6) {
+        return res.status(422).json({message: "The password must be atleast 6 characters"});
+    }
   
-  if (password.length < 6) {
-      return res.status(422).json({message: "The password must be atleast 6 characters"});
-  }
-
-  const USER_REGEX = /^[A-z0-9]{3,20}$/;
-  if (!USER_REGEX.test(username)) {
-      return res.status(422).json({message: "The username can contains only letters and numbers"});
-  }
-  
-  const PWD_REGEX = /^[A-z0-9!@#$%]{6,12}$/;
-  if (!PWD_REGEX.test(password)) {
-      return res.status(422).json({message: "The password can contains only letters, numbers and !@#$%"});
-  }
+    const USER_REGEX = /^[A-z0-9]{3,20}$/;
+    if (!USER_REGEX.test(username)) {
+        return res.status(422).json({message: "The username can contains only letters and numbers"});
+    }
+    
+    const PWD_REGEX = /^[A-z0-9!@#$%]{6,12}$/;
+    if (!PWD_REGEX.test(password)) {
+        return res.status(422).json({message: "The password can contains only letters, numbers and !@#$%"});
+    }
 
     let user = db.users.find((user) => {
         return user.username === username;
@@ -80,11 +84,11 @@ app.post("/signup", async (req, res) => {
 
     if(user) {
         return res.status(422).json({
-            errors: [
-                {
-                    msg: "This user already exists",
-                }
-            ]
+            // errors: [
+                // {
+                    message: "This user already exists",
+                // }
+            // ]
         })
     }
 
@@ -97,10 +101,45 @@ app.post("/signup", async (req, res) => {
 
     const token = jwt.sign({ username }, "nfb32iur32ibfqfvi3vf932bg932g932", {expiresIn: 360000});
 
-    res.json({
-        token
-    })
+    res.json({ token });
 })
+
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body
+
+  let user = db.users.find((user) => {
+      return user.username === username;
+  });
+
+  if(!user){
+      return res.status(422).json({
+          errors: [
+              {
+                  msg: "Invalid Credentials",
+              }
+          ]
+      })
+  }
+
+  let isMatch = await bcrypt.compare(password, user.password);
+
+  if(!isMatch){
+      return res.status(404).json({
+          errors: [
+              {
+                  msg: "Invalid Credentials" 
+              }
+          ]
+      })
+  }
+
+  const token = jwt.sign({email}, "nfb32iur32ibfqfvi3vf932bg932g932", {expiresIn: 360000});
+
+  res.json({
+      token
+  })
+})
+
 
 // =============================================================
 

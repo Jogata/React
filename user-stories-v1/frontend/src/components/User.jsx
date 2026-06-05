@@ -159,7 +159,7 @@ function Register() {
 
         try {
             const response = await fetch(
-                "http://localhost:5000/register", {
+                "http://localhost:5000/signup", {
                 method: "POST",
                 credentials: "include", 
                 headers: {
@@ -167,6 +167,7 @@ function Register() {
                 },
                 body: JSON.stringify(values),
             });
+            console.log(response);
             const result = await response.json();
             console.log(result);
         } catch (err) {
