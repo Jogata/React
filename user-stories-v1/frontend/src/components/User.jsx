@@ -280,6 +280,28 @@ function Profile() {
     )
 };
 
+function Profile2() {
+    const { fetchWithAuth } = useAuth();
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        fetchWithAuth("http://localhost:5000/profile2")
+            .then(res => res.json())
+            .then(data => setData(data))
+            .catch(err => console.log("Request blocked or unauthorized."));
+    }, []);
+
+    return (
+        <div>
+            <h2>User Profile</h2>
+            {
+                data
+                 ? <p>{data.secretInfo}</p>
+                 : <Loader />}
+        </div>
+    );
+}
+
 function Login(props) {
     const [error, setError] = useState("");
     const [username, setUsername] = useState("user5");
@@ -653,4 +675,5 @@ export const Test = {
     Dashboard2, 
     Protected, 
     Profile, 
+    Profile2
 };

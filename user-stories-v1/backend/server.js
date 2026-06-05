@@ -204,7 +204,45 @@ const validateToken = (req, res, next) => {
   }
 };
 
+const validateToken2 = (req, res, next) => {
+  const accessToken = req.cookies["access-token"];
+
+  if (!accessToken)
+    return res.status(401).json({ error: "User not Authenticated!" });
+
+  try {
+    const validToken = jwt.verify(accessToken, "jwtsecretplschange");
+
+    // if (validToken) {
+    //   req.authenticated = true;
+    //   return next();
+    // }
+
+    if (!validToken) {
+      return res.status(401).json({ error: "User not Authenticated 222!" });
+    }
+
+    // if (validToken) {
+      const payload = jwt.decode(accessToken);
+      const user = users.find(user => user.username == payload.username);
+
+      if (!user) {
+        return res.status(409).json({ error: "User not Authorized! 230" });
+      }
+      req.username = username;
+      next();
+    // }
+  } catch (err) {
+    return res.status(400).json({ error: err });
+  }
+};
+
 app.get("/profile", validateToken, (req, res) => {
+  const username = req.username;
+  res.json({username, secretInfo: "bvaykugay"});;
+});
+
+app.get("/me", validateToken2, (req, res) => {
   const username = req.username;
   res.json({username});;
 });
