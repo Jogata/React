@@ -104,7 +104,7 @@ app.post("/signup", async (req, res) => {
     res.json({ token });
 })
 
-router.post("/login", async (req, res) => {
+app.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
   let user = db.users.find((user) => {

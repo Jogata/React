@@ -223,6 +223,47 @@ function Register() {
     );
 }
 
+function Posts() {
+    const [posts, setPosts] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        try {
+            getposts();
+        } catch (error) {
+            console.log(error);
+        }
+
+        async function getposts() {
+            const response = await fetch("http://localhost:5000/public");
+
+            if (response.ok) {
+                const data = await response.json();
+                setPosts(data);
+                setLoading(false);
+                // return data;
+            } else {
+                throw new Error(response.statusText);
+            }
+        }
+    })
+
+    if (loading) {
+        return <Loader />
+    }
+
+    return (
+        <>
+            {posts.map((post, index) => (
+                <div className="post" key={index}>
+                    <h2>{post.title}</h2>
+                    <p>{post.content}</p>
+                </div>
+            ))}
+        </>
+    )
+}
+
 function Profile() {
     const [profile, setProfile] = useState({});
     const [loading, setLoading] = useState(true);
@@ -676,5 +717,6 @@ export const Test = {
     Dashboard2, 
     Protected, 
     Profile, 
-    Profile2
+    Profile2, 
+    Posts
 };
