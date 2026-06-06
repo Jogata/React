@@ -19,12 +19,12 @@ function App() {
 
   return (
     <>
-    {/* <Test.AuthProvider> */}
-      <Test.Navigation setUser={setUser} />
+    <Test.AuthProvider>
+      <Test.Navigation />
       <Routes>
-      <Route path="/" element={<Test.Home setUser={setUser} />} />
+      <Route path="/" element={<Test.Home />} />
       <Route path="/register" element={<Test.Register />} />
-      <Route path="/login" element={<Test.Login setUser={setUser} />} />
+      <Route path="/login" element={<Test.Login />} />
       <Route path="/profile" element={<Test.Profile />} />
       <Route path="/profile2" element={<Test.Profile2 />} />
       <Route path="/posts" element={<Test.Posts />} />
@@ -64,7 +64,7 @@ function App() {
           </Route>
         </Route> */}
       </Routes>
-      {/* </Test.AuthProvider> */}
+      </Test.AuthProvider>
     </>
   )
 }

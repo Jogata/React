@@ -36,22 +36,25 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { Link, Navigate, Outlet, useNavigate } from "react-router-dom";
 import Loader from "./Loader";
 
-function Navigation(props) {
+function Navigation() {
     const navigate = useNavigate();
-    const setUser = props.setUser;
+    // const setUser = props.setUser;
+    const { logout } = Test.useAuth();
 
-    const logout = async () => {
+    const handleSubmit = async () => {
         try {
             const response = await fetch(
                 "http://localhost:5000/logout", {
                 credentials: "include", 
             });
+            console.log(response);
             const result = await response.json();
             console.log(result);
 
             if (response.ok) {
                 console.log("logout success from browser");
-                setUser({});
+                logout();
+                // setUser({});
             }
         } catch (error) {
             console.log(error.message);
@@ -79,10 +82,13 @@ function Navigation(props) {
                     <Link to="/dash2">Dashboard 2</Link>
                 </li>
                 <li>
+                    <Link to="/posts">All posts</Link>
+                </li>
+                <li>
                     <button
                         className="submit-button"
                         title="Logout"
-                        onClick={logout}
+                        onClick={handleSubmit}
                     >
                         Logout
                     </button>
@@ -226,8 +232,11 @@ function Register() {
 function Posts() {
     const [posts, setPosts] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { user } = useContext(AuthContext);
+    console.log(user);
 
     useEffect(() => {
+        console.log("use effect posts");
         try {
             getposts();
         } catch (error) {
@@ -246,7 +255,7 @@ function Posts() {
                 throw new Error(response.statusText);
             }
         }
-    })
+    }, [])
 
     if (loading) {
         return <Loader />
@@ -344,13 +353,14 @@ function Profile2() {
     );
 }
 
-function Login(props) {
+function Login() {
     const [error, setError] = useState("");
     const [username, setUsername] = useState("user5");
     //   const [password, setPassword] = useState("");
     const [password, setPassword] = useState("pass1235");
     //   const [password, setPassword] = useState("");
-    const setUser = props.setUser;
+    // const setUser = props.setUser;
+    const { login } = Test.useAuth();
 
     const handleSubmit = async (e, values) => {
         e.preventDefault();
@@ -361,7 +371,7 @@ function Login(props) {
             const response = await fetch(
                 "http://localhost:5000/login", {
                 method: "POST",
-                credentials: "include", 
+                // credentials: "include", 
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -375,7 +385,9 @@ function Login(props) {
             // }
 
             if (response.ok) {
-                setUser({isAuth: true});
+                console.log("set user token with", result.token);
+                // setUser({isAuth: true});
+                login({token: result.token});
             }
 
         } catch (err) {
@@ -569,17 +581,6 @@ function Dashboard2() {
 
 function Protected(props) {
     const user = props.user;
-    // const setUser = props.setUser;
-    // console.log(props);
-    const navigate = useNavigate();
-
-    // const test = {
-    //     has: 1
-    // }
-
-    // console.log(Object.hasOwn(test, "has"));
-    // console.log(Object.hasOwn(test, "hass"));
-    // console.log(Object.hasOwn(props, "user"));
 
     useEffect(() => {
         console.log("protected mounted");
@@ -646,30 +647,10 @@ const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     const logout = () => setUser(null);
-
-    const checkAuth = async () => {
-        try {
-            const res = await fetch("http://localhost:5000/me", { 
-                credentials: "include" 
-            });
-            
-            if (res.status === 401) {
-                logout();
-            } else if (res.ok) {
-                const data = await res.json();
-                setUser(data);
-            }
-        } catch (err) {
-            logout();
-        } finally {
-            setTimeout(() => {
-                setLoading(false);
-            }, 5000);
-        }
-    };
+    const login = (user) => setUser(user);
 
     const fetchWithAuth = async (url, options = {}) => {
-        options.credentials = "include";
+        // options.credentials = "include";
 
         const response = await fetch(url, options);
 
@@ -682,6 +663,12 @@ const AuthProvider = ({ children }) => {
     };
 
     useEffect(() => {
+        console.log(user);
+    });
+
+    useEffect(() => {
+        console.log("use effect AuthProvider");
+
         checkAuth();
 
         const handleVisibility = () => {
@@ -692,16 +679,39 @@ const AuthProvider = ({ children }) => {
 
         document.addEventListener("visibilitychange", handleVisibility);
 
+        async function checkAuth() {
+            console.log("use effect checkAuth");
+
+            try {
+                const res = await fetch("http://localhost:5000/me", { 
+                    credentials: "include" 
+                });
+                
+                if (res.status === 401) {
+                    logout();
+                } else if (res.ok) {
+                    const data = await res.json();
+                    // setUser(data);
+                }
+            } catch (err) {
+                logout();
+            } finally {
+                setTimeout(() => {
+                    setLoading(false);
+                }, 5000);
+            }
+        };
+
         return () => document.removeEventListener("visibilitychange", handleVisibility);
     }, []);
 
-    if (loading) {
-        return <Loader />
-    }
+    // if (loading) {
+    //     return <Loader />
+    // }
 
     return (
-        <AuthContext.Provider value={{ user, loading, logout, fetchWithAuth }}>
-            {children}
+        <AuthContext.Provider value={{ user, loading, login, logout, fetchWithAuth }}>
+            {loading ? <Loader /> : children}
         </AuthContext.Provider>
     );
 };
