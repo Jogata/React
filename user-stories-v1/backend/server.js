@@ -105,7 +105,7 @@ app.post("/signup", async (req, res) => {
 })
 
 router.post("/login", async (req, res) => {
-  const { username, password } = req.body
+  const { username, password } = req.body;
 
   let user = db.users.find((user) => {
       return user.username === username;
@@ -133,13 +133,54 @@ router.post("/login", async (req, res) => {
       })
   }
 
-  const token = jwt.sign({email}, "nfb32iur32ibfqfvi3vf932bg932g932", {expiresIn: 360000});
+  const token = jwt.sign({username}, "nfb32iur32ibfqfvi3vf932bg932g932", {expiresIn: 360000});
 
   res.json({
       token
   })
 })
 
+app.get("/public", (req, res) => {
+  res.json(db.publicPosts);
+})
+
+const checkAuth = async (req, res, next) => {
+  const token = req.header("x-auth-token");
+
+  if(!token){
+      res.status(401).json({
+          errors: [
+              {
+                  msg: "No token found"
+              }
+          ]
+      })
+  }
+
+  try {
+      const user = jwt.verify(token, "nfb32iur32ibfqfvi3vf932bg932g932");
+      req.user = user.username;
+
+      next();
+  } catch (error) {
+      res.status(400).json({
+          errors: [
+              {
+                  msg: "Invalid Token"
+              }
+          ]
+      })
+  }
+}
+
+app.get("/private", checkAuth, (req, res) => {
+  console.log(req.user);
+  res.json(db.privatePosts);
+})
+
+app.get("/all", (req, res) => {
+  res.json(db.users);
+})
 
 // =============================================================
 
