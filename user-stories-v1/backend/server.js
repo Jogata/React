@@ -25,7 +25,58 @@ app.use("/notes", require("./routes/noteRoutes"));
 
 
 // =============================================================
+const jwt = require("jsonwebtoken");
 
+const users = [
+  {
+    id: "1",
+    username: "john",
+    password: "John0908",
+    isAdmin: true,
+  },
+  {
+    id: "2",
+    username: "jane",
+    password: "Jane0908",
+    isAdmin: false,
+  },
+];
+
+let refreshTokens = [];
+
+function generateAccessToken(user) {
+  console.log("todo");
+  return "generateAccessToken";
+}
+
+function generateRefreshToken(user) {
+  console.log("todo");
+  return "generateRefreshToken";
+}
+
+app.post("/api/login", (req, res) => {
+  const { username, password } = req.body;
+
+  const user = users.find((u) => {
+    return u.username === username && u.password === password;
+  });
+  
+  if (user) {
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    refreshTokens.push(refreshToken);
+    
+    res.json({
+      username: user.username,
+      isAdmin: user.isAdmin,
+      accessToken,
+      refreshToken,
+    });
+  } else {
+    res.status(400).json("Username or password incorrect!");
+  }
+});
 // =============================================================
 
 
