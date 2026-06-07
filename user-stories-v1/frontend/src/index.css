@@ -532,39 +532,3 @@ td {
 .redirect-link:hover::after {
   transform: scale(1);
 }
-
-
-
-#root {
-  min-height: 100vh;
-  padding: 3rem 2%;
-}
-
-form {
-  max-width: 500px;
-  margin: auto;
-  padding: 2rem 1rem;
-  text-align: center;
-  border-radius: 12px;
-  border: 1px solid;
-}
-
-form h1 {
-  margin-bottom: 2rem;
-}
-
-form input {
-  margin: auto;
-}
-
-nav ul {
-  /* list-style: none; */
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.list-style-none ::marker {
-  font-size: 0;
-}

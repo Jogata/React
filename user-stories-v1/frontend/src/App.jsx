@@ -12,39 +12,13 @@ import EditNote from "./components/EditNote";
 
 
 import { Test } from "./components/User";
-import { useState } from "react";
 
 function App() {
-  const [user, setUser] = useState(null);
-
   return (
     <>
-    <Test.AuthProvider>
-      <Test.Navigation />
       <Routes>
-      <Route path="/" element={<Test.Home />} />
-      <Route path="/register" element={<Test.Register />} />
-      <Route path="/login" element={<Test.Login />} />
-      <Route path="/profile" element={<Test.Profile />} />
-      <Route path="/profile2" element={<Test.Profile2 />} />
-      <Route path="/posts" element={<Test.Posts />} />
-      <Route path="/your-posts" element={<Test.PrivatePosts />} />
-      {/* <Route element={<Test.Protected user={user} setUser={setUser} />}>
-        <Route path="/dash" element={<Test.Dashboard />} />
-        <Route path="/dash2" element={<Test.Dashboard2 />} />
-      </Route> */}
-      
-      <Route element={<Test.Protected user={user} setUser={setUser} key="p1" clean="p1" />}>
-        <Route path="/dash" element={<Test.Dashboard />} />
-        {/* <Route path="/dash2" element={<Test.Dashboard2 />} /> */}
-      </Route>
-      
-      <Route element={<Test.Protected user={user} setUser={setUser} key="p2" clean="p2" />}>
-        {/* <Route path="/dash" element={<Test.Dashboard />} /> */}
-        <Route path="/dash2" element={<Test.Dashboard2 />} />
-      </Route>
-      
-        {/* <Route path="/" element={<Home />} />
+        {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/" element={<Test />} />
         <Route path="/login" element={<Login />} />
 
         <Route path="/dash" element={<WelcomeDashLayout />}>
@@ -63,9 +37,8 @@ function App() {
             <Route path="create" element={<NewNote />} />
             <Route path="edit/:noteId" element={<EditNote />} />
           </Route>
-        </Route> */}
+        </Route>
       </Routes>
-      </Test.AuthProvider>
     </>
   )
 }
