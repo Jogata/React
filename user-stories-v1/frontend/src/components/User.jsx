@@ -85,6 +85,9 @@ function Navigation() {
                     <Link to="/posts">All posts</Link>
                 </li>
                 <li>
+                    <Link to="/your-posts">Your posts</Link>
+                </li>
+                <li>
                     <button
                         className="submit-button"
                         title="Logout"
@@ -259,6 +262,72 @@ function Posts() {
 
     if (loading) {
         return <Loader />
+    }
+
+    return (
+        <>
+            {posts.map((post, index) => (
+                <div className="post" key={index}>
+                    <h2>{post.title}</h2>
+                    <p>{post.content}</p>
+                </div>
+            ))}
+        </>
+    )
+}
+
+function PrivatePosts() {
+    const [posts, setPosts] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [errors, setErrors] = useState([]);
+    // const { user } = useContext(AuthContext);
+    const { user } = Test.useAuth();
+    console.log(user);
+
+    useEffect(() => {
+        console.log("use effect private posts");
+        try {
+            getposts();
+        } catch (error) {
+            console.log(error);
+        }
+
+        async function getposts() {
+            if (!user) {
+                setErrors(["You must login"]);
+                // return;
+            } else {
+                const response = await fetch("http://localhost:5000/private", {
+                    headers: {
+                        "X-Auth-Token": user.token
+                    }
+                });
+    
+                if (response.ok) {
+                    const data = await response.json();
+                    setPosts(data);
+                    // setLoading(false);
+                    // return data;
+                } else {
+                    const data = await response.json();
+                    console.log(data.errors);
+                    setErrors(data.errors);
+                    // throw new Error(response.statusText);
+                }
+            }
+
+            setLoading(false);
+        }
+    }, [])
+
+    if (loading) {
+        return <Loader />
+    }
+
+    if (errors.length) {
+        return (
+            <h1>Not Autorized</h1>
+        )
     }
 
     return (
@@ -644,6 +713,7 @@ const AuthContext = createContext(null);
 
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    // const [user, setUser] = useState({token: "cbrhalewl"});
     const [loading, setLoading] = useState(true);
 
     const logout = () => setUser(null);
@@ -728,5 +798,6 @@ export const Test = {
     Protected, 
     Profile, 
     Profile2, 
-    Posts
+    Posts, 
+    PrivatePosts
 };

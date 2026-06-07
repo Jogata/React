@@ -83,7 +83,7 @@ app.post("/signup", async (req, res) => {
     });
 
     if(user) {
-        return res.status(422).json({
+        return res.status(409).json({
             // errors: [
                 // {
                     message: "This user already exists",
@@ -163,7 +163,7 @@ const checkAuth = async (req, res, next) => {
 
       next();
   } catch (error) {
-      res.status(400).json({
+      res.status(403).json({
           errors: [
               {
                   msg: "Invalid Token"

@@ -28,6 +28,7 @@ function App() {
       <Route path="/profile" element={<Test.Profile />} />
       <Route path="/profile2" element={<Test.Profile2 />} />
       <Route path="/posts" element={<Test.Posts />} />
+      <Route path="/your-posts" element={<Test.PrivatePosts />} />
       {/* <Route element={<Test.Protected user={user} setUser={setUser} />}>
         <Route path="/dash" element={<Test.Dashboard />} />
         <Route path="/dash2" element={<Test.Dashboard2 />} />
