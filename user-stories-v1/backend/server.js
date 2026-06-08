@@ -44,16 +44,34 @@ const users = [
 
 let refreshTokens = [];
 
-function generateAccessToken(user) {
-  console.log("todo");
-  return "generateAccessToken";
-}
-
-function generateRefreshToken(user) {
-  console.log("todo");
-  return "generateRefreshToken";
-}
-
+function generateAccessToken(user) { 
+  // console.log("todo");
+  // return "generateAccessToken";
+  return jwt.sign({
+      id: user.id,
+      isAdmin: user.isAdmin
+    },
+    "mySecretKey",
+    {
+      expiresIn: "5s", 
+      algorithm: "HS256"
+    })
+} 
+ 
+function generateRefreshToken(user) { 
+  // console.log("todo");
+  // return "generateRefreshToken";
+  return jwt.sign({
+    id: user.id,
+    isAdmin: user.isAdmin
+  },
+    "myRefreshSecretKey", 
+    {
+      algorithm: "HS256"
+    }
+  );
+} 
+ 
 app.post("/api/login", (req, res) => {
   const { username, password } = req.body;
 
@@ -77,6 +95,34 @@ app.post("/api/login", (req, res) => {
     res.status(400).json("Username or password incorrect!");
   }
 });
+
+function verify(req, res, next) {
+  const authHeader = req.headers.authorization;
+  console.log(req.headers);
+
+  if (authHeader) {
+    const token = authHeader.split(" ")[1];
+
+    jwt.verify(token, "mySecretKey", (err, user) => {
+      if (err) {
+        return res.status(403).json("Token is not valid!");
+      }
+
+      req.user = user;
+      next();
+    });
+  } else {
+    res.status(401).json("You are not authenticated!");
+  }
+};
+
+app.post("/api/logout", verify, (req, res) => {
+  const refreshToken = req.body.token;
+  console.log(req.body);
+  refreshTokens = refreshTokens.filter(token => token !== refreshToken);
+  res.status(200).json("You logged out successfully.");
+});
+
 // =============================================================
 
 
@@ -99,3 +145,7 @@ mongoose.connection.once("open", () => {
 mongoose.connection.on("error", err => {
     console.log(err);
 })
+
+// Verify Explicitly: When verifying tokens on your receiving servers with 
+// jwt.verify(), explicitly pass the expected algorithms array to protect your 
+// application against algorithm confusion exploits.

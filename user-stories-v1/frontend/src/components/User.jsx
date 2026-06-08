@@ -39,10 +39,11 @@ export function Test() {
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch("http://localhost:5000/api/login", {
+            const res = await fetch("http://localhost:5000/api/logout", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${user.accessToken}`,
                 },
                 body: JSON.stringify({ username, password })
             });
@@ -63,11 +64,13 @@ export function Test() {
                     <input
                         type="text"
                         placeholder="username"
+                        value={username}
                         onChange={(e) => setUsername(e.target.value)}
                     />
                     <input
                         type="password"
                         placeholder="password"
+                        value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
                     <button
