@@ -39,11 +39,11 @@ export function Test() {
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch("http://localhost:5000/api/logout", {
+            const res = await fetch("http://localhost:5000/api/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${user.accessToken}`,
+                    // "Authorization": `Bearer ${user.accessToken}`,
                 },
                 body: JSON.stringify({ username, password })
             });

@@ -45,8 +45,6 @@ const users = [
 let refreshTokens = [];
 
 function generateAccessToken(user) { 
-  // console.log("todo");
-  // return "generateAccessToken";
   return jwt.sign({
       id: user.id,
       isAdmin: user.isAdmin
@@ -59,8 +57,6 @@ function generateAccessToken(user) {
 } 
  
 function generateRefreshToken(user) { 
-  // console.log("todo");
-  // return "generateRefreshToken";
   return jwt.sign({
     id: user.id,
     isAdmin: user.isAdmin
@@ -70,7 +66,32 @@ function generateRefreshToken(user) {
       algorithm: "HS256"
     }
   );
-} 
+}
+
+app.post("/api/refresh", (req, res) => {
+  const refreshToken = req.body.token;
+
+  if (!refreshToken) return res.status(401).json("You are not authenticated!");
+
+  if (!refreshTokens.includes(refreshToken)) {
+    return res.status(403).json("Refresh token is not valid!");
+  }
+  
+  jwt.verify(refreshToken, "myRefreshSecretKey", (err, user) => {
+    err && console.log(err);
+    refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+
+    const newAccessToken = generateAccessToken(user);
+    const newRefreshToken = generateRefreshToken(user);
+
+    refreshTokens.push(newRefreshToken);
+
+    res.status(200).json({
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+    });
+  });
+});
  
 app.post("/api/login", (req, res) => {
   const { username, password } = req.body;
@@ -98,7 +119,7 @@ app.post("/api/login", (req, res) => {
 
 function verify(req, res, next) {
   const authHeader = req.headers.authorization;
-  console.log(req.headers);
+  // console.log(req.headers);
 
   if (authHeader) {
     const token = authHeader.split(" ")[1];
@@ -115,6 +136,14 @@ function verify(req, res, next) {
     res.status(401).json("You are not authenticated!");
   }
 };
+
+app.delete("/api/users/:userId", verify, (req, res) => {
+  if (req.user.id === req.params.userId || req.user.isAdmin) {
+    res.status(200).json("User has been deleted.");
+  } else {
+    res.status(403).json("You are not allowed to delete this user!");
+  }
+});
 
 app.post("/api/logout", verify, (req, res) => {
   const refreshToken = req.body.token;
