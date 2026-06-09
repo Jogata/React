@@ -33,10 +33,10 @@ import { useState } from "react";
 
 export function Test() {
     const [user, setUser] = useState(null);
-    const [username, setUsername] = useState("john");
-    const [password, setPassword] = useState("John0908");
-    const [error, setError] = useState(false);
-    const [success, setSuccess] = useState(false);
+    // const [username, setUsername] = useState("john");
+    // const [password, setPassword] = useState("John0908");
+    // const [error, setError] = useState(false);
+    // const [success, setSuccess] = useState(false);
 
     const handleRefreshToken = async () => {
         if (!user) {
@@ -45,7 +45,7 @@ export function Test() {
         }
 
         try {
-            const res = await fetch("http://localhost:5000/api/refresh", { 
+            const res = await fetch("http://localhost:5000/api/refresh", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -56,7 +56,7 @@ export function Test() {
 
             let data = null;
 
-            if (res.ok) {                
+            if (res.ok) {
                 data = await res.json();
                 setUser({
                     ...user,
@@ -72,6 +72,98 @@ export function Test() {
             console.log(err);
         }
     };
+
+    return (
+        <div className="container">
+            <nav>
+                <button
+                    className="nav-button"
+                    onClick={handleRefreshToken}
+                    title="Refresh token"
+                >
+                    Refresh
+                </button>
+                {/* <button
+                    className="delete-button"
+                    onClick={() => handleDelete(user)}
+                    title="Delete user"
+                >
+                    Delete
+                </button> */}
+            </nav>
+            {
+                user ? (
+                    <Home user={user} />
+                ) : (
+                    <LoginForm setUser={setUser} />
+                )
+            }
+        </div>
+    );
+}
+
+function Home({ user }) {
+    const [error, setError] = useState(false);
+    const [success, setSuccess] = useState(false);
+
+    const handleDelete = async (user, id) => {
+        setSuccess(false);
+        setError(false);
+
+        if (!user) {
+            console.log("User not logged in");
+            return;
+        }
+
+        try {
+            await fetch("http://localhost:5000/api/users/" + id, {
+                method: "DELETE",
+                headers: {
+                    // authorization: "Bearer " + user.accessToken 
+                    "Authorization": `Bearer ${user.accessToken}`
+                },
+            });
+            setSuccess(true);
+        } catch (err) {
+            setError(true);
+        }
+    };
+
+    return (
+        <div className="home">
+            <span>
+                Welcome to the <b>{user.isAdmin ? "admin" : "user"}</b> dashboard{" "} <b>{user.username}</b>.
+            </span>
+            <span>Delete Users:</span>
+            <button 
+                className="delete-button" 
+                onClick={() => handleDelete(user, 1)}
+            >
+                Delete John
+            </button>
+            <button 
+                className="delete-button" 
+                onClick={() => handleDelete(user, 2)}
+            >
+                Delete Jane
+            </button>
+            {error && (
+                <span className="error">
+                    You are not allowed to delete this user!
+                </span>
+            )}
+            {success && (
+                <span className="success">
+                    User has been deleted successfully...
+                </span>
+            )}
+        </div>
+    )
+}
+
+function LoginForm({ setUser }) {
+    const [username, setUsername] = useState("john");
+    const [password, setPassword] = useState("John0908");
 
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
@@ -93,70 +185,29 @@ export function Test() {
         }
     };
 
-    const handleDelete = async (user) => {
-        setSuccess(false);
-        setError(false);
-
-        if (!user) {
-            console.log("User not logged in");
-            return;
-        }
-
-        try {
-            await fetch("http://localhost:5000/api/users/" + user.id, {
-                method: "DELETE", 
-                headers: { 
-                    // authorization: "Bearer " + user.accessToken 
-                    "Authorization": `Bearer ${user.accessToken}`
-                },
-            });
-            setSuccess(true);
-        } catch (err) {
-            setError(true);
-        }
-    };
-
     return (
-        <div className="container">
-            <nav>
-                <button 
-                    className="nav-button"
-                    onClick={handleRefreshToken}
-                    title="Refresh token"
+        <div className="login">
+            <form onSubmit={handleLoginSubmit}>
+                <span className="form-title">Login</span>
+                <input
+                    type="text"
+                    placeholder="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                />
+                <input
+                    type="password"
+                    placeholder="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+                <button
+                    type="submit"
+                    className="submit-button"
                 >
-                    Refresh
+                    Login
                 </button>
-                <button 
-                    className="delete-button"
-                    onClick={() => handleDelete(user)}
-                    title="Delete user"
-                >
-                    Delete
-                </button>
-            </nav>
-            <div className="login">
-                <form onSubmit={handleLoginSubmit}>
-                    <span className="form-title">Login</span>
-                    <input
-                        type="text"
-                        placeholder="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                    <input
-                        type="password"
-                        placeholder="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <button
-                        type="submit"
-                        className="submit-button"
-                    >
-                        Login
-                    </button>
-                </form>
-            </div>
+            </form>
         </div>
-    );
+    )
 }
