@@ -76,7 +76,7 @@ app.post("/api/refresh", (req, res) => {
   if (!refreshTokens.includes(refreshToken)) {
     return res.status(403).json("Refresh token is not valid!");
   }
-  
+
   jwt.verify(refreshToken, "myRefreshSecretKey", (err, user) => {
     err && console.log(err);
     refreshTokens = refreshTokens.filter((token) => token !== refreshToken);

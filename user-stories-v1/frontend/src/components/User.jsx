@@ -35,8 +35,15 @@ export function Test() {
     const [user, setUser] = useState(null);
     const [username, setUsername] = useState("john");
     const [password, setPassword] = useState("John0908");
+    const [error, setError] = useState(false);
+    const [success, setSuccess] = useState(false);
 
-    const refreshToken = async () => {
+    const handleRefreshToken = async () => {
+        if (!user) {
+            console.log("User not logged in");
+            return;
+        }
+
         try {
             const res = await fetch("http://localhost:5000/api/refresh", { 
                 method: "POST",
@@ -86,14 +93,45 @@ export function Test() {
         }
     };
 
+    const handleDelete = async (user) => {
+        setSuccess(false);
+        setError(false);
+
+        if (!user) {
+            console.log("User not logged in");
+            return;
+        }
+
+        try {
+            await fetch("http://localhost:5000/api/users/" + user.id, {
+                method: "DELETE", 
+                headers: { 
+                    // authorization: "Bearer " + user.accessToken 
+                    "Authorization": `Bearer ${user.accessToken}`
+                },
+            });
+            setSuccess(true);
+        } catch (err) {
+            setError(true);
+        }
+    };
+
     return (
         <div className="container">
             <nav>
                 <button 
                     className="nav-button"
-                    onClick={refreshToken}
+                    onClick={handleRefreshToken}
+                    title="Refresh token"
                 >
                     Refresh
+                </button>
+                <button 
+                    className="delete-button"
+                    onClick={() => handleDelete(user)}
+                    title="Delete user"
+                >
+                    Delete
                 </button>
             </nav>
             <div className="login">
