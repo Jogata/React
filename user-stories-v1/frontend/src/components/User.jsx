@@ -36,6 +36,36 @@ export function Test() {
     const [username, setUsername] = useState("john");
     const [password, setPassword] = useState("John0908");
 
+    const refreshToken = async () => {
+        try {
+            const res = await fetch("http://localhost:5000/api/refresh", { 
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    // "Authorization": `Bearer ${user.accessToken}`,
+                },
+                body: JSON.stringify({ token: user.refreshToken })
+            });
+
+            let data = null;
+
+            if (res.ok) {                
+                data = await res.json();
+                setUser({
+                    ...user,
+                    accessToken: data.accessToken,
+                    refreshToken: data.refreshToken,
+                });
+            } else {
+                const error = await res.json();
+                console.log(error);
+            }
+            return data;
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -58,6 +88,14 @@ export function Test() {
 
     return (
         <div className="container">
+            <nav>
+                <button 
+                    className="nav-button"
+                    onClick={refreshToken}
+                >
+                    Refresh
+                </button>
+            </nav>
             <div className="login">
                 <form onSubmit={handleLoginSubmit}>
                     <span className="form-title">Login</span>
@@ -83,4 +121,4 @@ export function Test() {
             </div>
         </div>
     );
-} 
+}

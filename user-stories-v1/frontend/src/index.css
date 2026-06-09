@@ -539,6 +539,22 @@ td {
   font-family: Georgia, serif;
 }
 
+.container nav {
+  padding: 20px;
+}
+
+.nav-button {
+  padding: 0.8em 2em;
+  color: var(--COLOR);
+  font-weight: bold;
+  border-radius: 10em;
+  border: 1px solid;
+  transition: color 300ms;
+}
+
+.nav-button:hover {
+  color: #6cb0e8;
+}
 .login,
 .home {
   position: absolute;
