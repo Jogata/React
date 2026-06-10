@@ -130,7 +130,7 @@ function verify(req, res, next) {
 
     jwt.verify(token, "mySecretKey", (err, user) => {
       if (err) {
-        return res.status(403).json("Token is not valid!"); 
+        return res.status(403).json("Token is not valid!");
       }
 
       req.user = user;
@@ -146,7 +146,7 @@ app.delete("/api/users/:userId", verify, (req, res) => {
     users.forEach((user, index) => {
       if (user) {
         if (user.id == req.params.userId) {
-          // console.log("yes"); 
+          // console.log("yes");
           users[index] = null;
         }
       }
@@ -163,7 +163,7 @@ app.get("/api/users", (req, res) => {
 
 app.post("/api/logout", verify, (req, res) => {
   const refreshToken = req.body.token;
-  console.log(req.body);
+  // console.log(req.body);
   refreshTokens = refreshTokens.filter(token => token !== refreshToken);
   res.status(200).json("You logged out successfully.");
 });

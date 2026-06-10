@@ -38,9 +38,9 @@ export function Test() {
     // const [error, setError] = useState(false);
     // const [success, setSuccess] = useState(false);
 
-    const test = () => {
-        console.log("test");
-    }
+    // const test = () => {
+    //     console.log("test");
+    // }
 
     const handleRefreshToken = async () => {
         console.log("refresh");
@@ -95,6 +95,39 @@ export function Test() {
         }
     };
 
+    const logout = async () => {
+        try {
+            const response = await fetch("http://localhost:5000/api/logout", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${user.accessToken}`,
+                },
+                body: JSON.stringify({ token: user.refreshToken })
+            });
+
+            const contentType = response.headers.get("content-type");
+            let data = null;
+        
+            if (contentType && contentType.includes("application/json")) {
+              data = await response.json();
+            }
+        
+            if (response.ok && data) {
+                console.log(data);
+                setUser(null);
+                return { ok: true, token: data.accessToken, error: null };
+            }
+        
+            // if (data && data.message) {
+                console.log(data);
+                return { ok: false, token: null, error: data.message };
+            // }
+        } catch (err) {
+            console.log(err.message);
+        }
+    };
+
     return (
         <div className="container">
             <nav>
@@ -112,6 +145,13 @@ export function Test() {
                 >
                     Delete
                 </button> */}
+                <button
+                    className="nav-button"
+                    onClick={logout}
+                    title="Logout"
+                >
+                    Logout
+                </button>
                 <button
                     className="nav-button"
                     onClick={getAllUsers}
