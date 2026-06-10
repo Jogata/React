@@ -38,7 +38,13 @@ export function Test() {
     // const [error, setError] = useState(false);
     // const [success, setSuccess] = useState(false);
 
+    const test = () => {
+        console.log("test");
+    }
+
     const handleRefreshToken = async () => {
+        console.log("refresh");
+
         if (!user) {
             console.log("User not logged in");
             return;
@@ -56,8 +62,11 @@ export function Test() {
 
             let data = null;
 
+            console.log("refresh");
             if (res.ok) {
                 data = await res.json();
+                console.log("res.ok");
+                console.log(data);
                 setUser({
                     ...user,
                     accessToken: data.accessToken,
@@ -113,7 +122,7 @@ export function Test() {
             </nav>
             {
                 user ? (
-                    <Home user={user} />
+                    <Home user={user} handleRefreshToken={handleRefreshToken} />
                 ) : (
                     <LoginForm setUser={setUser} />
                 )
@@ -122,7 +131,7 @@ export function Test() {
     );
 }
 
-function Home({ user }) {
+function Home({ user, handleRefreshToken }) {
     const [error, setError] = useState(false);
     const [success, setSuccess] = useState(false);
 
@@ -136,14 +145,39 @@ function Home({ user }) {
         }
 
         try {
-            await fetch("http://localhost:5000/api/users/" + id, {
+            const response = await fetch("http://localhost:5000/api/users/" + id, {
                 method: "DELETE",
                 headers: {
                     // authorization: "Bearer " + user.accessToken 
                     "Authorization": `Bearer ${user.accessToken}`
                 },
             });
-            setSuccess(true);
+
+            if (response.status == 403) {
+                console.log(response.status);
+                handleRefreshToken();
+            }
+
+            const contentType = response.headers.get("content-type");
+            let data = null;
+        
+            if (contentType && contentType.includes("application/json")) {
+                data = await response.json();
+
+                if (response.ok) {
+                    setSuccess(true);
+                    console.log(data);
+                    return { ok: true, token: data.accessToken, error: null };
+                } else {
+                    setError(true);
+                    console.log("Error:" + data);
+                    return { ok: false, token: null, error: data.message };
+                }
+            }
+        
+            // Case 3: Server crashed (HTML/Text response instead of JSON)
+            return { ok: false, token: null, error: `Server error (${response.status}). Please try again later.` };
+            // setSuccess(true);
         } catch (err) {
             setError(true);
         }
@@ -182,8 +216,8 @@ function Home({ user }) {
 }
 
 function LoginForm({ setUser }) {
-    const [username, setUsername] = useState("john");
-    const [password, setPassword] = useState("John0908");
+    const [username, setUsername] = useState("jane");
+    const [password, setPassword] = useState("Jane0908");
 
     const handleLoginSubmit = async (e) => {
         e.preventDefault();

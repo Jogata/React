@@ -97,7 +97,11 @@ app.post("/api/login", (req, res) => {
   const { username, password } = req.body;
 
   const user = users.find((u) => {
-    return u.username === username && u.password === password;
+    // if (!u) {
+    //   return false;
+    // }
+
+    return u && u.username === username && u.password === password;
   });
   
   if (user) {
@@ -126,7 +130,7 @@ function verify(req, res, next) {
 
     jwt.verify(token, "mySecretKey", (err, user) => {
       if (err) {
-        return res.status(403).json("Token is not valid!");
+        return res.status(403).json("Token is not valid!"); 
       }
 
       req.user = user;
@@ -142,7 +146,7 @@ app.delete("/api/users/:userId", verify, (req, res) => {
     users.forEach((user, index) => {
       if (user) {
         if (user.id == req.params.userId) {
-          // console.log("yes");
+          // console.log("yes"); 
           users[index] = null;
         }
       }
