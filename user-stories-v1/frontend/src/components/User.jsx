@@ -73,6 +73,19 @@ export function Test() {
         }
     };
 
+    const getAllUsers = async () => {
+        try {
+            const response = await fetch("http://localhost:5000/api/users");
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data);
+            }
+        } catch (err) {
+            console.log(err.message);
+        }
+    };
+
     return (
         <div className="container">
             <nav>
@@ -90,6 +103,13 @@ export function Test() {
                 >
                     Delete
                 </button> */}
+                <button
+                    className="nav-button"
+                    onClick={getAllUsers}
+                    title="All users"
+                >
+                    Get All Users
+                </button>
             </nav>
             {
                 user ? (

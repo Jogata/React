@@ -139,10 +139,22 @@ function verify(req, res, next) {
 
 app.delete("/api/users/:userId", verify, (req, res) => {
   if (req.user.id === req.params.userId || req.user.isAdmin) {
+    users.forEach((user, index) => {
+      if (user) {
+        if (user.id == req.params.userId) {
+          // console.log("yes");
+          users[index] = null;
+        }
+      }
+    })
     res.status(200).json("User has been deleted.");
   } else {
     res.status(403).json("You are not allowed to delete this user!");
   }
+});
+
+app.get("/api/users", (req, res) => {
+    res.status(200).json(users);
 });
 
 app.post("/api/logout", verify, (req, res) => {
