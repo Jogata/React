@@ -33,7 +33,7 @@ function App() {
           <Route path="users">
             <Route index element={<Users token={token} />} />
             <Route path="create" element={<CreateUserForm />} />
-            <Route path="edit/:userId" element={<EditUser />} />
+            <Route path="edit/:userId" element={<EditUser token={token} />} />
           </Route>
 
           <Route path="notes">

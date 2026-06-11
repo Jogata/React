@@ -3,9 +3,14 @@ import { Link, useParams } from "react-router-dom";
 import Loader from "./Loader";
 import EditUserForm from "./EditUserForm";
 
-async function getAllUsers(url) {
+async function getAllUsers(url, token) {
     try {
-        const res = await fetch(url);
+        // const res = await fetch(url);
+        const res = await fetch(url, {
+            headers: {
+                "authorization": `Bearer ${token}`
+            }
+        });
         return res;
 
     } catch (error) {
@@ -13,7 +18,7 @@ async function getAllUsers(url) {
     }
 }
 
-const EditUser = () => {
+const EditUser = ({token}) => {
     const { userId } = useParams();
     const [ user, setUser ] = useState(null);
     const [ status, setStatus ] = useState("loading");
@@ -23,7 +28,7 @@ const EditUser = () => {
         loadUser();
 
         async function loadUser() {
-            const res = await getAllUsers("http://localhost:5000/users");
+            const res = await getAllUsers("http://localhost:5000/users", token);
 
             if (!res.ok) {
                 setStatus("error");
@@ -59,7 +64,11 @@ const EditUser = () => {
         return <UserDoesntExist id={userId} />;
     }
 
-    const content = status == "success" ? <EditUserForm user={user} /> : <p>{messages[0]}</p>;
+    const content = status == "success" ? (
+        <EditUserForm user={user} token={token} />
+    ) : (
+        <p>{messages[0]}</p>
+    );
 
     return content;
 }

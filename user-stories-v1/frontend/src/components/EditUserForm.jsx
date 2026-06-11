@@ -6,12 +6,13 @@ const url = "http://localhost:5000/users";
 const USER_REGEX = /^[A-z0-9]{3,20}$/;
 const PWD_REGEX = /^[A-z0-9!@#$%]{6,12}$/;
 
-const updateUser = async (user) => {
+const updateUser = async (user, token) => {
     try {
         const res = await fetch(url, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
+                "authorization": `Bearer ${token}`
             },
             body: JSON.stringify(user),
         });
@@ -24,12 +25,13 @@ const updateUser = async (user) => {
     }
 }
 
-const deleteUser = async ({id}) => {
+const deleteUser = async ({id}, token) => {
     try {
         const res = await fetch(url, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
+                "authorization": `Bearer ${token}`
             },
             body: JSON.stringify({id}),
         });
@@ -42,7 +44,7 @@ const deleteUser = async ({id}) => {
     }
 }
 
-const EditUserForm = ({ user }) => {
+const EditUserForm = ({ user, token }) => {
     const [username, setUsername] = useState(user.username);
     // const [username, setUsername] = useState("too long username - the input has to pulse");
     const [password, setPassword] = useState("");
@@ -114,7 +116,7 @@ const EditUserForm = ({ user }) => {
                 try {
                     setIsPending(true);
 
-                    const res = await updateUser({ id: user._id, username, password, roles, active });
+                    const res = await updateUser({ id: user._id, username, password, roles, active }, token);
                     const result = await res.json();
 
                     if (res.ok) {
@@ -147,7 +149,7 @@ const EditUserForm = ({ user }) => {
     const onDeleteUserClicked = async () => {
         try {
             setIsPending(true);
-            const res = await deleteUser({ id: user._id });
+            const res = await deleteUser({ id: user._id }, token);
 
             const result = await res.json();
 
