@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const url = "http://localhost:5000/auth";
 const USER_REGEX = /^[A-z0-9]{3,20}$/;
 const PWD_REGEX = /^[A-z0-9!@#$%]{6,12}$/;
 
-const Login = () => {
+const Login = ({setToken}) => {
     // const [username, setUsername] = useState("");
     const [username, setUsername] = useState("user5");
     // const [password, setPassword] = useState("");
@@ -16,6 +16,7 @@ const Login = () => {
     // const [messages, setMessages] = useState([]);
     const formSubmitedOnce = useRef(false);
     const userRef = useRef();
+    const navigate = useNavigate();
 
     useEffect(() => {
         userRef.current.focus();
@@ -80,11 +81,13 @@ const Login = () => {
                     console.log(result);
 
                     if (res.ok) {
-                        console.log("redirect");
-                        setIsPending(false);
+                        // setIsPending(false);
                         // setMessages([result]);
-                        setErrors([]);
-                        formSubmitedOnce.current = false;
+                        // setErrors([]);
+                        setToken(result.accessToken);
+                        // formSubmitedOnce.current = false;
+                        navigate("/dash");
+                        // console.log("redirect");
                     } else {
                         console.log("server errors", result);
                         setIsPending(false);

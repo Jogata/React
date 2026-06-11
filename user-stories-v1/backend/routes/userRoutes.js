@@ -3,7 +3,7 @@ const router = express.Router();
 const userControllers = require("../controllers/userControllers");
 const verifyJWT = require("../middlewares/verifyJWT");
 
-// router.use(verifyJWT);
+router.use(verifyJWT);
 
 router.route("/")
     .get(userControllers.getAllUsers)

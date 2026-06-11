@@ -9,17 +9,15 @@ import EditUser from "./components/EditUser";
 import DashLayout, { WelcomeDashLayout } from "./components/DashLayout";
 import NewNote from "./components/NewNote";
 import EditNote from "./components/EditNote";
-
-
-import { Test } from "./components/User";
+import { useState } from "react";
 
 function App() {
+  const [token, setToken] = useState(null);
   return (
     <>
       <Routes>
-        {/* <Route path="/" element={<Home />} /> */}
-        <Route path="/" element={<Test />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login setToken={setToken} />} />
 
         <Route path="/dash" element={<WelcomeDashLayout />}>
           <Route index element={<Welcome />} />
@@ -27,7 +25,7 @@ function App() {
 
         <Route path="/dash" element={<DashLayout />}>
           <Route path="users">
-            <Route index element={<Users />} />
+            <Route index element={<Users token={token} />} />
             <Route path="create" element={<CreateUserForm />} />
             <Route path="edit/:userId" element={<EditUser />} />
           </Route>

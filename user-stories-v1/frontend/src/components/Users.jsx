@@ -3,9 +3,13 @@ import User from "./User";
 import Loader from "./Loader";
 import { Link, useLocation } from "react-router-dom";
 
-async function getAllUsers(url) {
+async function getAllUsers(url, token) {
     try {
-        const res = await fetch(url);
+        const res = await fetch(url, {
+            headers: {
+                "authorization": `Bearer ${token}`
+            }
+        });
         return res;
     } catch (error) {
         console.log(error.message);
@@ -23,7 +27,7 @@ const setUpMessages = (location) => {
     return [];
 }
 
-const Users = () => {
+const Users = ({token}) => {
     const [users, setUsers] = useState([]);
     const [status, setStatus] = useState("loading");
     const [errors, setErrors] = useState([]);
@@ -37,7 +41,7 @@ const Users = () => {
         async function setUpStates() {
             try {
                 setStatus("loading");
-                const res = await getAllUsers("http://localhost:5000/users");
+                const res = await getAllUsers("http://localhost:5000/users", token);
                 const result = await res.json();
     
                 if (!res.ok) {
