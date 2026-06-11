@@ -58,8 +58,8 @@ const login = async (req, res) => {
     res.cookie("jwt", refreshToken, {
         httpOnly: true,
         // secure: true,    tofix
-        sameSite: "None",
-        maxAge: 7 * 24 * 60 * 60 * 1000
+        // sameSite: "None",
+        maxAge: 7 * 24 * 60 * 6 * 1000 + 1 * 1000
     })
 
     res.json({ accessToken });

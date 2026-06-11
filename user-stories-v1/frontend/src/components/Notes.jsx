@@ -3,9 +3,13 @@ import Loader from "./Loader";
 import { Link, useLocation } from "react-router-dom";
 import Note from "./Note";
 
-async function getAllNotes(url) {
+async function getAllNotes(url, token) {
     try {
-        const res = await fetch(url);
+        const res = await fetch(url, {
+            headers: {
+                "authorization": `Bearer ${token}`
+            }
+        });
         return res;
     } catch (error) {
         console.log(error);
@@ -23,7 +27,7 @@ const setUpMessages = (location) => {
     return [];
 }
 
-const Notes = () => {
+const Notes = ({token}) => {
     const [notes, setNotes] = useState([]);
     const [status, setStatus] = useState("loading");
     const [errors, setErrors] = useState([]);
@@ -37,7 +41,7 @@ const Notes = () => {
         async function setUpData() {
             try {
                 setStatus("loading");
-                const res = await getAllNotes("http://localhost:5000/notes");
+                const res = await getAllNotes("http://localhost:5000/notes", token); 
         
                 const result = await res.json();
         

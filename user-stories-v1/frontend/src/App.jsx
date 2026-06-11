@@ -15,6 +15,12 @@ function App() {
   const [token, setToken] = useState(null);
   return (
     <>
+      <button 
+        className="submit-button"
+        onClick={() => console.log(token)}
+      >
+        show token
+      </button>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login setToken={setToken} />} />
@@ -31,9 +37,9 @@ function App() {
           </Route>
 
           <Route path="notes">
-            <Route index element={<Notes />} />
-            <Route path="create" element={<NewNote />} />
-            <Route path="edit/:noteId" element={<EditNote />} />
+            <Route index element={<Notes token={token} />} />
+            <Route path="create" element={<NewNote token={token} />} />
+            <Route path="edit/:noteId" element={<EditNote token={token} />} />
           </Route>
         </Route>
       </Routes>

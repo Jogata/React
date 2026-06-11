@@ -2,12 +2,13 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 // import { useNavigate } from "react-router-dom";
 
-const addNewNote = async (note, url = "http://localhost:5000/notes") => {
+const addNewNote = async (note, url = "http://localhost:5000/notes", token) => {
     try {
         const res = await fetch(url, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "authorization": `Bearer ${token}`
             },
             body: JSON.stringify(note),
         });
@@ -29,7 +30,7 @@ const addNewNote = async (note, url = "http://localhost:5000/notes") => {
     }
 }
 
-const CreateNoteForm = ({ users }) => {
+const CreateNoteForm = ({ users, token }) => {
     // const navigate = useNavigate();
 
     // const [title, setTitle] = useState("");
@@ -96,7 +97,7 @@ const CreateNoteForm = ({ users }) => {
             // console.log(note);
             setIsPending(true);
     
-            const res = await addNewNote(note, url);
+            const res = await addNewNote(note, url, token);
             // console.log(res);
 
             if (res.success) {

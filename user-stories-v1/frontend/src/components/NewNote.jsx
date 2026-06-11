@@ -3,9 +3,13 @@ import CreateNoteForm from "./CreateNoteForm";
 import Loader from "./Loader";
 import { Link } from "react-router-dom";
 
-async function getAllUsers(url, onSuccess) {
+async function getAllUsers(url, onSuccess, token) {
     try {
-        const res = await fetch(url);
+        const res = await fetch(url, {
+            headers: {
+                "authorization": `Bearer ${token}`
+            }
+        });
     
         const data = await res.json();
         console.log("all users: ", data);
@@ -19,7 +23,7 @@ async function getAllUsers(url, onSuccess) {
     }
 }
 
-const NewNote = () => {
+const NewNote = ({token}) => {
     const [users, setUsers] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     // const [isSuccess, setIsSuccess] = useState(false);
@@ -27,7 +31,7 @@ const NewNote = () => {
 
     useEffect(() => {
         setIsLoading(true);
-        getAllUsers("http://localhost:5000/users", onSuccess);
+        getAllUsers("http://localhost:5000/users", onSuccess, token);
 
         function onSuccess(data) {
             setUsers(data.data);
