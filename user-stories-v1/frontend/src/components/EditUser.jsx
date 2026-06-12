@@ -75,15 +75,6 @@ const EditUser = ({token}) => {
 
     if (status == "error") {
         return <ErrorSection message={messages[0].message} />;
-        //     <>
-        //         <p>{messages[0].message}</p>
-        //         <div className="links">
-        //             <Link to="/login" className="redirect-link">
-        //                 Login
-        //             </Link>
-        //         </div>
-        //     </>
-        // )
     }
 }
 
@@ -102,11 +93,9 @@ const ErrorSection = ({ message }) => {
     return (
         <div className="error-section">
             <p>{message}</p>
-            {/* <div className="links"> */}
             <Link to="/login" className="redirect-link">
                 Login
             </Link>
-            {/* </div> */}
         </div>
     )
 }

@@ -10,6 +10,7 @@ import DashLayout, { WelcomeDashLayout } from "./components/DashLayout";
 import NewNote from "./components/NewNote";
 import EditNote from "./components/EditNote";
 import { useState } from "react";
+import { ScrollToTop } from "./components/ScrollToTop";
 
 function App() {
   const [token, setToken] = useState(null);
@@ -21,6 +22,7 @@ function App() {
       >
         show token
       </button>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login setToken={setToken} />} />
