@@ -112,7 +112,8 @@ const NotAvailableSection = () => {
 
 const NoteDoesntExist = ({ id }) => {
     return (
-        <div className="invalid-user">
+        // <div className="invalid-user">
+        <div className="error-section">
             <p>
                 Note with id <span>{`${id}`}</span> doesn't exist
             </p>

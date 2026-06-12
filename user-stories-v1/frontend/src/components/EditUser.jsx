@@ -69,39 +69,44 @@ const EditUser = ({token}) => {
         return <UserDoesntExist id={userId} />;
     }
 
-    // const content = status == "success" ? (
-    //     <EditUserForm user={user} token={token} />
-    // ) : (
-    //     <p>{messages[0].message}</p>
-    // );
-
     if (status == "success") {
         return <EditUserForm user={user} token={token} />;
     }
 
     if (status == "error") {
-        return (
-            <>
-                <p>{messages[0].message}</p>
-                <div className="links">
-                    <Link to="/login" className="redirect-link">
-                        Login
-                    </Link>
-                </div>
-            </>
-        )
+        return <ErrorSection message={messages[0].message} />;
+        //     <>
+        //         <p>{messages[0].message}</p>
+        //         <div className="links">
+        //             <Link to="/login" className="redirect-link">
+        //                 Login
+        //             </Link>
+        //         </div>
+        //     </>
+        // )
     }
-
-    // return content;
 }
 
 const UserDoesntExist = ({ id }) => {
     return (
-        <div className="invalid-user">
+        <div className="error-section">
             <p>
                 User with id <span>{`${id}`}</span> doesn't exist
             </p>
             <Link to="/dash/users">Browse All Users</Link>
+        </div>
+    )
+}
+
+const ErrorSection = ({ message }) => {
+    return (
+        <div className="error-section">
+            <p>{message}</p>
+            {/* <div className="links"> */}
+            <Link to="/login" className="redirect-link">
+                Login
+            </Link>
+            {/* </div> */}
         </div>
     )
 }
