@@ -11,6 +11,7 @@ async function getAllUsers(url, token) {
                 "authorization": `Bearer ${token}`
             }
         });
+        // console.log(res);
         return res;
 
     } catch (error) {
@@ -22,7 +23,7 @@ const EditUser = ({token}) => {
     const { userId } = useParams();
     const [ user, setUser ] = useState(null);
     const [ status, setStatus ] = useState("loading");
-    const [messages, setMessages] = useState([]);
+    const [ messages, setMessages ] = useState([]);
 
     useEffect(() => {
         loadUser();
@@ -31,6 +32,10 @@ const EditUser = ({token}) => {
             const res = await getAllUsers("http://localhost:5000/users", token);
 
             if (!res.ok) {
+                const result = await res.json();
+                console.log(result);
+                // const message = result.message;
+                setMessages([result.error]);
                 setStatus("error");
             } else {
                 const result = await res.json();
@@ -64,13 +69,30 @@ const EditUser = ({token}) => {
         return <UserDoesntExist id={userId} />;
     }
 
-    const content = status == "success" ? (
-        <EditUserForm user={user} token={token} />
-    ) : (
-        <p>{messages[0]}</p>
-    );
+    // const content = status == "success" ? (
+    //     <EditUserForm user={user} token={token} />
+    // ) : (
+    //     <p>{messages[0].message}</p>
+    // );
 
-    return content;
+    if (status == "success") {
+        return <EditUserForm user={user} token={token} />;
+    }
+
+    if (status == "error") {
+        return (
+            <>
+                <p>{messages[0].message}</p>
+                <div className="links">
+                    <Link to="/login" className="redirect-link">
+                        Login
+                    </Link>
+                </div>
+            </>
+        )
+    }
+
+    // return content;
 }
 
 const UserDoesntExist = ({ id }) => {
