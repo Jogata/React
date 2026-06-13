@@ -62,6 +62,23 @@ function App() {
   )
 }
 
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+
+// export default 
+function ProtectedRoute({ token, isLoading }) {
+  const location = useLocation();
+
+  if (isLoading) {
+    return <div>Verifying session...</div>;
+  }
+
+  if (!token) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  return <Outlet />;
+}
+
 function RefreshToken({ setToken, setIsLoading }) {
   useEffect(() => {
     const restoreSessionOnMount = async () => {
