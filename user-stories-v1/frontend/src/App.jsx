@@ -9,11 +9,24 @@ import EditUser from "./components/EditUser";
 import DashLayout, { WelcomeDashLayout } from "./components/DashLayout";
 import NewNote from "./components/NewNote";
 import EditNote from "./components/EditNote";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollToTop } from "./components/ScrollToTop";
+import Loader from "./components/Loader";
 
 function App() {
   const [token, setToken] = useState(null);
+  const [isLoading, setIsLoading] = useState(true); // 👈 Start as true
+
+  if (isLoading) {
+    return (
+      <div className="loading-screen">
+        {/* <p>Loading your profile...</p> */}
+        <Loader />
+        <RefreshToken setToken={setToken} setIsLoading={setIsLoading} />
+      </div>
+    );
+  }
+
   return (
     <>
       <button 
@@ -47,6 +60,38 @@ function App() {
       </Routes>
     </>
   )
+}
+
+function RefreshToken({ setToken, setIsLoading }) {
+  useEffect(() => {
+    const restoreSessionOnMount = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/auth/refresh", { 
+          // method: "POST",
+          method: "GET",
+          credentials: "include"
+        });
+        console.log(response);
+        
+        if (response.ok) {
+          const data = await response.json();
+          setToken(data.accessToken);
+          // setIsLoading(false);
+        } else {
+          const data = await response.json();
+          console.log(data);
+        }
+      } catch (err) {
+        console.error("Session restoration failed:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    restoreSessionOnMount();
+  }, []);
+
+  return null; 
 }
 
 export default App;

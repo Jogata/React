@@ -57,8 +57,8 @@ const login = async (req, res) => {
 
     res.cookie("jwt", refreshToken, {
         httpOnly: true,
-        // secure: true,    tofix
-        // sameSite: "None",
+        secure: true, 
+        sameSite: "None",
         maxAge: 7 * 24 * 60 * 6 * 1000 + 1 * 1000
     })
 
@@ -69,8 +69,9 @@ const refresh = (req, res) => {
     // console.log("todo refresh");
     // res.send("todo refresh");
     const cookies = req.cookies;
+    console.log(cookies);
 
-    if (!cookies?.jwt) return res.status(401).json({ message: "Unauthorized" });
+    if (!cookies?.jwt) return res.status(401).json({ message: "Unauthorized 74" });
 
     const refreshToken = cookies.jwt;
 
@@ -83,6 +84,8 @@ const refresh = (req, res) => {
             const foundUser = await User.findOne({ username: decoded.username }).exec();
 
             if (!foundUser) return res.status(401).json({ message: "Unauthorized" });
+
+            console.log(87);
 
             const accessToken = jwt.sign(
                 {
