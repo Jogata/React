@@ -15,27 +15,26 @@ import Loader from "./components/Loader";
 
 function App() {
   const [token, setToken] = useState(null);
-  const [isLoading, setIsLoading] = useState(true); // 👈 Start as true
+  // const [isLoading, setIsLoading] = useState(true);
 
-  if (isLoading) {
-    return (
-      <div className="loading-screen">
-        {/* <p>Loading your profile...</p> */}
-        <Loader />
-        <RefreshToken setToken={setToken} setIsLoading={setIsLoading} />
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="loading-screen">
+  //       <Loader />
+  //       <RefreshToken setToken={setToken} setIsLoading={setIsLoading} />
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
+      <ScrollToTop />
       <button 
         className="submit-button"
         onClick={() => console.log(token)}
       >
         show token
       </button>
-      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login setToken={setToken} />} />
@@ -44,7 +43,7 @@ function App() {
           <Route index element={<Welcome />} />
         </Route>
 
-        <Route path="/dash" element={<DashLayout />}>
+        <Route path="/dash" element={<DashLayout setToken={setToken} />}>
           <Route path="users">
             <Route index element={<Users token={token} />} />
             <Route path="create" element={<CreateUserForm />} />
@@ -62,53 +61,53 @@ function App() {
   )
 }
 
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+// import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 // export default 
-function ProtectedRoute({ token, isLoading }) {
-  const location = useLocation();
+// function ProtectedRoute({ token }) {
+//   const location = useLocation();
 
-  if (isLoading) {
-    return <div>Verifying session...</div>;
-  }
+//   if (isLoading) {
+//     return <div>Verifying session...</div>;
+//   }
 
-  if (!token) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
+//   if (!token) {
+//     return <Navigate to="/login" state={{ from: location }} replace />;
+//   }
 
-  return <Outlet />;
-}
+//   return <Outlet />;
+// }
 
-function RefreshToken({ setToken, setIsLoading }) {
-  useEffect(() => {
-    const restoreSessionOnMount = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/auth/refresh", { 
-          // method: "POST",
-          method: "GET",
-          credentials: "include"
-        });
-        console.log(response);
+// function RefreshToken({ setToken, setIsLoading }) {
+//   useEffect(() => {
+//     const restoreSessionOnMount = async () => {
+//       try {
+//         const response = await fetch("http://localhost:5000/auth/refresh", { 
+//           method: "POST",
+//           method: "GET",
+//           credentials: "include"
+//         });
+//         console.log(response);
         
-        if (response.ok) {
-          const data = await response.json();
-          setToken(data.accessToken);
-          // setIsLoading(false);
-        } else {
-          const data = await response.json();
-          console.log(data);
-        }
-      } catch (err) {
-        console.error("Session restoration failed:", err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+//         if (response.ok) {
+//           const data = await response.json();
+//           setToken(data.accessToken);
+//           setIsLoading(false);
+//         } else {
+//           const data = await response.json();
+//           console.log(data);
+//         }
+//       } catch (err) {
+//         console.error("Session restoration failed:", err);
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     };
 
-    restoreSessionOnMount();
-  }, []);
+//     restoreSessionOnMount();
+//   }, []);
 
-  return null; 
-}
+//   return null; 
+// }
 
 export default App;

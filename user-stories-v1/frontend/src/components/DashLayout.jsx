@@ -1,6 +1,51 @@
+// import { Link, Outlet } from "react-router-dom";
 import { Link, Outlet } from "react-router-dom";
+import Loader from "./Loader";
+import { useEffect, useState } from "react";
 
-const DashLayout = () => {
+const DashLayout = ({setToken}) => {
+    // const location = useLocation();
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const restoreSessionOnMount = async () => {
+          try {
+            const response = await fetch("http://localhost:5000/auth/refresh", { 
+              // method: "POST",
+              // method: "GET",
+              credentials: "include"
+            });
+            console.log(response);
+            
+            if (response.ok) {
+              const data = await response.json();
+              setToken(data.accessToken);
+              // setIsLoading(false);
+            } else {
+              const data = await response.json();
+              console.log(data);
+            }
+          } catch (err) {
+            console.error("Session restoration failed:", err);
+          } finally {
+            setIsLoading(false);
+          }
+        };
+    
+        restoreSessionOnMount();
+    }, [])
+
+    if (isLoading) {
+        //   return <div>Verifying session...</div>;
+        return <Loader />;
+    }
+  
+    // if (!token) {
+    //   return <Navigate to="/login" state={{ from: location }} replace />;
+    // }
+  
+    // return <Outlet />;  
+
     return (
         <div className="dash-page">
             <DashHeader />

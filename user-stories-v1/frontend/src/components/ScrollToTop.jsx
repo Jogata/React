@@ -18,6 +18,7 @@ export function ScrollToTop() {
         // there is a bug - scrollTo(0, 0) doesn't work
         // window.scrollTo(1, 0);
         top.current.scrollIntoView();
+        console.log("ScrollToTop");
     }, [pathname]);
 
     return (
