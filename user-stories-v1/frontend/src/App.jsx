@@ -15,16 +15,16 @@ import Loader from "./components/Loader";
 
 function App() {
   const [token, setToken] = useState(null);
-  // const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // if (isLoading) {
-  //   return (
-  //     <div className="loading-screen">
-  //       <Loader />
-  //       <RefreshToken setToken={setToken} setIsLoading={setIsLoading} />
-  //     </div>
-  //   );
-  // }
+  if (isLoading) {
+    return (
+      <div className="loading-screen">
+        <Loader />
+        <RefreshToken setToken={setToken} setIsLoading={setIsLoading} />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -39,11 +39,11 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login setToken={setToken} />} />
 
-        <Route path="/dash" element={<WelcomeDashLayout />}>
+        <Route path="/dash" element={<WelcomeDashLayout token={token} />}>
           <Route index element={<Welcome />} />
         </Route>
 
-        <Route path="/dash" element={<DashLayout setToken={setToken} />}>
+        <Route path="/dash" element={<DashLayout token={token} />}>
           <Route path="users">
             <Route index element={<Users token={token} />} />
             <Route path="create" element={<CreateUserForm />} />
@@ -78,36 +78,36 @@ function App() {
 //   return <Outlet />;
 // }
 
-// function RefreshToken({ setToken, setIsLoading }) {
-//   useEffect(() => {
-//     const restoreSessionOnMount = async () => {
-//       try {
-//         const response = await fetch("http://localhost:5000/auth/refresh", { 
-//           method: "POST",
-//           method: "GET",
-//           credentials: "include"
-//         });
-//         console.log(response);
+function RefreshToken({ setToken, setIsLoading }) {
+  useEffect(() => {
+    const restoreSessionOnMount = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/auth/refresh", { 
+          // method: "POST",
+          // method: "GET",
+          credentials: "include"
+        });
+        console.log(response);
         
-//         if (response.ok) {
-//           const data = await response.json();
-//           setToken(data.accessToken);
-//           setIsLoading(false);
-//         } else {
-//           const data = await response.json();
-//           console.log(data);
-//         }
-//       } catch (err) {
-//         console.error("Session restoration failed:", err);
-//       } finally {
-//         setIsLoading(false);
-//       }
-//     };
+        if (response.ok) {
+          const data = await response.json();
+          setToken(data.accessToken);
+          setIsLoading(false);
+        } else {
+          const data = await response.json();
+          console.log(data);
+        }
+      } catch (err) {
+        console.error("Session restoration failed:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-//     restoreSessionOnMount();
-//   }, []);
+    restoreSessionOnMount();
+  }, []);
 
-//   return null; 
-// }
+  return null; 
+}
 
 export default App;
