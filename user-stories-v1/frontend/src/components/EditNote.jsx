@@ -3,9 +3,14 @@ import { Link, useParams } from "react-router-dom";
 import EditNoteForm from "./EditNoteForm";
 import Loader from "./Loader";
 
-async function getAllUsers(url) {
+async function getAllUsers(url, token) {
     try {
-        const res = await fetch(url);
+        const res = await fetch(url, {
+            headers: {
+                // "Content-Type": "application/json",
+                "authorization": `Bearer ${token}`
+            },
+        });
     
         return res;
 
@@ -15,9 +20,14 @@ async function getAllUsers(url) {
     }
 }
 
-async function getAllNotes(url) {
+async function getAllNotes(url, token) {
     try {
-        const res = await fetch(url);
+        const res = await fetch(url, {
+            headers: {
+                // "Content-Type": "application/json",
+                "authorization": `Bearer ${token}`
+            },
+        });
     
         return res;
 
@@ -27,7 +37,7 @@ async function getAllNotes(url) {
     }
 }
 
-const EditNote = () => {
+const EditNote = ({token}) => {
     const { noteId } = useParams();
     const [users, setUsers] = useState(null);
     const [notes, setNotes] = useState(null);
@@ -45,14 +55,14 @@ const EditNote = () => {
 
         async function setUpInitialData() {
             try {
-                const res = await getAllUsers("http://localhost:5000/users");
+                const res = await getAllUsers("http://localhost:5000/users", token);
                 
                 if (res.ok) {
                     const result = await res.json();
                     setUsers(result.data);
                     
                     if (result.data.length) {
-                        const res = await getAllNotes("http://localhost:5000/notes");
+                        const res = await getAllNotes("http://localhost:5000/notes", token);
                         
                         if (res.ok) {
                             const result = await res.json();

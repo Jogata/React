@@ -5,12 +5,13 @@ import { Link } from "react-router-dom";
 const USER_REGEX = /^[A-z0-9]{3,20}$/;
 const PWD_REGEX = /^[A-z0-9!@#$%]{6,12}$/;
 
-async function addNewUser(user, url = "http://localhost:5000/users") {
+async function addNewUser(user, token, url = "http://localhost:5000/users") {
     try {
         const res = await fetch(url, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "authorization": `Bearer ${token}`
             },
             body: JSON.stringify(user),
         });
@@ -23,7 +24,7 @@ async function addNewUser(user, url = "http://localhost:5000/users") {
     }
 }
 
-const CreateUserForm = () => {
+const CreateUserForm = ({token}) => {
     // const [username, setUsername] = useState("");
     const [username, setUsername] = useState("user5");
     // const [password, setPassword] = useState("");
@@ -118,7 +119,7 @@ const CreateUserForm = () => {
                 try {
                     setIsPending(true);
 
-                    const res = await addNewUser({ username, password, roles });
+                    const res = await addNewUser({ username, password, roles }, token);
                     const result = await res.json();
     
                     if (res.ok) {
