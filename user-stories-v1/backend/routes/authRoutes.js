@@ -6,7 +6,7 @@ router.route("/")
     .post(authControllers.login);
 
 router.route("/refresh")
-    .get(authControllers.refresh);
+    .post(authControllers.refresh);
 
 router.route("/logout")
     .post(authControllers.logout);

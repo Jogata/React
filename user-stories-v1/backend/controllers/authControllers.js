@@ -69,6 +69,7 @@ const refresh = (req, res) => {
     // console.log("todo refresh");
     // res.send("todo refresh");
     const cookies = req.cookies;
+    console.log("=================");
     console.log(cookies);
 
     if (!cookies?.jwt) return res.status(401).json({ message: "Unauthorized 74" });
@@ -105,7 +106,6 @@ const refresh = (req, res) => {
 
 const logout = (req, res) => {
     // console.log("todo logout");
-    // res.send("todo logout");
     const cookies = req.cookies;
     if (!cookies?.jwt) return res.sendStatus(204);
     res.clearCookie("jwt", { httpOnly: true, sameSite: "None", secure: true });

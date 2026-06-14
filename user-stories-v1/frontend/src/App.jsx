@@ -9,8 +9,9 @@ import EditUser from "./components/EditUser";
 import DashLayout, { WelcomeDashLayout } from "./components/DashLayout";
 import NewNote from "./components/NewNote";
 import EditNote from "./components/EditNote";
-import { useEffect, useState } from "react";
 import { ScrollToTop } from "./components/ScrollToTop";
+
+import { useEffect, useState } from "react";
 import Loader from "./components/Loader";
 
 function App() {
@@ -39,11 +40,11 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login setToken={setToken} />} />
 
-        <Route path="/dash" element={<WelcomeDashLayout token={token} />}>
+        <Route path="/dash" element={<WelcomeDashLayout token={token} setToken={setToken} />}>
           <Route index element={<Welcome />} />
         </Route>
 
-        <Route path="/dash" element={<DashLayout token={token} />}>
+        <Route path="/dash" element={<DashLayout token={token} setToken={setToken} />}>
           <Route path="users">
             <Route index element={<Users token={token} />} />
             <Route path="create" element={<CreateUserForm />} />
@@ -61,30 +62,12 @@ function App() {
   )
 }
 
-// import { Navigate, Outlet, useLocation } from "react-router-dom";
-
-// export default 
-// function ProtectedRoute({ token }) {
-//   const location = useLocation();
-
-//   if (isLoading) {
-//     return <div>Verifying session...</div>;
-//   }
-
-//   if (!token) {
-//     return <Navigate to="/login" state={{ from: location }} replace />;
-//   }
-
-//   return <Outlet />;
-// }
-
 function RefreshToken({ setToken, setIsLoading }) {
   useEffect(() => {
     const restoreSessionOnMount = async () => {
       try {
-        const response = await fetch("http://localhost:5000/auth/refresh", { 
-          // method: "POST",
-          // method: "GET",
+        const response = await fetch("http://localhost:5000/auth/refresh", {
+          method: "POST", 
           credentials: "include"
         });
         console.log(response);

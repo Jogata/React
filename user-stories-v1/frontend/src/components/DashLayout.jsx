@@ -1,55 +1,37 @@
-// import { Link, Outlet } from "react-router-dom";
 import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
-// import Loader from "./Loader";
-// import { useEffect, useState } from "react";
 
-const DashLayout = ({ token }) => {
+async function logout(setToken) {
+    try {
+        const response = await fetch("http://localhost:5000/auth/logout", {
+            method: "POST", 
+            credentials: "include"
+        });
+        console.log(response);
+        setToken(null);
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+        } else {
+            const data = await response.json();
+            console.log(data);
+        }
+    } catch (err) {
+        console.error("Logout failed:", err);
+    }
+};
+
+const DashLayout = ({ token, setToken }) => {
     const location = useLocation();
-    // const [isLoading, setIsLoading] = useState(true);
-    console.log(token);
-
-    // useEffect(() => {
-    //     const restoreSessionOnMount = async () => {
-    //       try {
-    //         const response = await fetch("http://localhost:5000/auth/refresh", { 
-    //           // method: "POST",
-    //           // method: "GET",
-    //           credentials: "include"
-    //         });
-    //         console.log(response);
-
-    //         if (response.ok) {
-    //           const data = await response.json();
-    //           setToken(data.accessToken);
-    //           // setIsLoading(false);
-    //         } else {
-    //           const data = await response.json();
-    //           console.log(data);
-    //         }
-    //       } catch (err) {
-    //         console.error("Session restoration failed:", err);
-    //       } finally {
-    //         setIsLoading(false);
-    //       }
-    //     };
-
-    //     restoreSessionOnMount();
-    // }, [])
-
-    // if (isLoading) {
-    //   return <div>Verifying session...</div>;
-    // return <Loader />;
-    // }
+    // console.log(token);
 
     if (!token) {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
-    // return <Outlet />;  
-
     return (
         <div className="dash-page">
-            <DashHeader />
+            <DashHeader setToken={setToken} />
             <main>
                 <Outlet />
             </main>
@@ -58,7 +40,7 @@ const DashLayout = ({ token }) => {
     )
 }
 
-const DashHeader = () => {
+const DashHeader = ({setToken}) => {
     const content = (
         <header className="dash-header">
             <div className="dash-header-container">
@@ -67,6 +49,14 @@ const DashHeader = () => {
                 </Link>
                 <nav className="dash-header-nav">
                     {/* TODO add nav buttons */}
+                    <button
+                        className="submit-button"
+                        title="Logout"
+                        onClick={() => logout(setToken)}
+                    >
+                        Logout
+                    </button>
+
                 </nav>
             </div>
         </header>
@@ -94,7 +84,7 @@ const DashFooter = () => {
     return content;
 }
 
-export const WelcomeDashLayout = ({ token }) => {
+export const WelcomeDashLayout = ({ token, setToken }) => {
     const location = useLocation();
 
     if (!token) {
@@ -103,7 +93,7 @@ export const WelcomeDashLayout = ({ token }) => {
 
     return (
         <div className="dash-page">
-            <DashHeader />
+            <DashHeader setToken={setToken} />
             <main>
                 <Outlet />
             </main>
