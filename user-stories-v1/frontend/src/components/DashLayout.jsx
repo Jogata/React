@@ -8,6 +8,7 @@ async function logout(setToken) {
         });
         console.log(response);
         setToken(null);
+        localStorage.removeItem("user");
 
         if (response.ok) {
             const data = await response.json();

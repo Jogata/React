@@ -69,6 +69,52 @@ function RefreshToken({ setToken, setIsLoading }) {
   useEffect(() => {
     const restoreSessionOnMount = async () => {
       try {
+        const userInLocalStorage = localStorage.getItem("user");
+        console.log(userInLocalStorage);
+
+        if (!userInLocalStorage) {
+          deleteRefreshToken(setToken, setIsLoading);
+        } else {
+          restoreAccessToken(setToken, setIsLoading);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    restoreSessionOnMount();
+
+    async function deleteRefreshToken(setToken) {
+      try {
+        const response = await fetch("http://localhost:5000/auth/logout", {
+          method: "POST",
+          credentials: "include"
+        });
+
+        console.log("logout - no user in localStorage: ");
+        console.log(response);
+
+        setToken(null);
+        localStorage.removeItem("user");
+
+        if (response.ok) {
+          console.log("logout response: ok");
+          // const data = await response.json();
+          // console.log(data);
+        } else {
+          const data = await response.json();
+          console.log(data);
+        }
+      } catch (err) {
+        console.error("Logout failed:", err);
+      } finally {
+        console.log("finally from deleteRefreshToken");
+        setIsLoading(false);
+      }
+    };
+
+    async function restoreAccessToken() {
+      try {
         const response = await fetch("http://localhost:5000/auth/refresh", {
           method: "POST", 
           credentials: "include"
@@ -86,11 +132,10 @@ function RefreshToken({ setToken, setIsLoading }) {
       } catch (err) {
         console.error("Session restoration failed:", err);
       } finally {
+        console.log("finally from restoreAccessToken");
         setIsLoading(false);
       }
-    };
-
-    restoreSessionOnMount();
+    }
   }, []);
 
   return null; 
