@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 
 const url = "http://localhost:5000/notes";
 
-const deleteNote = async (body) => {
+const deleteNote = async (body, token) => {
     try {
         const res = await fetch(url, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
+                "authorization": `Bearer ${token}`
             },
             body: JSON.stringify(body),
         });
@@ -20,12 +21,13 @@ const deleteNote = async (body) => {
     }
 }
 
-const updateNote = async (body) => {
+const updateNote = async (body, token) => {
     try {
         const res = await fetch(url, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
+                "authorization": `Bearer ${token}`
             },
             body: JSON.stringify(body),
         });
@@ -37,7 +39,7 @@ const updateNote = async (body) => {
     }
 }
 
-const EditNoteForm = ({ note, users }) => {
+const EditNoteForm = ({ note, users, token }) => {
     const {
         isLoading,
         // isSuccess,
@@ -126,7 +128,15 @@ const EditNoteForm = ({ note, users }) => {
             setIsPending(true);
 
             try {
-                const res = await updateNote({ id: note._id, userId, title, text, completed });
+                const newNote = {
+                    id: note._id, 
+                    userId, 
+                    title, 
+                    text, 
+                    completed
+                };
+
+                const res = await updateNote(newNote, token);
                 const json = await res.json();
                 // console.log(json);
     
@@ -152,8 +162,8 @@ const EditNoteForm = ({ note, users }) => {
     const onDeleteNoteClicked = async () => {
         setIsPending(true);
         try {
-            const res = await deleteNote({ id: note._id });
-            console.log(res);
+            const res = await deleteNote({ id: note._id }, token);
+            console.log("onDeleteNote: " + res);
 
             if (res.status) {
                 const result = await res.json();

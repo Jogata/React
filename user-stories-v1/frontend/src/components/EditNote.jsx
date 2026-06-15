@@ -95,7 +95,7 @@ const EditNote = ({token}) => {
         if (users.length == 0) {
             content = <NotAvailableSection />;
         } else if (note) {
-            content = <EditNoteForm note={note} users={users} />;
+            content = <EditNoteForm note={note} users={users} token={token} />;
         } else {
             content = <NoteDoesntExist id={id} />;
         }
