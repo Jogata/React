@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 const url = "http://localhost:5000/auth";
 const USER_REGEX = /^[A-z0-9]{3,20}$/;
@@ -9,15 +9,15 @@ function parseJwt(token) {
     if (!token) return null;
 
     try {
-        const base64Url = token.split('.')[1];
+        const base64Url = token.split(".")[1];
 
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
 
         const jsonPayload = decodeURIComponent(
             window.atob(base64)
-                .split('')
-                .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-                .join('')
+                .split("")
+                .map(c => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+                .join("")
         );
 
         return JSON.parse(jsonPayload);
@@ -26,7 +26,17 @@ function parseJwt(token) {
         return null;
     }
 }
-    
+ 
+const CheckUserStatus = ({setToken}) => {
+    const user = localStorage.getItem("user");
+
+    if (user) {
+        return <Navigate to="/dash" replace />;
+    }
+
+    return <Login setToken={setToken} />
+}
+
 const Login = ({setToken}) => {
     // const [username, setUsername] = useState("");
     const [username, setUsername] = useState("user5");
@@ -112,7 +122,7 @@ const Login = ({setToken}) => {
                         const tokenData = parseJwt(result.accessToken);
                         console.log(tokenData.UserInfo);
                         localStorage.setItem("user", JSON.stringify(tokenData.UserInfo));
-                        // navigate("/dash");
+                        navigate("/dash");
                         // console.log("redirect");
                     } else {
                         console.log("server errors", result);
@@ -221,4 +231,4 @@ const Login = ({setToken}) => {
     return content;
 }
 
-export default Login;
+export default CheckUserStatus;

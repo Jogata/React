@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
-import Login from "./components/Login";
+// import Login from "./components/Login";
+import CheckUserStatus from "./components/Login";
 import Welcome from "./components/Welcome";
 import Notes from "./components/Notes";
 import Users from "./components/Users";
@@ -22,7 +23,7 @@ function App() {
     return (
       <div className="loading-screen">
         <Loader />
-        <RefreshToken setToken={setToken} setIsLoading={setIsLoading} />
+        <SynchronizeUserStatus setToken={setToken} setIsLoading={setIsLoading} />
       </div>
     );
   }
@@ -41,7 +42,8 @@ function App() {
       {/* ====================================== */}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login setToken={setToken} />} />
+        {/* <Route path="/login" element={<Login setToken={setToken} />} /> */}
+        <Route path="/login" element={<CheckUserStatus setToken={setToken} />} />
 
         <Route path="/dash" element={<WelcomeDashLayout token={token} setToken={setToken} />}>
           <Route index element={<Welcome />} />
@@ -65,9 +67,9 @@ function App() {
   )
 }
 
-function RefreshToken({ setToken, setIsLoading }) {
+function SynchronizeUserStatus({ setToken, setIsLoading }) {
   useEffect(() => {
-    const restoreSessionOnMount = async () => {
+    const synchronize = async () => {
       try {
         const userInLocalStorage = localStorage.getItem("user");
         console.log(userInLocalStorage);
@@ -82,7 +84,7 @@ function RefreshToken({ setToken, setIsLoading }) {
       }
     }
 
-    restoreSessionOnMount();
+    synchronize();
 
     async function deleteRefreshToken(setToken) {
       try {

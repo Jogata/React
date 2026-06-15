@@ -37,8 +37,8 @@ const verifyJWT = (req, res, next) => {
                     // "details": "Email must contain @ symbol and valid domain"
                 },
             });
-            req.user = decoded.UserInfo.username;
-            req.roles = decoded.UserInfo.roles;
+            req.user = decoded.user.username;
+            req.roles = decoded.user.roles;
             next();
         }
     )
