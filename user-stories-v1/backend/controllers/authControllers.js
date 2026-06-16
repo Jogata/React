@@ -72,7 +72,30 @@ const refresh = (req, res) => {
     console.log("=================");
     console.log(cookies);
 
-    if (!cookies?.jwt) return res.status(401).json({ message: "Unauthorized 74" });
+    if (!cookies) return res.status(401).json({
+        // message: "Unauthorized 74" 
+        error: {
+            code: "MISSING_COOKIES",
+            type: "screen",
+            message: "Unauthenticated 80"
+            // message: "Forbidden / server / verifyJWT.js - 34"
+            // "message": "The email address format is invalid",
+            // "field": "email",
+            // "details": "Email must contain @ symbol and valid domain"
+        }
+    });
+
+    if (!cookies?.jwt) return res.status(401).json({ 
+        error: {
+            code: "MISSING_REFRESH_COOKIE",
+            type: "screen",
+            message: "Unauthenticated 93"
+            // message: "Forbidden / server / verifyJWT.js - 34"
+            // "message": "The email address format is invalid",
+            // "field": "email",
+            // "details": "Email must contain @ symbol and valid domain"
+        },
+    });
 
     const refreshToken = cookies.jwt;
 

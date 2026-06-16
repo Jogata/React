@@ -19,6 +19,10 @@ function App() {
   const [token, setToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // useEffect(() => {
+  //   customFetch();
+  // }, [])
+
   if (isLoading) {
     return (
       <div className="loading-screen">
@@ -100,9 +104,9 @@ function SynchronizeUserStatus({ setToken, setIsLoading }) {
         localStorage.removeItem("user");
 
         if (response.ok) {
-          console.log("logout response: ok");
-          // const data = await response.json();
-          // console.log(data);
+          // console.log("logout response: ok");
+          const data = await response.json();
+          console.log(data);
         } else {
           const data = await response.json();
           console.log(data);
@@ -125,11 +129,14 @@ function SynchronizeUserStatus({ setToken, setIsLoading }) {
         
         if (response.ok) {
           const data = await response.json();
+          // console.log(data.accessToken);
           setToken(data.accessToken);
-          setIsLoading(false);
+          // setIsLoading(false);
         } else {
           const data = await response.json();
           console.log(data);
+          // setToken(null);
+          localStorage.removeItem("user");  
         }
       } catch (err) {
         console.error("Session restoration failed:", err);
@@ -143,10 +150,16 @@ function SynchronizeUserStatus({ setToken, setIsLoading }) {
   return null; 
 }
 
-export async function customFetch(token, setToken, url, options = {}) {
+async function customFetch(token, setToken, url, options = {}) {
   // options.headers = options.headers || {};
   
   options.credentials = "include";
+
+  if (!token) {
+    console.log("You can't make autorized requests");
+    window.location.href = "/login";
+    return;
+  }
 
   if (token) {
     options.headers["Authorization"] = `Bearer ${token}`;

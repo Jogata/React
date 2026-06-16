@@ -24,7 +24,7 @@ async function logout(setToken) {
 
 const DashLayout = ({ token, setToken }) => {
     const location = useLocation();
-    // console.log(token);
+    console.log(token);
 
     if (!token) {
         return <Navigate to="/login" state={{ from: location }} replace />;
