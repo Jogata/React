@@ -143,4 +143,44 @@ function SynchronizeUserStatus({ setToken, setIsLoading }) {
   return null; 
 }
 
+export async function customFetch(token, setToken, url, options = {}) {
+  // options.headers = options.headers || {};
+  
+  options.credentials = "include";
+
+  if (token) {
+    options.headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  let response = await fetch(url, options);
+
+  if (response.status === 401 && !options._retry) {
+    options._retry = true; 
+
+    try {
+      const refreshRes = await fetch("http://localhost:5000/auth/refresh", {
+        method: "POST",
+        credentials: "include"
+      });
+
+      if (refreshRes.ok) {
+        const data = await refreshRes.json();
+        
+        setToken(data.accessToken);
+
+        options.headers["Authorization"] = `Bearer ${data.accessToken}`;
+
+        response = await fetch(url, options);
+      } else {
+        handleGlobalLogout();
+      }
+    } catch (err) {
+      console.error("Token refresh failed:", err);
+      handleGlobalLogout();
+    }
+  }
+
+  return response;
+}
+
 export default App;
