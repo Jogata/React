@@ -104,9 +104,11 @@ function SynchronizeUserStatus({ setToken, setIsLoading }) {
         localStorage.removeItem("user");
 
         if (response.ok) {
-          // console.log("logout response: ok");
-          const data = await response.json();
-          console.log(data);
+          if (response.status != 204) {
+            const data = await response.json();
+            console.log(data);
+          }
+          console.log("logout response: ok with status 204");
         } else {
           const data = await response.json();
           console.log(data);
