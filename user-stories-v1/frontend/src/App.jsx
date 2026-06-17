@@ -158,7 +158,7 @@ async function customFetch(token, setToken, url, options = {}) {
   options.credentials = "include";
 
   if (!token) {
-    console.log("You can't make autorized requests");
+    console.log("You can"t make autorized requests");
     window.location.href = "/login";
     return;
   }
@@ -170,7 +170,7 @@ async function customFetch(token, setToken, url, options = {}) {
   let response = await fetch(url, options);
 
   if (response.status === 401 && !options._retry) {
-    options._retry = true; 
+    options._retry = true;
 
     try {
       const refreshRes = await fetch("http://localhost:5000/auth/refresh", {
@@ -193,6 +193,47 @@ async function customFetch(token, setToken, url, options = {}) {
       console.error("Token refresh failed:", err);
       handleGlobalLogout();
     }
+  }
+
+  return response;
+}
+
+async function customFetch2(input, init = {}) {
+  let request = new Request(input, init);
+  
+  if (currentAccessToken) {
+    request.headers.set("Authorization", `Bearer ${currentAccessToken}`);
+  }
+
+  const requestBackup = request.clone();
+
+  let response = await fetch(request);
+
+  if (response.status === 401 && !init.alreadyRetried) {
+    init.alreadyRetried = true;
+
+    try {
+      const refreshRes = await fetch("http://localhost:5000/auth/refresh", {
+        method: "POST",
+        credentials: "include"
+      });
+
+      if (refreshRes.ok) {
+        const data = await refreshRes.json();
+        
+        setToken(data.accessToken);
+
+        options.headers["Authorization"] = `Bearer ${data.accessToken}`;
+
+        response = await fetch(requestBackup);
+      } else {
+        handleGlobalLogout();
+      }
+    } catch (err) {
+      console.error("Token refresh failed:", err);
+      handleGlobalLogout();
+    }
+
   }
 
   return response;
