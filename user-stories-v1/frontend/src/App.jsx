@@ -151,10 +151,10 @@ async function customFetch(url, options) {
   try {
     let response = await fetch(url, options);
 
-    const contentType = response.headers.get('content-type');
+    const contentType = response.headers.get("content-type");
     let data = null;
  
-    if (contentType && contentType.includes('application/json')) {
+    if (contentType && contentType.includes("application/json")) {
       data = await response.json();
     }
  
@@ -229,6 +229,66 @@ async function autorizedFetch(token, setToken, navigate, url, options = {}) {
   }
 
   return response;
+}
+
+import { useNavigate } from "react-router-dom";
+
+function useCustomFetch(token, setToken, setUsername) {
+  const navigate = useNavigate();
+
+  const customFetch = async (url, options = {}) => {
+    // Defensive check: ensure options is an object
+    // if (typeof options !== "object" || options === null) {
+    //   options = {};
+    // }
+
+    options.headers = options.headers || {};
+    // Ensure HttpOnly cookies travel cross-domain
+    options.credentials = "include";
+
+    // Inject the live token state into the outgoing header
+    if (token) {
+      options.headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    // Execute original request
+    let response = await fetch(url, options);
+
+    // Catch 401 Unauthorized errors
+    if (response.status === 401 && !options._retry) {
+      options._retry = true;
+
+      try {
+        // Hit the refresh endpoint (sends secure HttpOnly cookie)
+        const refreshRes = await fetch("http://localhost:5000/auth/refresh", {
+          method: "POST",
+          credentials: "include"
+        });
+
+        if (refreshRes.ok) {
+          const data = await refreshRes.json();
+
+          // Directly update the real React State!
+          setToken(data.accessToken);
+          if (setUsername) {
+            setUsername(data.username);
+            localStorage.setItem("username", data.username);
+          }
+
+          // Overwrite the backup header and retry
+          options.headers["Authorization"] = `Bearer ${data.accessToken}`;
+          response = await fetch(url, options);
+        } else {
+          handleLogout();
+        }
+      } catch (err) {
+        console.error("Refresh crashed:", err);
+        handleLogout();
+      }
+    }
+
+    return response;
+  };
 }
 
 export default App;
