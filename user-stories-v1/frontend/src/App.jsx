@@ -233,7 +233,7 @@ async function autorizedFetch(token, setToken, navigate, url, options = {}) {
 
 import { useNavigate } from "react-router-dom";
 
-function useCustomFetch(token, setToken, setUsername) {
+function useCustomFetch(token, setToken) {
   const navigate = useNavigate();
 
   const customFetch = async (url, options = {}) => {
@@ -270,10 +270,10 @@ function useCustomFetch(token, setToken, setUsername) {
 
           // Directly update the real React State!
           setToken(data.accessToken);
-          if (setUsername) {
-            setUsername(data.username);
-            localStorage.setItem("username", data.username);
-          }
+          // if (setUsername) {
+            // setUsername(data.username);
+            // localStorage.setItem("username", data.username);
+          // }
 
           // Overwrite the backup header and retry
           options.headers["Authorization"] = `Bearer ${data.accessToken}`;
@@ -289,6 +289,17 @@ function useCustomFetch(token, setToken, setUsername) {
 
     return response;
   };
+  
+  // Automated cleanup and redirect wrapper
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setToken(null);
+    // if (setUsername) setUsername(null);
+    
+    navigate("/login", { replace: true }); 
+  };
+
+  return customFetch;
 }
 
 export default App;
