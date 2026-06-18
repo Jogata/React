@@ -147,51 +147,42 @@ function SynchronizeUserStatus({ setToken, setIsLoading }) {
   return null; 
 }
 
-async function customFetch(token, setToken, url, options = {}) {
-  // options.headers = options.headers || {};
-  
-  options.credentials = "include";
+async function customFetch(url, options) {
+  try {
+    let response = await fetch(url, options);
 
-  if (!token) {
-    console.log("You can't make autorized requests");
-    window.location.href = "/login";
-    return;
-  }
-
-  if (token) {
-    options.headers["Authorization"] = `Bearer ${token}`;
-  }
-
-  let response = await fetch(url, options);
-
-  if (response.status === 401 && !options._retry) {
-    options._retry = true;
-
-    try {
-      const refreshRes = await fetch("http://localhost:5000/auth/refresh", {
-        method: "POST",
-        credentials: "include"
-      });
-
-      if (refreshRes.ok) {
-        const data = await refreshRes.json();
-        
-        setToken(data.accessToken);
-
-        options.headers["Authorization"] = `Bearer ${data.accessToken}`;
-
-        response = await fetch(url, options);
-      } else {
-        handleGlobalLogout();
-      }
-    } catch (err) {
-      console.error("Token refresh failed:", err);
-      handleGlobalLogout();
+    const contentType = response.headers.get('content-type');
+    let data = null;
+ 
+    if (contentType && contentType.includes('application/json')) {
+      data = await response.json();
     }
-  }
-
-  return response;
-}
+ 
+    // Case 1: Server succeeded
+    if (response.ok && data) {
+      return { ok: true, data, error: null };
+    }
+ 
+    // Case 2: Server responded with an explicit JSON error (e.g., 400 or 401)
+    if (!response.ok && data) {
+      return { ok: false, data: null, error: data };
+    }
+ 
+    // Case 3: Server crashed (HTML/Text response instead of JSON)
+    return { 
+      ok: false, 
+      data: null, 
+      error: `Server error (${response.status}). Please try again later.` 
+    };
+  } catch (networkError) {
+    // Case 4: Catastrophic failure (No internet connection)
+    return { 
+      ok: false, 
+      data: null, 
+      error: "Network connection failed. Please check your internet." 
+    };
+  } 
+} 
 
 async function autorizedFetch(token, setToken, navigate, url, options = {}) {
   options.headers = options.headers || {};
@@ -239,46 +230,5 @@ async function autorizedFetch(token, setToken, navigate, url, options = {}) {
 
   return response;
 }
-
-// async function customFetch2(input, init = {}) {
-//   let request = new Request(input, init);
-  
-//   if (currentAccessToken) {
-//     request.headers.set("Authorization", `Bearer ${currentAccessToken}`);
-//   }
-
-//   const requestBackup = request.clone();
-
-//   let response = await fetch(request);
-
-//   if (response.status === 401 && !init.alreadyRetried) {
-//     init.alreadyRetried = true;
-
-//     try {
-//       const refreshRes = await fetch("http://localhost:5000/auth/refresh", {
-//         method: "POST",
-//         credentials: "include"
-//       });
-
-//       if (refreshRes.ok) {
-//         const data = await refreshRes.json();
-        
-//         setToken(data.accessToken);
-
-//         options.headers["Authorization"] = `Bearer ${data.accessToken}`;
-
-//         response = await fetch(requestBackup);
-//       } else {
-//         handleGlobalLogout();
-//       }
-//     } catch (err) {
-//       console.error("Token refresh failed:", err);
-//       handleGlobalLogout();
-//     }
-
-//   }
-
-//   return response;
-// }
 
 export default App;
