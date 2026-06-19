@@ -222,6 +222,7 @@ const Login = ({setToken}) => {
                     </label>
                 </form>
             </main>
+            <LoginButtons setUsername={setUsername} setPassword={setPassword} />
             <footer>
                 <Link to="/">Back to Home</Link>
             </footer>
@@ -229,6 +230,24 @@ const Login = ({setToken}) => {
     )
 
     return content;
+}
+
+function LoginButtons({setUsername, setPassword}) {
+    function loginMenager() {
+        setUsername("Menager");
+        setPassword("123Menager");
+    }
+
+    return (
+        <>
+        <button 
+            className="submit-button"
+            onClick={loginMenager}
+        >
+            Manager
+        </button>
+        </>
+    )
 }
 
 export default CheckUserStatus;
