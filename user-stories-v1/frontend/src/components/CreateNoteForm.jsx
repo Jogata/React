@@ -1,52 +1,134 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // import { useNavigate } from "react-router-dom";
 
-const addNewNote = async (note, url = "http://localhost:5000/notes", token) => {
+const addNewNote = async (note, url = "http://localhost:5000/notes", token, setToken) => {
+    console.log(token);
     try {
-        const res = await fetch(url, {
+        // const res = await fetch(url, {
+        //     method: "POST",
+        //     headers: {
+            //         "Content-Type": "application/json",
+            //         "authorization": `Bearer ${token}`
+        //     },
+        //     body: JSON.stringify(note),
+        // });
+        
+        const options = {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "authorization": `Bearer ${token}`
+                // "authorization": `Bearer ${token}`
             },
             body: JSON.stringify(note),
-        });
+        }
+        
+        const res = await customFetch(url, options, token, setToken);
 
         // return res;
 
         const data = await res.json();
         // console.log(data);
-
+        
         if (res.ok) {
             return { success: true, data };
         } else {
             return {success: false, data};
         }
-
+        
     } catch (error) {
         console.log(error);
         // return error;
     }
 }
 
-const CreateNoteForm = ({ users, token }) => {
-    // const navigate = useNavigate();
-
-    // const [title, setTitle] = useState("");
-    const [title, setTitle] = useState("test note 14");
-    // const [text, setText] = useState("");
-    const [text, setText] = useState("text for test note 14");
-    const [userId, setUserId] = useState(users[0]._id);
-    const [isPending, setIsPending] = useState(false);
-    const [errors, setErrors] = useState([]);
-    const [messages, setMessages] = useState([]);
-    const isFormSubmitted = useRef(false);
-
-    useEffect(() => {
-        // TOFIX
-        // if (isSuccess) {
-            // console.log("start reset form", messages.length);
+// function useCustomFetch(token, setToken) {
+    
+    const customFetch = async (url, options = {}, token, setToken, navigate) => {
+        // Defensive check: ensure options is an object
+        // if (typeof options !== "object" || options === null) {
+            //   options = {};
+            // }
+            console.log(token);
+            
+            options.headers = options.headers || {};
+            // Ensure HttpOnly cookies travel cross-domain
+            //   options.credentials = "include";
+            
+            // Inject the live token state into the outgoing header
+            if (token) {
+                options.headers["Authorization"] = `Bearer ${token}`;
+            }
+            
+            // Execute original request
+            let response = await fetch(url, options);
+            
+            // Catch 401 Unauthorized errors
+            if (response.status === 401 && !options._retry) {
+                options._retry = true;
+                
+                try {
+                    // Hit the refresh endpoint (sends secure HttpOnly cookie)
+                    const refreshRes = await fetch("http://localhost:5000/auth/refresh", {
+                        method: "POST",
+                        credentials: "include"
+                    });
+                    
+                    if (refreshRes.ok) {
+                        const data = await refreshRes.json();
+                        
+                        // Directly update the real React State!
+                        setToken(data.accessToken);
+                        // if (setUsername) {
+              // setUsername(data.username);
+              // localStorage.setItem("username", data.username);
+              // }
+              
+              // Overwrite the backup header and retry
+              options.headers["Authorization"] = `Bearer ${data.accessToken}`;
+              response = await fetch(url, options);
+            } else {
+                handleLogout();
+            }
+        } catch (err) {
+            console.error("Refresh crashed:", err);
+            handleLogout(navigate);
+        }
+    }
+    
+      return response;
+    };
+    
+    // Automated cleanup and redirect wrapper
+    const handleLogout = (navigate) => {
+        localStorage.removeItem("user");
+        setToken(null);
+        // if (setUsername) setUsername(null);
+        
+        navigate("/login", { replace: true }); 
+    };
+    
+    // return customFetch;
+    //   }  
+    
+    const CreateNoteForm = ({ users, token, setToken }) => {
+        // const navigate = useNavigate();
+        const navigate = useNavigate();
+        
+        // const [title, setTitle] = useState("");
+        const [title, setTitle] = useState("test note 14");
+        // const [text, setText] = useState("");
+        const [text, setText] = useState("text for test note 14");
+        const [userId, setUserId] = useState(users[0]._id);
+        const [isPending, setIsPending] = useState(false);
+        const [errors, setErrors] = useState([]);
+        const [messages, setMessages] = useState([]);
+        const isFormSubmitted = useRef(false);
+        
+        useEffect(() => {
+            // TOFIX
+            // if (isSuccess) {
+                // console.log("start reset form", messages.length);
         if (messages.length) {
             // console.log("reset form");
             setTitle("");
@@ -54,33 +136,34 @@ const CreateNoteForm = ({ users, token }) => {
             setUserId(users[0]._id);
             // navigate("/dash/notes");
         }
-    // }, [isSuccess, navigate])
-    // }, [messages, navigate])
+        // }, [isSuccess, navigate])
+        // }, [messages, navigate])
     }, [messages])
-
+    
     const onTitleChanged = e => setTitle(e.target.value);
     const onTextChanged = e => setText(e.target.value);
     const onUserIdChanged = e => setUserId(e.target.value);
-
+    
     // const canSave = [title.length > 4, text.length > 4, userId].every(Boolean) && !isLoading;
-
+    
     const onSaveNoteClicked = async (e) => {
         e.preventDefault();
-
+        console.log(token);
+        
         if (isPending) {
             setMessages["A new note is created in the moment"];
         }
-
+        
         isFormSubmitted.current = true;
         // console.log(canSave);
         const validationErrors = [];
-
+        
         if (title.length == 0) {
             validationErrors.push("Each note must have a title");
         } else if (title.length <= 2) {
             validationErrors.push("The title of a note must be atleast 3 characters");
         }
-
+        
         if (text.length == 0) {
             validationErrors.push("Each note must have a text description");
         } else if (text.length <= 2) {
@@ -89,15 +172,15 @@ const CreateNoteForm = ({ users, token }) => {
 
         // const note = { user: userId, title, text };
         // const url = "http://localhost:5000/notes";
-
+        
         // if (canSave) {
-        if (validationErrors.length == 0) {
+            if (validationErrors.length == 0) {
             const note = { userId, title, text };
             const url = "http://localhost:5000/notes";
             // console.log(note);
             setIsPending(true);
     
-            const res = await addNewNote(note, url, token);
+            const res = await addNewNote(note, url, token, setToken, navigate);
             // console.log(res);
 
             if (res.success) {
@@ -112,26 +195,6 @@ const CreateNoteForm = ({ users, token }) => {
                 // isFormSubmitted.current = true;
             }
         } else {
-            // console.log("user must fix the form data");
-            // isFormSubmitted.current = true;
-            // const validationErrors = [];
-            // if (title.length == 0) {
-            //     validationErrors.push("Each note must have a title");
-            // }
-
-            // if (title.length <= 2) {
-            //     validationErrors.push("The title of a note must be atleast 3 characters");
-            // }
-
-            // if (text.length == 0) {
-            //     validationErrors.push("Each note must have a text description");
-            // }
-
-            // if (text.length <= 2) {
-            //     validationErrors.push("The text description of a note must be atleast 3 characters");
-            // }
-
-            // setErrors(["All fields are required"]);
             setErrors(validationErrors);
             setMessages([]);
         }

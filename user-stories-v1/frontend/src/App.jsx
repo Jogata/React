@@ -51,13 +51,13 @@ function App() {
         <Route path="/dash" element={<DashLayout token={token} setToken={setToken} />}>
           <Route path="users">
             <Route index element={<Users token={token} />} />
-            <Route path="create" element={<CreateUserForm token={token} />} />
+            <Route path="create" element={<CreateUserForm token={token} setToken={setToken} />} />
             <Route path="edit/:userId" element={<EditUser token={token} />} />
           </Route>
 
           <Route path="notes">
             <Route index element={<Notes token={token} />} />
-            <Route path="create" element={<NewNote token={token} />} />
+            <Route path="create" element={<NewNote token={token} setToken={setToken} />} />
             <Route path="edit/:noteId" element={<EditNote token={token} />} />
           </Route>
         </Route>

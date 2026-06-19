@@ -23,7 +23,7 @@ async function getAllUsers(url, onSuccess, token) {
     }
 }
 
-const NewNote = ({token}) => {
+const NewNote = ({token, setToken}) => {
     const [users, setUsers] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     // const [isSuccess, setIsSuccess] = useState(false);
@@ -45,7 +45,7 @@ const NewNote = ({token}) => {
 
     if (!users?.length) return <NotAvailableSection />
 
-    const content = <CreateNoteForm users={users} />
+    const content = <CreateNoteForm users={users} token={token} setToken={setToken} />
 
     return content;
 }
