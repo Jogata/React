@@ -7,8 +7,10 @@ const Welcome = () => {
             dateStyle: "full", 
             timeStyle: "long" 
         }).format(date);
-
-    const username = "<USER>";
+        
+    const user = JSON.parse(localStorage.getItem("user"));
+    // console.log(user);    
+    const username = user.username;
 
     const content = (
         <section className="welcome">

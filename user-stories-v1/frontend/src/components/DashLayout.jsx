@@ -67,6 +67,9 @@ const DashHeader = ({setToken}) => {
 }
 
 const DashFooter = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    // console.log(user);
+
     const content = (
         <footer className="dash-footer">
             <Link
@@ -77,8 +80,8 @@ const DashFooter = () => {
                 to Dashboard
                 <i className="fa fa-home"></i>
             </Link>
-            <p>Current User:</p>
-            <p>Status:</p>
+            <p>Current User: {user.username}</p>
+            <p>Status: {user.roles[0]}</p>
         </footer>
     )
 
@@ -104,10 +107,13 @@ export const WelcomeDashLayout = ({ token, setToken }) => {
 }
 
 const WelcomeDashFooter = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    console.log(user);
+
     const content = (
         <footer className="dash-footer">
-            <p>Current User:</p>
-            <p>Status:</p>
+            <p>Current User: {user.username}</p>
+            <p>Status: {user.roles[0]}</p>
         </footer>
     )
 

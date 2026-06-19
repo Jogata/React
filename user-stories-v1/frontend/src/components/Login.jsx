@@ -120,8 +120,8 @@ const Login = ({setToken}) => {
                         setToken(result.accessToken);
                         // formSubmitedOnce.current = false;
                         const tokenData = parseJwt(result.accessToken);
-                        console.log(tokenData.UserInfo);
-                        localStorage.setItem("user", JSON.stringify(tokenData.UserInfo));
+                        console.log(tokenData.user);
+                        localStorage.setItem("user", JSON.stringify(tokenData.user));
                         navigate("/dash");
                         // console.log("redirect");
                     } else {
