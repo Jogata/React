@@ -238,15 +238,26 @@ function LoginButtons({setUsername, setPassword}) {
         setPassword("123Menager");
     }
 
+    function loginAdmin() {
+        setUsername("Admin");
+        setPassword("123Admin");
+    }
+
     return (
-        <>
+        <div className="login-buttons">
         <button 
             className="submit-button"
             onClick={loginMenager}
         >
             Manager
         </button>
-        </>
+        <button 
+            className="submit-button"
+            onClick={loginAdmin}
+        >
+            Admin
+        </button>
+        </div>
     )
 }
 
