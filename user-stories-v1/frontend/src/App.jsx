@@ -27,6 +27,25 @@ function App() {
     );
   }
 
+  function logout() {
+    broadcastAuthEvent("LOGOUT");
+    setToken(null);
+    localStorage.removeItem("user");
+  }
+
+  useEffect(() => {
+    subscribeToAuthEvents((data) => {
+      if (data.type === "LOGOUT") {
+        logout();
+        // navigate("/login", { replace: true });
+      }
+      
+      if (data.type === "LOGIN") {
+        // refresh
+      }
+    });
+  }, [logout]);
+
   return (
     <>
       <ScrollToTop />
@@ -301,5 +320,15 @@ function useCustomFetch(token, setToken) {
 
   return customFetch;
 }
+
+const authChannel = new BroadcastChannel("auth_channel");
+
+export const broadcastAuthEvent = (type) => {
+  authChannel.postMessage({ type });
+};
+
+export const subscribeToAuthEvents = (onMessage) => {
+  authChannel.onmessage = (event) => onMessage(event.data);
+};
 
 export default App;

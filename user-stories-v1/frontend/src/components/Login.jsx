@@ -232,6 +232,8 @@ const Login = ({setToken}) => {
     return content;
 }
 
+// todelete
+// ===========================================================================
 function LoginButtons({setUsername, setPassword}) {
     function loginMenager() {
         setUsername("Menager");
@@ -250,26 +252,27 @@ function LoginButtons({setUsername, setPassword}) {
 
     return (
         <div className="login-buttons">
-        <button 
-            className="submit-button"
-            onClick={loginMenager}
-        >
-            Manager
-        </button>
-        <button 
-            className="submit-button"
-            onClick={loginAdmin}
-        >
-            Admin
-        </button>
-        <button 
-            className="submit-button"
-            onClick={loginEmployee}
-        >
-            Employee
-        </button>
+            <button
+                className="submit-button"
+                onClick={loginMenager}
+            >
+                Manager
+            </button>
+            <button
+                className="submit-button"
+                onClick={loginAdmin}
+            >
+                Admin
+            </button>
+            <button
+                className="submit-button"
+                onClick={loginEmployee}
+            >
+                Employee
+            </button>
         </div>
     )
 }
+// ===========================================================================
 
 export default CheckUserStatus;
