@@ -243,6 +243,11 @@ function LoginButtons({setUsername, setPassword}) {
         setPassword("123Admin");
     }
 
+    function loginEmployee() {
+        setUsername("Employee");
+        setPassword("123Employee");
+    }
+
     return (
         <div className="login-buttons">
         <button 
@@ -256,6 +261,12 @@ function LoginButtons({setUsername, setPassword}) {
             onClick={loginAdmin}
         >
             Admin
+        </button>
+        <button 
+            className="submit-button"
+            onClick={loginEmployee}
+        >
+            Employee
         </button>
         </div>
     )

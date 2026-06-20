@@ -190,6 +190,10 @@ footer {
   padding: 1rem;
 }
 
+.dash-footer p {
+  margin: 0.5rem 0;
+}
+
 main {
   position: relative;
   flex: 1;
@@ -534,4 +538,15 @@ td {
 }
 .redirect-link:hover::after {
   transform: scale(1);
+}
+
+
+
+
+
+.login-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
 }
