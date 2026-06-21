@@ -18,15 +18,6 @@ function App() {
   const [token, setToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  if (isLoading) {
-    return (
-      <div className="loading-screen">
-        <Loader />
-        <SynchronizeUserStatus setToken={setToken} setIsLoading={setIsLoading} />
-      </div>
-    );
-  }
-
   function logout() {
     broadcastAuthEvent("LOGOUT");
     setToken(null);
@@ -41,10 +32,45 @@ function App() {
       }
       
       if (data.type === "LOGIN") {
-        // refresh
+        restoreAccessToken();
+        async function restoreAccessToken() {
+          try {
+            const response = await fetch("http://localhost:5000/auth/refresh", {
+              method: "POST", 
+              credentials: "include"
+            });
+            console.log(response);
+            
+            if (response.ok) {
+              const data = await response.json();
+              // console.log(data.accessToken);
+              setToken(data.accessToken);
+              // setIsLoading(false);
+            } else {
+              const data = await response.json();
+              console.log(data);
+              // setToken(null);
+              localStorage.removeItem("user");  
+            }
+          } catch (err) {
+            console.error("Session restoration failed:", err);
+          } finally {
+            console.log("finally from restoreAccessToken");
+            setIsLoading(false);
+          }
+        }    
       }
     });
-  }, [logout]);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="loading-screen">
+        <Loader />
+        <SynchronizeUserStatus setToken={setToken} setIsLoading={setIsLoading} />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -327,7 +353,7 @@ export const broadcastAuthEvent = (type) => {
   authChannel.postMessage({ type });
 };
 
-export const subscribeToAuthEvents = (onMessage) => {
+export function subscribeToAuthEvents (onMessage) {
   authChannel.onmessage = (event) => onMessage(event.data);
 };
 
