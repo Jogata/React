@@ -1,6 +1,6 @@
 import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
 
-async function logout(setToken) {
+async function logout2(setToken) {
     try {
         const response = await fetch("http://localhost:5000/auth/logout", {
             method: "POST", 
@@ -22,7 +22,7 @@ async function logout(setToken) {
     }
 };
 
-const DashLayout = ({ token, setToken }) => {
+const DashLayout = ({ token, setToken, logout }) => {
     const location = useLocation();
     console.log(token);
 
@@ -32,7 +32,7 @@ const DashLayout = ({ token, setToken }) => {
 
     return (
         <div className="dash-page">
-            <DashHeader setToken={setToken} />
+            <DashHeader setToken={setToken} logout={logout} />
             <main>
                 <Outlet />
             </main>
@@ -41,7 +41,7 @@ const DashLayout = ({ token, setToken }) => {
     )
 }
 
-const DashHeader = ({setToken}) => {
+const DashHeader = ({setToken, logout}) => {
     const content = (
         <header className="dash-header">
             <div className="dash-header-container">
@@ -53,11 +53,17 @@ const DashHeader = ({setToken}) => {
                     <button
                         className="submit-button"
                         title="Logout"
-                        onClick={() => logout(setToken)}
+                        onClick={() => logout2(setToken)}
+                    >
+                        Logout2
+                    </button>
+                    <button
+                        className="submit-button"
+                        title="Logout"
+                        onClick={() => logout()}
                     >
                         Logout
                     </button>
-
                 </nav>
             </div>
         </header>

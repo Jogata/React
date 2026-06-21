@@ -19,6 +19,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   function logout() {
+    console.log("logout with broadcastAuthEvent");
     broadcastAuthEvent("LOGOUT");
     setToken(null);
     localStorage.removeItem("user");
@@ -89,11 +90,11 @@ function App() {
         {/* <Route path="/login" element={<Login setToken={setToken} />} /> */}
         <Route path="/login" element={<CheckUserStatus setToken={setToken} />} />
 
-        <Route path="/dash" element={<WelcomeDashLayout token={token} setToken={setToken} />}>
+        <Route path="/dash" element={<WelcomeDashLayout token={token} setToken={setToken} logout={logout} />}>
           <Route index element={<Welcome />} />
         </Route>
 
-        <Route path="/dash" element={<DashLayout token={token} setToken={setToken} />}>
+        <Route path="/dash" element={<DashLayout token={token} setToken={setToken} logout={logout} />}>
           <Route path="users">
             <Route index element={<Users token={token} />} />
             <Route path="create" element={<CreateUserForm token={token} setToken={setToken} />} />
