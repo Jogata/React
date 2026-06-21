@@ -94,7 +94,7 @@ const DashFooter = () => {
     return content;
 }
 
-export const WelcomeDashLayout = ({ token, setToken }) => {
+export const WelcomeDashLayout = ({ token, setToken, logout }) => {
     const location = useLocation();
 
     if (!token) {
@@ -103,7 +103,7 @@ export const WelcomeDashLayout = ({ token, setToken }) => {
 
     return (
         <div className="dash-page">
-            <DashHeader setToken={setToken} />
+            <DashHeader setToken={setToken} logout={logout} />
             <main>
                 <Outlet />
             </main>

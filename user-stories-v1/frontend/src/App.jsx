@@ -11,7 +11,9 @@ import NewNote from "./components/NewNote";
 import EditNote from "./components/EditNote";
 import { ScrollToTop } from "./components/ScrollToTop";
 
+// ==================================================================
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Loader from "./components/Loader";
 
 function App() {
@@ -26,43 +28,63 @@ function App() {
   }
 
   useEffect(() => {
-    subscribeToAuthEvents((data) => {
-      if (data.type === "LOGOUT") {
-        logout();
-        // navigate("/login", { replace: true });
+    const handleStorageChange = (event) => {
+      // The storage event only fires if the change came from a DIFFERENT tab
+      if (event.key === "user") {
+        const newUser = event.newValue;
+
+        if (!newUser) {
+          // 1. If user was deleted in another tab, log out instantly!
+          console.log("Logout detected in another tab. Cleaning up...");
+          setToken(null);
+          navigate("/login", { replace: true });
+        } else {
+          // 2. If a username was added/changed in another tab, run silent refresh
+          console.log("Login detected in another tab. Fetching access token...");
+        }
       }
+    };
+
+    // Add the global window listener
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, [navigate, setToken, runSilentRefresh]);
+
+  // useEffect(() => {
+  //   subscribeToAuthEvents((data) => {
+  //     if (data.type === "LOGOUT") {
+  //       logout();
+  //     }
       
-      if (data.type === "LOGIN") {
-        restoreAccessToken();
-        async function restoreAccessToken() {
-          try {
-            const response = await fetch("http://localhost:5000/auth/refresh", {
-              method: "POST", 
-              credentials: "include"
-            });
-            console.log(response);
+  //     if (data.type === "LOGIN") {
+  //       restoreAccessToken();
+  //       async function restoreAccessToken() {
+  //         try {
+  //           const response = await fetch("http://localhost:5000/auth/refresh", {
+  //             method: "POST", 
+  //             credentials: "include"
+  //           });
             
-            if (response.ok) {
-              const data = await response.json();
-              // console.log(data.accessToken);
-              setToken(data.accessToken);
-              // setIsLoading(false);
-            } else {
-              const data = await response.json();
-              console.log(data);
-              // setToken(null);
-              localStorage.removeItem("user");  
-            }
-          } catch (err) {
-            console.error("Session restoration failed:", err);
-          } finally {
-            console.log("finally from restoreAccessToken");
-            setIsLoading(false);
-          }
-        }    
-      }
-    });
-  }, []);
+  //           if (response.ok) {
+  //             const data = await response.json();
+  //             setToken(data.accessToken);
+  //           } else {
+  //             const data = await response.json();
+  //             localStorage.removeItem("user");  
+  //           }
+  //         } catch (err) {
+  //           console.error("Session restoration failed:", err);
+  //         } finally {
+  //           console.log("finally from restoreAccessToken");
+  //           setIsLoading(false);
+  //         }
+  //       }    
+  //     }
+  //   });
+  // }, []);
 
   if (isLoading) {
     return (
@@ -277,7 +299,7 @@ async function autorizedFetch(token, setToken, navigate, url, options = {}) {
   return response;
 }
 
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 function useCustomFetch(token, setToken) {
   const navigate = useNavigate();
