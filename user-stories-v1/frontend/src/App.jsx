@@ -69,7 +69,19 @@ function App() {
             }
           }
         }
-      }
+      } else {
+        // 1. Check if the 'username' key was explicitly deleted
+        // const isUsernameDeleted = !event.newValue;
+      
+        // 2. Check if the user cleared ALL localStorage at once in DevTools
+        const isStorageWiped = event.key === null;
+        
+        if (isStorageWiped) {
+          console.log("Authentication data cleared externally. Logging out...");
+          setToken(null);
+          // navigate("/login", { replace: true });
+        }
+      };
     };
 
     // Add the global window listener
@@ -80,25 +92,25 @@ function App() {
     };
   }, [navigate, setToken]);
 
-  useEffect(() => {
-    const handleStorageChange = (event) => {
-      // 1. Check if the 'username' key was explicitly deleted
-      const isUsernameDeleted = event.key === "username" && !event.newValue;
+  // useEffect(() => {
+  //   const handleStorageChange = (event) => {
+  //     1. Check if the 'username' key was explicitly deleted
+  //     const isUsernameDeleted = event.key === "username" && !event.newValue;
       
-      // 2. Check if the user cleared ALL localStorage at once in DevTools
-      const isStorageWiped = event.key === null;
+  //     2. Check if the user cleared ALL localStorage at once in DevTools
+  //     const isStorageWiped = event.key === null;
   
-      if (isUsernameDeleted || isStorageWiped) {
-        console.log("Authentication data cleared externally. Logging out...");
-        setToken(null);
-        // navigate("/login", { replace: true });
-      }
-    };
+  //     if (isUsernameDeleted || isStorageWiped) {
+  //       console.log("Authentication data cleared externally. Logging out...");
+  //       setToken(null);
+  //       navigate("/login", { replace: true });
+  //     }
+  //   };
   
-    window.addEventListener("storage", handleStorageChange);
+  //   window.addEventListener("storage", handleStorageChange);
 
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, [navigate, setToken]);
+  //   return () => window.removeEventListener("storage", handleStorageChange);
+  // }, [navigate, setToken]);
 
   // useEffect(() => {
   //   subscribeToAuthEvents((data) => {
