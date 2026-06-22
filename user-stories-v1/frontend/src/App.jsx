@@ -19,6 +19,7 @@ import Loader from "./components/Loader";
 function App() {
   const [token, setToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   function logout() {
     console.log("logout with broadcastAuthEvent");
@@ -31,16 +32,42 @@ function App() {
     const handleStorageChange = (event) => {
       // The storage event only fires if the change came from a DIFFERENT tab
       if (event.key === "user") {
+        console.log(event.key);
         const newUser = event.newValue;
 
         if (!newUser) {
           // 1. If user was deleted in another tab, log out instantly!
           console.log("Logout detected in another tab. Cleaning up...");
           setToken(null);
+          // localStorage.setItem("user", {});
+          // localStorage.removeItem("user");
           navigate("/login", { replace: true });
         } else {
           // 2. If a username was added/changed in another tab, run silent refresh
           console.log("Login detected in another tab. Fetching access token...");
+          restoreAccessToken();
+
+          async function restoreAccessToken() {
+            try {
+              const response = await fetch("http://localhost:5000/auth/refresh", {
+                method: "POST", 
+                credentials: "include"
+              });
+              
+              if (response.ok) {
+                const data = await response.json();
+                setToken(data.accessToken);
+              } else {
+                const data = await response.json();
+                localStorage.removeItem("user");  
+              }
+            } catch (err) {
+              console.error("Session restoration failed:", err);
+            } finally {
+              console.log("finally from restoreAccessToken");
+              setIsLoading(false);
+            }
+          }
         }
       }
     };
@@ -51,7 +78,7 @@ function App() {
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
-  }, [navigate, setToken, runSilentRefresh]);
+  }, [navigate, setToken]);
 
   // useEffect(() => {
   //   subscribeToAuthEvents((data) => {
