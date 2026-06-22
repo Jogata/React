@@ -41,7 +41,7 @@ function App() {
           setToken(null);
           // localStorage.setItem("user", {});
           // localStorage.removeItem("user");
-          navigate("/login", { replace: true });
+          // navigate("/login", { replace: true });
         } else {
           // 2. If a username was added/changed in another tab, run silent refresh
           console.log("Login detected in another tab. Fetching access token...");
@@ -78,6 +78,26 @@ function App() {
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
+  }, [navigate, setToken]);
+
+  useEffect(() => {
+    const handleStorageChange = (event) => {
+      // 1. Check if the 'username' key was explicitly deleted
+      const isUsernameDeleted = event.key === "username" && !event.newValue;
+      
+      // 2. Check if the user cleared ALL localStorage at once in DevTools
+      const isStorageWiped = event.key === null;
+  
+      if (isUsernameDeleted || isStorageWiped) {
+        console.log("Authentication data cleared externally. Logging out...");
+        setToken(null);
+        // navigate("/login", { replace: true });
+      }
+    };
+  
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, [navigate, setToken]);
 
   // useEffect(() => {
