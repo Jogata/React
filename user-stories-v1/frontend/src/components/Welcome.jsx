@@ -9,10 +9,9 @@ const Welcome = () => {
         }).format(date);
         
     const user = JSON.parse(localStorage.getItem("user"));
-    // console.log(user);    
     const username = user.username;
     const roles = user.roles;
-    console.log(roles);
+    // console.log(roles);
     const isAdmin = roles.includes("Admin");
     const isManager = roles.includes("Manager");
 
@@ -46,13 +45,6 @@ const Welcome = () => {
                 </p>
             ) : null}
 
-            {/* <p>
-                <Link to="/dash/users">
-                    View All Users
-                    <span><i className="fa fa-location-arrow" aria-hidden="true"></i></span>
-                </Link>
-            </p> */}
-
             {isAdmin || isManager ? (
                 <p>
                     <Link to="/dash/users/create">
@@ -61,13 +53,6 @@ const Welcome = () => {
                     </Link>
                 </p>
             ) : null}
-
-            {/* <p>
-                <Link to="/dash/users/create">
-                    Add New User
-                    <span><i className="fa fa-location-arrow" aria-hidden="true"></i></span>
-                </Link>
-            </p> */}
 
         </section>
     )

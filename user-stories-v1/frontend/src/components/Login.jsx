@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 
 const url = "http://localhost:5000/auth";
 const USER_REGEX = /^[A-z0-9]{3,20}$/;
@@ -29,9 +29,40 @@ function parseJwt(token) {
  
 const CheckUserStatus = ({setToken}) => {
     const user = localStorage.getItem("user");
+    const location = useLocation();
+    console.log(location);
+    const previousPage = location.state?.from || "/dash";
+
+    // const isAdmin = useState(false);
+
+    // const btnStyles = isAdmin ? {display: "inline"} : {display: "none"};
+    
+    // return (
+    //     <>
+    //     {isAdmin ? <button>Create user</button> : null}
+    //     <button style={btnStyles}>Create user</button>
+    //     </>
+    // )
+
+    return (
+        <div className="shop-dashboard">
+            <button>Process Sale</button>
+            <button>View Inventory</button>
+
+            <AdminGuard>
+                <button>Delete Product</button>
+                <button>View Financial Reports</button>
+                <button>Edit Employee Payroll</button>
+                <div className="admin-settings-panel">
+                    <h3>System Settings</h3>
+                </div>
+            </AdminGuard>
+        </div>
+    );
 
     if (user) {
-        return <Navigate to="/dash" replace />;
+        // return <Navigate to="/dash" replace />;
+        return <Navigate to={previousPage} replace />;
     }
 
     return <Login setToken={setToken} />
@@ -123,6 +154,7 @@ const Login = ({setToken}) => {
                         console.log(tokenData.user);
                         localStorage.setItem("user", JSON.stringify(tokenData.user));
                         navigate("/dash");
+                        // navigate(previousPage);
                         // console.log("redirect");
                     } else {
                         console.log("server errors", result);
@@ -273,6 +305,17 @@ function LoginButtons({setUsername, setPassword}) {
         </div>
     )
 }
+
+function AdminGuard({ children }) {
+    // 1. Perform the role check exactly ONCE right here
+    const user = localStorage.getItem("user"); 
+    const isAdmin = user?.roles.include("Admin");
+  
+    // 2. Securely handle the DOM inclusion
+    if (!isAdmin) return null; 
+  
+    return <>{children}</>;
+  }
 // ===========================================================================
 
 export default CheckUserStatus;

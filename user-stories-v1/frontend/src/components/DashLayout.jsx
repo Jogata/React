@@ -24,7 +24,7 @@ async function logout2(setToken) {
 
 const DashLayout = ({ token, setToken, logout }) => {
     const location = useLocation();
-    console.log(token);
+    console.log("DashLayout: " + token);
 
     if (!token) {
         return <Navigate to="/login" state={{ from: location }} replace />;
@@ -95,6 +95,7 @@ const DashFooter = () => {
 
 export const WelcomeDashLayout = ({ token, setToken, logout }) => {
     const location = useLocation();
+    console.log("WelcomeDashLayout: " + token);
 
     if (!token) {
         return <Navigate to="/login" state={{ from: location }} replace />;
