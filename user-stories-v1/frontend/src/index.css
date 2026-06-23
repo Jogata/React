@@ -514,7 +514,8 @@ td {
 }
 
 /* .not-available-section .links .redirect-link { */
-.links .redirect-link {
+/* .links  */
+.redirect-link {
   position: relative;
   display: inline-block;
   margin: 0 1rem;
@@ -538,6 +539,10 @@ td {
 }
 .redirect-link:hover::after {
   transform: scale(1);
+}
+
+.redirect-link i {
+  margin-left: 0.5rem;
 }
 
 

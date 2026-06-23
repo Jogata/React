@@ -42,6 +42,32 @@ const DashLayout = ({ token, setToken, logout }) => {
 }
 
 const DashHeader = ({setToken, logout}) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    // console.log(user.username);
+    const isAdmin = user?.roles?.includes("Admin");
+    console.log(isAdmin);
+    const isManager = user?.roles?.includes("Manager");
+    console.log(isManager);
+
+    const { pathname } = useLocation()
+
+    const DASH_REGEX = /^\/dash(\/)?$/;
+    const NOTES_REGEX = /^\/dash\/notes(\/)?$/;
+    const USERS_REGEX = /^\/dash\/users(\/)?$/;
+
+    let newNoteLink = null;
+    if (NOTES_REGEX.test(pathname)) {
+        newNoteLink = (
+            <Link
+                className="redirect-link"
+                title="New Note"
+            >
+                Create New Note
+                <i className="fa fa-file-text-o"></i>
+            </Link>
+        )
+    }
+
     const content = (
         <header className="dash-header">
             <div className="dash-header-container">
@@ -50,6 +76,7 @@ const DashHeader = ({setToken, logout}) => {
                 </Link>
                 <nav className="dash-header-nav">
                     {/* TODO add nav buttons */}
+                    {newNoteLink}
                     <button
                         className="submit-button"
                         title="Logout"
