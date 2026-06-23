@@ -74,7 +74,6 @@ const DashHeader = ({setToken, logout}) => {
 
 const DashFooter = () => {
     const user = JSON.parse(localStorage.getItem("user"));
-    // console.log(user);
 
     const content = (
         <footer className="dash-footer">

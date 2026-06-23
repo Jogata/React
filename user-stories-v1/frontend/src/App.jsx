@@ -39,9 +39,6 @@ function App() {
           // 1. If user was deleted in another tab, log out instantly!
           console.log("Logout detected in another tab. Cleaning up...");
           setToken(null);
-          // localStorage.setItem("user", {});
-          // localStorage.removeItem("user");
-          // navigate("/login", { replace: true });
         } else {
           // 2. If a username was added/changed in another tab, run silent refresh
           console.log("Login detected in another tab. Fetching access token...");
@@ -70,21 +67,15 @@ function App() {
           }
         }
       } else {
-        // 1. Check if the 'username' key was explicitly deleted
-        // const isUsernameDeleted = !event.newValue;
-      
-        // 2. Check if the user cleared ALL localStorage at once in DevTools
         const isStorageWiped = event.key === null;
         
         if (isStorageWiped) {
           console.log("Authentication data cleared externally. Logging out...");
           setToken(null);
-          // navigate("/login", { replace: true });
         }
       };
     };
 
-    // Add the global window listener
     window.addEventListener("storage", handleStorageChange);
 
     return () => {
@@ -397,10 +388,6 @@ function useCustomFetch(token, setToken) {
 
           // Directly update the real React State!
           setToken(data.accessToken);
-          // if (setUsername) {
-            // setUsername(data.username);
-            // localStorage.setItem("username", data.username);
-          // }
 
           // Overwrite the backup header and retry
           options.headers["Authorization"] = `Bearer ${data.accessToken}`;
@@ -421,7 +408,6 @@ function useCustomFetch(token, setToken) {
   const handleLogout = () => {
     localStorage.removeItem("user");
     setToken(null);
-    // if (setUsername) setUsername(null);
     
     navigate("/login", { replace: true }); 
   };

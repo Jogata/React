@@ -11,6 +11,10 @@ const Welcome = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     // console.log(user);    
     const username = user.username;
+    const roles = user.roles;
+    console.log(roles);
+    const isAdmin = roles.includes("Admin");
+    const isManager = roles.includes("Manager");
 
     const content = (
         <section className="welcome">
@@ -33,19 +37,37 @@ const Welcome = () => {
                 </Link>
             </p>
 
-            <p>
+            {isAdmin || isManager ? (
+                <p>
+                    <Link to="/dash/users">
+                        View All Users
+                        <span><i className="fa fa-location-arrow" aria-hidden="true"></i></span>
+                    </Link>
+                </p>
+            ) : null}
+
+            {/* <p>
                 <Link to="/dash/users">
                     View All Users
                     <span><i className="fa fa-location-arrow" aria-hidden="true"></i></span>
                 </Link>
-            </p>
+            </p> */}
 
-            <p>
+            {isAdmin || isManager ? (
+                <p>
+                    <Link to="/dash/users/create">
+                        Add New User
+                        <span><i className="fa fa-location-arrow" aria-hidden="true"></i></span>
+                    </Link>
+                </p>
+            ) : null}
+
+            {/* <p>
                 <Link to="/dash/users/create">
                     Add New User
                     <span><i className="fa fa-location-arrow" aria-hidden="true"></i></span>
                 </Link>
-            </p>
+            </p> */}
 
         </section>
     )

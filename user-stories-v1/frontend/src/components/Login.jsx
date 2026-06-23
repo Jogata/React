@@ -235,9 +235,9 @@ const Login = ({setToken}) => {
 // todelete
 // ===========================================================================
 function LoginButtons({setUsername, setPassword}) {
-    function loginMenager() {
-        setUsername("Menager");
-        setPassword("123Menager");
+    function loginManager() {
+        setUsername("Manager");
+        setPassword("123Manager");
     }
 
     function loginAdmin() {
@@ -254,7 +254,7 @@ function LoginButtons({setUsername, setPassword}) {
         <div className="login-buttons">
             <button
                 className="submit-button"
-                onClick={loginMenager}
+                onClick={loginManager}
             >
                 Manager
             </button>
