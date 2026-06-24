@@ -61,6 +61,7 @@ const DashHeader = ({setToken, logout}) => {
             <Link
                 className="redirect-link"
                 title="New Note"
+                to="/dash/notes/create"
             >
                 Create New Note
                 <i className="fa fa-file-text-o"></i>
@@ -74,6 +75,7 @@ const DashHeader = ({setToken, logout}) => {
             <Link
                 className="redirect-link"
                 title="New User"
+                to="/dash/users/create"
             >
                 Add New User
                 <i className="fa fa-user-plus"></i>
@@ -83,11 +85,12 @@ const DashHeader = ({setToken, logout}) => {
 
     let userLink = null;
     if (isManager || isAdmin) {
-        if (!USERS_REGEX.test(pathname) && pathname.includes('/dash')) {
+        if (!USERS_REGEX.test(pathname) && pathname.includes("/dash")) {
             userLink = (
                 <Link
                     className="redirect-link"
                     title="Users"
+                    to="/dash/users"
                 >
                     All Users
                     <i className="ri-user-settings-line"></i>
@@ -95,6 +98,30 @@ const DashHeader = ({setToken, logout}) => {
             )
         }
     }
+
+    let notesLink = null;
+    if (!NOTES_REGEX.test(pathname) && pathname.includes("/dash")) {
+        notesLink = (
+            <Link
+                className="redirect-link"
+                title="Notes"
+                to="/dash/notes"
+            >
+                All Notes
+                <i className="fa fa-file-text"></i>
+            </Link>
+        )
+    }
+
+    const logoutButton = (
+        <button
+            className="icon-button"
+            title="Logout"
+            onClick={logout}
+        >
+            <i className="fa fa-sign-out"></i>
+        </button>
+    )
 
     const content = (
         <header className="dash-header">
@@ -107,7 +134,9 @@ const DashHeader = ({setToken, logout}) => {
                     {newNoteLink}
                     {newUserLink}
                     {userLink}
-                    <button
+                    {notesLink}
+                    {logoutButton}
+                    {/* <button
                         className="submit-button"
                         title="Logout"
                         onClick={() => logout2(setToken)}
@@ -120,7 +149,7 @@ const DashHeader = ({setToken, logout}) => {
                         onClick={() => logout()}
                     >
                         Logout
-                    </button>
+                    </button> */}
                 </nav>
             </div>
         </header>
