@@ -68,6 +68,34 @@ const DashHeader = ({setToken, logout}) => {
         )
     }
 
+    let newUserLink = null;
+    if (USERS_REGEX.test(pathname)) {
+        newUserLink = (
+            <Link
+                className="redirect-link"
+                title="New User"
+            >
+                Add New User
+                <i className="fa fa-user-plus"></i>
+            </Link>
+        )
+    }
+
+    let userLink = null;
+    if (isManager || isAdmin) {
+        if (!USERS_REGEX.test(pathname) && pathname.includes('/dash')) {
+            userLink = (
+                <Link
+                    className="redirect-link"
+                    title="Users"
+                >
+                    All Users
+                    <i className="ri-user-settings-line"></i>
+                </Link>
+            )
+        }
+    }
+
     const content = (
         <header className="dash-header">
             <div className="dash-header-container">
@@ -77,6 +105,8 @@ const DashHeader = ({setToken, logout}) => {
                 <nav className="dash-header-nav">
                     {/* TODO add nav buttons */}
                     {newNoteLink}
+                    {newUserLink}
+                    {userLink}
                     <button
                         className="submit-button"
                         title="Logout"
