@@ -63,6 +63,13 @@ const Notes = ({token}) => {
 
     const messagesClass = messages.length ? "successmsg" : "offscreen";
 
+    let filteredNotes = notes;
+
+    if (notes.length) {
+        const user = JSON.parse(localStorage.getItem("user"));
+        filteredNotes = notes.filter(note => note.username === user.username);
+    }
+
     let content = null;
 
     console.log(status);
@@ -73,7 +80,8 @@ const Notes = ({token}) => {
         content = <p>{errors[0].message}</p>
     } else if (status == "success") {
         const tableContent = notes.length ? (
-            <TableRows notes={notes} />
+            // <TableRows notes={notes} />
+            <TableRows notes={filteredNotes} />
         ) : (
             <EmptyRow />
         )
