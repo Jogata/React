@@ -13,7 +13,7 @@ import { ScrollToTop } from "./components/ScrollToTop";
 
 // ==================================================================
 import { useEffect, useState } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import Loader from "./components/Loader";
 
 function App() {
@@ -167,7 +167,7 @@ function App() {
         </Route>
 
         <Route path="/dash" element={<DashLayout token={token} setToken={setToken} logout={logout} />}>
-          <Route path="users" element={<RequireAuth allowedRoles={["Admin", "Manager"]} />}>
+          <Route path="users" element={<RequireAuth allowedRoles={["Admin", "Manager"]} setToken={setToken} />}>
             <Route index element={<Users token={token} />} />
             <Route path="create" element={<CreateUserForm token={token} setToken={setToken} />} />
             <Route path="edit/:userId" element={<EditUser token={token} />} />
@@ -475,7 +475,7 @@ export async function customFetch2(endpoint, options = {}) {
   return response;
 }
 
-const RequireAuth = ({ allowedRoles }) => {
+const RequireAuth = ({ allowedRoles, setToken }) => {
   // const location = useLocation();
   const user = JSON.parse(localStorage.getItem("user"));
   const roles = user?.roles || [];
@@ -485,11 +485,43 @@ const RequireAuth = ({ allowedRoles }) => {
       ? <Outlet />
       // : <Navigate to="/login" state={{ from: location }} replace />
       : (
-        <h1>Forbidden</h1>
+        // <h1>Forbidden</h1>
+        <ForbiddenSection setToken={setToken} />
       )
     )
 
   return content;
+}
+
+const ForbiddenSection = ({setToken}) => {
+  const navigate = useNavigate();
+
+  const logout = () => {
+    localStorage.removeItem("user");
+    setToken(null);
+    
+    navigate("/login", { replace: true }); 
+  };
+
+  return (
+      <section className="not-available-section">
+          <h1>You don't have permission to see this content</h1>
+          <div className="links">
+              {/* <Link to="/dash/users/create" className="redirect-link">
+                  Create New User
+              </Link> */}
+              <button 
+                className="submit-button"
+                onClick={logout}
+              >
+                Change Account
+              </button>
+              <Link to="/dash" className="redirect-link">
+                  Dashboard
+              </Link>
+          </div>
+      </section>
+  )
 }
 
 export default App;

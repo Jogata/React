@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import Loader from "./Loader";
 import { Link, useLocation } from "react-router-dom";
+import Loader from "./Loader";
 import Note from "./Note";
 
 async function getAllNotes(url, token) {
