@@ -13,7 +13,7 @@ import { ScrollToTop } from "./components/ScrollToTop";
 
 // ==================================================================
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import Loader from "./components/Loader";
 
 function App() {
@@ -167,7 +167,7 @@ function App() {
         </Route>
 
         <Route path="/dash" element={<DashLayout token={token} setToken={setToken} logout={logout} />}>
-          <Route path="users">
+          <Route path="users" element={<RequireAuth allowedRoles={["Admin", "Manager"]} />}>
             <Route index element={<Users token={token} />} />
             <Route path="create" element={<CreateUserForm token={token} setToken={setToken} />} />
             <Route path="edit/:userId" element={<EditUser token={token} />} />
@@ -427,7 +427,7 @@ export function subscribeToAuthEvents (onMessage) {
 
 export async function customFetch2(endpoint, options = {}) {
   const navigate = useNavigate();
-  
+
   options.headers = {
     "Content-Type": "application/json",
     ...options.headers,
@@ -473,6 +473,23 @@ export async function customFetch2(endpoint, options = {}) {
   }
 
   return response;
+}
+
+const RequireAuth = ({ allowedRoles }) => {
+  // const location = useLocation();
+  const user = JSON.parse(localStorage.getItem("user"));
+  const roles = user?.roles || [];
+
+  const content = (
+    roles.some(role => allowedRoles.includes(role))
+      ? <Outlet />
+      // : <Navigate to="/login" state={{ from: location }} replace />
+      : (
+        <h1>Forbidden</h1>
+      )
+    )
+
+  return content;
 }
 
 export default App;
