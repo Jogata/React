@@ -425,4 +425,54 @@ export function subscribeToAuthEvents (onMessage) {
   authChannel.onmessage = (event) => onMessage(event.data);
 };
 
+export async function customFetch2(endpoint, options = {}) {
+  const navigate = useNavigate();
+  
+  options.headers = {
+    "Content-Type": "application/json",
+    ...options.headers,
+  };
+
+  const shouldSkipAuth = options.skipAuth === true;
+
+  // Only pass cookies cross-domain if the route requires authorization!
+  if (shouldSkipAuth) {
+    options.credentials = "omit";
+  } else {
+    options.credentials = "include";
+  }
+
+  // Inject Authorization memory token for protected routes
+  if (currentAccessToken && !shouldSkipAuth) {
+    options.headers["Authorization"] = `Bearer ${currentAccessToken}`;
+  }
+
+  const response = await fetch(`${BASE_URL}${endpoint}`, options);
+
+  // Global 401 interceptor loop guard
+  if (response.status === 401 && !shouldSkipAuth && !options._retry) {
+    options._retry = true;
+    
+    // The refresh route itself needs cookies, so it counts as a protected request
+    const refreshRes = await fetch(`${BASE_URL}/auth/refresh`, {
+      method: "POST",
+      credentials: "include"
+    });
+
+    if (refreshRes.ok) {
+      const data = await refreshRes.json();
+      setApiToken(data.accessToken);
+      options.headers["Authorization"] = `Bearer ${data.accessToken}`;
+      return fetch(`${BASE_URL}${endpoint}`, options); // Retry
+    } else {
+      // Session expired cleanup
+      localStorage.removeItem("user");
+      setToken(null);
+      navigate("/login"); 
+    }
+  }
+
+  return response;
+}
+
 export default App;
