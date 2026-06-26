@@ -40,30 +40,6 @@ const updateNote = async (body, token) => {
 }
 
 const EditNoteForm = ({ note, users, token }) => {
-    const {
-        isLoading,
-        // isSuccess,
-        // isError,
-        // error,
-        // messages
-    } = {
-        isLoading: false, 
-        // isSuccess: false,
-        // isError: false, 
-        // error: {},
-        // messages: []
-    }
-
-    const {
-        // isSuccess: isDelSuccess,
-        // isError: isDelError,
-        // error: delerror
-    } = {
-        // isSuccess: false,
-        // isError: false, 
-        // error: {}
-    }
-
     const user = JSON.parse(localStorage.getItem("user"));
     const isAdmin = user?.roles?.includes("Admin");
     console.log(isAdmin);
@@ -77,34 +53,16 @@ const EditNoteForm = ({ note, users, token }) => {
     const [text, setText] = useState(note.text);
     const [completed, setCompleted] = useState(note.completed);
     const [userId, setUserId] = useState(note.user);
-    // const [userId, setUserId] = useState("5");
-    // const [isSuccess, setIsSuccess] = useState(false);
     const [isPending, setIsPending] = useState(false);
     const [isError, setIsError] = useState(false);
     const [messages, setMessages] = useState([]);
     const [errors, setErrors] = useState([]);
     const isFormSubmitted = useRef(false);
 
-    // useEffect(() => {
-        // if (isSuccess || isDelSuccess) {
-        // if (messages.length > 0) {
-            // setTitle("");
-            // setText("");
-            // setUserId("");
-            // navigate("/dash/notes");
-        // }
-
-    // }, [isSuccess, isDelSuccess, navigate])
-    // }, [isSuccess, navigate])
-    // }, [messages])
-
     const onTitleChanged = e => setTitle(e.target.value);
     const onTextChanged = e => setText(e.target.value);
     const onCompletedChanged = e => setCompleted(prev => !prev);
     const onUserIdChanged = e => setUserId(e.target.value);
-
-    // const canSave = [title, text, userId].every(Boolean) && !isLoading;
-    // console.log(title, text, userId, isLoading);
 
     const onSaveNoteClicked = async () => {
         isFormSubmitted.current = true;
@@ -222,11 +180,8 @@ const EditNoteForm = ({ note, users, token }) => {
         )
     })
 
-    // const errClass = (isError || isDelError) ? "errmsg" : "offscreen";
     const errClass = errors.length ? "errmsg" : "offscreen";
     const successMsgClass = messages.length ? "successmsg" : "offscreen";
-    // const validTitleClass = !title ? "incomplete" : "";
-    // const validTextClass = !text ? "incomplete" : "";
     let validTitleClass = "initial";
     let validTextClass = "initial";
 
@@ -234,8 +189,6 @@ const EditNoteForm = ({ note, users, token }) => {
         validTitleClass = title.length <= 2 ? "invalid" : "valid";
         validTextClass = text.length <= 2 ? "invalid" : "valid";
     }
-
-    // const errContent = (error?.data?.message || delerror?.data?.message) ?? "";
 
     const content = (
         <>
@@ -265,14 +218,6 @@ const EditNoteForm = ({ note, users, token }) => {
                             save changes
                             <i className="fa fa-floppy-o"></i>
                         </button>
-                        {/* <button
-                            className="icon-button delete-btn"
-                            title="Delete"
-                            onClick={onDeleteNoteClicked}
-                        >
-                            delete note
-                            <i className="fa fa-trash-o"></i>
-                        </button> */}
                         {isAdmin || isManager ? (
                             <button
                                 className="icon-button delete-btn"
@@ -346,10 +291,8 @@ const EditNoteForm = ({ note, users, token }) => {
                         </select>
                     </div>
                     <dl className="form-divider">
-                        {/* <p className="form-created">Created:<br />{created}</p> */}
                         <dt className="form-created">Created:</dt>
                         <dd>{created}</dd>
-                        {/* <p className="form-updated">Updated:<br />{updated}</p> */}
                         <dt className="form-updated">Updated:</dt>
                         <dd>{updated}</dd>
                     </dl>

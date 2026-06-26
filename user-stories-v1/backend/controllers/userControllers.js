@@ -20,6 +20,7 @@ const getAllUsers = async (req, res) => {
 
 const createNewUser = async (req, res) => {
     const { username, password, roles } = req.body;
+    // const { username = username.toLocaleLowerCase(), password, roles } = req.body;
 
     if (!username || !password || !Array.isArray(roles) || !roles.length) {
         return res.status(400).json({ message: "All fields are required" });
@@ -44,7 +45,7 @@ const createNewUser = async (req, res) => {
     }
     
     try {
-        const duplicate = await User.findOne({ username }).lean().exec();
+        const duplicate = await User.findOne({ username }).collation({locale: "en", strength: 2}).lean().exec();
         
         if (duplicate) {
             return res.status(409).json({ message: "Duplicate username" });
@@ -73,6 +74,7 @@ const createNewUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
     const { id, username, roles, active, password } = req.body;
+    // const { id, username = username.toLocaleLowerCase(), roles, active, password } = req.body;
     
     if (!id || !mongoose.isValidObjectId(id)) {
         return res.status(400).json({ message: "Invalid user ID" });
@@ -109,7 +111,7 @@ const updateUser = async (req, res) => {
             return res.status(400).json({ message: "User not found" });
         }
     
-        const duplicate = await User.findOne({ username }).lean().exec();
+        const duplicate = await User.findOne({ username }).collation({locale: "en", strength: 2}).lean().exec();
     
         if (duplicate && duplicate?._id.toString() !== id) {
             return res.status(409).json({ message: "Duplicate username" });
