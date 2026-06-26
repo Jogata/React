@@ -64,6 +64,12 @@ const EditNoteForm = ({ note, users, token }) => {
         // error: {}
     }
 
+    const user = JSON.parse(localStorage.getItem("user"));
+    const isAdmin = user?.roles?.includes("Admin");
+    console.log(isAdmin);
+    const isManager = user?.roles?.includes("Manager");
+    console.log(isManager);
+
     const navigate = useNavigate();
     // console.log(note);
 
@@ -259,14 +265,25 @@ const EditNoteForm = ({ note, users, token }) => {
                             save changes
                             <i className="fa fa-floppy-o"></i>
                         </button>
-                        <button
+                        {/* <button
                             className="icon-button delete-btn"
                             title="Delete"
                             onClick={onDeleteNoteClicked}
                         >
                             delete note
                             <i className="fa fa-trash-o"></i>
-                        </button>
+                        </button> */}
+                        {isAdmin || isManager ? (
+                            <button
+                                className="icon-button delete-btn"
+                                title="Delete"
+                                onClick={onDeleteNoteClicked}
+                            >
+                                delete note
+                                <i className="fa fa-trash-o"></i>
+                            </button>
+
+                        ) : null}
                     </div>
                 </div>
 
