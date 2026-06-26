@@ -45,11 +45,6 @@ const EditNote = ({token}) => {
     const [status, setStatus] = useState("loading");
     const [errors, setErrors] = useState([]);
 
-    let note = null;
-    if (notes) {
-        note = notes.find(note => note._id == noteId);
-    }
-
     useEffect(() => {
         setUpInitialData();
 
@@ -87,6 +82,14 @@ const EditNote = ({token}) => {
 
     let content = null;
 
+    let note = null;
+    // let user = null;
+
+    if (notes) {
+        note = notes.find(note => note._id == noteId);
+        // user = JSON.parse(localStorage.getItem("user"));
+    }
+
     if (status == "loading") {
         content = <Loader />;
     } else if (status == "error") {
@@ -95,7 +98,13 @@ const EditNote = ({token}) => {
         if (users.length == 0) {
             content = <NotAvailableSection />;
         } else if (note) {
-            content = <EditNoteForm note={note} users={users} token={token} />;
+            const user = JSON.parse(localStorage.getItem("user"));
+            if (user.username !== note) {
+                content = <p>Not allowed</p>
+            } else {
+                content = <EditNoteForm note={note} users={users} token={token} />;
+            }
+            // content = <EditNoteForm note={note} users={users} token={token} />;
         } else {
             content = <NoteDoesntExist id={id} />;
         }
