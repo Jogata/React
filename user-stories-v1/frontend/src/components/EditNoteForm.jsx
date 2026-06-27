@@ -42,9 +42,9 @@ const updateNote = async (body, token) => {
 const EditNoteForm = ({ note, users, token }) => {
     const user = JSON.parse(localStorage.getItem("user"));
     const isAdmin = user?.roles?.includes("Admin");
-    console.log(isAdmin);
+    // console.log(isAdmin);
     const isManager = user?.roles?.includes("Manager");
-    console.log(isManager);
+    // console.log(isManager);
 
     const navigate = useNavigate();
     // console.log(note);

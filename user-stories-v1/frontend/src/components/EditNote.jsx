@@ -99,7 +99,7 @@ const EditNote = ({token}) => {
             content = <NotAvailableSection />;
         } else if (note) {
             const user = JSON.parse(localStorage.getItem("user"));
-            if (user.username !== note) {
+            if (user.username !== note.username) {
                 // content = <p>Not allowed</p>
                 content = <ForbiddenSection />
             } else {

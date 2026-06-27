@@ -26,14 +26,18 @@ function App() {
     broadcastAuthEvent("LOGOUT");
     setToken(null);
     localStorage.removeItem("user");
+    console.log("navigate to /test");
+    navigate("/test");
   }
 
   useEffect(() => {
+    console.log("useEffect handleStorageChange 1");
     const handleStorageChange = (event) => {
       // The storage event only fires if the change came from a DIFFERENT tab
       if (event.key === "user") {
         console.log(event.key);
         const newUser = event.newValue;
+        console.log("useEffect handleStorageChange 2");
 
         if (!newUser) {
           // 1. If user was deleted in another tab, log out instantly!
@@ -67,6 +71,7 @@ function App() {
           }
         }
       } else {
+        console.log("useEffect handleStorageChange 3");
         const isStorageWiped = event.key === null;
         
         if (isStorageWiped) {
@@ -161,6 +166,7 @@ function App() {
         <Route path="/" element={<Home />} />
         {/* <Route path="/login" element={<Login setToken={setToken} />} /> */}
         <Route path="/login" element={<CheckUserStatus setToken={setToken} />} />
+        <Route path="/test" element={<Test />} />
 
         <Route path="/dash" element={<WelcomeDashLayout token={token} setToken={setToken} logout={logout} />}>
           <Route index element={<Welcome />} />
@@ -186,6 +192,7 @@ function App() {
 
 function SynchronizeUserStatus({ setToken, setIsLoading }) {
   useEffect(() => {
+    console.log("SynchronizeUserStatus on App mount");
     const synchronize = async () => {
       try {
         const userInLocalStorage = localStorage.getItem("user");
@@ -205,12 +212,12 @@ function SynchronizeUserStatus({ setToken, setIsLoading }) {
 
     async function deleteRefreshToken(setToken) {
       try {
+        console.log("logout - no user in localStorage: deleteRefreshToken");
         const response = await fetch("http://localhost:5000/auth/logout", {
           method: "POST",
           credentials: "include"
         });
 
-        console.log("logout - no user in localStorage: ");
         console.log(response);
 
         setToken(null);
@@ -521,6 +528,14 @@ const ForbiddenSection = ({ setToken }) => {
         </Link>
       </div>
     </section>
+  )
+}
+
+function Test() {
+  console.log("Test Component");
+
+  return (
+    <h1>Test Component</h1>
   )
 }
 

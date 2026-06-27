@@ -30,7 +30,7 @@ function parseJwt(token) {
 const CheckUserStatus = ({setToken}) => {
     const user = localStorage.getItem("user");
     const location = useLocation();
-    console.log(location.state.from.pathname);
+    console.log(location.state?.from.pathname);
     const previousPage = location.state?.from.pathname || "/dash";
 
     if (user) {
@@ -46,7 +46,7 @@ const Login = ({setToken}) => {
     const [username, setUsername] = useState("user5");
     // const [password, setPassword] = useState("");
     const [password, setPassword] = useState("pass1235");
-    const [persist, setPersist] = useState([]);
+    const [persist, setPersist] = useState(false);
     const [isPending, setIsPending] = useState(false);
     const [errors, setErrors] = useState([]);
     // const [messages, setMessages] = useState([]);

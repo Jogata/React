@@ -45,9 +45,9 @@ const DashHeader = ({setToken, logout}) => {
     const user = JSON.parse(localStorage.getItem("user"));
     // console.log(user.username);
     const isAdmin = user?.roles?.includes("Admin");
-    console.log(isAdmin);
+    // console.log(isAdmin);
     const isManager = user?.roles?.includes("Manager");
-    console.log(isManager);
+    // console.log(isManager);
 
     const { pathname } = useLocation()
 
