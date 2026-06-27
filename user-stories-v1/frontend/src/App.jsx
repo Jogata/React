@@ -17,18 +17,28 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 import Loader from "./components/Loader";
 
 function App() {
+  console.log("app mounted");
   const [token, setToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   function logout() {
     console.log("logout with broadcastAuthEvent");
-    broadcastAuthEvent("LOGOUT");
+    // broadcastAuthEvent("LOGOUT");
     setToken(null);
     localStorage.removeItem("user");
-    console.log("navigate to /test");
-    navigate("/test");
+    // console.log("navigate to /");
+    // navigate("/");
   }
+
+  const handleLogout = (navigate, to) => {
+    setToken(null);
+    localStorage.removeItem("user");
+
+    if (navigate) {
+      navigate(to, { replace: true });
+    }
+  };
 
   useEffect(() => {
     console.log("useEffect handleStorageChange 1");
@@ -84,9 +94,10 @@ function App() {
     window.addEventListener("storage", handleStorageChange);
 
     return () => {
+      console.log("clean up from handleStorageChange useEffect");
       window.removeEventListener("storage", handleStorageChange);
     };
-  }, [navigate, setToken]);
+  }, [setToken]);
 
   // useEffect(() => {
   //   const handleStorageChange = (event) => {
@@ -166,7 +177,6 @@ function App() {
         <Route path="/" element={<Home />} />
         {/* <Route path="/login" element={<Login setToken={setToken} />} /> */}
         <Route path="/login" element={<CheckUserStatus setToken={setToken} />} />
-        <Route path="/test" element={<Test />} />
 
         <Route path="/dash" element={<WelcomeDashLayout token={token} setToken={setToken} logout={logout} />}>
           <Route index element={<Welcome />} />
@@ -528,14 +538,6 @@ const ForbiddenSection = ({ setToken }) => {
         </Link>
       </div>
     </section>
-  )
-}
-
-function Test() {
-  console.log("Test Component");
-
-  return (
-    <h1>Test Component</h1>
   )
 }
 

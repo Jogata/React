@@ -1,9 +1,16 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const Home = () => {
     console.log("Home Component");
+
+    useEffect(() => {
+        document.title = "Home Page";
+    }, [])
+
     const content = (
         <div className="home">
+            {/* <title>Home Page</title> */}
             <header>
                 <h1>Welcome to <span className="nowrap">
                     Dan D. Repairs!

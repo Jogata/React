@@ -33,6 +33,12 @@ const CheckUserStatus = ({setToken}) => {
     console.log(location.state?.from.pathname);
     const previousPage = location.state?.from.pathname || "/dash";
 
+    console.log("Login Component");
+
+    useEffect(() => {
+        document.title = "Login Page";
+    }, [])
+
     if (user) {
         // return <Navigate to="/dash" replace />;
         return <Navigate to={previousPage} replace />;
