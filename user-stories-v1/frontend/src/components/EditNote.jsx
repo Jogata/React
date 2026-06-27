@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import EditNoteForm from "./EditNoteForm";
 import Loader from "./Loader";
 
@@ -100,7 +100,8 @@ const EditNote = ({token}) => {
         } else if (note) {
             const user = JSON.parse(localStorage.getItem("user"));
             if (user.username !== note) {
-                content = <p>Not allowed</p>
+                // content = <p>Not allowed</p>
+                content = <ForbiddenSection />
             } else {
                 content = <EditNoteForm note={note} users={users} token={token} />;
             }
@@ -140,5 +141,36 @@ const NoteDoesntExist = ({ id }) => {
         </div>
     )
 }
+
+const ForbiddenSection = ({ setToken }) => {
+    const navigate = useNavigate();
+
+    const logout = () => {
+        localStorage.removeItem("user");
+        setToken(null);
+
+        navigate("/login", { replace: true });
+    };
+
+    return (
+        <section className="not-available-section">
+            <h1>You don't have permission to see this content</h1>
+            <div className="links">
+                {/* <Link to="/dash/users/create" className="redirect-link">
+                    Create New User
+                </Link> */}
+                <button
+                    className="submit-button"
+                    onClick={logout}
+                >
+                    Change Account
+                </button>
+                <Link to="/dash" className="redirect-link">
+                    Dashboard
+                </Link>
+            </div>
+        </section>
+    )
+}  
 
 export default EditNote;

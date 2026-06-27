@@ -493,34 +493,34 @@ const RequireAuth = ({ allowedRoles, setToken }) => {
   return content;
 }
 
-const ForbiddenSection = ({setToken}) => {
+const ForbiddenSection = ({ setToken }) => {
   const navigate = useNavigate();
 
   const logout = () => {
     localStorage.removeItem("user");
     setToken(null);
-    
-    navigate("/login", { replace: true }); 
+
+    navigate("/login", { replace: true });
   };
 
   return (
-      <section className="not-available-section">
-          <h1>You don't have permission to see this content</h1>
-          <div className="links">
-              {/* <Link to="/dash/users/create" className="redirect-link">
+    <section className="not-available-section">
+      <h1>You don't have permission to see this content</h1>
+      <div className="links">
+        {/* <Link to="/dash/users/create" className="redirect-link">
                   Create New User
               </Link> */}
-              <button 
-                className="submit-button"
-                onClick={logout}
-              >
-                Change Account
-              </button>
-              <Link to="/dash" className="redirect-link">
-                  Dashboard
-              </Link>
-          </div>
-      </section>
+        <button
+          className="submit-button"
+          onClick={logout}
+        >
+          Change Account
+        </button>
+        <Link to="/dash" className="redirect-link">
+          Dashboard
+        </Link>
+      </div>
+    </section>
   )
 }
 
