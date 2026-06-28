@@ -1,12 +1,15 @@
-import app from "./server.js";
-import mongodb from "mongodb";
-import dotenv from "dotenv";
+// import * as dotenv from "dotenv";
+// dotenv.config();
+import "dotenv/config";
 
-dotenv.config();
+import app from "./server.js";
+
+import mongodb from "mongodb";
 
 const MongoClient = mongodb.MongoClient;
 
 const port = process.env.PORT || 8000;
+console.log(port);
 
 MongoClient.connect(
     process.env.MONGO_URI,
@@ -17,7 +20,7 @@ MongoClient.connect(
     }
 )
     .catch(err => {
-        console.error(err.stack);
+        console.error(err);
         process.exit(1);
     })
     .then(async client => {
