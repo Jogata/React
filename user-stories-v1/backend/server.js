@@ -23,7 +23,7 @@ app.use("/auth", require("./routes/authRoutes"));
 app.use("/users", require("./routes/userRoutes"));
 app.use("/notes", require("./routes/noteRoutes"));
 
-app.use("/*splat", (req, res) => {
+app.use((req, res) => {
     res.status(404);
     if (req.accepts("html")) {
         res.sendFile(path.join(__dirname, "views", "404.html"));
@@ -42,7 +42,3 @@ mongoose.connection.once("open", () => {
 mongoose.connection.on("error", err => {
     console.log(err);
 })
-
-// Verify Explicitly: When verifying tokens on your receiving servers with 
-// jwt.verify(), explicitly pass the expected algorithms array to protect your 
-// application against algorithm confusion exploits.

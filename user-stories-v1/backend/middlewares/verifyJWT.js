@@ -22,6 +22,9 @@ const verifyJWT = (req, res, next) => {
 
     const token = authHeader.split(" ")[1];
 
+    // Verify Explicitly: When verifying tokens on your receiving servers with 
+    // jwt.verify(), explicitly pass the expected algorithms array to protect your 
+    // application against algorithm confusion exploits.
     jwt.verify(
         token,
         process.env.ACCESS_TOKEN_SECRET,

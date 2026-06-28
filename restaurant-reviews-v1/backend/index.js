@@ -9,7 +9,7 @@ import mongodb from "mongodb";
 const MongoClient = mongodb.MongoClient;
 
 const port = process.env.PORT || 8000;
-console.log(port);
+// console.log(port);
 
 MongoClient.connect(
     process.env.MONGO_URI,
