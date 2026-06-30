@@ -4,14 +4,30 @@ const ObjectId = mongodb.ObjectId;
 let reviews;
 
 export default class ReviewsDAO {
-  static async injectDB(conn) {
-    if (reviews) {
-      return
+    static async injectDB(conn) {
+        if (reviews) {
+            return;
+        }
+        try {
+            reviews = await conn.db(process.env.RESTREVIEWS_NS).collection("reviews");
+        } catch (err) {
+            console.error(`Unable to establish collection handles in userDAO: ${err}`);
+        }
     }
-    try {
-      reviews = await conn.db(process.env.RESTREVIEWS_NS).collection("reviews");
-    } catch (e) {
-      console.error(`Unable to establish collection handles in userDAO: ${e}`);
+
+    static async addReview(restaurantId, user, review, date) {
+        try {
+            const reviewDoc = {
+                name: user.name,
+                user_id: user._id,
+                date: date,
+                text: review,
+                restaurant_id: new ObjectId(restaurantId),
+            }
+            return await reviews.insertOne(reviewDoc);
+        } catch (err) {
+            console.error(`Unable to post review: ${err}`);
+            return { error: err };
+        }
     }
-  }
 }
