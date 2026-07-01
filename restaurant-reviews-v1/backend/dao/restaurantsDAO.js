@@ -47,9 +47,9 @@ export default class RestaurantsDAO {
       const totalNumRestaurants = await restaurants.countDocuments(query);
 
       return { restaurantsList, totalNumRestaurants };
-    } catch (e) {
+    } catch (err) {
       console.error(
-        `Unable to convert cursor to array or problem counting documents, ${e}`,
+        `Unable to convert cursor to array or problem counting documents, ${err}`,
       );
       return { restaurantsList: [], totalNumRestaurants: 0 };
     }

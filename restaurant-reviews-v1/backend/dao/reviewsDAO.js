@@ -8,7 +8,7 @@ export default class ReviewsDAO {
         if (reviews) {
             return;
         }
-        
+
         try {
             reviews = await conn.db(process.env.RESTREVIEWS_NS).collection("reviews");
         } catch (err) {
@@ -43,6 +43,20 @@ export default class ReviewsDAO {
             return updateResponse;
         } catch (err) {
             console.error(`Unable to update review: ${err}`);
+            return { error: err };
+        }
+    }
+
+    static async deleteReview(reviewId, userId) {
+        try {
+            const deleteResponse = await reviews.deleteOne({
+                _id: new ObjectId(reviewId),
+                user_id: userId,
+            });
+
+            return deleteResponse;
+        } catch (err) {
+            console.error(`Unable to delete review: ${err}`);
             return { error: err };
         }
     }
