@@ -7,6 +7,8 @@ export default class RestaurantsDAO {
     }
     try {
       restaurants = await conn.db(process.env.RESTREVIEWS_NS).collection("restaurants");
+      // console.log("RestaurantsDAO: 10");
+      // console.log(restaurants);
     } catch (err) {
       console.error(
         `Unable to establish a collection handle in restaurantsDAO: ${err}`
@@ -31,7 +33,7 @@ export default class RestaurantsDAO {
     }
 
     let cursor;
-    
+
     try {
       cursor = await restaurants
         .find(query)
@@ -59,43 +61,43 @@ export default class RestaurantsDAO {
     try {
       const pipeline = [
         {
-            $match: {
-                _id: new ObjectId(id),
-            },
+          $match: {
+            _id: new ObjectId(id),
+          },
         },
+        {
+          $lookup: {
+            from: "reviews",
+            let: {
+              id: "$_id",
+            },
+            pipeline: [
               {
-                  $lookup: {
-                      from: "reviews",
-                      let: {
-                          id: "$_id",
-                      },
-                      pipeline: [
-                          {
-                              $match: {
-                                  $expr: {
-                                      $eq: ["$restaurant_id", "$$id"],
-                                  },
-                              },
-                          },
-                          {
-                              $sort: {
-                                  date: -1,
-                              },
-                          },
-                      ],
-                      as: "reviews",
+                $match: {
+                  $expr: {
+                    $eq: ["$restaurant_id", "$$id"],
                   },
+                },
               },
               {
-                  $addFields: {
-                      reviews: "$reviews",
-                  },
+                $sort: {
+                  date: -1,
+                },
               },
-          ]
+            ],
+            as: "reviews",
+          },
+        },
+        {
+          $addFields: {
+            reviews: "$reviews",
+          },
+        },
+      ]
       return await restaurants.aggregate(pipeline).next();
-    } catch (e) {
-      console.error(`Something went wrong in getRestaurantByID: ${e}`);
-      throw e;
+    } catch (err) {
+      console.error(`Something went wrong in getRestaurantByID: ${err}`);
+      throw err;
     }
   }
 
