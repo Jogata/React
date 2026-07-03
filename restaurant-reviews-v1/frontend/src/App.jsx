@@ -1,46 +1,47 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-// import './App.css'
+import { useState } from "react";
 import { Route, Routes } from "react-router-dom";
 
 function App() {
+  const [ user, setUser ] = useState(null);
+
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/restaurants" element={<RestaurantsList />} />
+      <Route path="/restaurants/:id" element={<Restaurant />} />
+      <Route path="/restaurants/:id/review" element={<AddReview />} />
+      <Route path="/login" element={<Login />} />
     </Routes>
   )
-  // const [count, setCount] = useState(0)
-
-  // return (
-  //   <>
-  //     <div>
-  //       <a href="https://vitejs.dev" target="_blank">
-  //         <img src={viteLogo} className="logo" alt="Vite logo" />
-  //       </a>
-  //       <a href="https://react.dev" target="_blank">
-  //         <img src={reactLogo} className="logo react" alt="React logo" />
-  //       </a>
-  //     </div>
-  //     <h1>Vite + React</h1>
-  //     <div className="card">
-  //       <button onClick={() => setCount((count) => count + 1)}>
-  //         count is {count}
-  //       </button>
-  //       <p>
-  //         Edit <code>src/App.jsx</code> and save to test HMR
-  //       </p>
-  //     </div>
-  //     <p className="read-the-docs">
-  //       Click on the Vite and React logos to learn more
-  //     </p>
-  //   </>
-  // )
 }
 
 function Home() {
   return (
     <h1>Home Page</h1>
+  )
+}
+
+function RestaurantsList() {
+  return (
+    <h1>RestaurantsList Page</h1>
+  )
+}
+
+function Restaurant() {
+  return (
+    <h1>Restaurant Page</h1>
+  )
+}
+
+function AddReview() {
+  return (
+    <h1>AddReview Page</h1>
+  )
+}
+
+function Login() {
+  return (
+    <h1>Login Page</h1>
   )
 }
 
