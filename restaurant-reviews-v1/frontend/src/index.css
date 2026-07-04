@@ -61,8 +61,36 @@ img {
   width: 100%;
 }
 
+body {
+  min-height: 100vh;
+  color: var(--COLOR);
+  font-family: Georgia, serif;
+  background-color: var(--BGCOLOR);
+}
+
+.navbar {
+  padding: 1rem 2%;
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  justify-content: space-between;
+  /* border: 1px solid red; */
+}
+
 .navbar-logo {
-  font-size: 2rem;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.navbar ul {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.navbar a {
+  /* border: 1px solid white; */
 }
 
 /* a {
