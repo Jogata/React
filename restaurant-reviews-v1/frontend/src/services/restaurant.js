@@ -1,0 +1,31 @@
+class RestaurantDataService {
+  getAllRestaurants(page = 0) {
+    return fetch(`restaurants?page=${page}`);
+  }
+
+  getRestaurant(id) {
+    return fetch(`/restaurant?id=${id}`);
+  }
+
+  findRestaurant(query, by = "name", page = 0) {
+    return fetch(`restaurants?${by}=${query}&page=${page}`);
+  } 
+
+  createReview(data) {
+    return fetch("/review-new", data);
+  }
+
+  updateReview(data) {
+    return fetch("/review-edit", data);
+  }
+
+  deleteReview(id, userId) {
+    return fetch(`/review-delete?id=${id}`, {data:{user_id: userId}});
+  }
+
+  getCuisines(id) {
+    return fetch(`/cuisines`);
+  }
+}
+
+export default new RestaurantDataService();
