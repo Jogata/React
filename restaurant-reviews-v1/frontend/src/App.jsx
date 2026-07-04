@@ -2,24 +2,53 @@ import { useState } from "react";
 import { Route, Routes } from "react-router-dom";
 
 function App() {
-  const [ user, setUser ] = useState(null);
+  const [user, setUser] = useState(null);
 
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/restaurants" element={<RestaurantsList />} />
-      <Route path="/restaurants/:id" element={<Restaurant />} />
-      <Route path="/restaurants/:id/review" element={<AddReview />} />
-      <Route path="/login" element={<Login />} />
-    </Routes>
+    <div className="page">
+      <nav className="navbar">
+        <a href="/restaurants" className="navbar-logo">
+          Restaurant Reviews
+        </a>
+        <ul>
+          <li>
+            <Link to={"/restaurants"} className="nav-link">
+              Restaurants
+            </Link>
+          </li>
+          <li>
+            {user ? (
+              <a
+                href="/#"
+                onClick={logout}
+                className="nav-link"
+              >
+                Logout {user.name}
+              </a>
+            ) : (
+              <Link to={"/login"} className="nav-link">
+                Login
+              </Link>
+            )}
+          </li>
+        </ul>
+      </nav>
+      <Routes>
+        <Route path="/" element={<RestaurantsList />} />
+        <Route path="/restaurants" element={<RestaurantsList />} />
+        <Route path="/restaurants/:id" element={<Restaurant />} />
+        <Route path="/restaurants/:id/review" element={<AddReview />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </div>
   )
 }
 
-function Home() {
-  return (
-    <h1>Home Page</h1>
-  )
-}
+// function Home() {
+//   return (
+//     <h1>Home Page</h1>
+//   )
+// }
 
 function RestaurantsList() {
   return (

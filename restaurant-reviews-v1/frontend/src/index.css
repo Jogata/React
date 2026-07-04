@@ -1,7 +1,19 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 :root {
   /* font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400; */
+  /* COLORS */
+  --COLOR: #FFF;
+  --BGCOLOR: #0F172A;
+  --BORDER-COLOR: #FFF;
+  --LINK-COLOR: whitesmoke;
+  --LINK-HOVER: #6cb0e8;
 
   color-scheme: light dark;
   /* color: rgba(255, 255, 255, 0.87); */
@@ -11,6 +23,46 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  text-decoration: none;
+  display: inline-block;
+  padding: 0.2em 0.5em;
+  color: inherit;
+  transition: color 300ms ease-in-out;
+}
+
+a:visited {
+  color: var(--LINK-COLOR);
+}
+
+a:hover {
+  color: var(--LINK-HOVER);
+}
+
+button {
+  padding: 0.4em 1em;
+  border: none;
+  outline: none;
+  font-family: Georgia, serif;
+  background-color: transparent;
+  transition: color 300ms ease-in-out;
+  cursor: pointer;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 1px solid #888;
+}
+
+img {
+  display: block;
+  width: 100%;
+}
+
+.navbar-logo {
+  font-size: 2rem;
 }
 
 /* a {
