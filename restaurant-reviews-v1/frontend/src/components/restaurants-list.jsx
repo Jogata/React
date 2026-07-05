@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
 
 const RestaurantsList = () => {
+    const [searchName, setSearchName] = useState("");
+    const [searchZip, setSearchZip] = useState("");
+    const [searchCuisine, setSearchCuisine] = useState("");
+
     const restaurants = [{
         _id: "1",
         name: "res1",
@@ -31,6 +35,24 @@ const RestaurantsList = () => {
         }
     }];
 
+    const cuisines = restaurants.map(restaurant => restaurant.cuisine);
+    console.log(cuisines);
+
+    const onChangeSearchName = (e) => {
+        const searchName = e.target.value;
+        setSearchName(searchName);
+    };
+
+    const onChangeSearchZip = (e) => {
+        const searchZip = e.target.value;
+        setSearchZip(searchZip);
+    };
+
+    const onChangeSearchCuisine = (e) => {
+        const searchCuisine = e.target.value;
+        setSearchCuisine(searchCuisine);
+    };
+
     return (
         <div>
             <div className="row">
@@ -39,6 +61,8 @@ const RestaurantsList = () => {
                         type="text"
                         className="form-control"
                         placeholder="Search by name"
+                        value={searchName}
+                        onChange={onChangeSearchName}
                     />
                     <div className="input-group-append">
                         <button
@@ -54,6 +78,8 @@ const RestaurantsList = () => {
                         type="text"
                         className="form-control"
                         placeholder="Search by zip"
+                        value={searchZip}
+                        onChange={onChangeSearchZip}
                     />
                     <div className="input-group-append">
                         <button
@@ -65,7 +91,10 @@ const RestaurantsList = () => {
                     </div>
                 </div>
                 <div className="input-group">
-                    <select>
+                    <select onChange={onChangeSearchCuisine}>
+                        {cuisines.map((cuisine) => {
+                            return <option value={cuisine}> {cuisine.substring(0, 20)} </option>;
+                        })}
                     </select>
                     <div className="input-group-append">
                         <button
