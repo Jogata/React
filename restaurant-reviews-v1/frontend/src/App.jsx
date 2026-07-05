@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, Route, Routes } from "react-router-dom";
+import RestaurantsList from "./components/restaurants-list";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -44,17 +45,11 @@ function App() {
   )
 }
 
-// function Home() {
+// function RestaurantsList() {
 //   return (
-//     <h1>Home Page</h1>
+//     <h1>RestaurantsList Page</h1>
 //   )
 // }
-
-function RestaurantsList() {
-  return (
-    <h1>RestaurantsList Page</h1>
-  )
-}
 
 function Restaurant() {
   return (
