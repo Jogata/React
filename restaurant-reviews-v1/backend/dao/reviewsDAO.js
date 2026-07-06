@@ -10,7 +10,7 @@ export default class ReviewsDAO {
         }
 
         try {
-            reviews = await conn.db(process.env.RESTREVIEWS_NS).collection("reviews");
+            reviews = await conn.db("db").collection("reviews");
             // console.log("ReviewsDAO: 14");
             // console.log(reviews);
         } catch (err) {

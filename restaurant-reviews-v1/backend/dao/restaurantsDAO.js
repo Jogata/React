@@ -6,7 +6,7 @@ export default class RestaurantsDAO {
       return;
     }
     try {
-      restaurants = await conn.db(process.env.RESTREVIEWS_NS).collection("restaurants");
+      restaurants = await conn.db("db").collection("restaurants");
       // console.log("RestaurantsDAO: 10");
       // console.log(restaurants);
     } catch (err) {
@@ -36,7 +36,7 @@ export default class RestaurantsDAO {
 
     try {
       cursor = await restaurants
-        .find(query)
+        .find()
     } catch (err) {
       console.error(`Unable to issue find command, ${err}`);
       return { restaurantsList: [], totalNumRestaurants: 0 };

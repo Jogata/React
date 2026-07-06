@@ -1,42 +1,67 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import RestaurantDataService from "../services/restaurant";
 
 const RestaurantsList = () => {
+    const [restaurants, setRestaurants] = useState([]);
     const [searchName, setSearchName] = useState("");
     const [searchZip, setSearchZip] = useState("");
     const [searchCuisine, setSearchCuisine] = useState("");
 
-    const restaurants = [{
-        _id: "1",
-        name: "res1",
-        cuisine: "cuisine1",
-        address: {
-            building: "1",
-            street: "str1",
-            zipcode: "zcode1"
-        }
-    }, {
-        _id: "2",
-        name: "res2",
-        cuisine: "cuisine2",
-        address: {
-            building: "2",
-            street: "str2",
-            zipcode: "zcode2"
-        }
-    }, {
-        _id: "3",
-        name: "res3",
-        cuisine: "cuisine1",
-        address: {
-            building: "3",
-            street: "str3",
-            zipcode: "zcode3"
+    useEffect(() => {
+        retrieveRestaurants();
+    }, []);
 
-        }
-    }];
+    // const restaurants = [{
+    //     _id: "1",
+    //     name: "res1",
+    //     cuisine: "cuisine1",
+    //     address: {
+    //         building: "1",
+    //         street: "str1",
+    //         zipcode: "zcode1"
+    //     }
+    // }, {
+    //     _id: "2",
+    //     name: "res2",
+    //     cuisine: "cuisine2",
+    //     address: {
+    //         building: "2",
+    //         street: "str2",
+    //         zipcode: "zcode2"
+    //     }
+    // }, {
+    //     _id: "3",
+    //     name: "res3",
+    //     cuisine: "cuisine1",
+    //     address: {
+    //         building: "3",
+    //         street: "str3",
+    //         zipcode: "zcode3"
 
-    const cuisines = restaurants.map(restaurant => restaurant.cuisine);
-    console.log(cuisines);
+    //     }
+    // }];
+
+    const retrieveRestaurants = () => {
+        RestaurantDataService.getAllRestaurants()
+            .then((response) => {
+                console.log(response);
+                const data = response.json();
+                return data;
+                // setRestaurants(response.restaurants);
+            })
+            .then((data) => {
+                console.log(data);
+                setRestaurants(data.restaurants);
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    };
+
+    // const cuisines = restaurants.map(restaurant => restaurant.cuisine);
+    const cuisines = ["cuisines1", "cuisines2", "cuisines3"];
+    // console.log(cuisines);
 
     const onChangeSearchName = (e) => {
         const searchName = e.target.value;
@@ -93,7 +118,11 @@ const RestaurantsList = () => {
                 <div className="input-group">
                     <select onChange={onChangeSearchCuisine}>
                         {cuisines.map((cuisine) => {
-                            return <option value={cuisine}> {cuisine.substring(0, 20)} </option>;
+                            return (
+                                <option value={cuisine} key={cuisine}>
+                                    {cuisine.substring(0, 20)}
+                                </option>
+                            );
                         })}
                     </select>
                     <div className="input-group-append">

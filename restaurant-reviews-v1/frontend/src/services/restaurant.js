@@ -1,6 +1,6 @@
 class RestaurantDataService {
   getAllRestaurants(page = 0) {
-    return fetch(`restaurants?page=${page}`);
+    return fetch(`http://localhost:5000/api/v1/restaurants?page=${page}`);
   }
 
   getRestaurant(id) {
