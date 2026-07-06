@@ -1,9 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Route, Routes } from "react-router-dom";
 import RestaurantsList from "./components/restaurants-list";
 
 function App() {
   const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    return () => {
+      console.log("unmount app");
+    }
+  })
 
   return (
     <div className="page">

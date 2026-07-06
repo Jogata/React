@@ -45,9 +45,36 @@ const RestaurantsList = () => {
             });
     };
 
-    // const cuisines = restaurants.map(restaurant => restaurant.cuisine);
-    // const cuisines = ["cuisines1", "cuisines2", "cuisines3"];
-    // console.log(cuisines);
+    const refreshList = () => {
+        retrieveRestaurants();
+    };
+
+    const find = (query, by) => {
+        RestaurantDataService.find(query, by)
+            .then((response) => {
+                console.log(response.data);
+                setRestaurants(response.data.restaurants);
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    };
+
+    const findByName = () => {
+        find(searchName, "name");
+    };
+
+    const findByZip = () => {
+        find(searchZip, "zipcode");
+    };
+
+    const findByCuisine = () => {
+        if (searchCuisine === "All Cuisines") {
+            refreshList();
+        } else {
+            find(searchCuisine, "cuisine");
+        }
+    };
 
     const onChangeSearchName = (e) => {
         const searchName = e.target.value;
@@ -79,6 +106,7 @@ const RestaurantsList = () => {
                         <button
                             className="btn btn-secondary"
                             type="button"
+                            onClick={findByName}
                         >
                             Search
                         </button>
@@ -96,6 +124,7 @@ const RestaurantsList = () => {
                         <button
                             className="btn btn-secondary"
                             type="button"
+                            onClick={findByZip}
                         >
                             Search
                         </button>
@@ -115,17 +144,18 @@ const RestaurantsList = () => {
                         <button
                             className="btn btn-secondary"
                             type="button"
+                            onClick={findByCuisine}
                         >
                             Search
                         </button>
                     </div>
                 </div>
             </div>
-            <div className="row">
+            <div className="cards">
                 {restaurants.map((restaurant) => {
                     const address = `${restaurant.address.building} ${restaurant.address.street}, ${restaurant.address.zipcode}`;
                     return (
-                        <div className="cards" key={restaurant._id}>
+                        <div className="card" key={restaurant._id}>
                             <div className="card">
                                 <div className="card-body">
                                     <h5 className="card-title">{restaurant.name}</h5>

@@ -67,6 +67,7 @@ body {
   padding: 1rem 2%;
   display: flex;
   gap: 2rem;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   /* border: 1px solid red; */
