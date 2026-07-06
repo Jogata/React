@@ -4,43 +4,15 @@ import RestaurantDataService from "../services/restaurant";
 
 const RestaurantsList = () => {
     const [restaurants, setRestaurants] = useState([]);
+    const [cuisines, setCuisines] = useState(["All Cuisines"]);
     const [searchName, setSearchName] = useState("");
     const [searchZip, setSearchZip] = useState("");
     const [searchCuisine, setSearchCuisine] = useState("");
 
     useEffect(() => {
         retrieveRestaurants();
+        retrieveCuisines();
     }, []);
-
-    // const restaurants = [{
-    //     _id: "1",
-    //     name: "res1",
-    //     cuisine: "cuisine1",
-    //     address: {
-    //         building: "1",
-    //         street: "str1",
-    //         zipcode: "zcode1"
-    //     }
-    // }, {
-    //     _id: "2",
-    //     name: "res2",
-    //     cuisine: "cuisine2",
-    //     address: {
-    //         building: "2",
-    //         street: "str2",
-    //         zipcode: "zcode2"
-    //     }
-    // }, {
-    //     _id: "3",
-    //     name: "res3",
-    //     cuisine: "cuisine1",
-    //     address: {
-    //         building: "3",
-    //         street: "str3",
-    //         zipcode: "zcode3"
-
-    //     }
-    // }];
 
     const retrieveRestaurants = () => {
         RestaurantDataService.getAllRestaurants()
@@ -48,7 +20,6 @@ const RestaurantsList = () => {
                 console.log(response);
                 const data = response.json();
                 return data;
-                // setRestaurants(response.restaurants);
             })
             .then((data) => {
                 console.log(data);
@@ -59,8 +30,23 @@ const RestaurantsList = () => {
             });
     };
 
+    const retrieveCuisines = () => {
+        RestaurantDataService.getCuisines()
+            .then((response) => {
+                console.log(response);
+                // setCuisines(["All Cuisines"].concat(response));
+            })
+            .then((data) => {
+                console.log(data);
+                setCuisines(["All Cuisines"].concat(data.cuisines));
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    };
+
     // const cuisines = restaurants.map(restaurant => restaurant.cuisine);
-    const cuisines = ["cuisines1", "cuisines2", "cuisines3"];
+    // const cuisines = ["cuisines1", "cuisines2", "cuisines3"];
     // console.log(cuisines);
 
     const onChangeSearchName = (e) => {
