@@ -92,7 +92,7 @@ const RestaurantsList = () => {
     };
 
     return (
-        <div>
+        <div className="main-content">
             <div className="row">
                 <div className="input-group">
                     <input
@@ -156,17 +156,19 @@ const RestaurantsList = () => {
                     const address = `${restaurant.address.building} ${restaurant.address.street}, ${restaurant.address.zipcode}`;
                     return (
                         <div className="card" key={restaurant._id}>
-                            <div className="card">
+                            {/* <div className="card"> */}
                                 <div className="card-body">
-                                    <h5 className="card-title">{restaurant.name}</h5>
+                                    <h2 className="card-title">{restaurant.name}</h2>
                                     <p className="card-text">
                                         <strong>Cuisine: </strong>
                                         {restaurant.cuisine}
-                                        <br />
+                                        {/* <br /> */}
+                                    </p>
+                                    <p className="card-text">
                                         <strong>Address: </strong>
                                         {address}
                                     </p>
-                                    <div className="row">
+                                    <div className="row links">
                                         <Link
                                             to={"/restaurants/" + restaurant._id}
                                             className="btn btn-primary"
@@ -183,7 +185,7 @@ const RestaurantsList = () => {
                                         </a>
                                     </div>
                                 </div>
-                            </div>
+                            {/* </div> */}
                         </div>
                     );
                 })}

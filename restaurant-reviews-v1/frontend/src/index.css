@@ -66,7 +66,7 @@ body {
 .navbar {
   padding: 1rem 2%;
   display: flex;
-  gap: 2rem;
+  gap: 1rem 2rem;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
@@ -87,4 +87,82 @@ body {
 
 .navbar a {
   /* border: 1px solid white; */
+}
+
+.main-content {
+  padding: 1rem 2%;
+}
+
+.row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.input-group {
+  display: flex;
+}
+
+.form-control {
+  padding: 0.5rem 1rem;
+  border: 1px solid #555;
+  background-color: transparent;
+}
+
+.input-group button {
+  height: 100%;
+  border: 1px solid #555;
+}
+
+.input-group button:hover {
+  color: var(--LINK-HOVER);
+}
+
+.input-group select {
+  padding: 0.5rem 1rem;
+  border: 1px solid #555;
+  background-color: var(--BGCOLOR);
+}
+
+.cards {
+  /* max-width: 100%; */
+  padding: 2rem 0;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  /* grid-template-columns: repeat(auto-fill, auto); */
+  /* display: flex; */
+  /* flex-wrap: wrap; */
+}
+
+.card {
+  /* max-width: 100%; */
+  padding: 1rem;
+  border: 1px solid #555;
+  border-radius: 12px;
+}
+
+.card-title {
+  margin-bottom: 1rem;
+}
+
+.card-text {
+  margin-bottom: 0.5rem;
+}
+
+.card .links {
+  margin-top: 1rem;
+}
+
+.card .links a {
+  padding: 0.8em 1em;
+  color: var(--BGCOLOR);
+  font-weight: bold;
+  border-radius: 6px;
+  background-color: var(--LINK-HOVER);
+  transition: background-color 300ms;
+}
+
+.card .links a:hover {
+  background-color: var(--COLOR);
 }
