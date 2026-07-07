@@ -7,8 +7,9 @@ class RestaurantDataService {
     return fetch(`/restaurant?id=${id}`);
   }
 
-  findRestaurant(query, by = "name", page = 0) {
-    return fetch(`restaurants?${by}=${query}&page=${page}`);
+  findRestaurants(query, by = "name", page = 0) {
+    console.log(query, by, page);
+    return fetch(`http://localhost:5000/api/v1/restaurants?${by}=${query}&page=${page}`);
   } 
 
   createReview(data) {

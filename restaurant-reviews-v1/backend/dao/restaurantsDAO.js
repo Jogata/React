@@ -28,6 +28,7 @@ export default class RestaurantsDAO {
       } else if ("cuisine" in filters) {
         query = { "cuisine": { $eq: filters["cuisine"] } };
       } else if ("zipcode" in filters) {
+        console.log("zip");
         query = { "address.zipcode": { $eq: filters["zipcode"] } };
       }
     }
@@ -36,7 +37,7 @@ export default class RestaurantsDAO {
 
     try {
       cursor = await restaurants
-        .find()
+        .find(query);
     } catch (err) {
       console.error(`Unable to issue find command, ${err}`);
       return { restaurantsList: [], totalNumRestaurants: 0 };

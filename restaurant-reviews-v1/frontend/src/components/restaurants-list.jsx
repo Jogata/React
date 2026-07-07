@@ -50,10 +50,16 @@ const RestaurantsList = () => {
     };
 
     const find = (query, by) => {
-        RestaurantDataService.find(query, by)
+        console.log(query, by);
+        RestaurantDataService.findRestaurants(query, by)
             .then((response) => {
-                console.log(response.data);
-                setRestaurants(response.data.restaurants);
+                console.log(response);
+                const data = response.json();
+                return data;
+            })
+            .then((data) => {
+                console.log(data);
+                setRestaurants(data.restaurants);
             })
             .catch((e) => {
                 console.log(e);
