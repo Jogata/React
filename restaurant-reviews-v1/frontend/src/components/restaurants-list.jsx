@@ -17,7 +17,7 @@ const RestaurantsList = () => {
     const retrieveRestaurants = () => {
         RestaurantDataService.getAllRestaurants()
             .then((response) => {
-                console.log(response);
+                // console.log(response);
                 const data = response.json();
                 return data;
             })
@@ -34,7 +34,8 @@ const RestaurantsList = () => {
         RestaurantDataService.getCuisines()
             .then((response) => {
                 console.log(response);
-                // setCuisines(["All Cuisines"].concat(response));
+                const data = response.json();
+                return data;
             })
             .then((data) => {
                 console.log(data);
@@ -50,15 +51,15 @@ const RestaurantsList = () => {
     };
 
     const find = (query, by) => {
-        console.log(query, by);
+        // console.log(query, by);
         RestaurantDataService.findRestaurants(query, by)
             .then((response) => {
-                console.log(response);
+                // console.log(response);
                 const data = response.json();
                 return data;
             })
             .then((data) => {
-                console.log(data);
+                // console.log(data);
                 setRestaurants(data.restaurants);
             })
             .catch((e) => {
@@ -168,7 +169,6 @@ const RestaurantsList = () => {
                                     <p className="card-text">
                                         <strong>Cuisine: </strong>
                                         {restaurant.cuisine}
-                                        {/* <br /> */}
                                     </p>
                                     <p className="card-text">
                                         <strong>Address: </strong>
