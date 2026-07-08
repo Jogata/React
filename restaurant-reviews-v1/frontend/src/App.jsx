@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, Route, Routes } from "react-router-dom";
 import RestaurantsList from "./components/restaurants-list";
+import Restaurant from "./components/restaurant";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -57,11 +58,11 @@ function App() {
 //   )
 // }
 
-function Restaurant() {
-  return (
-    <h1>Restaurant Page</h1>
-  )
-}
+// function Restaurant() {
+//   return (
+//     <h1>Restaurant Page</h1>
+//   )
+// }
 
 function AddReview() {
   return (

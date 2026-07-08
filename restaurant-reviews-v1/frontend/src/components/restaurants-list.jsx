@@ -30,7 +30,7 @@ const RestaurantsList = () => {
                         return acc;
                     }
                 }, ["All Cuisines"]);
-                console.log(cuisines);
+                // console.log(cuisines);
                 setCuisines(cuisines);
             })
             .catch((e) => {
@@ -41,12 +41,12 @@ const RestaurantsList = () => {
     const retrieveCuisines = () => {
         RestaurantDataService.getCuisines()
             .then((response) => {
-                console.log(response);
+                // console.log(response);
                 const data = response.json();
                 return data;
             })
             .then((data) => {
-                console.log(data);
+                // console.log(data);
                 setCuisines(["All Cuisines"].concat(data.cuisines));
             })
             .catch((e) => {
