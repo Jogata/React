@@ -11,7 +11,7 @@ const RestaurantsList = () => {
 
     useEffect(() => {
         retrieveRestaurants();
-        retrieveCuisines();
+        // retrieveCuisines();
     }, []);
 
     const retrieveRestaurants = () => {
@@ -22,8 +22,16 @@ const RestaurantsList = () => {
                 return data;
             })
             .then((data) => {
-                console.log(data);
+                // console.log(data);
                 setRestaurants(data.restaurants);
+                const cuisines = data.restaurants.reduce((acc, restaurant) => {
+                    if (!acc.includes(restaurant.cuisine)) {
+                        acc.push(restaurant.cuisine);
+                        return acc;
+                    }
+                }, ["All Cuisines"]);
+                console.log(cuisines);
+                setCuisines(cuisines);
             })
             .catch((e) => {
                 console.log(e);

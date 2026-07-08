@@ -24,7 +24,8 @@ export default class RestaurantsDAO {
     let query;
     if (filters) {
       if ("name" in filters) {
-        query = { $text: { $search: filters["name"] } };
+        query = {"name": { $regex: filters["name"], $options: "i" }};
+        // query = { $text: { $search: filters["name"] } };
         // query.$text = { $search: filters["name"] };
       } else if ("cuisine" in filters) {
         query = { "cuisine": { $eq: filters["cuisine"] } };
@@ -44,8 +45,8 @@ export default class RestaurantsDAO {
       return { restaurantsList: [], totalNumRestaurants: 0 };
     }
 
-    console.log("46");
-    console.log(cursor);
+    console.log("48");
+    console.log(typeof cursor);
     const displayCursor = cursor.limit(restaurantsPerPage).skip(restaurantsPerPage * page);
 
     try {
