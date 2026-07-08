@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb";
+// const ObjectId = mongodb.ObjectID;
 let restaurants;
 
 export default class RestaurantsDAO {
@@ -7,8 +9,6 @@ export default class RestaurantsDAO {
     }
     try {
       restaurants = await conn.db("db").collection("restaurants");
-      // console.log("RestaurantsDAO: 10");
-      // console.log(restaurants);
     } catch (err) {
       console.error(
         `Unable to establish a collection handle in restaurantsDAO: ${err}`
@@ -25,8 +25,6 @@ export default class RestaurantsDAO {
     if (filters) {
       if ("name" in filters) {
         query = {"name": { $regex: filters["name"], $options: "i" }};
-        // query = { $text: { $search: filters["name"] } };
-        // query.$text = { $search: filters["name"] };
       } else if ("cuisine" in filters) {
         query = { "cuisine": { $eq: filters["cuisine"] } };
       } else if ("zipcode" in filters) {
@@ -63,6 +61,7 @@ export default class RestaurantsDAO {
   }
 
   static async getRestaurantByID(id) {
+    console.log(id);
     try {
       const pipeline = [
         {

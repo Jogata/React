@@ -1,7 +1,39 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import RestaurantDataService from "../services/restaurant";
 
-const Restaurant = (props) => {
-    const restaurant = {address: {}, reviews: []};
+const Restaurant = () => {
+    const initialRestaurantState = {
+        id: null,
+        name: "",
+        address: {},
+        cuisine: "",
+        reviews: [],
+    };
+
+    const [restaurant, setRestaurant] = useState(initialRestaurantState);
+
+    const { id } = useParams();
+
+    const getRestaurant = (id) => {
+        RestaurantDataService.getRestaurant(id)
+            .then((response) => {
+                console.log(response);
+                const data = response.json();
+                return data;
+            })
+            .then((data) => {
+                console.log(data);
+                setRestaurant(data);
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    };
+
+    useEffect(() => {
+        getRestaurant(id);
+    }, [id]);
 
     return (
         <div>

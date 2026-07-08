@@ -4,7 +4,8 @@ class RestaurantDataService {
   }
 
   getRestaurant(id) {
-    return fetch(`/restaurant?id=${id}`);
+    // console.log(id);
+    return fetch(`http://localhost:5000/api/v1/restaurants/${id}`);
   }
 
   findRestaurants(query, by = "name", page = 0) {
