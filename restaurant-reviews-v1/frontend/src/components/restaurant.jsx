@@ -3,15 +3,16 @@ import { Link, useParams } from "react-router-dom";
 import RestaurantDataService from "../services/restaurant";
 
 const Restaurant = () => {
-    const initialRestaurantState = {
-        id: null,
-        name: "",
-        address: {},
-        cuisine: "",
-        reviews: [],
-    };
+    // const initialRestaurantState = {
+    //     id: null,
+    //     name: "",
+    //     address: {},
+    //     cuisine: "",
+    //     reviews: [],
+    // };
 
-    const [restaurant, setRestaurant] = useState(initialRestaurantState);
+    // const [restaurant, setRestaurant] = useState(initialRestaurantState);
+    const [restaurant, setRestaurant] = useState(null);
 
     const { id } = useParams();
 
@@ -19,11 +20,16 @@ const Restaurant = () => {
         RestaurantDataService.getRestaurant(id)
             .then((response) => {
                 console.log(response);
-                const data = response.json();
-                return data;
+
+                if (response.ok) {                    
+                    const data = response.json();
+                    return data;
+                } else {
+                    throw new Error("not found");
+                }
             })
             .then((data) => {
-                console.log(data);
+                // console.log(data);
                 setRestaurant(data);
             })
             .catch((e) => {
@@ -38,18 +44,32 @@ const Restaurant = () => {
     return (
         <div>
             {restaurant ? (
-                <div>
+                <div className="card">
                     <h1>{restaurant.name}</h1>
-                    <p>
+                    {/* <p>
                         <strong>Cuisine: </strong>
                         {restaurant.cuisine}
                         <br />
                         <strong>Address: </strong>
                         {restaurant.address.building} {restaurant.address.street},{" "}
                         {restaurant.address.zipcode}
-                    </p>
+                    </p> */}
+                    <dl>
+                        <div className="row">
+                            <dt>Cuisine:</dt>
+                            <dd>{restaurant.cuisine}</dd>
+                        </div>
+
+                        <div className="row">
+                            <dt>Address:</dt>
+                            <dd>
+                                {restaurant.address.building} {restaurant.address.street},{" "}
+                                {restaurant.address.zipcode}
+                            </dd>
+                        </div>
+                    </dl>
                     <Link
-                        to={"/restaurants/" + "id" + "/review"}
+                        to={"/restaurants/" + id + "/review"}
                         className="btn btn-primary"
                     >
                         Add Review
@@ -110,8 +130,9 @@ const Restaurant = () => {
                 </div>
             ) : (
                 <div>
-                    <br />
-                    <p>No restaurant selected.</p>
+                    {/* <br /> */}
+                    {/* <p>No restaurant selected.</p> */}
+                    <h1>Restaurant not found</h1>
                 </div>
             )}
         </div>
