@@ -166,3 +166,8 @@ body {
 .card .links a:hover {
   background-color: var(--COLOR);
 }
+
+.not-found-section {
+  padding: 2rem 5%;
+  text-align: center;
+}
