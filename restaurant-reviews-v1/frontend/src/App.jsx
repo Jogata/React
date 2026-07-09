@@ -52,18 +52,6 @@ function App() {
   )
 }
 
-// function RestaurantsList() {
-//   return (
-//     <h1>RestaurantsList Page</h1>
-//   )
-// }
-
-// function Restaurant() {
-//   return (
-//     <h1>Restaurant Page</h1>
-//   )
-// }
-
 function AddReview() {
   return (
     <h1>AddReview Page</h1>
