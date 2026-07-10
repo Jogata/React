@@ -75,58 +75,19 @@ function Card({ restaurant }) {
             >
                 Add Review
             </Link>
-            <h4> Reviews </h4>
-            <Reviews reviews={restaurant.reviews} />
+            <h2> Reviews </h2>
+            <Reviews reviews={restaurant.reviews} restaurantId={restaurant._id} />
         </div>
     )
 }
 
-function Reviews({ reviews }) {
+function Reviews({ reviews, restaurantId }) {
     return (
         <div className="row">
             {reviews.length > 0 ? (
                 reviews.map((review, index) => {
                     return (
-                        <div className="review" key={index}>
-                            <div className="card">
-                                <div className="card-body">
-                                    <p className="card-text">
-                                        {review.text}
-                                        <br />
-                                        <strong>User: </strong>
-                                        {review.name}
-                                        <br />
-                                        <strong>Date: </strong>
-                                        {review.date}
-                                    </p>
-                                    {props.user && props.user.id === review.user_id && (
-                                        <div className="row">
-                                            <a
-                                                href="/#"
-                                                onClick={() => deleteReview(review._id, index)}
-                                                className="btn btn-primary col-lg-5 mx-1 mb-1"
-                                            >
-                                                Delete
-                                            </a>
-                                            <Link
-                                                to={{
-                                                    pathname:
-                                                        "/restaurants/" +
-                                                        restaurant._id +
-                                                        "/review",
-                                                    state: {
-                                                        currentReview: review,
-                                                    },
-                                                }}
-                                                className="btn"
-                                            >
-                                                Edit
-                                            </Link>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
+                        <Review review={review} restaurantId={restaurantId} />
                     );
                 })
             ) : (
@@ -134,6 +95,51 @@ function Reviews({ reviews }) {
                     <p>No reviews yet.</p>
                 </div>
             )}
+        </div>
+    )
+}
+
+function Review({ review, restaurantId }) {
+    return (
+        <div className="review" key={index}>
+            <div className="card">
+                <div className="card-body">
+                    <p className="card-text">
+                        {review.text}
+                        <br />
+                        <strong>User: </strong>
+                        {review.name}
+                        <br />
+                        <strong>Date: </strong>
+                        {review.date}
+                    </p>
+                    {props.user && props.user.id === review.user_id && (
+                        <div className="row">
+                            <a
+                                href="/#"
+                                onClick={() => deleteReview(review._id, index)}
+                                className="btn btn-primary col-lg-5 mx-1 mb-1"
+                            >
+                                Delete
+                            </a>
+                            <Link
+                                to={{
+                                    pathname:
+                                        "/restaurants/" +
+                                        restaurantId +
+                                        "/review",
+                                    state: {
+                                        currentReview: review,
+                                    },
+                                }}
+                                className="btn"
+                            >
+                                Edit
+                            </Link>
+                        </div>
+                    )}
+                </div>
+            </div>
         </div>
     )
 }
