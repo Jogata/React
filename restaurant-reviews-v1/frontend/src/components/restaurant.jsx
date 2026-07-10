@@ -35,7 +35,12 @@ const Restaurant = () => {
     return (
         <div>
             {restaurant ? (
+                <>
                 <Card restaurant={restaurant} />
+                <Card1>
+                <RestaurantName name={"test"} />
+                </Card1>
+                </>
             ) : (
                 <NotFound />
             )}
@@ -51,7 +56,25 @@ function NotFound() {
     )
 }
 
-function Card({ restaurant }) {
+function Card({ restaurant1 }) {
+    const [restaurant, setRestaurant] = useState({
+        name: "res1", 
+        cuisine: "cuisine1", 
+        reviews: [], 
+        address: {
+            building: "1", 
+            street: "street1", 
+            zipcode: "1000"}
+        });
+
+    const changeState = () => {
+        setRestaurant(old => {
+            // console.log(old);
+            const newRes = {...old};
+            return newRes;
+        })
+    }
+
     return (
         <div className="restaurant-card">
             {/* <h1>{restaurant.name}</h1> */}
@@ -77,6 +100,58 @@ function Card({ restaurant }) {
             >
                 Add Review
             </Link>
+            <button onClick={changeState}>Change State</button>
+            <h2> Reviews </h2>
+            <Reviews reviews={restaurant.reviews} restaurantId={restaurant._id} />
+        </div>
+    )
+}
+
+function Card1({children}) {
+    const [restaurant, setRestaurant] = useState({
+        name: "res2", 
+        cuisine: "cuisine1", 
+        reviews: [], 
+        address: {
+            building: "1", 
+            street: "street1", 
+            zipcode: "1000"}
+        });
+
+    const changeState = () => {
+        setRestaurant(old => {
+            // console.log(old);
+            const newRes = {...old};
+            return newRes;
+        })
+    }
+
+    return (
+        <div className="restaurant-card">
+            {/* <h1>{restaurant.name}</h1> */}
+            {/* <RestaurantName name={"test"} /> */}
+            <RestaurantName2 restaurant={restaurant} />
+            <dl>
+                <div className="row">
+                    <dt>Cuisine:</dt>
+                    <dd>{restaurant.cuisine}</dd>
+                </div>
+
+                <div className="row">
+                    <dt>Address:</dt>
+                    <dd>
+                        {restaurant.address.building} {restaurant.address.street},{" "}
+                        {restaurant.address.zipcode}
+                    </dd>
+                </div>
+            </dl>
+            <Link
+                to={"/restaurants/" + restaurant._id + "/review"}
+                className="btn btn-primary"
+            >
+                Add Review
+            </Link>
+            <button onClick={changeState}>Change State</button>
             <h2> Reviews </h2>
             <Reviews reviews={restaurant.reviews} restaurantId={restaurant._id} />
         </div>
@@ -158,14 +233,14 @@ function Review({ review, restaurantId }) {
 }
 
 function RestaurantName({name}) {
-    console.log(name);
+    console.log("179" + name);
     return (
         <h1>{name}</h1> 
     )
 }
 
 function RestaurantName2({restaurant}) {
-    console.log(restaurant);
+    console.log("186" + restaurant.name);
     return (
         <h1>{restaurant.name}</h1> 
     )
