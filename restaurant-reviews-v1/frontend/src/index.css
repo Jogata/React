@@ -167,6 +167,10 @@ body {
   background-color: var(--COLOR);
 }
 
+dl .row {
+  gap: 0.5rem;
+}
+
 .not-found-section {
   padding: 2rem 5%;
   text-align: center;

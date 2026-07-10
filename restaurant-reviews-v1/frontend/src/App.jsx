@@ -43,7 +43,7 @@ function App() {
       </nav>
       <Routes>
         <Route path="/" element={<RestaurantsList />} />
-        <Route path="/restaurants" element={<RestaurantsList />} />
+        <Route path="/restaurants" element={<RestaurantsList userId={user?.id} />} />
         <Route path="/restaurants/:id" element={<Restaurant />} />
         <Route path="/restaurants/:id/review" element={<AddReview />} />
         <Route path="/login" element={<Login />} />

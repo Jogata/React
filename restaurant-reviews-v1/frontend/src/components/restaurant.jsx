@@ -54,7 +54,9 @@ function NotFound() {
 function Card({ restaurant }) {
     return (
         <div className="restaurant-card">
-            <h1>{restaurant.name}</h1>
+            {/* <h1>{restaurant.name}</h1> */}
+            <RestaurantName name={restaurant.name} />
+            <RestaurantName2 restaurant={restaurant} />
             <dl>
                 <div className="row">
                     <dt>Cuisine:</dt>
@@ -104,7 +106,7 @@ function Review({ review, restaurantId }) {
         <div className="review" key={index}>
             <div className="card">
                 <div className="card-body">
-                    <p className="card-text">
+                    {/* <p className="card-text">
                         {review.text}
                         <br />
                         <strong>User: </strong>
@@ -112,7 +114,18 @@ function Review({ review, restaurantId }) {
                         <br />
                         <strong>Date: </strong>
                         {review.date}
-                    </p>
+                    </p> */}
+                    <p className="card-text">{review.text}</p>
+                    <dl>
+                        <div className="row">
+                            <dt>User:</dt>
+                            <dd>{review.name}</dd>
+                        </div>
+                        <div className="row">
+                            <dt>Date:</dt>
+                            <dd>{new Date(review.date).toLocaleDateString()}</dd>
+                        </div>
+                    </dl>
                     {props.user && props.user.id === review.user_id && (
                         <div className="row">
                             <a
@@ -141,6 +154,20 @@ function Review({ review, restaurantId }) {
                 </div>
             </div>
         </div>
+    )
+}
+
+function RestaurantName({name}) {
+    console.log(name);
+    return (
+        <h1>{name}</h1> 
+    )
+}
+
+function RestaurantName2({restaurant}) {
+    console.log(restaurant);
+    return (
+        <h1>{restaurant.name}</h1> 
     )
 }
 
