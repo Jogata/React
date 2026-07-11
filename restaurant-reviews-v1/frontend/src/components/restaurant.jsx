@@ -33,9 +33,9 @@ const Restaurant = ({ userId }) => {
     }, [id]);
 
     return (
-        <div>
+        <div className="main-content">
             {restaurant ? (
-                <Card restaurant={restaurant} />
+                <Card restaurant={restaurant} userId={userId} />
             ) : (
                 <NotFound />
             )}
@@ -51,12 +51,10 @@ function NotFound() {
     )
 }
 
-function Card({ restaurant }) {
+function Card({ restaurant, userId }) {
     return (
-        <div className="restaurant-card">
+        <div className="restaurant">
             <h1>{restaurant.name}</h1>
-            {/* <RestaurantName name={restaurant.name} /> */}
-            {/* <RestaurantName2 restaurant={restaurant} /> */}
             <dl>
                 <div className="row">
                     <dt>Cuisine:</dt>
@@ -77,20 +75,28 @@ function Card({ restaurant }) {
             >
                 Add Review
             </Link>
-            {/* <button onClick={changeState}>Change State</button> */}
             <h2> Reviews </h2>
-            <Reviews reviews={restaurant.reviews} restaurantId={restaurant._id} />
+            <Reviews 
+                reviews={restaurant.reviews} 
+                restaurantId={restaurant._id} 
+                userId={userId} 
+            />
         </div>
     )
 }
 
-function Reviews({ reviews, restaurantId }) {
+function Reviews({ reviews, restaurantId, userId }) {
     return (
-        <div className="row">
+        <div className="reviews">
             {reviews.length > 0 ? (
                 reviews.map((review, index) => {
                     return (
-                        <Review review={review} restaurantId={restaurantId} key={index} />
+                        <Review 
+                            key={index}
+                            review={review} 
+                            restaurantId={restaurantId} 
+                            userId={userId}
+                         />
                     );
                 })
             ) : (
@@ -102,7 +108,9 @@ function Reviews({ reviews, restaurantId }) {
     )
 }
 
-function Review({ review, restaurantId }) {
+function Review({ review, restaurantId, userId }) {
+    const isOwner = userId && userId === review.user_id;
+
     const deleteReview = (reviewId, index) => {
         console.log("todo: delete review");
     };
@@ -122,18 +130,12 @@ function Review({ review, restaurantId }) {
                             <dd>{new Date(review.date).toLocaleDateString()}</dd>
                         </div>
                     </dl>
-                    {userId && userId === review.user_id && (
+                    {/* {userId && userId === review.user_id && ( */}
+                    {isOwner && (
                         <div className="row">
-                            {/* <a
-                                href="/#"
-                                onClick={() => deleteReview(review._id, index)}
-                                className="btn btn-primary"
-                            >
-                                Delete
-                            </a> */}
                             <button
-                                onClick={() => onDelete(review._id, index)}
                                 className="btn"
+                                onClick={() => onDelete(review._id, index)}
                             >
                                 Delete
                             </button>

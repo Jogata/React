@@ -56,6 +56,19 @@ img {
   width: 100%;
 }
 
+.btn-primary {
+  padding: 0.6em 1.2em;
+  font-weight: bold;
+  border-radius: 6px;
+  background-color: rgb(50, 34, 155);
+  transition: background-color 300ms ease-in-out;
+}
+
+.btn-primary:hover {
+  color: var(--COLOR);
+  background-color: rgb(63, 46, 177);
+}
+
 body {
   min-height: 100vh;
   color: var(--COLOR);
@@ -176,7 +189,25 @@ dl .row {
   text-align: center;
 }
 
+.restaurant h1 {
+  margin-bottom: 1rem;
+}
+
+.restaurant dl {
+  margin-bottom: 1rem;
+}
+
+.restaurant dl .row {
+  margin-bottom: 0.25rem;
+}
+
+.restaurant h2 {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--BORDER-COLOR);
+}
+
 .empty-reviews-section {
   padding: 1rem;
-  text-align: center;
+  /* text-align: center; */
 }
