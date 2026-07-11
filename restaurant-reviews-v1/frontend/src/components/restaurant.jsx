@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import RestaurantDataService from "../services/restaurant";
 
-const Restaurant = () => {
+const Restaurant = ({ userId }) => {
     const [restaurant, setRestaurant] = useState(null);
 
     const { id } = useParams();
@@ -35,12 +35,7 @@ const Restaurant = () => {
     return (
         <div>
             {restaurant ? (
-                <>
                 <Card restaurant={restaurant} />
-                <Card1>
-                <RestaurantName name={"test"} />
-                </Card1>
-                </>
             ) : (
                 <NotFound />
             )}
@@ -56,30 +51,12 @@ function NotFound() {
     )
 }
 
-function Card({ restaurant1 }) {
-    const [restaurant, setRestaurant] = useState({
-        name: "res1", 
-        cuisine: "cuisine1", 
-        reviews: [], 
-        address: {
-            building: "1", 
-            street: "street1", 
-            zipcode: "1000"}
-        });
-
-    const changeState = () => {
-        setRestaurant(old => {
-            // console.log(old);
-            const newRes = {...old};
-            return newRes;
-        })
-    }
-
+function Card({ restaurant }) {
     return (
         <div className="restaurant-card">
-            {/* <h1>{restaurant.name}</h1> */}
-            <RestaurantName name={restaurant.name} />
-            <RestaurantName2 restaurant={restaurant} />
+            <h1>{restaurant.name}</h1>
+            {/* <RestaurantName name={restaurant.name} /> */}
+            {/* <RestaurantName2 restaurant={restaurant} /> */}
             <dl>
                 <div className="row">
                     <dt>Cuisine:</dt>
@@ -100,58 +77,7 @@ function Card({ restaurant1 }) {
             >
                 Add Review
             </Link>
-            <button onClick={changeState}>Change State</button>
-            <h2> Reviews </h2>
-            <Reviews reviews={restaurant.reviews} restaurantId={restaurant._id} />
-        </div>
-    )
-}
-
-function Card1({children}) {
-    const [restaurant, setRestaurant] = useState({
-        name: "res2", 
-        cuisine: "cuisine1", 
-        reviews: [], 
-        address: {
-            building: "1", 
-            street: "street1", 
-            zipcode: "1000"}
-        });
-
-    const changeState = () => {
-        setRestaurant(old => {
-            // console.log(old);
-            const newRes = {...old};
-            return newRes;
-        })
-    }
-
-    return (
-        <div className="restaurant-card">
-            {/* <h1>{restaurant.name}</h1> */}
-            {/* <RestaurantName name={"test"} /> */}
-            <RestaurantName2 restaurant={restaurant} />
-            <dl>
-                <div className="row">
-                    <dt>Cuisine:</dt>
-                    <dd>{restaurant.cuisine}</dd>
-                </div>
-
-                <div className="row">
-                    <dt>Address:</dt>
-                    <dd>
-                        {restaurant.address.building} {restaurant.address.street},{" "}
-                        {restaurant.address.zipcode}
-                    </dd>
-                </div>
-            </dl>
-            <Link
-                to={"/restaurants/" + restaurant._id + "/review"}
-                className="btn btn-primary"
-            >
-                Add Review
-            </Link>
-            <button onClick={changeState}>Change State</button>
+            {/* <button onClick={changeState}>Change State</button> */}
             <h2> Reviews </h2>
             <Reviews reviews={restaurant.reviews} restaurantId={restaurant._id} />
         </div>
@@ -164,11 +90,11 @@ function Reviews({ reviews, restaurantId }) {
             {reviews.length > 0 ? (
                 reviews.map((review, index) => {
                     return (
-                        <Review review={review} restaurantId={restaurantId} />
+                        <Review review={review} restaurantId={restaurantId} key={index} />
                     );
                 })
             ) : (
-                <div>
+                <div className="empty-reviews-section">
                     <p>No reviews yet.</p>
                 </div>
             )}
@@ -177,19 +103,14 @@ function Reviews({ reviews, restaurantId }) {
 }
 
 function Review({ review, restaurantId }) {
+    const deleteReview = (reviewId, index) => {
+        console.log("todo: delete review");
+    };
+
     return (
-        <div className="review" key={index}>
+        <div className="review">
             <div className="card">
                 <div className="card-body">
-                    {/* <p className="card-text">
-                        {review.text}
-                        <br />
-                        <strong>User: </strong>
-                        {review.name}
-                        <br />
-                        <strong>Date: </strong>
-                        {review.date}
-                    </p> */}
                     <p className="card-text">{review.text}</p>
                     <dl>
                         <div className="row">
@@ -201,15 +122,21 @@ function Review({ review, restaurantId }) {
                             <dd>{new Date(review.date).toLocaleDateString()}</dd>
                         </div>
                     </dl>
-                    {props.user && props.user.id === review.user_id && (
+                    {userId && userId === review.user_id && (
                         <div className="row">
-                            <a
+                            {/* <a
                                 href="/#"
                                 onClick={() => deleteReview(review._id, index)}
-                                className="btn btn-primary col-lg-5 mx-1 mb-1"
+                                className="btn btn-primary"
                             >
                                 Delete
-                            </a>
+                            </a> */}
+                            <button
+                                onClick={() => onDelete(review._id, index)}
+                                className="btn"
+                            >
+                                Delete
+                            </button>
                             <Link
                                 to={{
                                     pathname:
@@ -229,20 +156,6 @@ function Review({ review, restaurantId }) {
                 </div>
             </div>
         </div>
-    )
-}
-
-function RestaurantName({name}) {
-    console.log("179" + name);
-    return (
-        <h1>{name}</h1> 
-    )
-}
-
-function RestaurantName2({restaurant}) {
-    console.log("186" + restaurant.name);
-    return (
-        <h1>{restaurant.name}</h1> 
     )
 }
 

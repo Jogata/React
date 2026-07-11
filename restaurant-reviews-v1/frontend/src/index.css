@@ -175,3 +175,8 @@ dl .row {
   padding: 2rem 5%;
   text-align: center;
 }
+
+.empty-reviews-section {
+  padding: 1rem;
+  text-align: center;
+}
