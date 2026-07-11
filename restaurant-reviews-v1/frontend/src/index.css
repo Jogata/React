@@ -28,9 +28,9 @@ a {
   transition: color 300ms ease-in-out;
 }
 
-a:visited {
+/* a:visited {
   color: var(--LINK-COLOR);
-}
+} */
 
 a:hover {
   color: var(--LINK-HOVER);
@@ -57,16 +57,19 @@ img {
 }
 
 .btn-primary {
-  padding: 0.6em 1.2em;
+  padding: 0.8em 1em;
+  color: var(--BGCOLOR);
   font-weight: bold;
   border-radius: 6px;
-  background-color: rgb(50, 34, 155);
+  background-color: var(--LINK-HOVER);
   transition: background-color 300ms ease-in-out;
 }
 
 .btn-primary:hover {
-  color: var(--COLOR);
-  background-color: rgb(63, 46, 177);
+  /* color: var(--COLOR); */
+  color: var(--BGCOLOR);
+  /* background-color: rgb(63, 46, 177); */
+  background-color: var(--COLOR);
 }
 
 body {

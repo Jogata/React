@@ -1,15 +1,29 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = ({ login }) => {
     const initialUserState = {
-        name: "",
-        id: "",
+        name: "jogata",
+        id: "bvhfh",
     };
 
     const [user, setUser] = useState(initialUserState);
 
+    const navigate = useNavigate();
+
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        setUser({ ...user, [name]: value });
+    };
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+        login(user);
+        navigate("/");
+      };
+
     return (
-        <div className="submit-form">
+        <form className="submit-form" onSubmit={handleLogin}>
             <div>
                 <div className="form-group">
                     <label htmlFor="user">Username</label>
@@ -18,6 +32,8 @@ const Login = () => {
                         id="name"
                         name="name"
                         className="form-control"
+                        value={user.name}
+                        onChange={handleInputChange}
                         required
                     />
                 </div>
@@ -29,6 +45,8 @@ const Login = () => {
                         id="id"
                         name="id"
                         className="form-control"
+                        value={user.id}
+                        onChange={handleInputChange}
                         required
                     />
                 </div>
@@ -37,7 +55,7 @@ const Login = () => {
                     Login
                 </button>
             </div>
-        </div>
+        </form>
     );
 };
 

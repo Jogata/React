@@ -2,9 +2,14 @@ import { useEffect, useState } from "react";
 import { Link, Route, Routes } from "react-router-dom";
 import RestaurantsList from "./components/restaurants-list";
 import Restaurant from "./components/restaurant";
+import Login from "./components/login";
 
 function App() {
   const [user, setUser] = useState(null);
+
+  async function login(user = null) {
+    setUser(user);
+  }
 
   useEffect(() => {
     return () => {
@@ -28,7 +33,7 @@ function App() {
             {user ? (
               <a
                 href="/#"
-                onClick={logout}
+                onClick={login}
                 className="nav-link"
               >
                 Logout {user.name}
@@ -46,7 +51,7 @@ function App() {
         <Route path="/restaurants" element={<RestaurantsList />} />
         <Route path="/restaurants/:id" element={<Restaurant userId={user?.id} />} />
         <Route path="/restaurants/:id/review" element={<AddReview />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login login={login} />} />
       </Routes>
     </div>
   )
@@ -58,10 +63,10 @@ function AddReview() {
   )
 }
 
-function Login() {
-  return (
-    <h1>Login Page</h1>
-  )
-}
+// function Login() {
+//   return (
+//     <h1>Login Page</h1>
+//   )
+// }
 
 export default App;
