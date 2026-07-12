@@ -11,6 +11,10 @@ function App() {
     setUser(user);
   }
 
+  async function logout(user = null) {
+    setUser(null);
+  }
+
   useEffect(() => {
     return () => {
       console.log("unmount app");
@@ -31,13 +35,20 @@ function App() {
           </li>
           <li>
             {user ? (
-              <a
-                href="/#"
-                onClick={login}
-                className="nav-link"
+              // <a
+              //   href="/#"
+              //   onClick={logout}
+              //   className="nav-link"
+              // >
+              //   Logout {user.name}
+              // </a>
+              <button
+                // href="/#"
+                onClick={logout}
+                className="btn-primary"
               >
                 Logout {user.name}
-              </a>
+              </button>
             ) : (
               <Link to={"/login"} className="nav-link">
                 Login

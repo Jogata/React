@@ -19,12 +19,18 @@ const Login = ({ login }) => {
     const handleLogin = (e) => {
         e.preventDefault();
         login(user);
-        navigate("/");
-      };
+        const hasBrowserHistory = window.history.length > 2;
+        if (hasBrowserHistory) {
+            navigate(-1);
+        } else {
+            navigate("/", { replace: true });
+        }
+    };
 
     return (
         <form className="submit-form" onSubmit={handleLogin}>
             <div>
+                <h1>Login</h1>
                 <div className="form-group">
                     <label htmlFor="user">Username</label>
                     <input
