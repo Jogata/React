@@ -22,7 +22,13 @@ class RestaurantDataService {
   }
 
   deleteReview(id, userId) {
-    return fetch(`/review-delete?id=${id}`, {data:{user_id: userId}});
+    return fetch(`http://localhost:5000/api/v1/review-delete?id=${id}`, {
+      method: "DELETE", 
+      headers: {
+        "Content-Type": "application/json"
+      }, 
+      body: JSON.stringify({data:{user_id: userId}})
+    });
   }
 
   getCuisines(id) {

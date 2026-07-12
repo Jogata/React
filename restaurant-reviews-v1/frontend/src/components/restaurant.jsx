@@ -74,7 +74,8 @@ function Card({ restaurant, userId }) {
                 </div>
             </dl>
             <Link
-                to={"/restaurants/" + restaurant._id + "/review"}
+                // to={"/restaurants/" + restaurant._id + "/review"}
+                to={`/restaurants/${restaurant._id}/review`}
                 className="btn btn-primary"
             >
                 Add Review
@@ -134,7 +135,6 @@ function Review({ review, restaurantId, userId }) {
                             <dd>{new Date(review.date).toLocaleDateString()}</dd>
                         </div>
                     </dl>
-                    {/* {userId && userId === review.user_id && ( */}
                     {isOwner && (
                         <div className="row">
                             <button
