@@ -32,6 +32,10 @@ const Restaurant = ({ userId }) => {
         getRestaurant(id);
     }, [id]);
 
+    if (!restaurant) {
+        return <p>Loading...</p>
+    }
+
     return (
         <div className="main-content">
             {restaurant ? (

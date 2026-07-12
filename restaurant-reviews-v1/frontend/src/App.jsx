@@ -35,15 +35,7 @@ function App() {
           </li>
           <li>
             {user ? (
-              // <a
-              //   href="/#"
-              //   onClick={logout}
-              //   className="nav-link"
-              // >
-              //   Logout {user.name}
-              // </a>
               <button
-                // href="/#"
                 onClick={logout}
                 className="btn-primary"
               >
@@ -73,11 +65,5 @@ function AddReview() {
     <h1>AddReview Page</h1>
   )
 }
-
-// function Login() {
-//   return (
-//     <h1>Login Page</h1>
-//   )
-// }
 
 export default App;
