@@ -99,6 +99,7 @@ body {
   display: flex;
   gap: 1rem;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .navbar a {
@@ -248,4 +249,13 @@ dl .row {
 .submit-form .btn-primary {
   margin-top: 1rem;
   padding: 0.6em 2em;
+}
+
+.response-section {
+  padding: 2rem 2%;
+  text-align: center;
+}
+
+.response-section a {
+  margin-top: 2rem;
 }

@@ -3,6 +3,7 @@ import { Link, Route, Routes } from "react-router-dom";
 import RestaurantsList from "./components/restaurants-list";
 import Restaurant from "./components/restaurant";
 import Login from "./components/login";
+import AddReview from "./components/add-review";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -53,17 +54,17 @@ function App() {
         <Route path="/" element={<RestaurantsList />} />
         <Route path="/restaurants" element={<RestaurantsList />} />
         <Route path="/restaurants/:id" element={<Restaurant userId={user?.id} />} />
-        <Route path="/restaurants/:id/review" element={<AddReview />} />
+        <Route path="/restaurants/:id/review" element={<AddReview user={user} />} />
         <Route path="/login" element={<Login login={login} />} />
       </Routes>
     </div>
   )
 }
 
-function AddReview() {
-  return (
-    <h1>AddReview Page</h1>
-  )
-}
+// function AddReview() {
+//   return (
+//     <h1>AddReview Page</h1>
+//   )
+// }
 
 export default App;

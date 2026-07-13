@@ -74,7 +74,6 @@ function Card({ restaurant, userId }) {
                 </div>
             </dl>
             <Link
-                // to={"/restaurants/" + restaurant._id + "/review"}
                 to={`/restaurants/${restaurant._id}/review`}
                 className="btn btn-primary"
             >
