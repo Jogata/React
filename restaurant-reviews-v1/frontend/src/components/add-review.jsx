@@ -2,12 +2,14 @@ import { useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 
 const AddReview = ({ user }) => {
-    const [review, setReview] = useState("");
+    // const [review, setReview] = useState("");
+    const [submitted, setSubmitted] = useState(false);
+
     const { id: restaurantId } = useParams();
     const { state } = useLocation();
     console.log(state);
     // console.log(restaurantId);
-    let submitted = true;
+    // let submitted = true;
     const editing = Boolean(state?.currentReview);
 
     if (!user) {
@@ -19,47 +21,39 @@ const AddReview = ({ user }) => {
         );
     }
 
-    const handleInputChange = (event) => {
-        setReview(event.target.value);
-    };
-
     if (submitted) {
         return <SubmitSuccess restaurantId={restaurantId} />;
     }
 
-    return (
-        <div>
-            {user ? (
-                <div className="submit-form">
-                    {submitted ? (
-                        <SubmitSuccess restaurantId={restaurantId} />
-                    ) : (
-                        <ReviewInputForm editing={editing} />
-                        // <div>
-                        //     <div className="form-group">
-                        //         <label htmlFor="description">
-                        //             {editing ? "Edit" : "Create"} Review
-                        //         </label>
-                        //         <input
-                        //             type="text"
-                        //             id="text"
-                        //             name="text"
-                        //             className="form-control"
-                        //             required
-                        //         />
-                        //     </div>
-                        //     <button className="btn btn-primary">
-                        //         Submit
-                        //     </button>
-                        // </div>
-                    )}
-                </div>
-            ) : (
-                // <div>Please log in.</div>
-                null
-            )}
-        </div>
-    );
+    // const handleInputChange = (event) => {
+    //     setReview(event.target.value);
+    // };
+
+    // function onSubmit() {
+    //     console.log("todo create review");
+    // }
+
+    // const handleInputChange = (event) => {
+    //     setReview(event.target.value);
+    // };
+
+    return <ReviewInputForm editing={editing} restaurantId={restaurantId} setSubmitted={setSubmitted} user={user} />;
+
+    // return (
+    //     <div>
+    //         {user ? (
+    //             <div className="submit-form">
+    //                 {submitted ? (
+    //                     <SubmitSuccess restaurantId={restaurantId} />
+    //                 ) : (
+    //                     <ReviewInputForm editing={editing} />
+    //                 )}
+    //             </div>
+    //         ) : (
+    //             null
+    //         )}
+    //     </div>
+    // );
 };
 
 function SubmitSuccess({ restaurantId }) {
@@ -75,14 +69,28 @@ function SubmitSuccess({ restaurantId }) {
     );
 }
 
-function ReviewInputForm({ editing }) {
-    function onSubmit() {
+function ReviewInputForm({ editing, setSubmitted, restaurantId, user }) {
+    const [review, setReview] = useState("review description 1");
+
+    const handleInputChange = (event) => {
+        setReview(event.target.value);
+    };
+
+    function onSubmit(e) {
+        e.preventDefault();
         console.log("todo create review");
+        const data = {
+            text: review,
+            name: user.name,
+            user_id: user.id,
+            restaurant_id: restaurantId,
+        };
+        console.log(data);
     }
 
     return (
         <form onSubmit={onSubmit} className="submit-form">
-            <div className="flex flex-col gap-1">
+            <div className="form-group">
                 <label htmlFor="description">
                     {editing ? "Edit" : "Create"} Review
                 </label>
@@ -91,6 +99,8 @@ function ReviewInputForm({ editing }) {
                     id="description"
                     name="description"
                     className="form-control"
+                    value={review}
+                    onChange={handleInputChange}
                     required
                 />
             </div>
