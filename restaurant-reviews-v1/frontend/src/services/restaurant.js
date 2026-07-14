@@ -34,7 +34,8 @@ class RestaurantDataService {
   }
 
   deleteReview(id, userId) {
-    return fetch(`http://localhost:5000/api/v1/review-delete?id=${id}`, {
+    console.log(userId);
+    return fetch(`http://localhost:5000/api/v1/restaurants/review?id=${id}`, {
       method: "DELETE", 
       headers: {
         "Content-Type": "application/json"

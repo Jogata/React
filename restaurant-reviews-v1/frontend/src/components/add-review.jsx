@@ -10,7 +10,7 @@ const AddReview = ({ user }) => {
     console.log(state);
     // console.log(restaurantId);
     // let submitted = true;
-    const editing = Boolean(state?.currentReview);
+    const isEditing = Boolean(state?.currentReview);
 
     if (!user) {
         return (
@@ -27,7 +27,7 @@ const AddReview = ({ user }) => {
 
     return (
         <ReviewInputForm
-            editing={editing}
+            isEditing={isEditing}
             user={user}
             restaurantId={restaurantId}
             setSubmitted={setSubmitted}
@@ -49,8 +49,8 @@ function SubmitSuccess({ restaurantId }) {
     );
 }
 
-function ReviewInputForm({ editing, setSubmitted, restaurantId, user, currentReview }) {
-    const [review, setReview] = useState(() => editing ? currentReview.text : "");
+function ReviewInputForm({ isEditing, setSubmitted, restaurantId, user, currentReview }) {
+    const [review, setReview] = useState(() => isEditing ? currentReview.text : "");
 
     const handleInputChange = (event) => {
         setReview(event.target.value);
@@ -69,7 +69,7 @@ function ReviewInputForm({ editing, setSubmitted, restaurantId, user, currentRev
         };
         // console.log(data);
 
-        if (editing) {
+        if (isEditing) {
             data.review_id = currentReview._id;
             RestaurantDataService.updateReview(data)
                 .then((response) => {
@@ -100,7 +100,7 @@ function ReviewInputForm({ editing, setSubmitted, restaurantId, user, currentRev
         <form onSubmit={onSubmit} className="submit-form">
             <div className="form-group">
                 <label htmlFor="description">
-                    {editing ? "Edit" : "Create"} Review
+                    {isEditing ? "Edit" : "Create"} Review
                 </label>
                 <input
                     type="text"

@@ -257,6 +257,10 @@ dl .row {
   padding: 0.6em 2em;
 }
 
+.review .card {
+  height: 100%;
+}
+
 .review .card-body .actions {
   align-items: center;
   /* border: 1px solid red; */

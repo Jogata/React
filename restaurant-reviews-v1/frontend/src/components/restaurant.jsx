@@ -39,7 +39,7 @@ const Restaurant = ({ userId }) => {
     return (
         <div className="main-content">
             {restaurant ? (
-                <Card restaurant={restaurant} userId={userId} />
+                <Card restaurant={restaurant} setRestaurant={setRestaurant} userId={userId} />
             ) : (
                 <NotFound />
             )}
@@ -55,7 +55,7 @@ function NotFound() {
     )
 }
 
-function Card({ restaurant, userId }) {
+function Card({ restaurant, setRestaurant, userId }) {
     return (
         <div className="restaurant">
             <h1>{restaurant.name}</h1>
@@ -83,13 +83,14 @@ function Card({ restaurant, userId }) {
             <Reviews
                 reviews={restaurant.reviews}
                 restaurantId={restaurant._id}
+                setRestaurant={setRestaurant}
                 userId={userId}
             />
         </div>
     )
 }
 
-function Reviews({ reviews, restaurantId, userId }) {
+function Reviews({ reviews, restaurantId, setRestaurant, userId }) {
     return (
         <div className="reviews cards">
             {reviews.length > 0 ? (
@@ -99,7 +100,9 @@ function Reviews({ reviews, restaurantId, userId }) {
                             key={index}
                             review={review}
                             restaurantId={restaurantId}
+                            setRestaurant={setRestaurant}
                             userId={userId}
+                            index={index}
                         />
                     );
                 })
@@ -112,11 +115,33 @@ function Reviews({ reviews, restaurantId, userId }) {
     )
 }
 
-function Review({ review, restaurantId, userId }) {
+function Review({ review, restaurantId, setRestaurant, userId, index }) {
     const isOwner = userId && userId === review.user_id;
 
     const deleteReview = (reviewId, index) => {
-        console.log("todo: delete review");
+        // console.log("todo: delete review");
+        RestaurantDataService.deleteReview(reviewId, userId)
+            .then((response) => {
+                const result = response.json();
+                // console.log(result);
+                return result;
+            })
+            .then(data => {
+                console.log(data);
+                if (data?.status === "success") {
+                    setRestaurant((prevState) => {
+                        const newReviews = [...prevState.reviews];
+                        newReviews.splice(index, 1);
+                        return {
+                            ...prevState, 
+                            reviews: newReviews
+                        };
+                    });
+                }
+            })
+            .catch((e) => {
+                console.log(e);
+            });
     };
 
     return (
@@ -138,24 +163,10 @@ function Review({ review, restaurantId, userId }) {
                         <div className="row actions">
                             <button
                                 className="btn"
-                                onClick={() => onDelete(review._id, index)}
+                                onClick={() => deleteReview(review._id, index)}
                             >
                                 Delete
                             </button>
-                            {/* <Link
-                                to={{
-                                    pathname:
-                                        "/restaurants/" +
-                                        restaurantId +
-                                        "/review",
-                                    state: {
-                                        currentReview: review,
-                                    },
-                                }}
-                                className="btn"
-                            >
-                                Edit
-                            </Link> */}
                             <Link
                                 to={`/restaurants/${restaurantId}/review`}
                                 state={{ currentReview: review }}
