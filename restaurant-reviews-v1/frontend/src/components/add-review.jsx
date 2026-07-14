@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
+import RestaurantDataService from "../services/restaurant";
 
 const AddReview = ({ user }) => {
-    // const [review, setReview] = useState("");
     const [submitted, setSubmitted] = useState(false);
 
     const { id: restaurantId } = useParams();
@@ -25,35 +25,14 @@ const AddReview = ({ user }) => {
         return <SubmitSuccess restaurantId={restaurantId} />;
     }
 
-    // const handleInputChange = (event) => {
-    //     setReview(event.target.value);
-    // };
-
-    // function onSubmit() {
-    //     console.log("todo create review");
-    // }
-
-    // const handleInputChange = (event) => {
-    //     setReview(event.target.value);
-    // };
-
-    return <ReviewInputForm editing={editing} restaurantId={restaurantId} setSubmitted={setSubmitted} user={user} />;
-
-    // return (
-    //     <div>
-    //         {user ? (
-    //             <div className="submit-form">
-    //                 {submitted ? (
-    //                     <SubmitSuccess restaurantId={restaurantId} />
-    //                 ) : (
-    //                     <ReviewInputForm editing={editing} />
-    //                 )}
-    //             </div>
-    //         ) : (
-    //             null
-    //         )}
-    //     </div>
-    // );
+    return (
+        <ReviewInputForm 
+            editing={editing} 
+            user={user} 
+            restaurantId={restaurantId} 
+            setSubmitted={setSubmitted} 
+        />
+    );
 };
 
 function SubmitSuccess({ restaurantId }) {
@@ -76,16 +55,29 @@ function ReviewInputForm({ editing, setSubmitted, restaurantId, user }) {
         setReview(event.target.value);
     };
 
-    function onSubmit(e) {
+    async function onSubmit(e) {
         e.preventDefault();
-        console.log("todo create review");
+        // console.log("todo create review");
         const data = {
             text: review,
             name: user.name,
             user_id: user.id,
             restaurant_id: restaurantId,
         };
-        console.log(data);
+        // console.log(data);
+        try {
+            const response = await RestaurantDataService.createReview(data);
+            console.log(response);
+            if (response.ok) {
+                const result = await response.json();
+                console.log(result);
+                setSubmitted(true);
+            } else {
+                throw new Error("Review wasn't created");
+            }            
+        } catch (error) {
+            console.log(error.message);
+        }
     }
 
     return (

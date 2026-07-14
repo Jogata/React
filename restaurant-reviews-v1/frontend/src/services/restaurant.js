@@ -14,7 +14,13 @@ class RestaurantDataService {
   } 
 
   createReview(data) {
-    return fetch("/review-new", data);
+    return fetch("http://localhost:5000/api/v1/restaurants/review", {
+      method: "POST", 
+      headers: {
+        "Content-Type": "application/json"
+      }, 
+      body: JSON.stringify(data)
+    });
   }
 
   updateReview(data) {

@@ -206,13 +206,19 @@ dl .row {
 }
 
 .restaurant h2 {
-  margin-top: 1rem;
-  padding-top: 1rem;
+  /* margin-top: 1rem; */
+  margin-top: 2rem;
+  /* padding-top: 1rem; */
+  padding-top: 2rem;
   border-top: 1px solid var(--BORDER-COLOR);
 }
 
+.reviews {
+  padding: 1rem 0;
+}
+
 .empty-reviews-section {
-  padding: 1rem;
+  /* padding: 1rem; */
   /* text-align: center; */
 }
 
@@ -249,6 +255,27 @@ dl .row {
 .submit-form .btn-primary {
   margin-top: 1rem;
   padding: 0.6em 2em;
+}
+
+.review .card-body .actions {
+  align-items: center;
+  /* border: 1px solid red; */
+}
+
+.review .card-body .actions button {
+  background-color: crimson;
+  transition: background-color 300ms ease-in-out;
+}
+
+.review .card-body .actions button:hover {
+  background-color: red;
+}
+
+.review .card-body .actions button,
+.review .card-body .actions a {
+  padding: 0.4em 1em;
+  font-size: 1rem;
+  /* border: 1px solid violet; */
 }
 
 .message-section {

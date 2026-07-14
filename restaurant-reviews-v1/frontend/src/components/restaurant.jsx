@@ -91,7 +91,7 @@ function Card({ restaurant, userId }) {
 
 function Reviews({ reviews, restaurantId, userId }) {
     return (
-        <div className="reviews">
+        <div className="reviews cards">
             {reviews.length > 0 ? (
                 reviews.map((review, index) => {
                     return (
@@ -135,7 +135,7 @@ function Review({ review, restaurantId, userId }) {
                         </div>
                     </dl>
                     {isOwner && (
-                        <div className="row">
+                        <div className="row actions">
                             <button
                                 className="btn"
                                 onClick={() => onDelete(review._id, index)}
