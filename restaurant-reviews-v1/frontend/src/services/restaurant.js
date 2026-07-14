@@ -24,7 +24,13 @@ class RestaurantDataService {
   }
 
   updateReview(data) {
-    return fetch("/review-edit", data);
+    return fetch("http://localhost:5000/api/v1/restaurants/review", {
+      method: "PUT", 
+      headers: {
+        "Content-Type": "application/json"
+      }, 
+      body: JSON.stringify(data)
+    });
   }
 
   deleteReview(id, userId) {

@@ -18,12 +18,12 @@ export default class ReviewsDAO {
         }
     }
 
-    static async addReview(restaurantId, user, review, date) {
+    static async addReview(restaurantId, user, review) {
         try {
             const reviewDoc = {
                 name: user.name,
                 user_id: user._id,
-                date: date,
+                date: new Date(),
                 text: review,
                 restaurant_id: new ObjectId(restaurantId),
             };
@@ -45,7 +45,7 @@ export default class ReviewsDAO {
             return updateResponse;
         } catch (err) {
             console.error(`Unable to update review: ${err}`);
-            return { error: err };
+            return { error: err }; 
         }
     }
 

@@ -26,11 +26,12 @@ const AddReview = ({ user }) => {
     }
 
     return (
-        <ReviewInputForm 
-            editing={editing} 
-            user={user} 
-            restaurantId={restaurantId} 
-            setSubmitted={setSubmitted} 
+        <ReviewInputForm
+            editing={editing}
+            user={user}
+            restaurantId={restaurantId}
+            setSubmitted={setSubmitted}
+            currentReview={state?.currentReview}
         />
     );
 };
@@ -48,8 +49,8 @@ function SubmitSuccess({ restaurantId }) {
     );
 }
 
-function ReviewInputForm({ editing, setSubmitted, restaurantId, user }) {
-    const [review, setReview] = useState("review description 1");
+function ReviewInputForm({ editing, setSubmitted, restaurantId, user, currentReview }) {
+    const [review, setReview] = useState(() => editing ? currentReview.text : "");
 
     const handleInputChange = (event) => {
         setReview(event.target.value);
@@ -57,7 +58,9 @@ function ReviewInputForm({ editing, setSubmitted, restaurantId, user }) {
 
     async function onSubmit(e) {
         e.preventDefault();
-        // console.log("todo create review");
+
+        // if (isSubmitting) return;
+
         const data = {
             text: review,
             name: user.name,
@@ -65,18 +68,31 @@ function ReviewInputForm({ editing, setSubmitted, restaurantId, user }) {
             restaurant_id: restaurantId,
         };
         // console.log(data);
-        try {
-            const response = await RestaurantDataService.createReview(data);
-            console.log(response);
-            if (response.ok) {
-                const result = await response.json();
-                console.log(result);
-                setSubmitted(true);
-            } else {
-                throw new Error("Review wasn't created");
-            }            
-        } catch (error) {
-            console.log(error.message);
+
+        if (editing) {
+            data.review_id = currentReview._id;
+            RestaurantDataService.updateReview(data)
+                .then((response) => {
+                    console.log(response);
+                    setSubmitted(true);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        } else {
+            try {
+                const response = await RestaurantDataService.createReview(data);
+                console.log(response);
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log(result);
+                    setSubmitted(true);
+                } else {
+                    throw new Error("Review wasn't created");
+                }
+            } catch (error) {
+                console.log(error.message);
+            }
         }
     }
 

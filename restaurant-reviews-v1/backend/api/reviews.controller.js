@@ -10,13 +10,13 @@ export default class ReviewsController {
                 _id: req.body.user_id
             };
 
-            const date = new Date();
+            // const date = new Date();
 
             const ReviewResponse = await ReviewsDAO.addReview(
                 restaurantId,
                 userInfo,
                 review,
-                date,
+                // date,
             );
 
             res.json({ status: "success" });
@@ -60,7 +60,7 @@ export default class ReviewsController {
         try {
             const reviewId = req.query.id;
             const userId = req.body.user_id;
-            console.log(reviewId);
+            // console.log(reviewId);
 
             const reviewResponse = await ReviewsDAO.deleteReview(
                 reviewId,

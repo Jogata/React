@@ -80,10 +80,10 @@ function Card({ restaurant, userId }) {
                 Add Review
             </Link>
             <h2> Reviews </h2>
-            <Reviews 
-                reviews={restaurant.reviews} 
-                restaurantId={restaurant._id} 
-                userId={userId} 
+            <Reviews
+                reviews={restaurant.reviews}
+                restaurantId={restaurant._id}
+                userId={userId}
             />
         </div>
     )
@@ -95,12 +95,12 @@ function Reviews({ reviews, restaurantId, userId }) {
             {reviews.length > 0 ? (
                 reviews.map((review, index) => {
                     return (
-                        <Review 
+                        <Review
                             key={index}
-                            review={review} 
-                            restaurantId={restaurantId} 
+                            review={review}
+                            restaurantId={restaurantId}
                             userId={userId}
-                         />
+                        />
                     );
                 })
             ) : (
@@ -142,7 +142,7 @@ function Review({ review, restaurantId, userId }) {
                             >
                                 Delete
                             </button>
-                            <Link
+                            {/* <Link
                                 to={{
                                     pathname:
                                         "/restaurants/" +
@@ -152,6 +152,13 @@ function Review({ review, restaurantId, userId }) {
                                         currentReview: review,
                                     },
                                 }}
+                                className="btn"
+                            >
+                                Edit
+                            </Link> */}
+                            <Link
+                                to={`/restaurants/${restaurantId}/review`}
+                                state={{ currentReview: review }}
                                 className="btn"
                             >
                                 Edit

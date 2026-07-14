@@ -43,8 +43,8 @@ export default class RestaurantsDAO {
       return { restaurantsList: [], totalNumRestaurants: 0 };
     }
 
-    console.log("48");
-    console.log(typeof cursor);
+    // console.log("48");
+    // console.log(typeof cursor);
     const displayCursor = cursor.limit(restaurantsPerPage).skip(restaurantsPerPage * page);
 
     try {
