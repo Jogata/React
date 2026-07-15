@@ -55,7 +55,7 @@ export default class ReviewsDAO {
                 _id: new ObjectId(reviewId),
                 user_id: userId,
             });
-            console.log(deleteResponse);
+            // console.log(deleteResponse);
 
             return deleteResponse;
         } catch (err) {

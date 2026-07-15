@@ -107,8 +107,8 @@ const RestaurantsList = () => {
                 <Restaurants restaurants={restaurants} />
             ) : (
                 <p style={{
-                    fontSize: "2rem", 
-                    padding: "5rem 2%", 
+                    fontSize: "2rem",
+                    padding: "5rem 2%",
                     textAlign: "center"
                 }}>
                     Loading...
@@ -195,41 +195,47 @@ function Restaurants({ restaurants }) {
     return (
         <div className="cards">
             {restaurants.map((restaurant) => {
-                const address = `${restaurant.address.building} ${restaurant.address.street}, ${restaurant.address.zipcode}`;
-                return (
-                    <div className="card" key={restaurant._id}>
-                        <div className="card-body">
-                            <h2 className="card-title">{restaurant.name}</h2>
-                            <p className="card-text">
-                                <strong>Cuisine: </strong>
-                                {restaurant.cuisine}
-                            </p>
-                            <p className="card-text">
-                                <strong>Address: </strong>
-                                {address}
-                            </p>
-                            <div className="row links">
-                                <Link
-                                    to={"/restaurants/" + restaurant._id}
-                                    className="btn btn-primary"
-                                >
-                                    View Reviews
-                                </Link>
-                                <a
-                                    rel="noreferrer"
-                                    target="_blank"
-                                    href={"https://www.google.com/maps/place/" + address}
-                                    className="btn btn-primary"
-                                >
-                                    View Map
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                );
+                return <Restaurant restaurant={restaurant} key={restaurant._id} />
             })}
         </div>
     )
+}
+
+function Restaurant({ restaurant }) {
+    const address = `${restaurant.address.building} ${restaurant.address.street}, ${restaurant.address.zipcode}`;
+
+    return (
+        <div className="card">
+            <div className="card-body">
+                <h2 className="card-title">{restaurant.name}</h2>
+                <p className="card-text">
+                    <strong>Cuisine: </strong>
+                    {restaurant.cuisine}
+                </p>
+                <p className="card-text">
+                    <strong>Address: </strong>
+                    {address}
+                </p>
+                <div className="row links">
+                    <Link
+                        to={"/restaurants/" + restaurant._id}
+                        className="btn btn-primary"
+                    >
+                        View Reviews
+                    </Link>
+                    <a
+                        rel="noreferrer"
+                        target="_blank"
+                        href={"https://www.google.com/maps/place/" + address}
+                        className="btn btn-primary"
+                    >
+                        View Map
+                    </a>
+                </div>
+            </div>
+        </div>
+    );
+
 }
 
 export default RestaurantsList;

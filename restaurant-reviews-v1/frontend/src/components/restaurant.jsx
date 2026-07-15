@@ -117,14 +117,12 @@ function Review({ review, restaurantId, setRestaurant, userId, index }) {
     const isOwner = userId && userId === review.user_id;
 
     const deleteReview = (reviewId, index) => {
-        // console.log(window.confirm("Are you sure you want to permanently delete this review?"));
-        // if (!window.confirm("Are you sure you want to permanently delete this review?")) return;
         const confirmed = window.confirm("Are you sure you want to permanently delete this review?");
-        console.log(confirmed);
-
-        if (!confirmed) {
-            return;
-        }
+        // console.log(confirmed);
+        // if (!confirmed) {
+        //     return;
+        // }
+        if (!confirmed) return;
 
         RestaurantDataService.deleteReview(reviewId, userId)
             .then((response) => {
@@ -132,7 +130,6 @@ function Review({ review, restaurantId, setRestaurant, userId, index }) {
                 return result;
             })
             .then(data => {
-                // console.log(data);
                 if (data?.status === "success") {
                     setRestaurant((prevState) => {
                         const newReviews = [...prevState.reviews];
