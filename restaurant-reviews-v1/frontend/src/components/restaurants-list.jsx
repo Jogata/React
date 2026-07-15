@@ -17,12 +17,10 @@ const RestaurantsList = () => {
     const retrieveRestaurants = () => {
         RestaurantDataService.getAllRestaurants()
             .then((response) => {
-                // console.log(response);
                 const data = response.json();
                 return data;
             })
             .then((data) => {
-                // console.log(data);
                 setRestaurants(data.restaurants);
                 const cuisines = data.restaurants.reduce((acc, restaurant) => {
                     if (!acc.includes(restaurant.cuisine)) {
@@ -30,7 +28,6 @@ const RestaurantsList = () => {
                         return acc;
                     }
                 }, ["All Cuisines"]);
-                // console.log(cuisines);
                 setCuisines(cuisines);
             })
             .catch((e) => {
@@ -41,12 +38,10 @@ const RestaurantsList = () => {
     const retrieveCuisines = () => {
         RestaurantDataService.getCuisines()
             .then((response) => {
-                // console.log(response);
                 const data = response.json();
                 return data;
             })
             .then((data) => {
-                // console.log(data);
                 setCuisines(["All Cuisines"].concat(data.cuisines));
             })
             .catch((e) => {
@@ -59,15 +54,12 @@ const RestaurantsList = () => {
     };
 
     const find = (query, by) => {
-        // console.log(query, by);
         RestaurantDataService.findRestaurants(query, by)
             .then((response) => {
-                // console.log(response);
                 const data = response.json();
                 return data;
             })
             .then((data) => {
-                // console.log(data);
                 setRestaurants(data.restaurants);
             })
             .catch((e) => {
@@ -108,97 +100,40 @@ const RestaurantsList = () => {
 
     return (
         <div className="main-content">
-            <div className="row">
-                <div className="input-group">
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Search by name"
-                        value={searchName}
-                        onChange={onChangeSearchName}
-                    />
-                    <div className="input-group-append">
-                        <button
-                            className="btn btn-secondary"
-                            type="button"
-                            onClick={findByName}
-                        >
-                            Search
-                        </button>
-                    </div>
-                </div>
-                <div className="input-group">
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Search by zip"
-                        value={searchZip}
-                        onChange={onChangeSearchZip}
-                    />
-                    <div className="input-group-append">
-                        <button
-                            className="btn btn-secondary"
-                            type="button"
-                            onClick={findByZip}
-                        >
-                            Search
-                        </button>
-                    </div>
-                </div>
-                <div className="input-group">
-                    <select onChange={onChangeSearchCuisine}>
-                        {cuisines.map((cuisine) => {
-                            return (
-                                <option value={cuisine} key={cuisine}>
-                                    {cuisine.substring(0, 20)}
-                                </option>
-                            );
-                        })}
-                    </select>
-                    <div className="input-group-append">
-                        <button
-                            className="btn btn-secondary"
-                            type="button"
-                            onClick={findByCuisine}
-                        >
-                            Search
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <Filters />
             <div className="cards">
                 {restaurants.map((restaurant) => {
                     const address = `${restaurant.address.building} ${restaurant.address.street}, ${restaurant.address.zipcode}`;
                     return (
                         <div className="card" key={restaurant._id}>
                             {/* <div className="card"> */}
-                                <div className="card-body">
-                                    <h2 className="card-title">{restaurant.name}</h2>
-                                    <p className="card-text">
-                                        <strong>Cuisine: </strong>
-                                        {restaurant.cuisine}
-                                    </p>
-                                    <p className="card-text">
-                                        <strong>Address: </strong>
-                                        {address}
-                                    </p>
-                                    <div className="row links">
-                                        <Link
-                                            to={"/restaurants/" + restaurant._id}
-                                            className="btn btn-primary"
-                                        >
-                                            View Reviews
-                                        </Link>
-                                        <a
-                                            rel="noreferrer"
-                                            target="_blank"
-                                            href={"https://www.google.com/maps/place/" + address}
-                                            className="btn btn-primary"
-                                        >
-                                            View Map
-                                        </a>
-                                    </div>
+                            <div className="card-body">
+                                <h2 className="card-title">{restaurant.name}</h2>
+                                <p className="card-text">
+                                    <strong>Cuisine: </strong>
+                                    {restaurant.cuisine}
+                                </p>
+                                <p className="card-text">
+                                    <strong>Address: </strong>
+                                    {address}
+                                </p>
+                                <div className="row links">
+                                    <Link
+                                        to={"/restaurants/" + restaurant._id}
+                                        className="btn btn-primary"
+                                    >
+                                        View Reviews
+                                    </Link>
+                                    <a
+                                        rel="noreferrer"
+                                        target="_blank"
+                                        href={"https://www.google.com/maps/place/" + address}
+                                        className="btn btn-primary"
+                                    >
+                                        View Map
+                                    </a>
                                 </div>
+                            </div>
                             {/* </div> */}
                         </div>
                     );
@@ -207,5 +142,78 @@ const RestaurantsList = () => {
         </div>
     );
 };
+
+function Filters({
+    searchName, 
+    onChangeSearchName, 
+    findByName, 
+    searchZip, 
+    onChangeSearchZip, 
+    findByZip, 
+    onChangeSearchCuisine, 
+    findByCuisine, 
+    cuisines
+}) {
+    return (
+        <div className="row">
+            <div className="input-group">
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Search by name"
+                    value={searchName}
+                    onChange={onChangeSearchName}
+                />
+                <div className="input-group-append">
+                    <button
+                        className="btn btn-secondary"
+                        type="button"
+                        onClick={findByName}
+                    >
+                        Search
+                    </button>
+                </div>
+            </div>
+            <div className="input-group">
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Search by zip"
+                    value={searchZip}
+                    onChange={onChangeSearchZip}
+                />
+                <div className="input-group-append">
+                    <button
+                        className="btn btn-secondary"
+                        type="button"
+                        onClick={findByZip}
+                    >
+                        Search
+                    </button>
+                </div>
+            </div>
+            <div className="input-group">
+                <select onChange={onChangeSearchCuisine}>
+                    {cuisines.map((cuisine) => {
+                        return (
+                            <option value={cuisine} key={cuisine}>
+                                {cuisine.substring(0, 20)}
+                            </option>
+                        );
+                    })}
+                </select>
+                <div className="input-group-append">
+                    <button
+                        className="btn btn-secondary"
+                        type="button"
+                        onClick={findByCuisine}
+                    >
+                        Search
+                    </button>
+                </div>
+            </div>
+        </div>
+    )
+}
 
 export default RestaurantsList;

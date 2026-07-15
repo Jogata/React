@@ -71,21 +71,35 @@ function ReviewInputForm({ isEditing, setSubmitted, restaurantId, user, currentR
 
         if (isEditing) {
             data.review_id = currentReview._id;
-            RestaurantDataService.updateReview(data)
-                .then((response) => {
-                    console.log(response);
-                    setSubmitted(true);
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-        } else {
+
             try {
-                const response = await RestaurantDataService.createReview(data);
+                const response = await RestaurantDataService.updateReview(data);
                 console.log(response);
+
                 if (response.ok) {
                     const result = await response.json();
                     console.log(result);
+                    setSubmitted(true);
+                } else {
+                    throw new Error("Review wasn't updated");
+                }
+            } catch (error) {
+                console.log(error.message);
+            }
+            // .then((response) => {
+            //     console.log(response);
+            //     setSubmitted(true);
+            // })
+            // .catch((error) => {
+            //     console.error(error);
+            // });
+        } else {
+            try {
+                const response = await RestaurantDataService.createReview(data);
+                // console.log(response);
+                if (response.ok) {
+                    const result = await response.json();
+                    // console.log(result);
                     setSubmitted(true);
                 } else {
                     throw new Error("Review wasn't created");

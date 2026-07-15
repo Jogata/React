@@ -61,10 +61,4 @@ function App() {
   )
 }
 
-// function AddReview() {
-//   return (
-//     <h1>AddReview Page</h1>
-//   )
-// }
-
 export default App;

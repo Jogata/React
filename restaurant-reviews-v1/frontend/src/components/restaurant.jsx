@@ -7,28 +7,28 @@ const Restaurant = ({ userId }) => {
 
     const { id } = useParams();
 
-    const getRestaurant = (id) => {
-        RestaurantDataService.getRestaurant(id)
-            .then((response) => {
-                // console.log(response);
-
-                if (response.ok) {
-                    const data = response.json();
-                    return data;
-                } else {
-                    throw new Error("not found");
-                }
-            })
-            .then((data) => {
-                // console.log(data);
-                setRestaurant(data);
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-    };
-
     useEffect(() => {
+        const getRestaurant = (id) => {
+            RestaurantDataService.getRestaurant(id)
+                .then((response) => {
+                    // console.log(response);
+    
+                    if (response.ok) {
+                        const data = response.json();
+                        return data;
+                    } else {
+                        throw new Error("not found");
+                    }
+                })
+                .then((data) => {
+                    // console.log(data);
+                    setRestaurant(data);
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
+        };
+        
         getRestaurant(id);
     }, [id]);
 
