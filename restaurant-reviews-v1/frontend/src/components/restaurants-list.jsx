@@ -2,25 +2,14 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import RestaurantDataService from "../services/restaurant";
 
-const RestaurantsList = () => {
-    const [restaurants, setRestaurants] = useState([]);
-    const [cuisines, setCuisines] = useState(["All Cuisines"]);
-    const [searchName, setSearchName] = useState("");
-    const [searchZip, setSearchZip] = useState("");
-    const [searchCuisine, setSearchCuisine] = useState("");
-
-    useEffect(() => {
-        retrieveRestaurants();
-        // retrieveCuisines();
-    }, []);
-
-    const retrieveRestaurants = () => {
-        RestaurantDataService.getAllRestaurants()
-            .then((response) => {
-                const data = response.json();
-                return data;
-            })
-            .then((data) => {
+const retrieveRestaurants = (setRestaurants, setCuisines) => {
+    RestaurantDataService.getAllRestaurants()
+        .then((response) => {
+            const data = response.json();
+            return data;
+        })
+        .then((data) => {
+            setTimeout(() => {
                 setRestaurants(data.restaurants);
                 const cuisines = data.restaurants.reduce((acc, restaurant) => {
                     if (!acc.includes(restaurant.cuisine)) {
@@ -29,28 +18,41 @@ const RestaurantsList = () => {
                     }
                 }, ["All Cuisines"]);
                 setCuisines(cuisines);
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-    };
+            }, 5000);
+        })
+        .catch((e) => {
+            console.log(e);
+        });
+};
 
-    const retrieveCuisines = () => {
-        RestaurantDataService.getCuisines()
-            .then((response) => {
-                const data = response.json();
-                return data;
-            })
-            .then((data) => {
-                setCuisines(["All Cuisines"].concat(data.cuisines));
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-    };
+const RestaurantsList = () => {
+    const [restaurants, setRestaurants] = useState([]);
+    const [cuisines, setCuisines] = useState(["All Cuisines"]);
+    const [searchName, setSearchName] = useState("");
+    const [searchZip, setSearchZip] = useState("");
+    const [searchCuisine, setSearchCuisine] = useState("");
+
+    useEffect(() => {
+        // const retrieveCuisines = () => {
+        //     RestaurantDataService.getCuisines()
+        //         .then((response) => {
+        //             const data = response.json();
+        //             return data;
+        //         })
+        //         .then((data) => {
+        //             setCuisines(["All Cuisines"].concat(data.cuisines));
+        //         })
+        //         .catch((e) => {
+        //             console.log(e);
+        //         });
+        // };
+
+        retrieveRestaurants(setRestaurants, setCuisines);
+        // retrieveCuisines();
+    }, []);
 
     const refreshList = () => {
-        retrieveRestaurants();
+        retrieveRestaurants(setRestaurants, setCuisines);
     };
 
     const find = (query, by) => {
@@ -100,58 +102,31 @@ const RestaurantsList = () => {
 
     return (
         <div className="main-content">
-            <Filters />
-            <div className="cards">
-                {restaurants.map((restaurant) => {
-                    const address = `${restaurant.address.building} ${restaurant.address.street}, ${restaurant.address.zipcode}`;
-                    return (
-                        <div className="card" key={restaurant._id}>
-                            {/* <div className="card"> */}
-                            <div className="card-body">
-                                <h2 className="card-title">{restaurant.name}</h2>
-                                <p className="card-text">
-                                    <strong>Cuisine: </strong>
-                                    {restaurant.cuisine}
-                                </p>
-                                <p className="card-text">
-                                    <strong>Address: </strong>
-                                    {address}
-                                </p>
-                                <div className="row links">
-                                    <Link
-                                        to={"/restaurants/" + restaurant._id}
-                                        className="btn btn-primary"
-                                    >
-                                        View Reviews
-                                    </Link>
-                                    <a
-                                        rel="noreferrer"
-                                        target="_blank"
-                                        href={"https://www.google.com/maps/place/" + address}
-                                        className="btn btn-primary"
-                                    >
-                                        View Map
-                                    </a>
-                                </div>
-                            </div>
-                            {/* </div> */}
-                        </div>
-                    );
-                })}
-            </div>
+            <Filters cuisines={cuisines} />
+            {restaurants.length > 0 ? (
+                <Restaurants restaurants={restaurants} />
+            ) : (
+                <p style={{
+                    fontSize: "2rem", 
+                    padding: "5rem 2%", 
+                    textAlign: "center"
+                }}>
+                    Loading...
+                </p>
+            )}
         </div>
     );
 };
 
 function Filters({
-    searchName, 
-    onChangeSearchName, 
-    findByName, 
-    searchZip, 
-    onChangeSearchZip, 
-    findByZip, 
-    onChangeSearchCuisine, 
-    findByCuisine, 
+    searchName,
+    onChangeSearchName,
+    findByName,
+    searchZip,
+    onChangeSearchZip,
+    findByZip,
+    onChangeSearchCuisine,
+    findByCuisine,
     cuisines
 }) {
     return (
@@ -212,6 +187,47 @@ function Filters({
                     </button>
                 </div>
             </div>
+        </div>
+    )
+}
+
+function Restaurants({ restaurants }) {
+    return (
+        <div className="cards">
+            {restaurants.map((restaurant) => {
+                const address = `${restaurant.address.building} ${restaurant.address.street}, ${restaurant.address.zipcode}`;
+                return (
+                    <div className="card" key={restaurant._id}>
+                        <div className="card-body">
+                            <h2 className="card-title">{restaurant.name}</h2>
+                            <p className="card-text">
+                                <strong>Cuisine: </strong>
+                                {restaurant.cuisine}
+                            </p>
+                            <p className="card-text">
+                                <strong>Address: </strong>
+                                {address}
+                            </p>
+                            <div className="row links">
+                                <Link
+                                    to={"/restaurants/" + restaurant._id}
+                                    className="btn btn-primary"
+                                >
+                                    View Reviews
+                                </Link>
+                                <a
+                                    rel="noreferrer"
+                                    target="_blank"
+                                    href={"https://www.google.com/maps/place/" + address}
+                                    className="btn btn-primary"
+                                >
+                                    View Map
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                );
+            })}
         </div>
     )
 }

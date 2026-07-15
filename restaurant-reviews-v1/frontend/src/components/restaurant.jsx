@@ -11,7 +11,6 @@ const Restaurant = ({ userId }) => {
         const getRestaurant = (id) => {
             RestaurantDataService.getRestaurant(id)
                 .then((response) => {
-                    // console.log(response);
     
                     if (response.ok) {
                         const data = response.json();
@@ -21,14 +20,13 @@ const Restaurant = ({ userId }) => {
                     }
                 })
                 .then((data) => {
-                    // console.log(data);
                     setRestaurant(data);
                 })
                 .catch((e) => {
                     console.log(e);
                 });
         };
-        
+
         getRestaurant(id);
     }, [id]);
 
@@ -119,15 +117,22 @@ function Review({ review, restaurantId, setRestaurant, userId, index }) {
     const isOwner = userId && userId === review.user_id;
 
     const deleteReview = (reviewId, index) => {
-        // console.log("todo: delete review");
+        // console.log(window.confirm("Are you sure you want to permanently delete this review?"));
+        // if (!window.confirm("Are you sure you want to permanently delete this review?")) return;
+        const confirmed = window.confirm("Are you sure you want to permanently delete this review?");
+        console.log(confirmed);
+
+        if (!confirmed) {
+            return;
+        }
+
         RestaurantDataService.deleteReview(reviewId, userId)
             .then((response) => {
                 const result = response.json();
-                // console.log(result);
                 return result;
             })
             .then(data => {
-                console.log(data);
+                // console.log(data);
                 if (data?.status === "success") {
                     setRestaurant((prevState) => {
                         const newReviews = [...prevState.reviews];

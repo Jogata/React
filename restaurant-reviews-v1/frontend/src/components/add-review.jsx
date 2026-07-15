@@ -8,8 +8,7 @@ const AddReview = ({ user }) => {
     const { id: restaurantId } = useParams();
     const { state } = useLocation();
     console.log(state);
-    // console.log(restaurantId);
-    // let submitted = true;
+
     const isEditing = Boolean(state?.currentReview);
 
     if (!user) {
@@ -59,15 +58,12 @@ function ReviewInputForm({ isEditing, setSubmitted, restaurantId, user, currentR
     async function onSubmit(e) {
         e.preventDefault();
 
-        // if (isSubmitting) return;
-
         const data = {
             text: review,
             name: user.name,
             user_id: user.id,
             restaurant_id: restaurantId,
         };
-        // console.log(data);
 
         if (isEditing) {
             data.review_id = currentReview._id;
@@ -86,20 +82,12 @@ function ReviewInputForm({ isEditing, setSubmitted, restaurantId, user, currentR
             } catch (error) {
                 console.log(error.message);
             }
-            // .then((response) => {
-            //     console.log(response);
-            //     setSubmitted(true);
-            // })
-            // .catch((error) => {
-            //     console.error(error);
-            // });
         } else {
             try {
                 const response = await RestaurantDataService.createReview(data);
-                // console.log(response);
+
                 if (response.ok) {
                     const result = await response.json();
-                    // console.log(result);
                     setSubmitted(true);
                 } else {
                     throw new Error("Review wasn't created");
