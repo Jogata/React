@@ -29,7 +29,7 @@ const RestaurantsList = () => {
     const [restaurants, setRestaurants] = useState([]);
     const [cuisines, setCuisines] = useState(["All Cuisines"]);
     // const [searchName, setSearchName] = useState("");
-    const [searchZip, setSearchZip] = useState("");
+    // const [searchZip, setSearchZip] = useState("");
     const [searchCuisine, setSearchCuisine] = useState("");
 
     useEffect(() => {
@@ -62,8 +62,10 @@ const RestaurantsList = () => {
     };
 
     const find = (query, by) => {
+        console.log("search by " + by);
         RestaurantDataService.findRestaurants(query, by)
             .then((response) => {
+                console.log(response);
                 const data = response.json();
                 return data;
             })
@@ -79,9 +81,9 @@ const RestaurantsList = () => {
     //     find(searchName, "name");
     // };
 
-    const findByZip = () => {
-        find(searchZip, "zipcode");
-    };
+    // const findByZip = () => {
+    //     find(searchZip, "zipcode");
+    // };
 
     const findByCuisine = () => {
         if (searchCuisine === "All Cuisines") {
@@ -96,10 +98,10 @@ const RestaurantsList = () => {
     //     setSearchName(searchName);
     // };
 
-    const onChangeSearchZip = (e) => {
-        const searchZip = e.target.value;
-        setSearchZip(searchZip);
-    };
+    // const onChangeSearchZip = (e) => {
+    //     const searchZip = e.target.value;
+    //     setSearchZip(searchZip);
+    // };
 
     const onChangeSearchCuisine = (e) => {
         const searchCuisine = e.target.value;
@@ -126,6 +128,7 @@ const RestaurantsList = () => {
 };
 
 function Filters({
+    find, 
     // searchName,
     // onChangeSearchName,
     // findByName,
@@ -138,8 +141,9 @@ function Filters({
 }) {
     return (
         <div className="row">
-            <InputField />
-            <div className="input-group">
+            <InputField find={find} />
+            <InputField1 find={find} />
+            {/* <div className="input-group">
                 <input
                     type="text"
                     className="form-control"
@@ -156,7 +160,7 @@ function Filters({
                         Search
                     </button>
                 </div>
-            </div>
+            </div> */}
             <div className="input-group">
                 <select onChange={onChangeSearchCuisine}>
                     {cuisines.map((cuisine) => {
@@ -227,7 +231,7 @@ function Restaurant({ restaurant }) {
     );
 }
 
-function InputField() {
+function InputField({ find }) {
     const [searchName, setSearchName] = useState("");
 
     const onChangeSearchName = (e) => {
@@ -236,6 +240,7 @@ function InputField() {
     };
 
     const findByName = () => {
+        console.log("search by name");
         find(searchName, "name");
     };
 
@@ -260,6 +265,42 @@ function InputField() {
         </div>
     )
 }
+
+function InputField1({ find }) {
+    const [searchZip, setSearchZip] = useState("");
+
+    const onChangeSearchZip = (e) => {
+        const searchZip = e.target.value;
+        setSearchZip(searchZip);
+    };
+
+    const findByZip = () => {
+        console.log("search by zip");
+        find(searchZip, "zipcode");
+    };
+
+    return (
+        <div className="input-group">
+            <input
+                type="text"
+                className="form-control"
+                placeholder="Search by zip"
+                value={searchZip}
+                onChange={onChangeSearchZip}
+            />
+            <div className="input-group-append">
+                <button
+                    className="btn btn-secondary"
+                    type="button"
+                    onClick={findByZip}
+                >
+                    Search
+                </button>
+            </div>
+        </div>
+    )
+}
+
 
 function Loader() {
     return (
