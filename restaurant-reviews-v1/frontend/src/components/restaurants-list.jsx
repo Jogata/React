@@ -28,7 +28,7 @@ const retrieveRestaurants = (setRestaurants, setCuisines) => {
 const RestaurantsList = () => {
     const [restaurants, setRestaurants] = useState([]);
     const [cuisines, setCuisines] = useState(["All Cuisines"]);
-    const [searchName, setSearchName] = useState("");
+    // const [searchName, setSearchName] = useState("");
     const [searchZip, setSearchZip] = useState("");
     const [searchCuisine, setSearchCuisine] = useState("");
 
@@ -54,13 +54,6 @@ const RestaurantsList = () => {
     if (restaurants.length == 0) {
         return (
             <Loader />
-            // <p style={{
-            //     fontSize: "2rem",
-            //     padding: "5rem 2%",
-            //     textAlign: "center"
-            // }}>
-            //     Loading...
-            // </p>
         )
     }
 
@@ -82,9 +75,9 @@ const RestaurantsList = () => {
             });
     };
 
-    const findByName = () => {
-        find(searchName, "name");
-    };
+    // const findByName = () => {
+    //     find(searchName, "name");
+    // };
 
     const findByZip = () => {
         find(searchZip, "zipcode");
@@ -98,10 +91,10 @@ const RestaurantsList = () => {
         }
     };
 
-    const onChangeSearchName = (e) => {
-        const searchName = e.target.value;
-        setSearchName(searchName);
-    };
+    // const onChangeSearchName = (e) => {
+    //     const searchName = e.target.value;
+    //     setSearchName(searchName);
+    // };
 
     const onChangeSearchZip = (e) => {
         const searchZip = e.target.value;
@@ -115,7 +108,7 @@ const RestaurantsList = () => {
 
     return (
         <div className="main-content">
-            <Filters cuisines={cuisines} />
+            <Filters find={find} cuisines={cuisines} />
             <Restaurants restaurants={restaurants} />
             {/* {restaurants.length > 0 ? (
                 <Restaurants restaurants={restaurants} />
@@ -133,9 +126,9 @@ const RestaurantsList = () => {
 };
 
 function Filters({
-    searchName,
-    onChangeSearchName,
-    findByName,
+    // searchName,
+    // onChangeSearchName,
+    // findByName,
     searchZip,
     onChangeSearchZip,
     findByZip,
@@ -145,24 +138,7 @@ function Filters({
 }) {
     return (
         <div className="row">
-            <div className="input-group">
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Search by name"
-                    value={searchName}
-                    onChange={onChangeSearchName}
-                />
-                <div className="input-group-append">
-                    <button
-                        className="btn btn-secondary"
-                        type="button"
-                        onClick={findByName}
-                    >
-                        Search
-                    </button>
-                </div>
-            </div>
+            <InputField />
             <div className="input-group">
                 <input
                     type="text"
@@ -249,6 +225,40 @@ function Restaurant({ restaurant }) {
             </div>
         </div>
     );
+}
+
+function InputField() {
+    const [searchName, setSearchName] = useState("");
+
+    const onChangeSearchName = (e) => {
+        const searchName = e.target.value;
+        setSearchName(searchName);
+    };
+
+    const findByName = () => {
+        find(searchName, "name");
+    };
+
+    return (
+        <div className="input-group">
+            <input
+                type="text"
+                className="form-control"
+                placeholder="Search by name"
+                value={searchName}
+                onChange={onChangeSearchName}
+            />
+            <div className="input-group-append">
+                <button
+                    className="btn btn-secondary"
+                    type="button"
+                    onClick={findByName}
+                >
+                    Search
+                </button>
+            </div>
+        </div>
+    )
 }
 
 function Loader() {
