@@ -51,6 +51,19 @@ const RestaurantsList = () => {
         // retrieveCuisines();
     }, []);
 
+    if (restaurants.length == 0) {
+        return (
+            <Loader />
+            // <p style={{
+            //     fontSize: "2rem",
+            //     padding: "5rem 2%",
+            //     textAlign: "center"
+            // }}>
+            //     Loading...
+            // </p>
+        )
+    }
+
     const refreshList = () => {
         retrieveRestaurants(setRestaurants, setCuisines);
     };
@@ -103,7 +116,8 @@ const RestaurantsList = () => {
     return (
         <div className="main-content">
             <Filters cuisines={cuisines} />
-            {restaurants.length > 0 ? (
+            <Restaurants restaurants={restaurants} />
+            {/* {restaurants.length > 0 ? (
                 <Restaurants restaurants={restaurants} />
             ) : (
                 <p style={{
@@ -111,9 +125,9 @@ const RestaurantsList = () => {
                     padding: "5rem 2%",
                     textAlign: "center"
                 }}>
-                    Loading...
+                     Loading...
                 </p>
-            )}
+            )} */}
         </div>
     );
 };
@@ -235,7 +249,17 @@ function Restaurant({ restaurant }) {
             </div>
         </div>
     );
+}
 
+function Loader() {
+    return (
+        <span className="loader">
+            <div className="logo-ring"></div>
+            <div className="logo-ring"></div>
+            <div className="logo-ring"></div>
+            <div className="logo-ring"></div>
+        </span>
+    )
 }
 
 export default RestaurantsList;
