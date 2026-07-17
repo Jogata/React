@@ -28,9 +28,7 @@ const retrieveRestaurants = (setRestaurants, setCuisines) => {
 const RestaurantsList = () => {
     const [restaurants, setRestaurants] = useState([]);
     const [cuisines, setCuisines] = useState(["All Cuisines"]);
-    // const [searchName, setSearchName] = useState("");
-    // const [searchZip, setSearchZip] = useState("");
-    const [searchCuisine, setSearchCuisine] = useState("");
+    // const [searchCuisine, setSearchCuisine] = useState("");
 
     useEffect(() => {
         // const retrieveCuisines = () => {
@@ -77,40 +75,22 @@ const RestaurantsList = () => {
             });
     };
 
-    // const findByName = () => {
-    //     find(searchName, "name");
+    // const findByCuisine = () => {
+    //     if (searchCuisine === "All Cuisines") {
+    //         refreshList();
+    //     } else {
+    //         find(searchCuisine, "cuisine");
+    //     }
     // };
 
-    // const findByZip = () => {
-    //     find(searchZip, "zipcode");
+    // const onChangeSearchCuisine = (e) => {
+    //     const searchCuisine = e.target.value;
+    //     setSearchCuisine(searchCuisine);
     // };
-
-    const findByCuisine = () => {
-        if (searchCuisine === "All Cuisines") {
-            refreshList();
-        } else {
-            find(searchCuisine, "cuisine");
-        }
-    };
-
-    // const onChangeSearchName = (e) => {
-    //     const searchName = e.target.value;
-    //     setSearchName(searchName);
-    // };
-
-    // const onChangeSearchZip = (e) => {
-    //     const searchZip = e.target.value;
-    //     setSearchZip(searchZip);
-    // };
-
-    const onChangeSearchCuisine = (e) => {
-        const searchCuisine = e.target.value;
-        setSearchCuisine(searchCuisine);
-    };
 
     return (
         <div className="main-content">
-            <Filters find={find} cuisines={cuisines} />
+            <Filters find={find} cuisines={cuisines} refreshList={refreshList} />
             <Restaurants restaurants={restaurants} />
             {/* {restaurants.length > 0 ? (
                 <Restaurants restaurants={restaurants} />
@@ -132,36 +112,20 @@ function Filters({
     // searchName,
     // onChangeSearchName,
     // findByName,
-    searchZip,
-    onChangeSearchZip,
-    findByZip,
-    onChangeSearchCuisine,
-    findByCuisine,
-    cuisines
+    // searchZip,
+    // onChangeSearchZip,
+    // findByZip,
+    // onChangeSearchCuisine,
+    // findByCuisine,
+    cuisines, 
+    refreshList
 }) {
     return (
         <div className="row">
             <InputField find={find} />
             <InputField1 find={find} />
+            <SelectField find={find} cuisines={cuisines} refreshList={refreshList} />
             {/* <div className="input-group">
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Search by zip"
-                    value={searchZip}
-                    onChange={onChangeSearchZip}
-                />
-                <div className="input-group-append">
-                    <button
-                        className="btn btn-secondary"
-                        type="button"
-                        onClick={findByZip}
-                    >
-                        Search
-                    </button>
-                </div>
-            </div> */}
-            <div className="input-group">
                 <select onChange={onChangeSearchCuisine}>
                     {cuisines.map((cuisine) => {
                         return (
@@ -180,7 +144,7 @@ function Filters({
                         Search
                     </button>
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }
@@ -301,6 +265,45 @@ function InputField1({ find }) {
     )
 }
 
+function SelectField({find, cuisines, refreshList}) {
+    const [searchCuisine, setSearchCuisine] = useState("");
+
+    const onChangeSearchCuisine = (e) => {
+        const searchCuisine = e.target.value;
+        setSearchCuisine(searchCuisine);
+    };
+
+    const findByCuisine = () => {
+        if (searchCuisine === "All Cuisines") {
+            refreshList();
+        } else {
+            find(searchCuisine, "cuisine");
+        }
+    };
+
+    return (
+        <div className="input-group">
+            <select onChange={onChangeSearchCuisine}>
+                {cuisines.map((cuisine) => {
+                    return (
+                        <option value={cuisine} key={cuisine}>
+                            {cuisine.substring(0, 20)}
+                        </option>
+                    );
+                })}
+            </select>
+            <div className="input-group-append">
+                <button
+                    className="btn btn-secondary"
+                    type="button"
+                    onClick={findByCuisine}
+                >
+                    Search
+                </button>
+            </div>
+        </div>
+    )
+}
 
 function Loader() {
     return (
