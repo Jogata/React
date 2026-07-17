@@ -153,9 +153,7 @@ function InputField({ find, id }) {
     };
 
     const findByInputText = () => {
-        // console.log("search by name");
-        console.log("search by " + id);
-        // find(inputText, "name");
+        // console.log("search by " + id);
         find(inputText, id);
     };
 
@@ -165,7 +163,6 @@ function InputField({ find, id }) {
                 type="text"
                 id={id}
                 className="form-control"
-                // placeholder="Search by name"
                 placeholder={`Search by ${id}`}
                 value={inputText}
                 onChange={onChangeInputText}
@@ -183,75 +180,75 @@ function InputField({ find, id }) {
     )
 }
 
-function InputField2({ find }) {
-    const [searchName, setSearchName] = useState("");
+// function InputField2({ find }) {
+//     const [searchName, setSearchName] = useState("");
 
-    const onChangeSearchName = (e) => {
-        const searchName = e.target.value;
-        setSearchName(searchName);
-    };
+//     const onChangeSearchName = (e) => {
+//         const searchName = e.target.value;
+//         setSearchName(searchName);
+//     };
 
-    const findByName = () => {
-        console.log("search by name");
-        find(searchName, "name");
-    };
+//     const findByName = () => {
+//         console.log("search by name");
+//         find(searchName, "name");
+//     };
 
-    return (
-        <div className="input-group">
-            <input
-                type="text"
-                className="form-control"
-                placeholder="Search by name"
-                value={searchName}
-                onChange={onChangeSearchName}
-            />
-            <div className="input-group-append">
-                <button
-                    className="btn btn-secondary"
-                    type="button"
-                    onClick={findByName}
-                >
-                    Search
-                </button>
-            </div>
-        </div>
-    )
-}
+//     return (
+//         <div className="input-group">
+//             <input
+//                 type="text"
+//                 className="form-control"
+//                 placeholder="Search by name"
+//                 value={searchName}
+//                 onChange={onChangeSearchName}
+//             />
+//             <div className="input-group-append">
+//                 <button
+//                     className="btn btn-secondary"
+//                     type="button"
+//                     onClick={findByName}
+//                 >
+//                     Search
+//                 </button>
+//             </div>
+//         </div>
+//     )
+// }
 
-function InputField1({ find }) {
-    const [searchZip, setSearchZip] = useState("");
+// function InputField1({ find }) {
+//     const [searchZip, setSearchZip] = useState("");
 
-    const onChangeSearchZip = (e) => {
-        const searchZip = e.target.value;
-        setSearchZip(searchZip);
-    };
+//     const onChangeSearchZip = (e) => {
+//         const searchZip = e.target.value;
+//         setSearchZip(searchZip);
+//     };
 
-    const findByZip = () => {
-        console.log("search by zip");
-        find(searchZip, "zipcode");
-    };
+//     const findByZip = () => {
+//         console.log("search by zip");
+//         find(searchZip, "zipcode");
+//     };
 
-    return (
-        <div className="input-group">
-            <input
-                type="text"
-                className="form-control"
-                placeholder="Search by zip"
-                value={searchZip}
-                onChange={onChangeSearchZip}
-            />
-            <div className="input-group-append">
-                <button
-                    className="btn btn-secondary"
-                    type="button"
-                    onClick={findByZip}
-                >
-                    Search
-                </button>
-            </div>
-        </div>
-    )
-}
+//     return (
+//         <div className="input-group">
+//             <input
+//                 type="text"
+//                 className="form-control"
+//                 placeholder="Search by zip"
+//                 value={searchZip}
+//                 onChange={onChangeSearchZip}
+//             />
+//             <div className="input-group-append">
+//                 <button
+//                     className="btn btn-secondary"
+//                     type="button"
+//                     onClick={findByZip}
+//                 >
+//                     Search
+//                 </button>
+//             </div>
+//         </div>
+//     )
+// }
 
 function SelectField({find, cuisines, refreshList}) {
     const [searchCuisine, setSearchCuisine] = useState("");

@@ -31,13 +31,18 @@ const Restaurant = ({ userId }) => {
     }, [id]);
 
     if (!restaurant) {
-        return <p>Loading...</p>
+        // return <p>Loading...</p>
+        return <Loader />
     }
 
     return (
         <div className="main-content">
             {restaurant ? (
-                <Card restaurant={restaurant} setRestaurant={setRestaurant} userId={userId} />
+                <Card 
+                    restaurant={restaurant} 
+                    setRestaurant={setRestaurant} 
+                    userId={userId} 
+                />
             ) : (
                 <NotFound />
             )}
@@ -118,10 +123,7 @@ function Review({ review, restaurantId, setRestaurant, userId, index }) {
 
     const deleteReview = (reviewId, index) => {
         const confirmed = window.confirm("Are you sure you want to permanently delete this review?");
-        // console.log(confirmed);
-        // if (!confirmed) {
-        //     return;
-        // }
+
         if (!confirmed) return;
 
         RestaurantDataService.deleteReview(reviewId, userId)
@@ -181,6 +183,17 @@ function Review({ review, restaurantId, setRestaurant, userId, index }) {
                 </div>
             </div>
         </div>
+    )
+}
+
+function Loader() {
+    return (
+        <span className="loader">
+            <div className="logo-ring"></div>
+            <div className="logo-ring"></div>
+            <div className="logo-ring"></div>
+            <div className="logo-ring"></div>
+        </span>
     )
 }
 

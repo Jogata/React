@@ -6,21 +6,23 @@ import Login from "./components/login";
 import AddReview from "./components/add-review";
 
 function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => localStorage.getItem("user"));
 
   async function login(user = null) {
     setUser(user);
+    localStorage.setItem("user", JSON.stringify(user));
   }
-
+  
   async function logout(user = null) {
     setUser(null);
+    localStorage.removeItem("user");
   }
 
-  useEffect(() => {
-    return () => {
-      console.log("unmount app");
-    }
-  })
+  // useEffect(() => {
+  //   return () => {
+  //     console.log("unmount app");
+  //   }
+  // })
 
   return (
     <div className="page">
