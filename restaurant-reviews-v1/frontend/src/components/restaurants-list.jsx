@@ -28,7 +28,6 @@ const retrieveRestaurants = (setRestaurants, setCuisines) => {
 const RestaurantsList = () => {
     const [restaurants, setRestaurants] = useState([]);
     const [cuisines, setCuisines] = useState(["All Cuisines"]);
-    // const [searchCuisine, setSearchCuisine] = useState("");
 
     useEffect(() => {
         // const retrieveCuisines = () => {
@@ -75,76 +74,26 @@ const RestaurantsList = () => {
             });
     };
 
-    // const findByCuisine = () => {
-    //     if (searchCuisine === "All Cuisines") {
-    //         refreshList();
-    //     } else {
-    //         find(searchCuisine, "cuisine");
-    //     }
-    // };
-
-    // const onChangeSearchCuisine = (e) => {
-    //     const searchCuisine = e.target.value;
-    //     setSearchCuisine(searchCuisine);
-    // };
-
     return (
         <div className="main-content">
             <Filters find={find} cuisines={cuisines} refreshList={refreshList} />
             <Restaurants restaurants={restaurants} />
-            {/* {restaurants.length > 0 ? (
-                <Restaurants restaurants={restaurants} />
-            ) : (
-                <p style={{
-                    fontSize: "2rem",
-                    padding: "5rem 2%",
-                    textAlign: "center"
-                }}>
-                     Loading...
-                </p>
-            )} */}
         </div>
     );
 };
 
 function Filters({
     find, 
-    // searchName,
-    // onChangeSearchName,
-    // findByName,
-    // searchZip,
-    // onChangeSearchZip,
-    // findByZip,
-    // onChangeSearchCuisine,
-    // findByCuisine,
     cuisines, 
     refreshList
 }) {
     return (
         <div className="row">
-            <InputField find={find} />
-            <InputField1 find={find} />
+            <InputField find={find} id={"name"} />
+            {/* <InputField2 find={find} /> */}
+            {/* <InputField1 find={find} /> */}
+            <InputField find={find} id={"zipcode"} />
             <SelectField find={find} cuisines={cuisines} refreshList={refreshList} />
-            {/* <div className="input-group">
-                <select onChange={onChangeSearchCuisine}>
-                    {cuisines.map((cuisine) => {
-                        return (
-                            <option value={cuisine} key={cuisine}>
-                                {cuisine.substring(0, 20)}
-                            </option>
-                        );
-                    })}
-                </select>
-                <div className="input-group-append">
-                    <button
-                        className="btn btn-secondary"
-                        type="button"
-                        onClick={findByCuisine}
-                    >
-                        Search
-                    </button>
-                </div>
-            </div> */}
         </div>
     )
 }
@@ -195,7 +144,46 @@ function Restaurant({ restaurant }) {
     );
 }
 
-function InputField({ find }) {
+function InputField({ find, id }) {
+    const [inputText, setInputText] = useState("");
+
+    const onChangeInputText = (e) => {
+        const inputText = e.target.value;
+        setInputText(inputText);
+    };
+
+    const findByInputText = () => {
+        // console.log("search by name");
+        console.log("search by " + id);
+        // find(inputText, "name");
+        find(inputText, id);
+    };
+
+    return (
+        <div className="input-group">
+            <input
+                type="text"
+                id={id}
+                className="form-control"
+                // placeholder="Search by name"
+                placeholder={`Search by ${id}`}
+                value={inputText}
+                onChange={onChangeInputText}
+            />
+            <div className="input-group-append">
+                <button
+                    className="btn btn-secondary"
+                    type="button"
+                    onClick={findByInputText}
+                >
+                    Search
+                </button>
+            </div>
+        </div>
+    )
+}
+
+function InputField2({ find }) {
     const [searchName, setSearchName] = useState("");
 
     const onChangeSearchName = (e) => {
