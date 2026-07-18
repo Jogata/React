@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import RestaurantDataService from "../services/restaurant";
 
-const Restaurant = ({ userId }) => {
+const Restaurant = () => {
     const [restaurant, setRestaurant] = useState(null);
 
     const { id } = useParams();
@@ -31,8 +31,7 @@ const Restaurant = ({ userId }) => {
     }, [id]);
 
     if (!restaurant) {
-        // return <p>Loading...</p>
-        return <Loader />
+        return <Loader />;
     }
 
     return (
@@ -41,7 +40,7 @@ const Restaurant = ({ userId }) => {
                 <Card 
                     restaurant={restaurant} 
                     setRestaurant={setRestaurant} 
-                    userId={userId} 
+                    // userId={userId} 
                 />
             ) : (
                 <NotFound />
@@ -58,7 +57,7 @@ function NotFound() {
     )
 }
 
-function Card({ restaurant, setRestaurant, userId }) {
+function Card({ restaurant, setRestaurant }) {
     return (
         <div className="restaurant">
             <h1>{restaurant.name}</h1>
@@ -87,13 +86,26 @@ function Card({ restaurant, setRestaurant, userId }) {
                 reviews={restaurant.reviews}
                 restaurantId={restaurant._id}
                 setRestaurant={setRestaurant}
-                userId={userId}
+                // userId={userId}
             />
         </div>
     )
 }
 
-function Reviews({ reviews, restaurantId, setRestaurant, userId }) {
+function Reviews({ reviews, restaurantId, setRestaurant }) {
+    const [user] = useState(() => localStorage.getItem("user"));
+    const userId = user?.id;
+
+    useEffect(() => {
+        function checkStorage() {
+            console.log("storage");
+        }
+        
+        window.addEventListener("storage", checkStorage);
+
+        return () => window.removeEventListener("storage", checkStorage);
+    })
+
     return (
         <div className="reviews cards">
             {reviews.length > 0 ? (

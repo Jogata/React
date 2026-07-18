@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, Route, Routes } from "react-router-dom";
 import RestaurantsList from "./components/restaurants-list";
 import Restaurant from "./components/restaurant";
@@ -17,12 +17,6 @@ function App() {
     setUser(null);
     localStorage.removeItem("user");
   }
-
-  // useEffect(() => {
-  //   return () => {
-  //     console.log("unmount app");
-  //   }
-  // })
 
   return (
     <div className="page">
@@ -55,7 +49,7 @@ function App() {
       <Routes>
         <Route path="/" element={<RestaurantsList />} />
         <Route path="/restaurants" element={<RestaurantsList />} />
-        <Route path="/restaurants/:id" element={<Restaurant userId={user?.id} />} />
+        <Route path="/restaurants/:id" element={<Restaurant />} />
         <Route path="/restaurants/:id/review" element={<AddReview user={user} />} />
         <Route path="/login" element={<Login login={login} />} />
       </Routes>
