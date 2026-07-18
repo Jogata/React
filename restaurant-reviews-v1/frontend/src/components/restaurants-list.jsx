@@ -62,7 +62,7 @@ const RestaurantsList = () => {
         console.log("search by " + by);
         RestaurantDataService.findRestaurants(query, by)
             .then((response) => {
-                console.log(response);
+                // console.log(response);
                 const data = response.json();
                 return data;
             })

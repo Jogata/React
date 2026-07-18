@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import RestaurantDataService from "../services/restaurant";
+import { UserContext } from "../App";
 
 const Restaurant = () => {
     const [restaurant, setRestaurant] = useState(null);
@@ -93,14 +94,15 @@ function Card({ restaurant, setRestaurant }) {
 }
 
 function Reviews({ reviews, restaurantId, setRestaurant }) {
-    const [user] = useState(() => localStorage.getItem("user"));
+    // const [user] = useState(() => localStorage.getItem("user"));
+    const {user} = useContext(UserContext);
     const userId = user?.id;
 
     useEffect(() => {
         function checkStorage() {
             console.log("storage");
         }
-        
+
         window.addEventListener("storage", checkStorage);
 
         return () => window.removeEventListener("storage", checkStorage);
