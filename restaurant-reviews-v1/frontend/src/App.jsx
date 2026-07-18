@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { Link, Route, Routes } from "react-router-dom";
 import RestaurantsList from "./components/restaurants-list";
 import Restaurant from "./components/restaurant";
@@ -21,32 +21,7 @@ function App() {
   return (
     <UserContextProvider>
       <div className="page">
-        <nav className="navbar">
-          <a href="/restaurants" className="navbar-logo">
-            Restaurant Reviews
-          </a>
-          <ul>
-            <li>
-              <Link to={"/restaurants"} className="nav-link">
-                Restaurants
-              </Link>
-            </li>
-            {/* <li>
-              {user ? (
-                <button
-                  onClick={logout}
-                  className="btn-primary"
-                >
-                  Logout {user.name}
-                </button>
-              ) : (
-                <Link to={"/login"} className="nav-link">
-                  Login
-                </Link>
-              )}
-            </li> */}
-          </ul>
-        </nav>
+        <Navigation />
         <Routes>
           <Route path="/" element={<RestaurantsList />} />
           <Route path="/restaurants" element={<RestaurantsList />} />
@@ -56,6 +31,39 @@ function App() {
         </Routes>
       </div>
     </UserContextProvider>
+  )
+}
+
+function Navigation() {
+  const { user, logout } = useContext(UserContext);
+
+  return (
+    <nav className="navbar">
+      <a href="/restaurants" className="navbar-logo">
+        Restaurant Reviews
+      </a>
+      <ul>
+        <li>
+          <Link to={"/restaurants"} className="nav-link">
+            Restaurants
+          </Link>
+        </li>
+        <li>
+          {user ? (
+            <button
+              onClick={logout}
+              className="btn-primary"
+            >
+              Logout {user.name}
+            </button>
+          ) : (
+            <Link to={"/login"} className="nav-link">
+              Login
+            </Link>
+          )}
+        </li>
+      </ul>
+    </nav>
   )
 }
 

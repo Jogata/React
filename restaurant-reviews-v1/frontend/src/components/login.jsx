@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../App";
 
-const Login = ({ login }) => {
+const Login = () => {
     const initialUserState = {
         name: "jogata",
         id: "bvhfh",
     };
 
+    const { login } = useContext(UserContext);
     const [user, setUser] = useState(initialUserState);
 
     const navigate = useNavigate();
