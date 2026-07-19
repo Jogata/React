@@ -211,4 +211,39 @@ function Loader() {
     )
 }
 
+function ConfirmModal({ isOpen, title, message, onConfirm, onCancel }) {
+
+    if (!isOpen) return null;
+
+    return (
+        <div>
+            <div>
+                <h3>
+                    {title || "Are you sure?"}
+                </h3>
+
+                <p>
+                    {message || "This action cannot be undone. Please confirm to proceed."}
+                </p>
+
+                <div>
+                    <button
+                        type="button"
+                        onClick={onCancel}
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={onConfirm}
+                    >
+                        Delete Permanently
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default Restaurant;
