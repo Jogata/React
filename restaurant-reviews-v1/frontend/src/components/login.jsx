@@ -5,7 +5,7 @@ import { UserContext } from "../App";
 const Login = () => {
     const initialUserState = {
         name: "jogata",
-        id: "bvhfh",
+        id: "bvhfh"
     };
 
     const { login } = useContext(UserContext);
@@ -30,41 +30,71 @@ const Login = () => {
     };
 
     return (
-        <form className="submit-form" onSubmit={handleLogin}>
-            <div>
-                <h1>Login</h1>
-                <div className="form-group">
-                    <label htmlFor="user">Username</label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        className="form-control"
-                        value={user.name}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </div>
+        <>
+            <form className="submit-form" onSubmit={handleLogin}>
+                <div>
+                    <h1>Login</h1>
+                    <div className="form-group">
+                        <label htmlFor="user">Username</label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            className="form-control"
+                            value={user.name}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </div>
 
-                <div className="form-group">
-                    <label htmlFor="id">ID</label>
-                    <input
-                        type="text"
-                        id="id"
-                        name="id"
-                        className="form-control"
-                        value={user.id}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </div>
+                    <div className="form-group">
+                        <label htmlFor="id">ID</label>
+                        <input
+                            type="text"
+                            id="id"
+                            name="id"
+                            className="form-control"
+                            value={user.id}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </div>
 
-                <button className="btn btn-primary">
-                    Login
-                </button>
-            </div>
-        </form>
+                    <button className="btn btn-primary">
+                        Login
+                    </button>
+                </div>
+            </form>
+            <Buttons setUser={setUser} />
+        </>
     );
 };
+
+function Buttons({ setUser }) {
+    const user1 = {
+        name: "jogata",
+        id: "bvhfh"
+    }
+
+    const user2 = {
+        name: "jogata2",
+        id: "id2"
+    }
+
+    return (
+        <div className="buttons">
+            <button
+                className="btn btn-primary"
+                onClick={() => setUser(user1)}>
+                user1
+            </button>
+            <button
+                className="btn btn-primary"
+                onClick={() => setUser(user2)}>
+                user2
+            </button>
+        </div>
+    )
+}
 
 export default Login;

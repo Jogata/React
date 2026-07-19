@@ -371,3 +371,10 @@ dl .row {
 .message-section a {
   margin-top: 2rem;
 }
+
+.buttons {
+  padding: 2%;
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
