@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
 
 const Login = () => {
@@ -8,14 +8,26 @@ const Login = () => {
         id: "bvhfh"
     };
 
-    const { login } = useContext(UserContext);
-    const [user, setUser] = useState(initialUserState);
+    const { user, login } = useContext(UserContext);
+    const [formInputs, setFormInputs] = useState(initialUserState);
 
     const navigate = useNavigate();
 
+    if (user) {
+        console.log(user);
+        // return <h1>You are logged in</h1>
+        const hasBrowserHistory = window.history.length > 2;
+        if (hasBrowserHistory) {
+            return <Navigate to="/" />;
+        } else {
+            // navigate("/", { replace: true });
+            return <Navigate to="/" replace />;
+        }
+    }
+
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-        setUser({ ...user, [name]: value });
+        setFormInputs({ ...formInputs, [name]: value });
     };
 
     const handleLogin = (e) => {
@@ -41,7 +53,7 @@ const Login = () => {
                             id="name"
                             name="name"
                             className="form-control"
-                            value={user.name}
+                            value={formInputs.name}
                             onChange={handleInputChange}
                             required
                         />
@@ -54,7 +66,7 @@ const Login = () => {
                             id="id"
                             name="id"
                             className="form-control"
-                            value={user.id}
+                            value={formInputs.id}
                             onChange={handleInputChange}
                             required
                         />
@@ -65,7 +77,7 @@ const Login = () => {
                     </button>
                 </div>
             </form>
-            <Buttons setUser={setUser} />
+            <Buttons setUser={setFormInputs} />
         </>
     );
 };
