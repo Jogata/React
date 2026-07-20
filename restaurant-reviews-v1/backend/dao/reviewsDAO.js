@@ -11,8 +11,6 @@ export default class ReviewsDAO {
 
         try {
             reviews = await conn.db("db").collection("reviews");
-            // console.log("ReviewsDAO: 14");
-            // console.log(reviews);
         } catch (err) {
             console.error(`Unable to establish collection handles in userDAO: ${err}`);
         }
@@ -55,7 +53,6 @@ export default class ReviewsDAO {
                 _id: new ObjectId(reviewId),
                 user_id: userId,
             });
-            // console.log(deleteResponse);
 
             return deleteResponse;
         } catch (err) {

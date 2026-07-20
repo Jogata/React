@@ -15,12 +15,10 @@ const Login = () => {
 
     if (user) {
         console.log(user);
-        // return <h1>You are logged in</h1>
         const hasBrowserHistory = window.history.length > 2;
         if (hasBrowserHistory) {
             return <Navigate to="/" />;
         } else {
-            // navigate("/", { replace: true });
             return <Navigate to="/" replace />;
         }
     }

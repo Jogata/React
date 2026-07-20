@@ -4,7 +4,6 @@ class RestaurantDataService {
   }
 
   getRestaurant(id) {
-    // console.log(id);
     return fetch(`http://localhost:5000/api/v1/restaurants/${id}`);
   }
 

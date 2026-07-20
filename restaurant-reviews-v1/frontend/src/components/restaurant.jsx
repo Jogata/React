@@ -41,7 +41,6 @@ const Restaurant = () => {
                 <Card 
                     restaurant={restaurant} 
                     setRestaurant={setRestaurant} 
-                    // userId={userId} 
                 />
             ) : (
                 <NotFound />
@@ -87,14 +86,12 @@ function Card({ restaurant, setRestaurant }) {
                 reviews={restaurant.reviews}
                 restaurantId={restaurant._id}
                 setRestaurant={setRestaurant}
-                // userId={userId}
             />
         </div>
     )
 }
 
 function Reviews({ reviews, restaurantId, setRestaurant }) {
-    // const [user] = useState(() => localStorage.getItem("user"));
     const {user} = useContext(UserContext);
     const userId = user?.id;
 
@@ -132,13 +129,14 @@ function Reviews({ reviews, restaurantId, setRestaurant }) {
     )
 }
 
-function Review({ review, restaurantId, setRestaurant, userId, index }) {
+function Review({ review, restaurantId, setRestaurant, userId }) {
+    const [isDeleting, setIsDeleting] = useState(false);
     const isOwner = userId && userId === review.user_id;
 
     const deleteReview = (reviewId, index) => {
-        const confirmed = window.confirm("Are you sure you want to permanently delete this review?");
+        // const confirmed = window.confirm("Are you sure you want to permanently delete this review?");
 
-        if (!confirmed) return;
+        // if (!confirmed) return;
 
         RestaurantDataService.deleteReview(reviewId, userId)
             .then((response) => {
@@ -179,12 +177,13 @@ function Review({ review, restaurantId, setRestaurant, userId, index }) {
                     </dl>
                     {isOwner && (
                         <div className="row actions">
-                            <button
+                            <DeleteAction onDeleteConfirm={deleteReview} isDeleting={isDeleting} />
+                            {/* <button
                                 className="btn"
                                 onClick={() => deleteReview(review._id, index)}
                             >
                                 Delete
-                            </button>
+                            </button> */}
                             <Link
                                 to={`/restaurants/${restaurantId}/review`}
                                 state={{ currentReview: review }}
@@ -242,6 +241,34 @@ function ConfirmModal({ isOpen, title, message, onConfirm, onCancel }) {
                     </button>
                 </div>
             </div>
+        </div>
+    );
+}
+
+function DeleteAction({ onDeleteConfirm, isDeleting }) {
+    const [modalOpen, setModalOpen] = useState(false);
+
+    return (
+        <div className="delete-action-container">
+            <button
+                type="button"
+                className="btn primary-btn"
+                onClick={() => setModalOpen(true)}
+                // disabled={isDeleting}
+            >
+                {isDeleting ? "Deleting..." : "Delete"}
+            </button>
+
+            <ConfirmModal
+                isOpen={modalOpen}
+                title="Delete Review?"
+                message="Are you completely sure you want to permanently delete this comment from the database?"
+                onCancel={() => setModalOpen(false)}
+                onConfirm={() => {
+                    setModalOpen(false);
+                    onDeleteConfirm();
+                }}
+            />
         </div>
     );
 }
