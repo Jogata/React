@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import RestaurantDataService from "../services/restaurant";
+import { UserContext } from "../App";
 
-const AddReview = ({ user }) => {
+const AddReview = () => {
     const [submitted, setSubmitted] = useState(false);
+    const { user } = useContext(UserContext);
 
     const { id: restaurantId } = useParams();
     const { state } = useLocation();

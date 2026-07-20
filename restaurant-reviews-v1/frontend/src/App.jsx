@@ -74,9 +74,8 @@ function UserContextProvider({ children }) {
 
   useEffect(() => {
     function checkStorage() {
-        // console.log("storage");
         const newUserState = JSON.parse(localStorage.getItem("user"));
-        console.log(newUserState);
+        // console.log(newUserState);
         setUser(newUserState);
     }
 

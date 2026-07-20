@@ -397,9 +397,10 @@ dl .row {
 .modal-card {
   width: 100%;
   max-width: 448px;
-  padding: 24px;  
+  padding: 24px;
+  color: var(--COLOR);
   border-radius: 8px;
-  background-color: var(--COLOR);
+  background-color: var(--BGCOLOR);
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 
             0 10px 10px -5px rgba(0, 0, 0, 0.04);
   animation: modalEntry 200ms ease-out forwards;
@@ -418,9 +419,11 @@ dl .row {
 
 .modal-title {
   margin-bottom: 8px;
-  color: #111827;
-  font-size: 20px;
-  font-weight: 700;
+  /* color: #111827; */
+  /* font-size: 20px; */
+  font-size: 1.25rem;
+  /* font-weight: 700; */
+  font-weight: bold;
 }
 
 .modal-message {

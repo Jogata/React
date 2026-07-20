@@ -93,18 +93,8 @@ function Card({ restaurant, setRestaurant }) {
 
 function Reviews({ reviews, restaurantId, setRestaurant }) {
     const {user} = useContext(UserContext);
-    console.log(user);
+    // console.log(user);
     const userId = user?.id;
-
-    // useEffect(() => {
-    //     function checkStorage() {
-    //         console.log("storage");
-    //     }
-
-    //     window.addEventListener("storage", checkStorage);
-
-    //     return () => window.removeEventListener("storage", checkStorage);
-    // })
 
     return (
         <div className="reviews cards">
@@ -112,13 +102,34 @@ function Reviews({ reviews, restaurantId, setRestaurant }) {
                 reviews.map((review, index) => {
                     return (
                         <Review
-                            key={index}
+                            key={review._id}
                             review={review}
                             restaurantId={restaurantId}
                             setRestaurant={setRestaurant}
                             userId={userId}
                             index={index}
-                        />
+                        >
+                            <p className="card-text">{review.text}</p>
+                            <TestRerender />
+                            <dl>
+                                <div className="row">
+                                    <dt>User:</dt>
+                                    <dd>{review.name}</dd>
+                                </div>
+                                <div className="row">
+                                    <dt>Date:</dt>
+                                    <dd>{new Date(review.date).toLocaleDateString()}</dd>
+                                </div>
+                            </dl>
+                        </Review>
+                        // <Review
+                        //     key={index}
+                        //     review={review}
+                        //     restaurantId={restaurantId}
+                        //     setRestaurant={setRestaurant}
+                        //     userId={userId}
+                        //     index={index}
+                        // />
                     );
                 })
             ) : (
@@ -130,10 +141,11 @@ function Reviews({ reviews, restaurantId, setRestaurant }) {
     )
 }
 
-function Review({ review, restaurantId, setRestaurant, userId }) {
+function Review({ review, restaurantId, setRestaurant, userId, index, children }) {
     const [isDeleting, setIsDeleting] = useState(false);
     const isOwner = userId && userId === review.user_id;
-    console.log(isOwner);
+    // console.log(isOwner);
+    console.log(review);
 
     const deleteReview = (reviewId, index) => {
         RestaurantDataService.deleteReview(reviewId, userId)
@@ -162,7 +174,8 @@ function Review({ review, restaurantId, setRestaurant, userId }) {
         <div className="review">
             <div className="card">
                 <div className="card-body">
-                    <p className="card-text">{review.text}</p>
+                    {children}
+                    {/* <p className="card-text">{review.text}</p>
                     <dl>
                         <div className="row">
                             <dt>User:</dt>
@@ -172,16 +185,14 @@ function Review({ review, restaurantId, setRestaurant, userId }) {
                             <dt>Date:</dt>
                             <dd>{new Date(review.date).toLocaleDateString()}</dd>
                         </div>
-                    </dl>
+                    </dl> */}
+                    {/* <TestRerender /> */}
                     {isOwner && (
                         <div className="row actions">
-                            <DeleteAction onDeleteConfirm={deleteReview} isDeleting={isDeleting} />
-                            {/* <button
-                                className="btn"
-                                onClick={() => deleteReview(review._id, index)}
-                            >
-                                Delete
-                            </button> */}
+                            <DeleteAction 
+                                onDeleteConfirm={() => deleteReview(review._id, index)} 
+                                isDeleting={isDeleting} 
+                            />
                             <Link
                                 to={`/restaurants/${restaurantId}/review`}
                                 state={{ currentReview: review }}
@@ -213,19 +224,20 @@ function ConfirmModal({ isOpen, title, message, onConfirm, onCancel }) {
     if (!isOpen) return null;
 
     return (
-        <div>
-            <div>
-                <h3>
+        <div className="modal-backdrop">
+            <div className="modal-card">
+                <h3 className="modal-title">
                     {title || "Are you sure?"}
                 </h3>
 
-                <p>
+                <p className="modal-message">
                     {message || "This action cannot be undone. Please confirm to proceed."}
                 </p>
 
-                <div>
+                <div className="button-group">
                     <button
                         type="button"
+                        className="btn-base"
                         onClick={onCancel}
                     >
                         Cancel
@@ -233,6 +245,7 @@ function ConfirmModal({ isOpen, title, message, onConfirm, onCancel }) {
 
                     <button
                         type="button"
+                        className="btn-base"
                         onClick={onConfirm}
                     >
                         Delete Permanently
@@ -269,6 +282,11 @@ function DeleteAction({ onDeleteConfirm, isDeleting }) {
             />
         </div>
     );
+}
+
+function TestRerender() {
+    console.log("TestRerender");
+    return null;
 }
 
 export default Restaurant;
