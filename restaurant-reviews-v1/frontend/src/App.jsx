@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { Link, Route, Routes } from "react-router-dom";
 import RestaurantsList from "./components/restaurants-list";
 import Restaurant from "./components/restaurant";
@@ -70,14 +70,27 @@ function Navigation() {
 export const UserContext = createContext(null);
 
 function UserContextProvider({ children }) {
-  const [user, setUser] = useState(() => localStorage.getItem("user"));
+  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("user")));
+
+  useEffect(() => {
+    function checkStorage() {
+        // console.log("storage");
+        const newUserState = JSON.parse(localStorage.getItem("user"));
+        console.log(newUserState);
+        setUser(newUserState);
+    }
+
+    window.addEventListener("storage", checkStorage);
+
+    return () => window.removeEventListener("storage", checkStorage);
+}, [])
 
   async function login(user = null) {
     setUser(user);
     localStorage.setItem("user", JSON.stringify(user));
   }
 
-  async function logout(user = null) {
+  async function logout() {
     setUser(null);
     localStorage.removeItem("user");
   }

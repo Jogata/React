@@ -14,7 +14,7 @@ const Login = () => {
     const navigate = useNavigate();
 
     if (user) {
-        console.log(user);
+        // console.log(user);
         const hasBrowserHistory = window.history.length > 2;
         if (hasBrowserHistory) {
             return <Navigate to="/" />;
@@ -30,7 +30,7 @@ const Login = () => {
 
     const handleLogin = (e) => {
         e.preventDefault();
-        login(user);
+        login(formInputs);
         const hasBrowserHistory = window.history.length > 2;
         if (hasBrowserHistory) {
             navigate(-1);

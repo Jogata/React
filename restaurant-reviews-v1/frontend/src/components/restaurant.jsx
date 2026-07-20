@@ -93,17 +93,18 @@ function Card({ restaurant, setRestaurant }) {
 
 function Reviews({ reviews, restaurantId, setRestaurant }) {
     const {user} = useContext(UserContext);
+    console.log(user);
     const userId = user?.id;
 
-    useEffect(() => {
-        function checkStorage() {
-            console.log("storage");
-        }
+    // useEffect(() => {
+    //     function checkStorage() {
+    //         console.log("storage");
+    //     }
 
-        window.addEventListener("storage", checkStorage);
+    //     window.addEventListener("storage", checkStorage);
 
-        return () => window.removeEventListener("storage", checkStorage);
-    })
+    //     return () => window.removeEventListener("storage", checkStorage);
+    // })
 
     return (
         <div className="reviews cards">
@@ -132,12 +133,9 @@ function Reviews({ reviews, restaurantId, setRestaurant }) {
 function Review({ review, restaurantId, setRestaurant, userId }) {
     const [isDeleting, setIsDeleting] = useState(false);
     const isOwner = userId && userId === review.user_id;
+    console.log(isOwner);
 
     const deleteReview = (reviewId, index) => {
-        // const confirmed = window.confirm("Are you sure you want to permanently delete this review?");
-
-        // if (!confirmed) return;
-
         RestaurantDataService.deleteReview(reviewId, userId)
             .then((response) => {
                 const result = response.json();
