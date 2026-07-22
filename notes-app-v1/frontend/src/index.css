@@ -62,8 +62,33 @@ body {
   background-color: #242424;
 }
 
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
 
 
+
+
+/* delete */
+.page {
+  text-align: center;
+  text-transform: capitalize;
+}
+
+nav, 
+footer, 
+main {
+  padding: 1rem 2%;
+  color: crimson;
+  font-size: 5vw;
+  border: 1px solid;
+}
 
 
 
