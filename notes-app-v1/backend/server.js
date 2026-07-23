@@ -4,6 +4,8 @@ import path from "path";
 
 import { connectDB } from "./config/db.js";
 
+import productRoutes from "./routes/product.routes.js";
+
 dotenv.config();
 
 const app = express();
@@ -13,9 +15,10 @@ const __dirname = path.resolve();
 
 app.use(express.json());
 
-app.get("/", (req, res) => {
-    res.send("Hello world");
-});
+app.use("/api/products", productRoutes);
+// app.get("/", (req, res) => {
+//     res.send("Hello world");
+// });
 
 app.listen(PORT, async () => {
     await connectDB();
