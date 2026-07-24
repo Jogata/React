@@ -82,6 +82,10 @@ body {
   background-color: rgba(255, 255, 255, 0.87);
 }
 
+nav {
+  border-bottom: 1px solid;
+}
+
 nav ul {
   display: flex;
   gap: 2rem;
@@ -95,6 +99,10 @@ nav a {
   font-size: 1.2rem;
 }
 
+nav .logo {
+  margin-right: auto;
+}
+
 nav .logo a {
   font-size: 2rem;
   font-weight: bold;
@@ -104,7 +112,17 @@ main {
   flex: 1;
 }
 
+.main-header {
+  padding: 3rem 0;
+  text-align: center;
+  text-transform: capitalize;
+  border: 1px solid;
+}
 
+.main-body {
+  padding: 3rem 0;
+  border: 1px solid;
+}
 
 
 /* delete */

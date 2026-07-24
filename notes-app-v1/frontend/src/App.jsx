@@ -20,12 +20,11 @@ function App() {
   return (
     <div className={pageClass}>
       <Navbar toggleTheme={toggleTheme} colorMode={colorMode} />
-      {/* <nav>
-        <h2>navbar</h2>
-      </nav> */}
-      <Routes>
-        <Route path="/" element={<Home />} />
-      </Routes>
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </main>
       <footer>
         <h2>footer</h2>
       </footer>
@@ -35,9 +34,26 @@ function App() {
 
 function Home() {
   return (
-    <main>
-      <h1>test</h1>
-    </main>
+    <>
+      <header className="main-header">
+        <h1>test</h1>
+      </header>
+      <section className="main-body"><Cards /></section>
+    </>
+  )
+}
+
+function Cards() {
+  const products = [
+    {name: "test1"}, 
+    {name: "test2"}, 
+    {name: "test3"}, 
+  ];
+
+  return (
+    products.map((product, index) => {
+      return <h2 key={index}>{product.name}</h2>
+    })
   )
 }
 
