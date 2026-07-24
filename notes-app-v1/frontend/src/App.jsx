@@ -1,12 +1,13 @@
+import { Route, Routes } from "react-router-dom";
 import { useState } from "react";
 import Navbar from "./components/Navbar";
 
 function App() {
-  const [ colorMode, toggleColorMode ] = useState("dark");
+  const [colorMode, toggleColorMode] = useState("dark");
 
   function toggleTheme() {
     const themes = {
-      "dark": "light", 
+      "dark": "light",
       "light": "dark"
     }
 
@@ -18,17 +19,25 @@ function App() {
 
   return (
     <div className={pageClass}>
-      <Navbar toggleTheme={toggleTheme} />
+      <Navbar toggleTheme={toggleTheme} colorMode={colorMode} />
       {/* <nav>
         <h2>navbar</h2>
       </nav> */}
-      <main>
-        <h1>test</h1>
-      </main>
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
       <footer>
         <h2>footer</h2>
       </footer>
     </div>
+  )
+}
+
+function Home() {
+  return (
+    <main>
+      <h1>test</h1>
+    </main>
   )
 }
 

@@ -23,6 +23,10 @@ noscript h1 {
   text-align: center;
 }
 
+ul {
+  list-style: none;
+}
+
 a {
   display: inline-block;
   text-decoration: none;
@@ -57,15 +61,43 @@ img {
 }
 
 body {
-  color: rgba(255, 255, 255, 0.87);
+  /* color: rgba(255, 255, 255, 0.87); */
   font-family: Georgia, serif;
-  background-color: #242424;
+  /* background-color: #242424; */
 }
 
 .page {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+.page.dark {
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+}
+
+.page.light {
+  color: #242424;
+  background-color: rgba(255, 255, 255, 0.87);
+}
+
+nav ul {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+nav button, 
+nav a {
+  color: cornflowerblue;
+  font-size: 1.2rem;
+}
+
+nav .logo a {
+  font-size: 2rem;
+  font-weight: bold;
 }
 
 main {
@@ -85,9 +117,9 @@ nav,
 footer, 
 main {
   padding: 1rem 2%;
-  color: crimson;
-  font-size: 5vw;
-  border: 1px solid;
+  /* color: crimson; */
+  /* font-size: 5vw; */
+  /* border: 1px solid; */
 }
 
 
