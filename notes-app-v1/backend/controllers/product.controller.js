@@ -14,16 +14,21 @@ export const getProducts = async (req, res) => {
 export const createProduct = async (req, res) => {
 	const product = req.body;
 
-	if (!product.name || !product.price || !product.image) {
-		return res.status(400).json({ success: false, message: "Please provide all fields" });
-	}
+	// if (!product.name || !product.price || !product.image) {
+	// 	return res.status(400).json({ success: false, message: "Please provide all fields" });
+	// }
 
-	const newProduct = new Product(product);
+	// const newProduct = new Product(product);
 
 	try {
-		await newProduct.save();
-		res.status(201).json({ success: true, data: newProduct });
+		// await newProduct.save();
+		const newProduct = await Product.create(product);
+		const productUrl = `/api/products/${newProduct._id}`;
+		// res.status(201).json({ success: true, data: newProduct });
+	
+		res.status(201).location(productUrl).json({ success: true, data: newProduct });
 	} catch (error) {
+		// todo: ValidationError
 		console.error("Error in Create product:", error.message);
 		res.status(500).json({ success: false, message: "Server Error" });
 	}
