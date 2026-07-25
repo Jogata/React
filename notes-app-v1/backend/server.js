@@ -16,9 +16,6 @@ const __dirname = path.resolve();
 app.use(express.json());
 
 app.use("/api/products", productRoutes);
-// app.get("/", (req, res) => {
-//     res.send("Hello world");
-// });
 
 app.listen(PORT, async () => {
     await connectDB();
