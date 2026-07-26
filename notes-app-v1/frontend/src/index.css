@@ -116,19 +116,19 @@ main {
   padding: 3rem 0;
   text-align: center;
   text-transform: capitalize;
-  border: 1px solid;
+  /* border: 1px solid; */
 }
 
 .main-body {
   padding: 3rem 0;
-  border: 1px solid;
+  /* border: 1px solid; */
 }
 
 
 /* delete */
 .page {
-  text-align: center;
-  text-transform: capitalize;
+  /* text-align: center; */
+  /* text-transform: capitalize; */
 }
 
 nav, 
@@ -137,7 +137,7 @@ main {
   padding: 1rem 2%;
   /* color: crimson; */
   /* font-size: 5vw; */
-  /* border: 1px solid; */
+  border: 1px solid;
 }
 
 
