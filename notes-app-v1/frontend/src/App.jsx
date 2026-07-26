@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { useState } from "react";
 import Navbar from "./components/Navbar";
+import HomePage from "./components/pages/Home";
 
 function App() {
   const [colorMode, toggleColorMode] = useState("dark");
@@ -22,7 +23,7 @@ function App() {
       <Navbar toggleTheme={toggleTheme} colorMode={colorMode} />
       <main>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<HomePage />} />
         </Routes>
       </main>
       <footer>
@@ -32,16 +33,16 @@ function App() {
   )
 }
 
-function Home() {
-  return (
-    <>
-      <header className="main-header">
-        <h1>test</h1>
-      </header>
-      <section className="main-body"><Cards /></section>
-    </>
-  )
-}
+// function Home() {
+//   return (
+//     <>
+//       <header className="main-header">
+//         <h1>test</h1>
+//       </header>
+//       <section className="main-body"><Cards /></section>
+//     </>
+//   )
+// }
 
 function Cards() {
   const products = [
