@@ -44,8 +44,13 @@ button {
 }
 
 .icon {
-  padding: 0.4em;
-  /* border: 1px solid; */
+  padding: 0.4rem;
+  font-size: 0px;
+  border: 1px solid;
+}
+
+.icon i {
+  font-size: 1rem;
 }
 
 input {
@@ -103,7 +108,7 @@ nav ul {
 nav button, 
 nav a {
   color: cornflowerblue;
-  font-size: 1.2rem;
+  /* font-size: 1.2rem; */
 }
 
 nav .logo {
@@ -113,6 +118,10 @@ nav .logo {
 nav .logo a {
   font-size: 2rem;
   font-weight: bold;
+}
+
+nav .icon {
+  font-size: 1.2rem;
 }
 
 main {
@@ -155,6 +164,45 @@ main {
 .main-body {
   padding: 3rem 0;
   /* border: 1px solid; */
+}
+
+.products {
+  display: grid;
+  grid-template-columns: 
+    repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.product-card {
+  padding: 1rem;
+  border-radius: 6px;
+  /* border: 1px solid red; */
+  box-shadow: 3px 3px 3px #0004, 
+            -3px -3px 3px #fff1;
+}
+
+.product-card img {
+  border-radius: inherit;
+}
+
+.product-card .body {
+  padding: 2rem 0 1rem;
+}
+
+.product-card header {
+  margin-bottom: 1rem;
+  font-size: 1.6rem;
+}
+
+.product-card .price {
+  font-size: 1.4rem;
+}
+
+.product-card .actions {
+  padding-top: 2rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 

@@ -8,36 +8,27 @@ const HomePage = () => {
     useEffect(() => {
         console.log("home / use effect / fetch products");
         getAllProducts();
-        // const prom = getAllProducts();
-        // console.log(prom);
 
         async function getAllProducts() {
             const response = await fetch("http://localhost:5000/api/products");
-            // console.log(response);
 
             if (!response.ok) {
                 setError("Network error");
             }
 
             const contentType = response.headers.get("content-type");
-            // console.log(contentType);
             let result = null;
 
             if (contentType && contentType.includes("application/json")) {
                 result = await response.json();
-                // console.log(result);
                 setProducts(result.data);
-                setProducts([]);
+                // setProducts([]);
             } else {
                 result = await response.text();
                 setError(result);
             }
-
-            // console.log(result);
         }
     }, []);
-
-    // console.log("products", products);
 
     if (error) {
         return (
@@ -64,36 +55,43 @@ const HomePage = () => {
                     </Link>
                 </header>
             ) : (
-                <>
-                    <header className="main-header">
-                        <h1>Current Products</h1>
-                    </header>
-                    <div className="main-body">
-                        <section className="main-section">
-                            {products.map(product => (
-                                // <h2 key={product._id}>{product.name}</h2>
-                                <ProductCard product={product} />
-                            ))}
-                        </section>
-                    </div>
-                </>
+                <ProductsSection products={products} />
             )}
         </>
     );
 };
 
-const ProductCard = ({ product }) => {
+function ProductsSection({products}) {
     return (
-        <article>
+        <>
+            <header className="main-header">
+                <h1>Current Products</h1>
+            </header>
+            <div className="main-body">
+                <section className="section">
+                    <div className="products">
+                        {products.map(product => (
+                            <ProductCard key={product._id} product={product} />
+                        ))}
+                    </div>
+                </section>
+            </div>
+        </>
+    )
+}
+
+function ProductCard({ product }) {
+    return (
+        <article className="product-card">
             <img src={product.image} alt={product.name} />
 
-            <div>
+            <div className="body">
                 <header>
                     <h2>{product.name}</h2>
                 </header>
-                <h3>${product.price}</h3>
+                <h3 className="price">${product.price}</h3>
 
-                <div>
+                <div className="actions">
                     <Link
                         to={`/edit/${product._id}`}
                         className="icon"
@@ -103,7 +101,7 @@ const ProductCard = ({ product }) => {
                         <i className="fa fa-pencil-square-o"></i>
                     </Link>
                     <button
-                        className=""
+                        className="icon"
                         title="Delete"
                     >
                         Delete
