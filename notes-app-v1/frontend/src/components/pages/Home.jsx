@@ -42,6 +42,27 @@ const HomePage = () => {
         )
     }
 
+    async function deleteProduct(pid) {
+        const response = await fetch(`/api/products/${pid}`, {
+            method: "DELETE",
+        });
+
+        if (!response.ok) {
+            setError("Network error");
+        }
+
+        const contentType = response.headers.get("content-type");
+        let result = null;
+
+        if (contentType && contentType.includes("application/json")) {
+            const filteredProducts = products.filter(product => product._id !== pid);
+            setProducts(filteredProducts);
+        } else {
+            result = await response.text();
+            setError(result);
+        }
+    }
+
     return (
         <>
             {products.length === 0 ? (
@@ -55,13 +76,13 @@ const HomePage = () => {
                     </Link>
                 </header>
             ) : (
-                <ProductsSection products={products} />
+                <ProductsSection products={products} deleteProduct={deleteProduct} />
             )}
         </>
     );
 };
 
-function ProductsSection({products}) {
+function ProductsSection({ products, deleteProduct }) {
     return (
         <>
             <header className="main-header">
@@ -71,7 +92,7 @@ function ProductsSection({products}) {
                 <section className="section">
                     <div className="products">
                         {products.map(product => (
-                            <ProductCard key={product._id} product={product} />
+                            <ProductCard key={product._id} product={product} deleteProduct={deleteProduct} />
                         ))}
                     </div>
                 </section>
@@ -80,7 +101,7 @@ function ProductsSection({products}) {
     )
 }
 
-function ProductCard({ product }) {
+function ProductCard({ product, deleteProduct }) {
     return (
         <article className="product-card">
             <img src={product.image} alt={product.name} />
@@ -92,17 +113,17 @@ function ProductCard({ product }) {
                 <h3 className="price">${product.price}</h3>
 
                 <div className="actions">
-                    <Link
-                        to={`/edit/${product._id}`}
-                        className="icon"
+                    <button
+                        className="icon edit-btn"
                         title="Edit"
                     >
                         Edit
                         <i className="fa fa-pencil-square-o"></i>
-                    </Link>
+                    </button>
                     <button
-                        className="icon"
+                        className="icon delete-btn"
                         title="Delete"
+                        onClick={() => deleteProduct(product._id)}
                     >
                         Delete
                         <i className="fa fa-trash-o"></i>
