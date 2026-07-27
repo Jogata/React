@@ -12,6 +12,7 @@ function Navbar({ toggleTheme, colorMode }) {
                     <li>
                         <Link
                             to="/create"
+                            className="icon"
                             title="Create"
                         >
                             <i className="fa fa-file-text-o"></i>
@@ -20,6 +21,7 @@ function Navbar({ toggleTheme, colorMode }) {
                     <li>
                         <button
                             onClick={toggleTheme}
+                            className="icon"
                             title="Toggle theme"
                         >
                             {colorMode === "light" ? (

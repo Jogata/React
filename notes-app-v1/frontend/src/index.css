@@ -29,16 +29,23 @@ ul {
 
 a {
   display: inline-block;
+  padding: 0.4em 1em;
   text-decoration: none;
   transition: color 300ms;
 }
 
 button {
+  padding: 0.4em 1em;
   font-family: inherit;
   border: 0px solid transparent;
   outline: 1px solid transparent;
   background-color: transparent;
   cursor: pointer;
+}
+
+.icon {
+  padding: 0.4em;
+  /* border: 1px solid; */
 }
 
 input {
@@ -119,6 +126,32 @@ main {
   /* border: 1px solid; */
 }
 
+.main-header .redirect-link {
+  position: relative;
+  margin-top: 1rem;
+  /* padding: 0.4em 1em; */
+  color: cornflowerblue;
+  font-size: 1.4rem;
+  /* border: 1px solid; */
+}
+
+.redirect-link::after {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  content: "";
+  width: 100%;
+  height: 1%;
+  background-color: cornflowerblue;
+  transition: transform 300ms;
+  transform: scale(0);
+}
+
+.redirect-link:hover::after {
+  transform-origin: center;
+  transform: scale(1);
+}
+
 .main-body {
   padding: 3rem 0;
   /* border: 1px solid; */
@@ -139,7 +172,3 @@ main {
   /* font-size: 5vw; */
   border: 1px solid;
 }
-
-
-
-

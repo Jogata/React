@@ -6,36 +6,38 @@ const HomePage = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        console.log("home use effect");
+        console.log("home / use effect / fetch products");
         getAllProducts();
+        // const prom = getAllProducts();
+        // console.log(prom);
 
         async function getAllProducts() {
             const response = await fetch("http://localhost:5000/api/products");
-            console.log(response);
+            // console.log(response);
 
             if (!response.ok) {
                 setError("Network error");
             }
 
             const contentType = response.headers.get("content-type");
-            console.log(contentType);
+            // console.log(contentType);
             let result = null;
 
             if (contentType && contentType.includes("application/json")) {
                 result = await response.json();
-                console.log(result);
+                // console.log(result);
                 setProducts(result.data);
-                // setProducts([]);
+                setProducts([]);
             } else {
                 result = await response.text();
                 setError(result);
             }
 
-            console.log(result);
+            // console.log(result);
         }
     }, []);
 
-    console.log("products", products);
+    // console.log("products", products);
 
     if (error) {
         return (
@@ -50,12 +52,14 @@ const HomePage = () => {
     }
 
     return (
-        // <h1>{products[0].name}</h1>
         <>
             {products.length === 0 ? (
                 <header className="main-header">
                     <h1>No products found</h1>
-                    <Link to="/create">
+                    <Link
+                        to="/create"
+                        className="redirect-link"
+                    >
                         Create a product
                     </Link>
                 </header>
@@ -67,13 +71,47 @@ const HomePage = () => {
                     <div className="main-body">
                         <section className="main-section">
                             {products.map(product => (
-                                <h2 key={product._id}>{product.name}</h2>
+                                // <h2 key={product._id}>{product.name}</h2>
+                                <ProductCard product={product} />
                             ))}
                         </section>
                     </div>
                 </>
             )}
         </>
+    );
+};
+
+const ProductCard = ({ product }) => {
+    return (
+        <article>
+            <img src={product.image} alt={product.name} />
+
+            <div>
+                <header>
+                    <h2>{product.name}</h2>
+                </header>
+                <h3>${product.price}</h3>
+
+                <div>
+                    <Link
+                        to={`/edit/${product._id}`}
+                        className="icon"
+                        title="Edit"
+                    >
+                        Edit
+                        <i className="fa fa-pencil-square-o"></i>
+                    </Link>
+                    <button
+                        className=""
+                        title="Delete"
+                    >
+                        Delete
+                        <i className="fa fa-trash-o"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
     );
 };
 
