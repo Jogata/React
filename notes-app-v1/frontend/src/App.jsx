@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import { useState } from "react";
 import Navbar from "./components/Navbar";
 import HomePage from "./components/pages/Home";
+import CreateProductPage from "./components/pages/CreateProductPage";
 
 function App() {
   const [colorMode, toggleColorMode] = useState("dark");
@@ -24,6 +25,7 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/create" element={<CreateProductPage />} />
         </Routes>
       </main>
       <footer>
