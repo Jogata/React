@@ -23,7 +23,7 @@ export const createProduct = async (req, res) => {
 		res.status(201).location(productUrl).json({ success: true, data: newProduct });
 	} catch (error) {
 		// todo: ValidationError
-		console.error("Error in Create product:", error.message);
+		console.error("Error in Create product:", error, error.message);
 		res.status(500).json({ success: false, message: "Server Error" });
 	}
 };

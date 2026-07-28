@@ -13,7 +13,7 @@ const HomePage = () => {
             const response = await fetch("http://localhost:5000/api/products");
 
             if (!response.ok) {
-                setError("Network error");
+                setError("Custom error");
             }
 
             const contentType = response.headers.get("content-type");
@@ -32,7 +32,9 @@ const HomePage = () => {
 
     if (error) {
         return (
-            <h1>{error}</h1>
+            <header className="main-header">
+                <h1>{error}</h1>
+            </header>
         )
     }
 
