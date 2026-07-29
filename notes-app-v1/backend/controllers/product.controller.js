@@ -23,7 +23,15 @@ export const createProduct = async (req, res) => {
 		res.status(201).location(productUrl).json({ success: true, data: newProduct });
 	} catch (error) {
 		// todo: ValidationError
-		console.error("Error in Create product:", error, error.message);
+		let message = error.message;
+		
+		if (error.code == 11000) {
+			message = `A product with the name '${product.name}' already exists. Please choose a different name.`;
+			console.log(11000, message);
+			return res.status(409).json({ success: false, message });
+		}
+
+		console.error("Error in Create product:", message);
 		res.status(500).json({ success: false, message: "Server Error" });
 	}
 };

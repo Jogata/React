@@ -2,7 +2,7 @@ import { useState } from "react";
 
 function CreateProductPage() {
     const [newProduct, setNewProduct] = useState({
-        name: "tets1",
+        name: "test1",
         price: "55",
         image: "https://cdn.pixabay.com/photo/2016/11/21/13/58/analog-watch-1845547_1280.jpg",
     });
@@ -32,21 +32,27 @@ function CreateProductPage() {
             body: JSON.stringify(newProduct),
         });
 
-        if (!response.ok) {
-            setError("Custom error");
-        }
-
         const contentType = response.headers.get("content-type");
         let result = null;
 
         if (contentType && contentType.includes("application/json")) {
-            console.log("created");
-            return { success: true, message: "Product created successfully" };
+            // console.log("created");
+            result = await response.json();
+            // return { success: true, message: "Product created successfully" };
         } else {
             result = await response.text();
-            setError(result);
+            // setError(result);
         }
 
+        if (!response.ok) {
+            if (response.status == 409) {
+                console.log(result.message);
+                return { success: false, message: result.message };
+            }
+            // setError("Custom error");
+        }
+
+        console.log("Product created successfully");
         return { success: true, message: "Product created successfully" };
     }
 
@@ -84,8 +90,32 @@ function CreateProductPage() {
                     Add Product
                 </button>
             </form>
+
+            <Button setNewProduct={setNewProduct} />
         </>
     );
 };
+
+function Button({setNewProduct}) {
+    function generate() {
+        setNewProduct(old => {
+            const newProduct = {...old};
+            const number = Number(old.name[old.name.length - 1]);
+            console.log(number);
+            const newName = newProduct.name.substring(0,4) + (number + 1);
+            newProduct.name = newName;
+            return newProduct;
+        })
+    }
+
+    return (
+        <button 
+            className="btn"
+            onClick={generate}
+        >
+            generate
+        </button>
+    )
+}
 
 export default CreateProductPage;
