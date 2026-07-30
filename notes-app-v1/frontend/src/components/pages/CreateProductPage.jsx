@@ -32,10 +32,10 @@ function CreateProductPage() {
                 },
                 body: JSON.stringify(newProduct),
             });
-    
+
             const contentType = response.headers.get("content-type");
             let result = null;
-    
+
             if (contentType && contentType.includes("application/json")) {
                 // console.log("created");
                 result = await response.json();
@@ -44,7 +44,7 @@ function CreateProductPage() {
                 result = await response.text();
                 // setError(result);
             }
-    
+
             if (!response.ok) {
                 if (response.status == 409) {
                     console.log(result.message);
@@ -52,9 +52,9 @@ function CreateProductPage() {
                 }
                 // setError("Custom error");
             }
-    
+
             console.log("Product created successfully");
-            return { success: true, message: "Product created successfully" };    
+            return { success: true, message: "Product created successfully" };
         } catch (error) {
             setError(result);
         }
@@ -100,20 +100,53 @@ function CreateProductPage() {
     );
 };
 
-function Button({setNewProduct}) {
+function EditForm() {
+    return (
+        <form className="form centered" onSubmit={createProduct}>
+            <input
+                className="form-input"
+                name="name"
+                value={newProduct.name}
+                onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+                placeholder="Product Name"
+            />
+            <input
+                className="form-input"
+                type="number"
+                name="price"
+                value={newProduct.price}
+                onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
+                placeholder="Price"
+            />
+            <input
+                className="form-input"
+                name="image"
+                value={newProduct.image}
+                onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })}
+                placeholder="Image URL"
+            />
+
+            <button className="btn">
+                Add Product
+            </button>
+        </form>
+    )
+}
+
+function Button({ setNewProduct }) {
     function generate() {
         setNewProduct(old => {
-            const newProduct = {...old};
+            const newProduct = { ...old };
             const number = Number(old.name[old.name.length - 1]);
             // console.log(number);
-            const newName = newProduct.name.substring(0,4) + (number + 1);
+            const newName = newProduct.name.substring(0, 4) + (number + 1);
             newProduct.name = newName;
             return newProduct;
         })
     }
 
     return (
-        <button 
+        <button
             className="btn"
             onClick={generate}
         >
