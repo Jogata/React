@@ -45,22 +45,36 @@ const HomePage = () => {
     }
 
     async function deleteProduct(pid) {
-        const response = await fetch(`/api/products/${pid}`, {
-            method: "DELETE",
-        });
+        pid = "6a69f1a10fff8ba99d2eeef1";
+        try {
+            const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
+                method: "DELETE",
+            });
+            // console.log(response);
+    
+            let result = null;
+            const contentType = response.headers.get("content-type");
+    
+            if (contentType && contentType.includes("application/json")) {
+                result = await response.json();
+            } else {
+                result = await response.text();
+                // setError(result);
+            }
 
-        if (!response.ok) {
-            setError("Network error");
-        }
-
-        const contentType = response.headers.get("content-type");
-        let result = null;
-
-        if (contentType && contentType.includes("application/json")) {
-            const filteredProducts = products.filter(product => product._id !== pid);
-            setProducts(filteredProducts);
-        } else {
-            result = await response.text();
+            console.log(result);
+    
+            if (!response.ok) {
+                // setError("Network error");
+                setError(result.message);
+                setTimeout(() => {
+                    setError(null);
+                }, 3000);
+            } else {
+                const filteredProducts = products.filter(product => product._id !== pid);
+                setProducts(filteredProducts);
+            }    
+        } catch (error) {
             setError(result);
         }
     }
@@ -126,6 +140,7 @@ function ProductCard({ product, deleteProduct }) {
                         className="icon delete-btn"
                         title="Delete"
                         onClick={() => deleteProduct(product._id)}
+                        // onClick={() => deleteProduct(1)}
                     >
                         Delete
                         <i className="fa fa-trash-o"></i>

@@ -24,36 +24,40 @@ function CreateProductPage() {
             return { success: false, message: "Please fill in all fields." };
         }
 
-        const response = await fetch("http://localhost:5000/api/products", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(newProduct),
-        });
-
-        const contentType = response.headers.get("content-type");
-        let result = null;
-
-        if (contentType && contentType.includes("application/json")) {
-            // console.log("created");
-            result = await response.json();
-            // return { success: true, message: "Product created successfully" };
-        } else {
-            result = await response.text();
-            // setError(result);
-        }
-
-        if (!response.ok) {
-            if (response.status == 409) {
-                console.log(result.message);
-                return { success: false, message: result.message };
+        try {
+            const response = await fetch("http://localhost:5000/api/products", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newProduct),
+            });
+    
+            const contentType = response.headers.get("content-type");
+            let result = null;
+    
+            if (contentType && contentType.includes("application/json")) {
+                // console.log("created");
+                result = await response.json();
+                // return { success: true, message: "Product created successfully" };
+            } else {
+                result = await response.text();
+                // setError(result);
             }
-            // setError("Custom error");
+    
+            if (!response.ok) {
+                if (response.status == 409) {
+                    console.log(result.message);
+                    return { success: false, message: result.message };
+                }
+                // setError("Custom error");
+            }
+    
+            console.log("Product created successfully");
+            return { success: true, message: "Product created successfully" };    
+        } catch (error) {
+            setError(result);
         }
-
-        console.log("Product created successfully");
-        return { success: true, message: "Product created successfully" };
     }
 
     return (
@@ -101,7 +105,7 @@ function Button({setNewProduct}) {
         setNewProduct(old => {
             const newProduct = {...old};
             const number = Number(old.name[old.name.length - 1]);
-            console.log(number);
+            // console.log(number);
             const newName = newProduct.name.substring(0,4) + (number + 1);
             newProduct.name = newName;
             return newProduct;
