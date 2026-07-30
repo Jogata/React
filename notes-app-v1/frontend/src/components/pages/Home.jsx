@@ -45,12 +45,11 @@ const HomePage = () => {
     }
 
     async function deleteProduct(pid) {
-        pid = "6a69f1a10fff8ba99d2eeef1";
+        // pid = "6a69f1a10fff8ba99d2eeef1";
         try {
             const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
                 method: "DELETE",
             });
-            // console.log(response);
     
             let result = null;
             const contentType = response.headers.get("content-type");
@@ -59,13 +58,11 @@ const HomePage = () => {
                 result = await response.json();
             } else {
                 result = await response.text();
-                // setError(result);
             }
 
-            console.log(result);
+            // console.log(result);
     
             if (!response.ok) {
-                // setError("Network error");
                 setError(result.message);
                 setTimeout(() => {
                     setError(null);
@@ -78,6 +75,45 @@ const HomePage = () => {
             setError(result);
         }
     }
+
+    async function updateProduct(pid, updatedProduct) {
+        try {
+            const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(updatedProduct),
+            });
+
+            let result = null;
+            const contentType = response.headers.get("content-type");
+    
+            if (contentType && contentType.includes("application/json")) {
+                result = await response.json();
+            } else {
+                result = await response.text();
+            }
+
+            // console.log(result);
+    
+            if (!response.ok) {
+                setError(result.message);
+                setTimeout(() => {
+                    setError(null);
+                }, 3000);
+            } else {
+                const updatedProducts = products.map(product => product._id !== pid ? result.data : product);
+                setProducts(filteredProducts);
+            } 
+    
+            if (!result.success) return { success: false, message: result.message };
+        
+            return { success: true, message: data.message };                
+        } catch (error) {
+            
+        }
+	}
 
     return (
         <>
@@ -140,7 +176,6 @@ function ProductCard({ product, deleteProduct }) {
                         className="icon delete-btn"
                         title="Delete"
                         onClick={() => deleteProduct(product._id)}
-                        // onClick={() => deleteProduct(1)}
                     >
                         Delete
                         <i className="fa fa-trash-o"></i>
