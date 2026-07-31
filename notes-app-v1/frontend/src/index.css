@@ -43,6 +43,18 @@ button {
   cursor: pointer;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  overflow: hidden;
+}
+
 .icon {
   padding: 0.4em;
   font-size: 0px;
@@ -63,6 +75,10 @@ button {
 
 .icon:active i {
   transform: scale(0.95);
+}
+
+.icon i.fa-trash-o {
+  padding: 0.4em 0.52em;
 }
 
 input {
@@ -196,20 +212,21 @@ main {
 
 .products {
   display: grid;
+  gap: 2rem 1rem;
   grid-template-columns: 
     repeat(auto-fill, minmax(300px, 1fr));
 }
 
 .product-card {
   padding: 1rem;
-  border-radius: 6px;
+  border-radius: 12px;
   /* border: 1px solid red; */
   box-shadow: 3px 3px 3px #0004, 
             -3px -3px 3px #fff1;
 }
 
 .product-card img {
-  border-radius: inherit;
+  border-radius: 6px;
 }
 
 .product-card .body {
@@ -227,21 +244,21 @@ main {
 
 .product-card .actions {
   padding-top: 2rem;
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  align-items: center;
+  /* display: flex; */
+  /* gap: 1rem; */
+  /* flex-wrap: wrap; */
+  /* align-items: center; */
 }
 
 .product-card .actions .icon i {
   font-size: 1.4rem;
 }
 
-.product-card .delete-btn {
+.delete-btn {
   color: crimson;
 }
 
-.product-card .edit-btn {
+.edit-btn {
   color: orange;
 }
 
@@ -320,6 +337,36 @@ main {
   margin-top: 1rem;
   font-size: 1.1rem;
 }
+
+.product-page {
+  max-width: 600px;
+  margin: auto;
+  padding: 3rem 0;
+  text-align: center;
+}
+
+.product-page img {
+  border-radius: 12px;
+}
+
+.product-page h1 {
+  padding: 1em 2% 0.5em;
+  font-size: 3rem;
+}
+
+.product-page h2 {
+  padding: 0em 2% 1em;
+  font-size: 1.6rem;
+}
+
+.product-page .icon i {
+  font-size: 2rem;
+}
+
+.actions .icon {
+  margin: 0.5rem 2%;
+}
+
 
 /* delete */
 .page {

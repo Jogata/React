@@ -20,13 +20,12 @@ export function ProductPage() {
                 
             setProduct(product);
         })
-    .catch(err => {
-        console.log(err.message);
-        console.log(err.status);
-        setError(err.message);
-    })
-        // console.log(result);
-
+        .catch(err => {
+            console.log(err.message);
+            console.log(err.status);
+            setError(err.message);
+        })
+        
         async function getAllProducts() {
             try {                
                 const response = await fetch("http://localhost:5000/api/products");
@@ -72,9 +71,39 @@ export function ProductPage() {
         )
     }
 
-	return (
-        <h1>Product page {id}</h1>
-	);
+    return (
+        // <h1>Product page {id}</h1>
+        <div className="product-page">
+            <img src={product.image} alt={product.name} />
+            <h1>{product.name}</h1>
+            <h2>${product.price}</h2>
+            <div className="actions">
+                {/* <button
+                    className="icon edit-btn"
+                    title="Edit"
+                >
+                    Edit product
+                    <i className="fa fa-pencil-square-o"></i>
+                </button> */}
+                <button 
+                    type="button"
+                    className="icon edit-btn" 
+                    title="Edit"
+                >
+                    <span className="sr-only">Edit product {product.name}</span>
+                    <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
+                </button>
+                <button
+                    className="icon delete-btn"
+                    title="Delete"
+                    // onClick={() => deleteProduct(product._id)}
+                >
+                    Delete
+                    <i className="fa fa-trash-o"></i>
+                </button>
+            </div>
+        </div>
+    );
 };
 
 export default ProductPage;
