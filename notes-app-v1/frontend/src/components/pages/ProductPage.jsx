@@ -11,8 +11,20 @@ export function ProductPage() {
         getAllProducts().then(result => {
             const product = result.data.find(product => product._id == id);
             console.log(product);
+
+            if (!product) {
+                const customError = new Error("Product not found");
+                customError.status = "404";
+                throw customError;
+            }
+                
             setProduct(product);
-        });
+        })
+    .catch(err => {
+        console.log(err.message);
+        console.log(err.status);
+        setError(err.message);
+    })
         // console.log(result);
 
         async function getAllProducts() {
@@ -29,12 +41,36 @@ export function ProductPage() {
                     result = await response.text();
                 }
 
+                if (!response.ok) {
+                    const message = typeof result === "object" ? result.message : result;
+                    const customError = new Error(response.message);
+                    customError.status = response.status;
+                    throw customError;
+                }
+
                 return result;
             } catch (error) {
-                console.log(error);
+                // console.log(error.message);
+                // console.log(error.status);
+                throw error;
+                // throw new Error("Unable to establish communication with the product catalog.", { cause: error });
             }
         }
     }, []);
+
+    if (error) {
+        return (
+            <header className="main-header">
+                <h1>{error}</h1>
+            </header>
+        )
+    }
+
+    if (!product) {
+        return (
+            <p>Loading...</p>
+        )
+    }
 
 	return (
         <h1>Product page {id}</h1>
