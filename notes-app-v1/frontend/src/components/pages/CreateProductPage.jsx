@@ -100,7 +100,7 @@ function CreateProductPage() {
     );
 };
 
-function EditForm() {
+function ProductForm() {
     return (
         <form className="form centered" onSubmit={createProduct}>
             <input

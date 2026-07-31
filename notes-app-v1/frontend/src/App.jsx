@@ -3,6 +3,7 @@ import { useState } from "react";
 import Navbar from "./components/Navbar";
 import HomePage from "./components/pages/Home";
 import CreateProductPage from "./components/pages/CreateProductPage";
+import ProductPage from "./components/pages/ProductPage";
 
 function App() {
   const [colorMode, toggleColorMode] = useState("dark");
@@ -25,6 +26,7 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/product/:id" element={<ProductPage />} />
           <Route path="/create" element={<CreateProductPage />} />
         </Routes>
       </main>

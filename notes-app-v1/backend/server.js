@@ -27,6 +27,10 @@ app.use(express.json());
 
 app.use("/api/products", productRoutes);
 
+app.use((req, res, next) => {
+    res.status(404).json({ success: false, message: "Route path not found." });
+});
+    
 app.listen(PORT, async () => {
     await connectDB();
 	console.log("Server started at http://localhost: " + PORT);
