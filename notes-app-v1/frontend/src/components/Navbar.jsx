@@ -15,19 +15,27 @@ function Navbar({ toggleTheme, colorMode }) {
                             className="icon"
                             title="Create"
                         >
-                            <i className="fa fa-file-text-o"></i>
+                            <span className="sr-only">Create new product</span>
+                            <i className="fa fa-file-text-o" aria-hidden="true"></i>
                         </Link>
                     </li>
                     <li>
                         <button
+                            type="button"
                             onClick={toggleTheme}
                             className="icon"
                             title="Toggle theme"
                         >
                             {colorMode === "light" ? (
-                                <i className="fa fa-moon-o"></i>
+                                <>
+                                    <span className="sr-only">Dark theme</span>
+                                    <i className="fa fa-moon-o" aria-hidden="true"></i>
+                                </>
                             ) : (
-                                <i className="fa fa-sun-o"></i>
+                                <>
+                                    <span className="sr-only">Light theme</span>
+                                    <i className="fa fa-sun-o" aria-hidden="true"></i>
+                                </>
                             )}
                         </button>
                     </li>

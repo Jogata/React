@@ -12,26 +12,65 @@ const HomePage = () => {
 
     useEffect(() => {
         console.log("home / use effect / fetch products");
-        getAllProducts();
+        // getAllProducts();
 
-        async function getAllProducts() {
+        // async function getAllProducts() {
+        //     const response = await fetch("http://localhost:5000/api/products");
+
+        //     if (!response.ok) {
+        //         setError("Custom error");
+        //     }
+
+        //     const contentType = response.headers.get("content-type");
+        //     let result = null;
+
+        //     if (contentType && contentType.includes("application/json")) {
+        //         result = await response.json();
+        //         setProducts(result.data);
+        //     } else {
+        //         result = await response.text();
+        //         setError(result);
+        //     }
+        // }
+
+        loadProducts();
+
+        async function loadProducts() {
+            try {
+                const { products } = await apiGetAllProducts();
+                setProducts(products);
+            } catch (err) {
+                setError(err.message);
+            }
+        }
+
+        async function apiGetAllProducts() {
             const response = await fetch("http://localhost:5000/api/products");
-
-            if (!response.ok) {
-                setError("Custom error");
-            }
-
             const contentType = response.headers.get("content-type");
-            let result = null;
+        
+            if (!response.ok) {
+                let errorMessage = "An error occurred";
 
-            if (contentType && contentType.includes("application/json")) {
-                result = await response.json();
-                setProducts(result.data);
-                // setProducts([]);
-            } else {
-                result = await response.text();
-                setError(result);
+                if (contentType && contentType.includes("application/json")) {
+                    const errorData = await response.json();
+                    errorMessage = errorData.message || errorMessage;
+                } else {
+                    errorMessage = await response.text();
+                }
+                
+                throw new Error(errorMessage);
             }
+        
+            if (contentType && contentType.includes("application/json")) {
+                const result = await response.json();
+                console.log(result);
+                
+                return {
+                    products: result.data
+                };
+            }
+        
+            throw new Error("Invalid response format received from server");
         }
     }, []);
 
@@ -100,8 +139,6 @@ const HomePage = () => {
                 result = await response.text();
             }
 
-            // console.log(result);
-    
             if (!response.ok) {
                 setError(result.message);
                 setTimeout(() => {
@@ -154,6 +191,7 @@ function ProductsSection({ products, deleteProduct }) {
                     </div>
                 </section>
             </div>
+            <Links products={products} />
         </>
     )
 }
@@ -170,13 +208,6 @@ function ProductCard({ product, deleteProduct }) {
                 <h3 className="price">${product.price}</h3>
 
                 <div className="actions">
-                    {/* <button
-                        className="icon edit-btn"
-                        title="Edit"
-                    >
-                        Edit
-                        <i className="fa fa-pencil-square-o"></i>
-                    </button> */}
                     <button
                         type="button"
                         className="icon edit-btn"
@@ -186,11 +217,13 @@ function ProductCard({ product, deleteProduct }) {
                         <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
                     </button>
                     <button
+                        type="button"
                         className="icon delete-btn"
                         title="Delete"
                         onClick={() => deleteProduct(product._id)}
                     >
-                        Delete
+                        {/* Delete */}
+                        <span className="sr-only">Delete product {product.name}</span>
                         <i className="fa fa-trash-o" aria-hidden="true"></i>
                     </button>
                 </div>
@@ -198,5 +231,17 @@ function ProductCard({ product, deleteProduct }) {
         </article>
     );
 };
+
+function Links({products}) {
+    return (
+        <div className="links">
+            {products.map(product => (
+                <Link key={product._id} to={`product/${product._id}`}>
+                    {product.name}
+                </Link>
+            ))}
+        </div>
+    )
+}
 
 export default HomePage;

@@ -57,7 +57,7 @@ button {
 
 .icon {
   padding: 0.4em;
-  font-size: 0px;
+  /* font-size: 0px; */
   border-radius: 4px;
   box-shadow: 2px 2px 2px #0004, 
             -2px -2px 2px #fff1;
@@ -301,9 +301,9 @@ main {
   margin-left: 0.5rem;
 }
 
-.icon-button {
+/* .icon-button {
   font-size: 0px;
-}
+} */
 
 .icon-button i {
   padding: 0.2em;

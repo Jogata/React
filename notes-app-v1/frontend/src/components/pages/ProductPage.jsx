@@ -59,7 +59,7 @@ export function ProductPage() {
     }, []);
 
     async function deleteProduct(pid) {
-        // pid = "6a69f1a10fff8ba99d2eeef1";
+        // pid = "6a6db517423ac20b02df6b8s";
         try {
             const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
                 method: "DELETE",
@@ -73,8 +73,6 @@ export function ProductPage() {
             } else {
                 result = await response.text();
             }
-
-            // console.log(result);
     
             if (!response.ok) {
                 setError(result.message);
@@ -86,8 +84,6 @@ export function ProductPage() {
                 navigate("/", {
                     state: { product: id },
                 },);
-                // const filteredProducts = products.filter(product => product._id !== pid);
-                // setProducts(filteredProducts);
             }    
         } catch (error) {
             setError(result);
@@ -109,7 +105,6 @@ export function ProductPage() {
     }
 
     return (
-        // <h1>Product page {id}</h1>
         <div className="product-page">
             <img src={product.image} alt={product.name} />
             <h1>{product.name}</h1>
@@ -124,12 +119,14 @@ export function ProductPage() {
                     <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
                 </button>
                 <button
+                    type="button"
                     className="icon delete-btn"
                     title="Delete"
                     onClick={() => deleteProduct(product._id)}
                 >
-                    Delete
-                    <i className="fa fa-trash-o"></i>
+                    {/* Delete */}
+                    <span className="sr-only">Delete product {product.name}</span>
+                    <i className="fa fa-trash-o" aria-hidden="true"></i>
                 </button>
             </div>
         </div>

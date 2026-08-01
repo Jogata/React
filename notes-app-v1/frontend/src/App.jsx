@@ -37,29 +37,18 @@ function App() {
   )
 }
 
-// function Home() {
+// function Cards() {
+//   const products = [
+//     {name: "test1"}, 
+//     {name: "test2"}, 
+//     {name: "test3"}, 
+//   ];
+
 //   return (
-//     <>
-//       <header className="main-header">
-//         <h1>test</h1>
-//       </header>
-//       <section className="main-body"><Cards /></section>
-//     </>
+//     products.map((product, index) => {
+//       return <h2 key={index}>{product.name}</h2>
+//     })
 //   )
 // }
-
-function Cards() {
-  const products = [
-    {name: "test1"}, 
-    {name: "test2"}, 
-    {name: "test3"}, 
-  ];
-
-  return (
-    products.map((product, index) => {
-      return <h2 key={index}>{product.name}</h2>
-    })
-  )
-}
 
 export default App;
