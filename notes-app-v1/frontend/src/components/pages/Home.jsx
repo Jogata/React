@@ -12,26 +12,6 @@ const HomePage = () => {
 
     useEffect(() => {
         console.log("home / use effect / fetch products");
-        // getAllProducts();
-
-        // async function getAllProducts() {
-        //     const response = await fetch("http://localhost:5000/api/products");
-
-        //     if (!response.ok) {
-        //         setError("Custom error");
-        //     }
-
-        //     const contentType = response.headers.get("content-type");
-        //     let result = null;
-
-        //     if (contentType && contentType.includes("application/json")) {
-        //         result = await response.json();
-        //         setProducts(result.data);
-        //     } else {
-        //         result = await response.text();
-        //         setError(result);
-        //     }
-        // }
 
         loadProducts();
 
@@ -88,35 +68,79 @@ const HomePage = () => {
         )
     }
 
-    async function deleteProduct(pid) {
-        // pid = "6a69f1a10fff8ba99d2eeef1";
-        try {
-            const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
-                method: "DELETE",
-            });
+    // async function deleteProduct(pid) {
+    //     try {
+    //         const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
+    //             method: "DELETE",
+    //         });
     
-            let result = null;
-            const contentType = response.headers.get("content-type");
+    //         let result = null;
+    //         const contentType = response.headers.get("content-type");
     
+    //         if (contentType && contentType.includes("application/json")) {
+    //             result = await response.json();
+    //         } else {
+    //             result = await response.text();
+    //         }
+    
+    //         if (!response.ok) {
+    //             setError(result.message);
+    //             setTimeout(() => {
+    //                 setError(null);
+    //             }, 3000);
+    //         } else {
+    //             const filteredProducts = products.filter(product => product._id !== pid);
+    //             setProducts(filteredProducts);
+    //         }    
+    //     } catch (error) {
+    //         setError(result);
+    //     }
+    // }
+
+    async function apiDeleteProduct(pid) {
+        const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
+            method: "DELETE",
+        });
+    
+        // const contentType = response.headers.get("content-type");
+        // let result = null;
+        
+        if (!response.ok) {
+            let errorMessage = "Deletion failed";
+
             if (contentType && contentType.includes("application/json")) {
-                result = await response.json();
+                const errorData = await response.json();
+                errorMessage = errorData.message || errorMessage;
             } else {
-                result = await response.text();
+                errorMessage = await response.text();
             }
 
-            // console.log(result);
+            const error = new Error(errorMessage);
+            error.status = response.status;
+            
+            throw error;
+        }
     
-            if (!response.ok) {
-                setError(result.message);
-                setTimeout(() => {
-                    setError(null);
-                }, 3000);
-            } else {
-                const filteredProducts = products.filter(product => product._id !== pid);
-                setProducts(filteredProducts);
-            }    
-        } catch (error) {
-            setError(result);
+        // if (contentType && contentType.includes("application/json")) {
+        //     result = await response.json();
+        // } else {
+        //     result = await response.text();
+        // }
+    
+        // if (!response.ok) {
+        //     throw new Error(result.message || result || );
+        // }
+        const result = await response.json();
+    
+        return result;
+    }
+
+    async function handleDelete(pid) {
+        try {
+            await apiDeleteProduct(pid);
+            setProducts(prevProducts => prevProducts.filter(p => p._id !== pid));
+        } catch (err) {
+            setError(err.message);
         }
     }
 
