@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const HomePage = () => {
     const [products, setProducts] = useState(null);
     const [error, setError] = useState(null);
+    const location = useLocation();
+
+    if (location.state?.product) {
+        console.log(location.state.product);
+    }
 
     useEffect(() => {
         console.log("home / use effect / fetch products");
@@ -165,12 +170,20 @@ function ProductCard({ product, deleteProduct }) {
                 <h3 className="price">${product.price}</h3>
 
                 <div className="actions">
-                    <button
+                    {/* <button
                         className="icon edit-btn"
                         title="Edit"
                     >
                         Edit
                         <i className="fa fa-pencil-square-o"></i>
+                    </button> */}
+                    <button
+                        type="button"
+                        className="icon edit-btn"
+                        title="Edit"
+                    >
+                        <span className="sr-only">Edit product {product.name}</span>
+                        <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
                     </button>
                     <button
                         className="icon delete-btn"
@@ -178,7 +191,7 @@ function ProductCard({ product, deleteProduct }) {
                         onClick={() => deleteProduct(product._id)}
                     >
                         Delete
-                        <i className="fa fa-trash-o"></i>
+                        <i className="fa fa-trash-o" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>

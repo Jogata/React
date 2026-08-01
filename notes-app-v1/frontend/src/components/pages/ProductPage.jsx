@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export function ProductPage() {
     const [product, setProduct] = useState(null);
     const [error, setError] = useState(null);
     const {id} = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         console.log("ProductPage / use effect / fetch products");
@@ -57,6 +58,42 @@ export function ProductPage() {
         }
     }, []);
 
+    async function deleteProduct(pid) {
+        // pid = "6a69f1a10fff8ba99d2eeef1";
+        try {
+            const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
+                method: "DELETE",
+            });
+    
+            let result = null;
+            const contentType = response.headers.get("content-type");
+    
+            if (contentType && contentType.includes("application/json")) {
+                result = await response.json();
+            } else {
+                result = await response.text();
+            }
+
+            // console.log(result);
+    
+            if (!response.ok) {
+                setError(result.message);
+                setTimeout(() => {
+                    setError(null);
+                }, 3000);
+            } else {
+                console.log("navigate");
+                navigate("/", {
+                    state: { product: id },
+                },);
+                // const filteredProducts = products.filter(product => product._id !== pid);
+                // setProducts(filteredProducts);
+            }    
+        } catch (error) {
+            setError(result);
+        }
+    }
+
     if (error) {
         return (
             <header className="main-header">
@@ -78,13 +115,6 @@ export function ProductPage() {
             <h1>{product.name}</h1>
             <h2>${product.price}</h2>
             <div className="actions">
-                {/* <button
-                    className="icon edit-btn"
-                    title="Edit"
-                >
-                    Edit product
-                    <i className="fa fa-pencil-square-o"></i>
-                </button> */}
                 <button 
                     type="button"
                     className="icon edit-btn" 
@@ -96,7 +126,7 @@ export function ProductPage() {
                 <button
                     className="icon delete-btn"
                     title="Delete"
-                    // onClick={() => deleteProduct(product._id)}
+                    onClick={() => deleteProduct(product._id)}
                 >
                     Delete
                     <i className="fa fa-trash-o"></i>
