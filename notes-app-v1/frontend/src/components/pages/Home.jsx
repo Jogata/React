@@ -112,7 +112,7 @@ const HomePage = () => {
         try {
             await deleteProduct(pid);
             setProducts(prevProducts => prevProducts.filter(p => p._id !== pid));
-            setNotifications([{message: `Product ${pid} deleted`, type: success}]);
+            setNotifications([{message: `Product ${pid} deleted`, type: "success"}]);
         } catch (err) {
             setError(err.message);
         }
@@ -157,6 +157,12 @@ const HomePage = () => {
 
     return (
         <>
+            {notifications.length > 0 ? (
+                <Notifications notifications={notifications} />
+            ) :
+                null
+            }
+            {/* <Notifications notifications={notifications} /> */}
             {products.length === 0 ? (
                 <header className="main-header">
                     <h1>No products found</h1>
@@ -168,13 +174,10 @@ const HomePage = () => {
                     </Link>
                 </header>
             ) : (
-                    <>
-                        <Notifications notifications={notifications} />
-                        <ProductsSection
-                            products={products}
-                            handleDeleteProduct={handleDeleteProduct}
-                        />
-                    </>
+                <ProductsSection
+                    products={products}
+                    handleDeleteProduct={handleDeleteProduct}
+                />
             )}
         </>
     );
@@ -241,14 +244,18 @@ function ProductCard({ product, handleDeleteProduct }) {
 
 function Notifications({notifications}) {
     return (
-        <div className="n">
-            {notifications.map((notification, index) => {
-                return (
-                    <div key={index} className="n">
-                        {notification.message}
-                    </div>
-                )
-            })}
+        <div className="notifications-section">
+            <div className="body">
+                {notifications.map((notification, index) => {
+                    console.log(notification);
+                    const notificationClassName = `notification ${notification.type}`;
+                    return (
+                        <div key={index} className={notificationClassName}>
+                            {notification.message}
+                        </div>
+                    )
+                })}
+            </div>
         </div>
     )
 }

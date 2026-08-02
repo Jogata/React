@@ -368,6 +368,62 @@ main {
 }
 
 
+.notifications-section {
+  /* position: relative; */
+  /* position: absolute; */
+  position: fixed;
+  top: 1rem;
+  left: 0;
+  /* right: 1rem; */
+  width: 100%;
+  /* height: 100%; */
+  /* max-width: 600px; */
+  /* margin-left: auto; */
+  /* padding: 1rem; */
+  text-align: center;
+  /* border: 1px solid green; */
+}
+
+.notifications-section .body {
+  display: inline-block;
+  /* position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; */
+  /* padding: 1rem; */
+  /* border: 1px solid red; */
+}
+
+.notification {
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+.notification {
+  border: 3px solid var(--local-color);
+  background-color: var(--local-color);
+  box-shadow: inset 1px 1px 3px #0008, 
+            inset -1px -1px 3px #fff8;
+}
+
+.notification.success {
+  --local-color: green;
+  /* background-color: var(--local-color); */
+}
+
+.notification.error {
+  --local-color: crimson;
+  /* border-color: crimson; */
+  /* background-color: crimson; */
+}
+
+@media screen and (max-width: 600px) {
+  .notifications-section {
+    left: 0;
+  }
+}
+
 /* delete */
 .page {
   /* text-align: center; */
@@ -384,6 +440,7 @@ main {
 }
 
 main {
+  position: relative;
   padding: 2rem 2%;
 }
 
