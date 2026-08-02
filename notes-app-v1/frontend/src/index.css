@@ -325,7 +325,6 @@ main {
   width: 100%;
   /* max-width: 30ch; */
   margin-bottom: 1rem;
-  /* padding: 0.25em 1em; */
   padding: 0.5em 1em;
   color: inherit;
   border-radius: 10em;
@@ -369,30 +368,15 @@ main {
 
 
 .notifications-section {
-  /* position: relative; */
-  /* position: absolute; */
   position: fixed;
   top: 1rem;
   left: 0;
-  /* right: 1rem; */
   width: 100%;
-  /* height: 100%; */
-  /* max-width: 600px; */
-  /* margin-left: auto; */
-  /* padding: 1rem; */
   text-align: center;
-  /* border: 1px solid green; */
 }
 
 .notifications-section .body {
   display: inline-block;
-  /* position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%; */
-  /* padding: 1rem; */
-  /* border: 1px solid red; */
 }
 
 .notification {
@@ -409,13 +393,10 @@ main {
 
 .notification.success {
   --local-color: green;
-  /* background-color: var(--local-color); */
 }
 
 .notification.error {
   --local-color: crimson;
-  /* border-color: crimson; */
-  /* background-color: crimson; */
 }
 
 @media screen and (max-width: 600px) {

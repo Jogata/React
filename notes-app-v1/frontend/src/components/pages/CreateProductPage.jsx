@@ -18,7 +18,6 @@ function CreateProductPage() {
 
     async function createProduct(e) {
         e.preventDefault();
-        // console.log("todo create product");
         if (!newProduct.name || !newProduct.image || !newProduct.price) {
             console.log("Please fill in all fields.");
             return { success: false, message: "Please fill in all fields." };

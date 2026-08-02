@@ -1,18 +1,23 @@
-import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+// import { Link, useLocation } from "react-router-dom";
 
 const HomePage = () => {
     const [products, setProducts] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const [notifications, setNotifications] = useState([]);
-    const location = useLocation();
+    // const abortControllerRef = useRef(new AbortController());
+    const abortControllerRef = useRef(null);
+    // const location = useLocation();
+    // console.log(abortControllerRef.current);
+    // console.log(error);
 
-    if (location.state?.product) {
-        console.log(location.state.product);
-    } else {
-        console.log("no product in the location state");
-    }
+    // if (location.state?.product) {
+    //     console.log(location.state.product);
+    // } else {
+    //     console.log("no product in the location state");
+    // }
 
     useEffect(() => {
         console.log("home / use effect / fetch products");
@@ -20,15 +25,28 @@ const HomePage = () => {
         loadProducts();
 
         async function loadProducts() {
+            // console.log("run loadProducts");
             setLoading(true);
+            // setError(null);
             try {
                 const { products } = await getAllProducts();
                 setProducts(products);
+                setError(null);
                 // setTimeout(() => {
                 //     setProducts(products);
+                //     setError(null);
                 // }, 3000);
             } catch (err) {
+                // console.log(abortControllerRef.current.signal.aborted);
+                // console.log(err);
+                // console.log("catch block");
+                // if (!abortControllerRef.current.aborted) {
                 setError(err.message);
+                    // if (products) {
+                    //     setError(null);
+                    // }
+                // }
+                // setError(err.message);
                 // setTimeout(() => {
                 //     setError(err.message);
                 // }, 3000);
@@ -38,8 +56,15 @@ const HomePage = () => {
         }
 
         async function getAllProducts() {
-            const response = await fetch("http://localhost:5000/api/products");
+            abortControllerRef.current = new AbortController();
+            // const current = new AbortController();
+            // console.log(abortControllerRef.current.signal);
+
+            const response = await fetch("http://localhost:5000/api/products", {
+                signal: abortControllerRef.current.signal
+            });
             const contentType = response.headers.get("content-type");
+            // console.log(response);
         
             if (!response.ok) {
                 let errorMessage = "An error occurred";
@@ -51,12 +76,15 @@ const HomePage = () => {
                     errorMessage = await response.text();
                 }
                 
+                // console.log(abortControllerRef.current);
                 throw new Error(errorMessage);
             }
         
             if (contentType && contentType.includes("application/json")) {
                 const result = await response.json();
                 console.log(result);
+
+                // abortControllerRef.current = null;
                 
                 return {
                     products: result.data
@@ -64,6 +92,12 @@ const HomePage = () => {
             }
         
             throw new Error("Invalid response format received from server");
+        }
+
+        return () => {
+            // console.log(abortControllerRef.current.signal);
+            abortControllerRef.current?.abort();
+            // abortControllerRef.current = null;
         }
     }, []);
 
@@ -82,6 +116,7 @@ const HomePage = () => {
     }
 
     async function deleteProduct(pid) {
+        // pid = 1;
         const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
             method: "DELETE",
         });
@@ -114,7 +149,8 @@ const HomePage = () => {
             setProducts(prevProducts => prevProducts.filter(p => p._id !== pid));
             setNotifications([{message: `Product ${pid} deleted`, type: "success"}]);
         } catch (err) {
-            setError(err.message);
+            // setError(err.message);
+            setNotifications([{message: err.message, type: "error"}]);
         }
     }
 
@@ -162,7 +198,7 @@ const HomePage = () => {
             ) :
                 null
             }
-            {/* <Notifications notifications={notifications} /> */}
+
             {products.length === 0 ? (
                 <header className="main-header">
                     <h1>No products found</h1>
