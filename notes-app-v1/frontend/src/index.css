@@ -176,7 +176,7 @@ main {
 }
 
 .main-header {
-  padding: 3rem 0;
+  padding: 2rem 0;
   text-align: center;
   text-transform: capitalize;
 }
@@ -206,7 +206,7 @@ main {
 }
 
 .main-body {
-  padding: 3rem 0;
+  padding: 2rem 0;
   /* border: 1px solid; */
 }
 
@@ -381,6 +381,10 @@ main {
   /* color: crimson; */
   /* font-size: 5vw; */
   border: 1px solid;
+}
+
+main {
+  padding: 2rem 2%;
 }
 
 button {

@@ -4,10 +4,14 @@ import { Link, useLocation } from "react-router-dom";
 const HomePage = () => {
     const [products, setProducts] = useState(null);
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [notifications, setNotifications] = useState([]);
     const location = useLocation();
 
     if (location.state?.product) {
         console.log(location.state.product);
+    } else {
+        console.log("no product in the location state");
     }
 
     useEffect(() => {
@@ -16,15 +20,24 @@ const HomePage = () => {
         loadProducts();
 
         async function loadProducts() {
+            setLoading(true);
             try {
-                const { products } = await apiGetAllProducts();
+                const { products } = await getAllProducts();
                 setProducts(products);
+                // setTimeout(() => {
+                //     setProducts(products);
+                // }, 3000);
             } catch (err) {
                 setError(err.message);
+                // setTimeout(() => {
+                //     setError(err.message);
+                // }, 3000);
+            } finally {
+                setLoading(false);
             }
         }
 
-        async function apiGetAllProducts() {
+        async function getAllProducts() {
             const response = await fetch("http://localhost:5000/api/products");
             const contentType = response.headers.get("content-type");
         
@@ -62,50 +75,19 @@ const HomePage = () => {
         )
     }
 
-    if (!products) {
+    if (loading) {
         return (
             <p>Loading...</p>
         )
     }
 
-    // async function deleteProduct(pid) {
-    //     try {
-    //         const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
-    //             method: "DELETE",
-    //         });
-    
-    //         let result = null;
-    //         const contentType = response.headers.get("content-type");
-    
-    //         if (contentType && contentType.includes("application/json")) {
-    //             result = await response.json();
-    //         } else {
-    //             result = await response.text();
-    //         }
-    
-    //         if (!response.ok) {
-    //             setError(result.message);
-    //             setTimeout(() => {
-    //                 setError(null);
-    //             }, 3000);
-    //         } else {
-    //             const filteredProducts = products.filter(product => product._id !== pid);
-    //             setProducts(filteredProducts);
-    //         }    
-    //     } catch (error) {
-    //         setError(result);
-    //     }
-    // }
-
-    async function apiDeleteProduct(pid) {
+    async function deleteProduct(pid) {
         const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
             method: "DELETE",
         });
-    
-        // const contentType = response.headers.get("content-type");
-        // let result = null;
-        
+
         if (!response.ok) {
+            const contentType = response.headers.get("content-type");
             let errorMessage = "Deletion failed";
 
             if (contentType && contentType.includes("application/json")) {
@@ -121,24 +103,16 @@ const HomePage = () => {
             throw error;
         }
     
-        // if (contentType && contentType.includes("application/json")) {
-        //     result = await response.json();
-        // } else {
-        //     result = await response.text();
-        // }
-    
-        // if (!response.ok) {
-        //     throw new Error(result.message || result || );
-        // }
         const result = await response.json();
-    
+
         return result;
     }
 
-    async function handleDelete(pid) {
+    async function handleDeleteProduct(pid) {
         try {
-            await apiDeleteProduct(pid);
+            await deleteProduct(pid);
             setProducts(prevProducts => prevProducts.filter(p => p._id !== pid));
+            setNotifications([{message: `Product ${pid} deleted`, type: success}]);
         } catch (err) {
             setError(err.message);
         }
@@ -194,13 +168,19 @@ const HomePage = () => {
                     </Link>
                 </header>
             ) : (
-                <ProductsSection products={products} deleteProduct={deleteProduct} />
+                    <>
+                        <Notifications notifications={notifications} />
+                        <ProductsSection
+                            products={products}
+                            handleDeleteProduct={handleDeleteProduct}
+                        />
+                    </>
             )}
         </>
     );
 };
 
-function ProductsSection({ products, deleteProduct }) {
+function ProductsSection({ products, handleDeleteProduct }) {
     return (
         <>
             <header className="main-header">
@@ -210,7 +190,11 @@ function ProductsSection({ products, deleteProduct }) {
                 <section className="section">
                     <div className="products">
                         {products.map(product => (
-                            <ProductCard key={product._id} product={product} deleteProduct={deleteProduct} />
+                            <ProductCard 
+                                key={product._id} 
+                                product={product} 
+                                handleDeleteProduct={handleDeleteProduct} 
+                            />
                         ))}
                     </div>
                 </section>
@@ -220,7 +204,7 @@ function ProductsSection({ products, deleteProduct }) {
     )
 }
 
-function ProductCard({ product, deleteProduct }) {
+function ProductCard({ product, handleDeleteProduct }) {
     return (
         <article className="product-card">
             <img src={product.image} alt={product.name} />
@@ -244,9 +228,8 @@ function ProductCard({ product, deleteProduct }) {
                         type="button"
                         className="icon delete-btn"
                         title="Delete"
-                        onClick={() => deleteProduct(product._id)}
+                        onClick={() => handleDeleteProduct(product._id)}
                     >
-                        {/* Delete */}
                         <span className="sr-only">Delete product {product.name}</span>
                         <i className="fa fa-trash-o" aria-hidden="true"></i>
                     </button>
@@ -255,6 +238,20 @@ function ProductCard({ product, deleteProduct }) {
         </article>
     );
 };
+
+function Notifications({notifications}) {
+    return (
+        <div className="n">
+            {notifications.map((notification, index) => {
+                return (
+                    <div key={index} className="n">
+                        {notification.message}
+                    </div>
+                )
+            })}
+        </div>
+    )
+}
 
 function Links({products}) {
     return (
