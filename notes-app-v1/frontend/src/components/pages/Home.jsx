@@ -7,11 +7,8 @@ const HomePage = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const [notifications, setNotifications] = useState([]);
-    // const abortControllerRef = useRef(new AbortController());
     const abortControllerRef = useRef(null);
     // const location = useLocation();
-    // console.log(abortControllerRef.current);
-    // console.log(error);
 
     // if (location.state?.product) {
     //     console.log(location.state.product);
@@ -25,9 +22,7 @@ const HomePage = () => {
         loadProducts();
 
         async function loadProducts() {
-            // console.log("run loadProducts");
             setLoading(true);
-            // setError(null);
             try {
                 const { products } = await getAllProducts();
                 setProducts(products);
@@ -37,16 +32,7 @@ const HomePage = () => {
                 //     setError(null);
                 // }, 3000);
             } catch (err) {
-                // console.log(abortControllerRef.current.signal.aborted);
-                // console.log(err);
-                // console.log("catch block");
-                // if (!abortControllerRef.current.aborted) {
                 setError(err.message);
-                    // if (products) {
-                    //     setError(null);
-                    // }
-                // }
-                // setError(err.message);
                 // setTimeout(() => {
                 //     setError(err.message);
                 // }, 3000);
@@ -57,14 +43,11 @@ const HomePage = () => {
 
         async function getAllProducts() {
             abortControllerRef.current = new AbortController();
-            // const current = new AbortController();
-            // console.log(abortControllerRef.current.signal);
 
             const response = await fetch("http://localhost:5000/api/products", {
                 signal: abortControllerRef.current.signal
             });
             const contentType = response.headers.get("content-type");
-            // console.log(response);
         
             if (!response.ok) {
                 let errorMessage = "An error occurred";
@@ -76,7 +59,6 @@ const HomePage = () => {
                     errorMessage = await response.text();
                 }
                 
-                // console.log(abortControllerRef.current);
                 throw new Error(errorMessage);
             }
         
@@ -84,8 +66,6 @@ const HomePage = () => {
                 const result = await response.json();
                 console.log(result);
 
-                // abortControllerRef.current = null;
-                
                 return {
                     products: result.data
                 };
@@ -95,9 +75,7 @@ const HomePage = () => {
         }
 
         return () => {
-            // console.log(abortControllerRef.current.signal);
             abortControllerRef.current?.abort();
-            // abortControllerRef.current = null;
         }
     }, []);
 
@@ -294,6 +272,76 @@ function Notifications({notifications}) {
             </div>
         </div>
     )
+}
+
+async function apiGetPaginatedProducts(page, limit = 10) {
+    const response = await fetch(`http://localhost:5000/api/products?page=${page}&limit=${limit}`);
+    const contentType = response.headers.get("content-type");
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch products");
+    }
+
+    if (contentType && contentType.includes("application/json")) {
+        const result = await response.json();
+        return {
+            products: result.data,        
+            totalItems: result.totalCount,
+        };
+    }
+    throw new Error("Invalid response format");
+}
+
+function ProductListWithPagination() {
+    const [products, setProducts] = useState(null);
+    const [totalProducts, setTotalProducts] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [error, setError] = useState(null);
+    
+    const LIMIT = 10;
+
+    useEffect(() => {
+        async function loadProducts() {
+            try {
+                const { products, totalItems } = await apiGetPaginatedProducts(currentPage, LIMIT);
+                setProducts(products);
+                setTotalProducts(totalItems);
+            } catch (err) {
+                setError(err.message);
+            }
+        }
+        loadProducts();
+        
+    }, [currentPage]); 
+
+    const totalPages = Math.ceil(totalProducts / LIMIT);
+
+    if (error) return <h1>{error}</h1>;
+    if (!products) return <p>Loading...</p>;
+
+    return (
+        <div>
+            <ul>
+                {products.map(p => <li key={p._id}>{p.name}</li>)}
+            </ul>
+
+            <div className="pagination">
+                <button 
+                    disabled={currentPage === 1} 
+                    onClick={() => setCurrentPage(prev => prev - 1)}
+                >
+                    Previous
+                </button>
+                <span>Page {currentPage} of {totalPages}</span>
+                <button 
+                    disabled={currentPage === totalPages} 
+                    onClick={() => setCurrentPage(prev => prev + 1)}
+                >
+                    Next
+                </button>
+            </div>
+        </div>
+    );
 }
 
 function Links({products}) {
