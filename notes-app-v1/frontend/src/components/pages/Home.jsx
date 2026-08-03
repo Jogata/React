@@ -361,7 +361,7 @@ async function apiGetCursorProducts(cursor = null, limit = 10) {
     };
 }
 
-function ProductListWithCursor() {
+function ProductListWithCursor1() {
     const [products, setProducts] = useState([]);
     const [cursor, setCursor] = useState(null);
     const [hasNextPage, setHasNextPage] = useState(true);
@@ -391,6 +391,65 @@ function ProductListWithCursor() {
     }
 
     if (error) return <h1>Error: {error}</h1>;
+
+    return (
+        <div>
+            <ul>
+                {products.map((product) => (
+                    <li key={product._id}>{product.name}</li>
+                ))}
+            </ul>
+
+            {loading && <p>Loading products...</p>}
+
+            {hasNextPage && !loading && (
+                <button onClick={() => loadMoreProducts(false)}>
+                    Load More
+                </button>
+            )}
+        </div>
+    );
+}
+
+function ProductListWithCursor2() {
+    const [products, setProducts] = useState([]);
+    const [hasNextPage, setHasNextPage] = useState(true);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const nextCursorRef = useRef(null);
+    console.log(nextCursorRef);
+
+    useEffect(() => {
+        loadMoreProducts(true);
+    }, []);
+
+    async function loadMoreProducts(isInitial = false) {
+        if (loading || (!hasNextPage && !isInitial)) return;
+        
+        setLoading(true);
+        try {
+            const currentCursor = isInitial ? null : nextCursorRef.current;
+            const data = await apiGetCursorProducts(currentCursor, 10);
+
+            setProducts(prev => isInitial ? data.products : [...prev, ...data.products]);
+            setHasNextPage(data.hasNextPage);
+            
+            nextCursorRef.current = data.nextCursor; 
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    if (error) {
+        return (
+            <header className="main-header">
+                <h1>Error: {error}</h1>
+            </header>
+        )
+    }
 
     return (
         <div>
