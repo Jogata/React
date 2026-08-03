@@ -344,6 +344,73 @@ function ProductListWithPagination() {
     );
 }
 
+async function apiGetCursorProducts(cursor = null, limit = 10) {
+    let url = `http://localhost:5000/api/products?limit=${limit}`;
+    if (cursor) {
+        url += `&afterId=${cursor}`;
+    }
+
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Failed to fetch products");
+
+    const result = await response.json();
+    return {
+        products: result.data,
+        nextCursor: result.nextCursor,
+        hasNextPage: result.hasNextPage
+    };
+}
+
+function ProductListWithCursor() {
+    const [products, setProducts] = useState([]);
+    const [cursor, setCursor] = useState(null);
+    const [hasNextPage, setHasNextPage] = useState(true);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        loadMoreProducts(true);
+    }, []);
+
+    async function loadMoreProducts(isInitial = false) {
+        if (loading || (!hasNextPage && !isInitial)) return;
+        
+        setLoading(true);
+        try {
+            const currentCursor = isInitial ? null : cursor;
+            const data = await apiGetCursorProducts(currentCursor, 10);
+
+            setProducts(prev => isInitial ? data.products : [...prev, ...data.products]);
+            setCursor(data.nextCursor);
+            setHasNextPage(data.hasNextPage);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    if (error) return <h1>Error: {error}</h1>;
+
+    return (
+        <div>
+            <ul>
+                {products.map((product) => (
+                    <li key={product._id}>{product.name}</li>
+                ))}
+            </ul>
+
+            {loading && <p>Loading products...</p>}
+
+            {hasNextPage && !loading && (
+                <button onClick={() => loadMoreProducts(false)}>
+                    Load More
+                </button>
+            )}
+        </div>
+    );
+}
+
 function Links({products}) {
     return (
         <div className="links">
