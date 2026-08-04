@@ -38,6 +38,9 @@ const HomePage = () => {
                 // }, 3000);
             } finally {
                 setLoading(false);
+                // if (!controller.signal.aborted) {
+                //     setLoading(false);
+                // }
             }
         }
 
@@ -274,221 +277,200 @@ function Notifications({notifications}) {
     )
 }
 
-// async function apiGetPaginatedProducts(page, limit = 10) {
-//     const response = await fetch(`http://localhost:5000/api/products?page=${page}&limit=${limit}`);
-//     const contentType = response.headers.get("content-type");
+// function ProductListWithPagination() {
+//     const [products, setProducts] = useState(null);
+//     const [totalProducts, setTotalProducts] = useState(0);
+//     const [currentPage, setCurrentPage] = useState(1);
+//     const [error, setError] = useState(null);
+    
+//     const LIMIT = 10;
 
-//     if (!response.ok) {
-//         throw new Error("Failed to fetch products");
-//     }
+//     useEffect(() => {
+//         async function loadProducts() {
+//             try {
+//                 const { products, totalItems } = await apiGetPaginatedProducts(currentPage, LIMIT);
+//                 setProducts(products);
+//                 setTotalProducts(totalItems);
+//             } catch (err) {
+//                 setError(err.message);
+//             }
+//         }
+//         loadProducts();
+        
+//     }, [currentPage]); 
 
-//     if (contentType && contentType.includes("application/json")) {
-//         const result = await response.json();
-//         return {
-//             products: result.data,        
-//             totalItems: result.totalCount,
-//         };
-//     }
-//     throw new Error("Invalid response format");
+//     const totalPages = Math.ceil(totalProducts / LIMIT);
+
+//     if (error) return <h1>{error}</h1>;
+//     if (!products) return <p>Loading...</p>;
+
+//     return (
+//         <div>
+//             <ul>
+//                 {products.map(p => <li key={p._id}>{p.name}</li>)}
+//             </ul>
+
+//             <div className="pagination">
+//                 <button 
+//                     disabled={currentPage === 1} 
+//                     onClick={() => setCurrentPage(prev => prev - 1)}
+//                 >
+//                     Previous
+//                 </button>
+//                 <span>Page {currentPage} of {totalPages}</span>
+//                 <button 
+//                     disabled={currentPage === totalPages} 
+//                     onClick={() => setCurrentPage(prev => prev + 1)}
+//                 >
+//                     Next
+//                 </button>
+//             </div>
+//         </div>
+//     );
 // }
 
-function ProductListWithPagination() {
-    const [products, setProducts] = useState(null);
-    const [totalProducts, setTotalProducts] = useState(0);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [error, setError] = useState(null);
+// async function apiGetCursorProducts(cursor = null, limit = 10) {
+//     let url = `http://localhost:5000/api/products?limit=${limit}`;
+//     if (cursor) {
+//         url += `&afterId=${cursor}`;
+//     }
+
+//     const response = await fetch(url);
+//     if (!response.ok) throw new Error("Failed to fetch products");
+
+//     const result = await response.json();
+//     return {
+//         products: result.data,
+//         nextCursor: result.nextCursor,
+//         hasNextPage: result.hasNextPage
+//     };
+// }
+
+// function ProductListWithCursor3() {
+//     const [products, setProducts] = useState([]);
+//     const [hasNextPage, setHasNextPage] = useState(true);
+//     const [error, setError] = useState(null);
     
-    const LIMIT = 10;
+//     const [isInitialLoading, setIsInitialLoading] = useState(true);
+//     const [isFetchingMore, setIsFetchingMore] = useState(false);
 
-    useEffect(() => {
-        async function loadProducts() {
-            try {
-                const { products, totalItems } = await apiGetPaginatedProducts(currentPage, LIMIT);
-                setProducts(products);
-                setTotalProducts(totalItems);
-            } catch (err) {
-                setError(err.message);
-            }
-        }
-        loadProducts();
+//     const nextCursorRef = useRef(null); 
+
+//     useEffect(() => {
+//         async function fetchInitialData() {
+//             try {
+//                 const data = await apiGetCursorProducts(null, 10);
+//                 setProducts(data.products);
+//                 setHasNextPage(data.hasNextPage);
+//                 nextCursorRef.current = data.nextCursor;
+//             } catch (err) {
+//                 setError(err.message);
+//             } finally {
+//                 setIsInitialLoading(false);
+//             }
+//         }
+//         fetchInitialData();
+//     }, []);
+
+//     async function loadMoreProducts() {
+//         if (isFetchingMore || !hasNextPage) return;
         
-    }, [currentPage]); 
+//         setIsFetchingMore(true);
+//         try {
+//             const data = await apiGetCursorProducts(nextCursorRef.current, 10);
+//             setProducts(prev => [...prev, ...data.products]);
+//             setHasNextPage(data.hasNextPage);
+//             nextCursorRef.current = data.nextCursor; 
+//         } catch (err) {
+//             setError(err.message);
+//         } finally {
+//             setIsFetchingMore(false);
+//         }
+//     }
 
-    const totalPages = Math.ceil(totalProducts / LIMIT);
+//     if (error) {
+//         return <h1>Error: {error}</h1>;
+//     }
+    
+//     if (isInitialLoading) {
+//         return <h1>Loading initial products...</h1>;
+//     }
 
-    if (error) return <h1>{error}</h1>;
-    if (!products) return <p>Loading...</p>;
+//     return (
+//         <div>
+//             <ul>
+//                 {products.map((product) => (
+//                     <li key={product._id}>{product.name}</li>
+//                 ))}
+//             </ul>
 
-    return (
-        <div>
-            <ul>
-                {products.map(p => <li key={p._id}>{p.name}</li>)}
-            </ul>
+//             {isFetchingMore && <p>Loading more items...</p>}
 
-            <div className="pagination">
-                <button 
-                    disabled={currentPage === 1} 
-                    onClick={() => setCurrentPage(prev => prev - 1)}
-                >
-                    Previous
-                </button>
-                <span>Page {currentPage} of {totalPages}</span>
-                <button 
-                    disabled={currentPage === totalPages} 
-                    onClick={() => setCurrentPage(prev => prev + 1)}
-                >
-                    Next
-                </button>
-            </div>
-        </div>
-    );
-}
+//             {hasNextPage && !isFetchingMore && (
+//                 <button onClick={loadMoreProducts}>Load More</button>
+//             )}
+//         </div>
+//     );
+// }
 
-async function apiGetCursorProducts(cursor = null, limit = 10) {
-    let url = `http://localhost:5000/api/products?limit=${limit}`;
-    if (cursor) {
-        url += `&afterId=${cursor}`;
-    }
-
-    const response = await fetch(url);
-    if (!response.ok) throw new Error("Failed to fetch products");
-
-    const result = await response.json();
-    return {
-        products: result.data,
-        nextCursor: result.nextCursor,
-        hasNextPage: result.hasNextPage
-    };
-}
-
-function ProductListWithCursor() {
-    const [products, setProducts] = useState([]);
-    const [hasNextPage, setHasNextPage] = useState(true);
+const HomePageWithAbortController = () => {
+    const [products, setProducts] = useState(null);
     const [error, setError] = useState(null);
-    // const [loading, setLoading] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    const nextCursorRef = useRef(null);
-    console.log(nextCursorRef);
-
     useEffect(() => {
-        loadMoreProducts(true);
-    }, []);
+        const controller = new AbortController();
 
-    async function loadMoreProducts(isInitial = false) {
-        // if (loading || (!hasNextPage && !isInitial)) return;
-        if (!isInitial && loading) return; 
-        if (!hasNextPage && !isInitial) return;
+        async function getAllProducts(signal) {
+            const response = await fetch("http://localhost:5000/api/products", { signal });
+            const contentType = response.headers.get("content-type");
         
-        setLoading(true);
-        try {
-            const currentCursor = isInitial ? null : nextCursorRef.current;
-            const data = await apiGetCursorProducts(currentCursor, 10);
-
-            setProducts(prev => isInitial ? data.products : [...prev, ...data.products]);
-            setHasNextPage(data.hasNextPage);
-            
-            nextCursorRef.current = data.nextCursor; 
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
+            if (!response.ok) {
+                let errorMessage = "An error occurred";
+                if (contentType && contentType.includes("application/json")) {
+                    const errorData = await response.json();
+                    errorMessage = errorData.message || errorMessage;
+                } else {
+                    errorMessage = await response.text();
+                }
+                throw new Error(errorMessage);
+            }
+        
+            if (contentType && contentType.includes("application/json")) {
+                const result = await response.json();
+                return { products: result.data };
+            }
+        
+            throw new Error("Invalid response format received from server");
         }
-    }
 
-    if (error) {
-        return (
-            <header className="main-header">
-                <h1>Error: {error}</h1>
-            </header>
-        )
-    }
-
-    return (
-        <div>
-            <ul>
-                {products.map((product) => (
-                    <li key={product._id}>{product.name}</li>
-                ))}
-            </ul>
-
-            {loading && <p>Loading products...</p>}
-
-            {hasNextPage && !loading && (
-                <button onClick={() => loadMoreProducts(false)}>
-                    Load More
-                </button>
-            )}
-        </div>
-    );
-}
-
-function ProductListWithCursor3() {
-    const [products, setProducts] = useState([]);
-    const [hasNextPage, setHasNextPage] = useState(true);
-    const [error, setError] = useState(null);
-    
-    const [isInitialLoading, setIsInitialLoading] = useState(true);
-    const [isFetchingMore, setIsFetchingMore] = useState(false);
-
-    const nextCursorRef = useRef(null); 
-
-    useEffect(() => {
-        async function fetchInitialData() {
+        async function loadProducts() {
+            setLoading(true);
             try {
-                const data = await apiGetCursorProducts(null, 10);
-                setProducts(data.products);
-                setHasNextPage(data.hasNextPage);
-                nextCursorRef.current = data.nextCursor;
+                const { products } = await getAllProducts(controller.signal);
+                setProducts(products);
             } catch (err) {
+                if (err.name === 'AbortError') {
+                    console.log("Fetch successfully cancelled.");
+                    return; 
+                }
                 setError(err.message);
             } finally {
-                setIsInitialLoading(false);
+                if (!controller.signal.aborted) {
+                    setLoading(false);
+                }
             }
         }
-        fetchInitialData();
+
+        loadProducts();
+
+        return () => {
+            controller.abort();
+        };
     }, []);
 
-    async function loadMoreProducts() {
-        if (isFetchingMore || !hasNextPage) return;
-        
-        setIsFetchingMore(true);
-        try {
-            const data = await apiGetCursorProducts(nextCursorRef.current, 10);
-            setProducts(prev => [...prev, ...data.products]);
-            setHasNextPage(data.hasNextPage);
-            nextCursorRef.current = data.nextCursor; 
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setIsFetchingMore(false);
-        }
-    }
-
-    if (error) {
-        return <h1>Error: {error}</h1>;
-    }
-    
-    if (isInitialLoading) {
-        return <h1>Loading initial products...</h1>;
-    }
-
-    return (
-        <div>
-            <ul>
-                {products.map((product) => (
-                    <li key={product._id}>{product.name}</li>
-                ))}
-            </ul>
-
-            {isFetchingMore && <p>Loading more items...</p>}
-
-            {hasNextPage && !isFetchingMore && (
-                <button onClick={loadMoreProducts}>Load More</button>
-            )}
-        </div>
-    );
-}
+    return <h1>Home page</h1>;
+};
 
 function Links({products}) {
     return (
