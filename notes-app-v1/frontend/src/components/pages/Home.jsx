@@ -277,186 +277,91 @@ function Notifications({notifications}) {
     )
 }
 
-// function ProductListWithPagination() {
+// const HomePageWithAbortController = () => {
 //     const [products, setProducts] = useState(null);
-//     const [totalProducts, setTotalProducts] = useState(0);
-//     const [currentPage, setCurrentPage] = useState(1);
 //     const [error, setError] = useState(null);
-    
-//     const LIMIT = 10;
+//     const [loading, setLoading] = useState(true);
 
 //     useEffect(() => {
-//         async function loadProducts() {
-//             try {
-//                 const { products, totalItems } = await apiGetPaginatedProducts(currentPage, LIMIT);
-//                 setProducts(products);
-//                 setTotalProducts(totalItems);
-//             } catch (err) {
-//                 setError(err.message);
-//             }
-//         }
-//         loadProducts();
+//         const controller = new AbortController();
+
+//         async function getAllProducts(signal) {
+//             const response = await fetch("http://localhost:5000/api/products", { signal });
+//             const contentType = response.headers.get("content-type");
         
-//     }, [currentPage]); 
+//             if (!response.ok) {
+//                 let errorMessage = "An error occurred";
+//                 if (contentType && contentType.includes("application/json")) {
+//                     const errorData = await response.json();
+//                     errorMessage = errorData.message || errorMessage;
+//                 } else {
+//                     errorMessage = await response.text();
+//                 }
+//                 throw new Error(errorMessage);
+//             }
+        
+//             if (contentType && contentType.includes("application/json")) {
+//                 const result = await response.json();
+//                 return { products: result.data };
+//             }
+        
+//             throw new Error("Invalid response format received from server");
+//         }
 
-//     const totalPages = Math.ceil(totalProducts / LIMIT);
-
-//     if (error) return <h1>{error}</h1>;
-//     if (!products) return <p>Loading...</p>;
-
-//     return (
-//         <div>
-//             <ul>
-//                 {products.map(p => <li key={p._id}>{p.name}</li>)}
-//             </ul>
-
-//             <div className="pagination">
-//                 <button 
-//                     disabled={currentPage === 1} 
-//                     onClick={() => setCurrentPage(prev => prev - 1)}
-//                 >
-//                     Previous
-//                 </button>
-//                 <span>Page {currentPage} of {totalPages}</span>
-//                 <button 
-//                     disabled={currentPage === totalPages} 
-//                     onClick={() => setCurrentPage(prev => prev + 1)}
-//                 >
-//                     Next
-//                 </button>
-//             </div>
-//         </div>
-//     );
-// }
-
-// async function apiGetCursorProducts(cursor = null, limit = 10) {
-//     let url = `http://localhost:5000/api/products?limit=${limit}`;
-//     if (cursor) {
-//         url += `&afterId=${cursor}`;
-//     }
-
-//     const response = await fetch(url);
-//     if (!response.ok) throw new Error("Failed to fetch products");
-
-//     const result = await response.json();
-//     return {
-//         products: result.data,
-//         nextCursor: result.nextCursor,
-//         hasNextPage: result.hasNextPage
-//     };
-// }
-
-// function ProductListWithCursor3() {
-//     const [products, setProducts] = useState([]);
-//     const [hasNextPage, setHasNextPage] = useState(true);
-//     const [error, setError] = useState(null);
-    
-//     const [isInitialLoading, setIsInitialLoading] = useState(true);
-//     const [isFetchingMore, setIsFetchingMore] = useState(false);
-
-//     const nextCursorRef = useRef(null); 
-
-//     useEffect(() => {
-//         async function fetchInitialData() {
+//         async function loadProducts() {
+//             setLoading(true);
 //             try {
-//                 const data = await apiGetCursorProducts(null, 10);
-//                 setProducts(data.products);
-//                 setHasNextPage(data.hasNextPage);
-//                 nextCursorRef.current = data.nextCursor;
+//                 const { products } = await getAllProducts(controller.signal);
+//                 setProducts(products);
 //             } catch (err) {
+//                 if (err.name === 'AbortError') {
+//                     console.log("Fetch successfully cancelled.");
+//                     return; 
+//                 }
 //                 setError(err.message);
 //             } finally {
-//                 setIsInitialLoading(false);
+//                 if (!controller.signal.aborted) {
+//                     setLoading(false);
+//                 }
 //             }
 //         }
-//         fetchInitialData();
+
+//         loadProducts();
+
+//         return () => {
+//             controller.abort();
+//         };
 //     }, []);
 
-//     async function loadMoreProducts() {
-//         if (isFetchingMore || !hasNextPage) return;
-        
-//         setIsFetchingMore(true);
-//         try {
-//             const data = await apiGetCursorProducts(nextCursorRef.current, 10);
-//             setProducts(prev => [...prev, ...data.products]);
-//             setHasNextPage(data.hasNextPage);
-//             nextCursorRef.current = data.nextCursor; 
-//         } catch (err) {
-//             setError(err.message);
-//         } finally {
-//             setIsFetchingMore(false);
-//         }
-//     }
-
-//     if (error) {
-//         return <h1>Error: {error}</h1>;
-//     }
-    
-//     if (isInitialLoading) {
-//         return <h1>Loading initial products...</h1>;
-//     }
-
-//     return (
-//         <div>
-//             <ul>
-//                 {products.map((product) => (
-//                     <li key={product._id}>{product.name}</li>
-//                 ))}
-//             </ul>
-
-//             {isFetchingMore && <p>Loading more items...</p>}
-
-//             {hasNextPage && !isFetchingMore && (
-//                 <button onClick={loadMoreProducts}>Load More</button>
-//             )}
-//         </div>
-//     );
-// }
+//     return <h1>Home page</h1>;
+// };
 
 const HomePageWithAbortController = () => {
     const [products, setProducts] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const controller = new AbortController();
+    const fetchControllerRef = useRef(null);
+    const deleteControllerRef = useRef(null);
 
-        async function getAllProducts(signal) {
-            const response = await fetch("http://localhost:5000/api/products", { signal });
-            const contentType = response.headers.get("content-type");
-        
-            if (!response.ok) {
-                let errorMessage = "An error occurred";
-                if (contentType && contentType.includes("application/json")) {
-                    const errorData = await response.json();
-                    errorMessage = errorData.message || errorMessage;
-                } else {
-                    errorMessage = await response.text();
-                }
-                throw new Error(errorMessage);
-            }
-        
-            if (contentType && contentType.includes("application/json")) {
-                const result = await response.json();
-                return { products: result.data };
-            }
-        
-            throw new Error("Invalid response format received from server");
-        }
+    useEffect(() => {
+        fetchControllerRef.current = new AbortController();
 
         async function loadProducts() {
             setLoading(true);
             try {
-                const { products } = await getAllProducts(controller.signal);
-                setProducts(products);
+                const response = await fetch("http://localhost:5000/api/products", {
+                    signal: fetchControllerRef.current.signal
+                });
+                
+                if (!response.ok) throw new Error("Fetch failed");
+                const result = await response.json();
+                setProducts(result.data);
             } catch (err) {
-                if (err.name === 'AbortError') {
-                    console.log("Fetch successfully cancelled.");
-                    return; 
-                }
+                if (err.name === 'AbortError') return;
                 setError(err.message);
             } finally {
-                if (!controller.signal.aborted) {
+                if (!fetchControllerRef.current?.signal.aborted) {
                     setLoading(false);
                 }
             }
@@ -465,7 +370,39 @@ const HomePageWithAbortController = () => {
         loadProducts();
 
         return () => {
-            controller.abort();
+            fetchControllerRef.current?.abort();
+        };
+    }, []);
+
+    async function deleteProduct(pid) {
+        if (deleteControllerRef.current) {
+            deleteControllerRef.current.abort();
+        }
+        
+        deleteControllerRef.current = new AbortController();
+
+        try {
+            const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
+                method: "DELETE",
+                signal: deleteControllerRef.current.signal
+            });
+
+            if (!response.ok) throw new Error("Delete failed");
+            
+            setProducts(prev => prev.filter(p => p._id !== pid));
+        } catch (err) {
+            if (err.name === 'AbortError') {
+                console.log("Delete request was cancelled by a newer action.");
+                return;
+            }
+            setError(err.message);
+        }
+    }
+
+    useEffect(() => {
+        return () => {
+            fetchControllerRef.current?.abort();
+            deleteControllerRef.current?.abort();
         };
     }, []);
 
