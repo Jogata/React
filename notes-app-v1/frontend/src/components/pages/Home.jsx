@@ -274,23 +274,23 @@ function Notifications({notifications}) {
     )
 }
 
-async function apiGetPaginatedProducts(page, limit = 10) {
-    const response = await fetch(`http://localhost:5000/api/products?page=${page}&limit=${limit}`);
-    const contentType = response.headers.get("content-type");
+// async function apiGetPaginatedProducts(page, limit = 10) {
+//     const response = await fetch(`http://localhost:5000/api/products?page=${page}&limit=${limit}`);
+//     const contentType = response.headers.get("content-type");
 
-    if (!response.ok) {
-        throw new Error("Failed to fetch products");
-    }
+//     if (!response.ok) {
+//         throw new Error("Failed to fetch products");
+//     }
 
-    if (contentType && contentType.includes("application/json")) {
-        const result = await response.json();
-        return {
-            products: result.data,        
-            totalItems: result.totalCount,
-        };
-    }
-    throw new Error("Invalid response format");
-}
+//     if (contentType && contentType.includes("application/json")) {
+//         const result = await response.json();
+//         return {
+//             products: result.data,        
+//             totalItems: result.totalCount,
+//         };
+//     }
+//     throw new Error("Invalid response format");
+// }
 
 function ProductListWithPagination() {
     const [products, setProducts] = useState(null);
@@ -361,61 +361,12 @@ async function apiGetCursorProducts(cursor = null, limit = 10) {
     };
 }
 
-function ProductListWithCursor1() {
-    const [products, setProducts] = useState([]);
-    const [cursor, setCursor] = useState(null);
-    const [hasNextPage, setHasNextPage] = useState(true);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        loadMoreProducts(true);
-    }, []);
-
-    async function loadMoreProducts(isInitial = false) {
-        if (loading || (!hasNextPage && !isInitial)) return;
-        
-        setLoading(true);
-        try {
-            const currentCursor = isInitial ? null : cursor;
-            const data = await apiGetCursorProducts(currentCursor, 10);
-
-            setProducts(prev => isInitial ? data.products : [...prev, ...data.products]);
-            setCursor(data.nextCursor);
-            setHasNextPage(data.hasNextPage);
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    if (error) return <h1>Error: {error}</h1>;
-
-    return (
-        <div>
-            <ul>
-                {products.map((product) => (
-                    <li key={product._id}>{product.name}</li>
-                ))}
-            </ul>
-
-            {loading && <p>Loading products...</p>}
-
-            {hasNextPage && !loading && (
-                <button onClick={() => loadMoreProducts(false)}>
-                    Load More
-                </button>
-            )}
-        </div>
-    );
-}
-
-function ProductListWithCursor2() {
+function ProductListWithCursor() {
     const [products, setProducts] = useState([]);
     const [hasNextPage, setHasNextPage] = useState(true);
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const nextCursorRef = useRef(null);
     console.log(nextCursorRef);
@@ -425,7 +376,9 @@ function ProductListWithCursor2() {
     }, []);
 
     async function loadMoreProducts(isInitial = false) {
-        if (loading || (!hasNextPage && !isInitial)) return;
+        // if (loading || (!hasNextPage && !isInitial)) return;
+        if (!isInitial && loading) return; 
+        if (!hasNextPage && !isInitial) return;
         
         setLoading(true);
         try {
@@ -465,6 +418,73 @@ function ProductListWithCursor2() {
                 <button onClick={() => loadMoreProducts(false)}>
                     Load More
                 </button>
+            )}
+        </div>
+    );
+}
+
+function ProductListWithCursor3() {
+    const [products, setProducts] = useState([]);
+    const [hasNextPage, setHasNextPage] = useState(true);
+    const [error, setError] = useState(null);
+    
+    const [isInitialLoading, setIsInitialLoading] = useState(true);
+    const [isFetchingMore, setIsFetchingMore] = useState(false);
+
+    const nextCursorRef = useRef(null); 
+
+    useEffect(() => {
+        async function fetchInitialData() {
+            try {
+                const data = await apiGetCursorProducts(null, 10);
+                setProducts(data.products);
+                setHasNextPage(data.hasNextPage);
+                nextCursorRef.current = data.nextCursor;
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setIsInitialLoading(false);
+            }
+        }
+        fetchInitialData();
+    }, []);
+
+    async function loadMoreProducts() {
+        if (isFetchingMore || !hasNextPage) return;
+        
+        setIsFetchingMore(true);
+        try {
+            const data = await apiGetCursorProducts(nextCursorRef.current, 10);
+            setProducts(prev => [...prev, ...data.products]);
+            setHasNextPage(data.hasNextPage);
+            nextCursorRef.current = data.nextCursor; 
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setIsFetchingMore(false);
+        }
+    }
+
+    if (error) {
+        return <h1>Error: {error}</h1>;
+    }
+    
+    if (isInitialLoading) {
+        return <h1>Loading initial products...</h1>;
+    }
+
+    return (
+        <div>
+            <ul>
+                {products.map((product) => (
+                    <li key={product._id}>{product.name}</li>
+                ))}
+            </ul>
+
+            {isFetchingMore && <p>Loading more items...</p>}
+
+            {hasNextPage && !isFetchingMore && (
+                <button onClick={loadMoreProducts}>Load More</button>
             )}
         </div>
     );
