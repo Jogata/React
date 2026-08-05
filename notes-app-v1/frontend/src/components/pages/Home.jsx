@@ -282,45 +282,27 @@ function Notifications({notifications}) {
 //     const [error, setError] = useState(null);
 //     const [loading, setLoading] = useState(true);
 
-//     useEffect(() => {
-//         const controller = new AbortController();
+//     const fetchControllerRef = useRef(null);
+//     const deleteControllerRef = useRef(null);
 
-//         async function getAllProducts(signal) {
-//             const response = await fetch("http://localhost:5000/api/products", { signal });
-//             const contentType = response.headers.get("content-type");
-        
-//             if (!response.ok) {
-//                 let errorMessage = "An error occurred";
-//                 if (contentType && contentType.includes("application/json")) {
-//                     const errorData = await response.json();
-//                     errorMessage = errorData.message || errorMessage;
-//                 } else {
-//                     errorMessage = await response.text();
-//                 }
-//                 throw new Error(errorMessage);
-//             }
-        
-//             if (contentType && contentType.includes("application/json")) {
-//                 const result = await response.json();
-//                 return { products: result.data };
-//             }
-        
-//             throw new Error("Invalid response format received from server");
-//         }
+//     useEffect(() => {
+//         fetchControllerRef.current = new AbortController();
 
 //         async function loadProducts() {
 //             setLoading(true);
 //             try {
-//                 const { products } = await getAllProducts(controller.signal);
-//                 setProducts(products);
+//                 const response = await fetch("http://localhost:5000/api/products", {
+//                     signal: fetchControllerRef.current.signal
+//                 });
+                
+//                 if (!response.ok) throw new Error("Fetch failed");
+//                 const result = await response.json();
+//                 setProducts(result.data);
 //             } catch (err) {
-//                 if (err.name === 'AbortError') {
-//                     console.log("Fetch successfully cancelled.");
-//                     return; 
-//                 }
+//                 if (err.name === 'AbortError') return;
 //                 setError(err.message);
 //             } finally {
-//                 if (!controller.signal.aborted) {
+//                 if (!fetchControllerRef.current?.signal.aborted) {
 //                     setLoading(false);
 //                 }
 //             }
@@ -329,85 +311,67 @@ function Notifications({notifications}) {
 //         loadProducts();
 
 //         return () => {
-//             controller.abort();
+//             fetchControllerRef.current?.abort();
+//         };
+//     }, []);
+
+//     async function deleteProduct(pid) {
+//         if (deleteControllerRef.current) {
+//             deleteControllerRef.current.abort();
+//         }
+        
+//         deleteControllerRef.current = new AbortController();
+
+//         try {
+//             const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
+//                 method: "DELETE",
+//                 signal: deleteControllerRef.current.signal
+//             });
+
+//             if (!response.ok) throw new Error("Delete failed");
+            
+//             setProducts(prev => prev.filter(p => p._id !== pid));
+//         } catch (err) {
+//             if (err.name === 'AbortError') {
+//                 console.log("Delete request was cancelled by a newer action.");
+//                 return;
+//             }
+//             setError(err.message);
+//         }
+//     }
+
+//     useEffect(() => {
+//         return () => {
+//             fetchControllerRef.current?.abort();
+//             deleteControllerRef.current?.abort();
 //         };
 //     }, []);
 
 //     return <h1>Home page</h1>;
 // };
 
-const HomePageWithAbortController = () => {
-    const [products, setProducts] = useState(null);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
+function fetchWithTimeout(url, options = {}, timeoutMs = 5000) {
+    const timeoutController = new AbortController();
 
-    const fetchControllerRef = useRef(null);
-    const deleteControllerRef = useRef(null);
+    const timeoutId = setTimeout(() => {
+        timeoutController.abort();
+    }, timeoutMs);
 
-    useEffect(() => {
-        fetchControllerRef.current = new AbortController();
+    const signals = [timeoutController.signal];
 
-        async function loadProducts() {
-            setLoading(true);
-            try {
-                const response = await fetch("http://localhost:5000/api/products", {
-                    signal: fetchControllerRef.current.signal
-                });
-                
-                if (!response.ok) throw new Error("Fetch failed");
-                const result = await response.json();
-                setProducts(result.data);
-            } catch (err) {
-                if (err.name === 'AbortError') return;
-                setError(err.message);
-            } finally {
-                if (!fetchControllerRef.current?.signal.aborted) {
-                    setLoading(false);
-                }
-            }
-        }
-
-        loadProducts();
-
-        return () => {
-            fetchControllerRef.current?.abort();
-        };
-    }, []);
-
-    async function deleteProduct(pid) {
-        if (deleteControllerRef.current) {
-            deleteControllerRef.current.abort();
-        }
-        
-        deleteControllerRef.current = new AbortController();
-
-        try {
-            const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
-                method: "DELETE",
-                signal: deleteControllerRef.current.signal
-            });
-
-            if (!response.ok) throw new Error("Delete failed");
-            
-            setProducts(prev => prev.filter(p => p._id !== pid));
-        } catch (err) {
-            if (err.name === 'AbortError') {
-                console.log("Delete request was cancelled by a newer action.");
-                return;
-            }
-            setError(err.message);
-        }
+    if (options.signal) {
+        signals.push(options.signal);
     }
 
-    useEffect(() => {
-        return () => {
-            fetchControllerRef.current?.abort();
-            deleteControllerRef.current?.abort();
-        };
-    }, []);
+    const combinedSignal = AbortSignal.any(signals);
 
-    return <h1>Home page</h1>;
-};
+    return fetch(url, {
+        ...options,
+        signal: combinedSignal
+    }).finally(() => {
+        clearTimeout(timeoutId);
+    });
+}
 
 function Links({products}) {
     return (
