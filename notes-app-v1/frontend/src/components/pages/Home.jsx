@@ -136,7 +136,7 @@ const HomePage = () => {
     }
 
     async function updateProduct(pid, updatedProduct) {
-        try {
+        // try {
             const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
                 method: "PUT",
                 headers: {
@@ -145,32 +145,66 @@ const HomePage = () => {
                 body: JSON.stringify(updatedProduct),
             });
 
-            let result = null;
-            const contentType = response.headers.get("content-type");
+            // let result = null;
+            // const contentType = response.headers.get("content-type");
     
-            if (contentType && contentType.includes("application/json")) {
-                result = await response.json();
-            } else {
-                result = await response.text();
-            }
+            // if (contentType && contentType.includes("application/json")) {
+            //     result = await response.json();
+            // } else {
+            //     result = await response.text();
+            // }
+
+            // if (!response.ok) {
+            //     setError(result.message);
+            //     setTimeout(() => {
+            //         setError(null);
+            //     }, 3000);
+            // } else {
+            //     const updatedProducts = products.map(product => product._id !== pid ? result.data : product);
+            //     setProducts(filteredProducts);
+            // } 
+    
+            // if (!result.success) return { success: false, message: result.message };
+        
+            // return { success: true, message: data.message };
 
             if (!response.ok) {
-                setError(result.message);
-                setTimeout(() => {
-                    setError(null);
-                }, 3000);
-            } else {
-                const updatedProducts = products.map(product => product._id !== pid ? result.data : product);
-                setProducts(filteredProducts);
-            } 
+                const contentType = response.headers.get("content-type");
+                let errorMessage = "Update failed";
     
-            if (!result.success) return { success: false, message: result.message };
+                if (contentType && contentType.includes("application/json")) {
+                    const errorData = await response.json();
+                    errorMessage = errorData.message || errorMessage;
+                } else {
+                    errorMessage = await response.text();
+                }
+    
+                const error = new Error(errorMessage);
+                error.status = response.status;
+                
+                throw error;
+            }
         
-            return { success: true, message: data.message };                
-        } catch (error) {
+            const result = await response.json();
+    
+            return result;
+        // } catch (error) {
             
-        }
+        // }
 	}
+
+    async function handleUpdateProduct(pid, updatedProduct) {
+        try {
+            await updateProduct(pid, updatedProduct);
+            // setProducts(prevProducts => prevProducts.filter(p => p._id !== pid));
+            const updatedProducts = products.map(product => product._id !== pid ? result.data : product);
+            setProducts(updatedProducts);
+            setNotifications([{message: `Product ${pid} updated`, type: "success"}]);
+        } catch (err) {
+            // setError(err.message);
+            setNotifications([{message: err.message, type: "error"}]);
+        }
+    }
 
     return (
         <>
@@ -194,13 +228,14 @@ const HomePage = () => {
                 <ProductsSection
                     products={products}
                     handleDeleteProduct={handleDeleteProduct}
+                    handleUpdateProduct={handleUpdateProduct}
                 />
             )}
         </>
     );
 };
 
-function ProductsSection({ products, handleDeleteProduct }) {
+function ProductsSection({ products, handleDeleteProduct, handleUpdateProduct }) {
     return (
         <>
             <header className="main-header">
@@ -214,6 +249,7 @@ function ProductsSection({ products, handleDeleteProduct }) {
                                 key={product._id} 
                                 product={product} 
                                 handleDeleteProduct={handleDeleteProduct} 
+                                handleUpdateProduct={handleUpdateProduct}
                             />
                         ))}
                     </div>
@@ -224,7 +260,7 @@ function ProductsSection({ products, handleDeleteProduct }) {
     )
 }
 
-function ProductCard({ product, handleDeleteProduct }) {
+function ProductCard({ product, handleDeleteProduct, handleUpdateProduct }) {
     return (
         <article className="product-card">
             <img src={product.image} alt={product.name} />
@@ -277,7 +313,7 @@ function Notifications({notifications}) {
     )
 }
 
-function fetchWithTimeout(url, options = {}, timeoutMs = 5000) {
+async function fetchWithTimeout(url, options = {}, timeoutMs = 5000) {
     const timeoutController = new AbortController();
 
     const timeoutId = setTimeout(() => {
@@ -292,54 +328,63 @@ function fetchWithTimeout(url, options = {}, timeoutMs = 5000) {
 
     const combinedSignal = AbortSignal.any(signals);
 
-    return fetch(url, {
+    // return fetch(url, {
+    //     ...options,
+    //     signal: combinedSignal
+    // }).finally(() => {
+    //     clearTimeout(timeoutId);
+    // });
+
+    const response = await fetch(url, {
         ...options,
         signal: combinedSignal
-    }).finally(() => {
-        clearTimeout(timeoutId);
     });
+    
+    clearTimeout(timeoutId);
+
+    return response;
 }
 
-function UserProfile({ userId }) {
-    const [user, setUser] = useState(null);
-    const [error, setError] = useState(null);
+// function UserProfile({ userId }) {
+//     const [user, setUser] = useState(null);
+//     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const componentController = new AbortController();
+//     useEffect(() => {
+//         const componentController = new AbortController();
 
-        async function loadData() {
-            try {
-                const response = await fetchWithTimeout(
-                    `https://example.com{userId}`,
-                    { signal: componentController.signal },
-                    3000
-                );
+//         async function loadData() {
+//             try {
+//                 const response = await fetchWithTimeout(
+//                     `https://example.com{userId}`,
+//                     { signal: componentController.signal },
+//                     3000
+//                 );
 
-                const data = await response.json();
-                setUser(data);
-            } catch (err) {
-                if (err.name !== 'AbortError') {
-                    setError('Failed to load user data.');
-                    console.error(err);
-                }
-            }
-        }
+//                 const data = await response.json();
+//                 setUser(data);
+//             } catch (err) {
+//                 if (err.name !== 'AbortError') {
+//                     setError('Failed to load user data.');
+//                     console.error(err);
+//                 }
+//             }
+//         }
 
-        loadData();
+//         loadData();
 
-        return () => {
-            componentController.abort();
-        };
-    }, [userId]);
+//         return () => {
+//             componentController.abort();
+//         };
+//     }, [userId]);
 
-    if (error) return <div>{error}</div>;
+//     if (error) return <div>{error}</div>;
 
-    return <div>{user ? (
-        <h1>user.name</h1>
-    ) : (
-        <h1>'Loading...'</h1>
-    )}</div>;
-}
+//     return <div>{user ? (
+//         <h1>user.name</h1>
+//     ) : (
+//         <h1>'Loading...'</h1>
+//     )}</div>;
+// }
 
 function Links({products}) {
     return (
