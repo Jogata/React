@@ -277,79 +277,6 @@ function Notifications({notifications}) {
     )
 }
 
-// const HomePageWithAbortController = () => {
-//     const [products, setProducts] = useState(null);
-//     const [error, setError] = useState(null);
-//     const [loading, setLoading] = useState(true);
-
-//     const fetchControllerRef = useRef(null);
-//     const deleteControllerRef = useRef(null);
-
-//     useEffect(() => {
-//         fetchControllerRef.current = new AbortController();
-
-//         async function loadProducts() {
-//             setLoading(true);
-//             try {
-//                 const response = await fetch("http://localhost:5000/api/products", {
-//                     signal: fetchControllerRef.current.signal
-//                 });
-                
-//                 if (!response.ok) throw new Error("Fetch failed");
-//                 const result = await response.json();
-//                 setProducts(result.data);
-//             } catch (err) {
-//                 if (err.name === 'AbortError') return;
-//                 setError(err.message);
-//             } finally {
-//                 if (!fetchControllerRef.current?.signal.aborted) {
-//                     setLoading(false);
-//                 }
-//             }
-//         }
-
-//         loadProducts();
-
-//         return () => {
-//             fetchControllerRef.current?.abort();
-//         };
-//     }, []);
-
-//     async function deleteProduct(pid) {
-//         if (deleteControllerRef.current) {
-//             deleteControllerRef.current.abort();
-//         }
-        
-//         deleteControllerRef.current = new AbortController();
-
-//         try {
-//             const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
-//                 method: "DELETE",
-//                 signal: deleteControllerRef.current.signal
-//             });
-
-//             if (!response.ok) throw new Error("Delete failed");
-            
-//             setProducts(prev => prev.filter(p => p._id !== pid));
-//         } catch (err) {
-//             if (err.name === 'AbortError') {
-//                 console.log("Delete request was cancelled by a newer action.");
-//                 return;
-//             }
-//             setError(err.message);
-//         }
-//     }
-
-//     useEffect(() => {
-//         return () => {
-//             fetchControllerRef.current?.abort();
-//             deleteControllerRef.current?.abort();
-//         };
-//     }, []);
-
-//     return <h1>Home page</h1>;
-// };
-
 function fetchWithTimeout(url, options = {}, timeoutMs = 5000) {
     const timeoutController = new AbortController();
 
@@ -371,6 +298,47 @@ function fetchWithTimeout(url, options = {}, timeoutMs = 5000) {
     }).finally(() => {
         clearTimeout(timeoutId);
     });
+}
+
+function UserProfile({ userId }) {
+    const [user, setUser] = useState(null);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const componentController = new AbortController();
+
+        async function loadData() {
+            try {
+                const response = await fetchWithTimeout(
+                    `https://example.com{userId}`,
+                    { signal: componentController.signal },
+                    3000
+                );
+
+                const data = await response.json();
+                setUser(data);
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    setError('Failed to load user data.');
+                    console.error(err);
+                }
+            }
+        }
+
+        loadData();
+
+        return () => {
+            componentController.abort();
+        };
+    }, [userId]);
+
+    if (error) return <div>{error}</div>;
+
+    return <div>{user ? (
+        <h1>user.name</h1>
+    ) : (
+        <h1>'Loading...'</h1>
+    )}</div>;
 }
 
 function Links({products}) {
