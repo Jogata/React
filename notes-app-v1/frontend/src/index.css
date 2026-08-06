@@ -242,16 +242,62 @@ main {
   font-size: 1.4rem;
 }
 
-.product-card .actions {
-  padding-top: 2rem;
+.card-footer {
+  margin-top: 2rem;
   /* display: flex; */
   /* gap: 1rem; */
   /* flex-wrap: wrap; */
   /* align-items: center; */
+  /* flex-direction: column-reverse; */
+}
+
+.product-card .actions {
+  /* flex: 1; */
+  /* padding-top: 2rem; */
+  /* display: flex; */
+  /* gap: 1rem; */
+  /* flex-wrap: wrap; */
+  /* align-items: center; */
+  /* text-align: right; */
 }
 
 .product-card .actions .icon i {
   font-size: 1.4rem;
+}
+
+@media screen and (min-width: 360px) {
+  .card-footer {
+    /* display: flex; */
+    /* gap: 1rem; */
+    /* flex-wrap: wrap; */
+    /* justify-content: space-between; */
+    /* align-items: center; */
+    /* flex-direction: row-reverse; */
+  }
+
+  .product-card .actions {
+    /* flex: 1; */
+    /* text-align: right; */
+  }  
+}
+
+.product-card {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 360px) {
+  .product-card {
+    grid-template-areas: 
+      "img img"
+      "txt txt"
+      "ftr act";
+  }
+
+  .product-card img { grid-area: img; }
+  .product-card .content { grid-area: txt; }
+  .product-card .metadata { grid-area: ftr; }
+  .product-card .actions { grid-area: act; text-align: right; }
 }
 
 .delete-btn {
@@ -428,3 +474,71 @@ main {
 button {
   /* border: 1px solid red; */
 }
+
+
+/* .product-card .body {
+  padding-top: 2rem;
+}
+
+.card-footer {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+  flex-direction: column-reverse;
+}
+
+@media screen and (min-width: 360px) {
+  .card-footer {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+    flex-direction: row-reverse;
+  }
+
+  .product-card .actions {
+    flex: 1;
+    text-align: right;
+  }  
+} */
+
+
+
+
+
+/* .product-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.product-card .actions {
+  order: 4; 
+  display: flex;
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .product-card {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .product-card img,
+  .product-card .content {
+    grid-column: span 2;
+  }
+
+  .product-card .metadata {
+    grid-column: 1;
+    order: 0;
+  }
+
+  .product-card .actions {
+    grid-column: 2;
+    order: 0;
+    
+    display: flex;
+    justify-content: flex-end; 
+    gap: 0.5rem;
+  }
+} */

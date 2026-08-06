@@ -2,6 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 // import { Link, useLocation } from "react-router-dom";
 
+function formatDate(date) {
+    return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+    });
+}
+
 const HomePage = () => {
     const [products, setProducts] = useState(null);
     const [error, setError] = useState(null);
@@ -260,7 +268,7 @@ function ProductsSection({ products, handleDeleteProduct, handleUpdateProduct })
     )
 }
 
-function ProductCard({ product, handleDeleteProduct, handleUpdateProduct }) {
+function ProductCard1({ product, handleDeleteProduct, handleUpdateProduct }) {
     return (
         <article className="product-card">
             <img src={product.image} alt={product.name} />
@@ -271,26 +279,76 @@ function ProductCard({ product, handleDeleteProduct, handleUpdateProduct }) {
                 </header>
                 <h3 className="price">${product.price}</h3>
 
-                <div className="actions">
-                    <button
-                        type="button"
-                        className="icon edit-btn"
-                        title="Edit"
-                    >
-                        <span className="sr-only">Edit product {product.name}</span>
-                        <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
-                    </button>
-                    <button
-                        type="button"
-                        className="icon delete-btn"
-                        title="Delete"
-                        onClick={() => handleDeleteProduct(product._id)}
-                    >
-                        <span className="sr-only">Delete product {product.name}</span>
-                        <i className="fa fa-trash-o" aria-hidden="true"></i>
-                    </button>
+                <div className="card-footer">
+                    <div className="actions">
+                        <button
+                            type="button"
+                            className="icon edit-btn"
+                            title="Edit"
+                        >
+                            <span className="sr-only">Edit product {product.name}</span>
+                            <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
+                        </button>
+                        <button
+                            type="button"
+                            className="icon delete-btn"
+                            title="Delete"
+                            onClick={() => handleDeleteProduct(product._id)}
+                        >
+                            <span className="sr-only">Delete product {product.name}</span>
+                            <i className="fa fa-trash-o" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <footer>
+                        {/* <p>{new Date("bghjvgvk").toLocaleTimeString}</p> */}
+                        {/* <p>{new Date(product.createdAt).toLocaleDateString()}</p> */}
+                        <p>{formatDate(new Date(product.createdAt))}</p>
+                    </footer>
                 </div>
             </div>
+        </article>
+    );
+};
+
+function ProductCard({ product, handleDeleteProduct, handleUpdateProduct }) {
+    return (
+        <article className="product-card">
+            <img src={product.image} alt={product.name} />
+
+            {/* <div className="body"> */}
+                {/* <header>
+                    <h2>{product.name}</h2>
+                </header> */}
+                {/* <h3 className="price">${product.price}</h3> */}
+            <div className="content">
+                <h2>{product.name}</h2>
+                <data className="price" value={product.price}>${product.price}</data>
+            </div>
+
+                    <div className="actions">
+                        <button
+                            type="button"
+                            className="icon edit-btn"
+                            title="Edit"
+                        >
+                            <span className="sr-only">Edit product {product.name}</span>
+                            <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
+                        </button>
+                        <button
+                            type="button"
+                            className="icon delete-btn"
+                            title="Delete"
+                            onClick={() => handleDeleteProduct(product._id)}
+                        >
+                            <span className="sr-only">Delete product {product.name}</span>
+                            <i className="fa fa-trash-o" aria-hidden="true"></i>
+                        </button>
+                    </div>
+
+                    <footer className="metadata">
+                        <p>{formatDate(new Date(product.createdAt))}</p>
+                    </footer>
+            {/* </div> */}
         </article>
     );
 };
@@ -477,6 +535,19 @@ function Links({products}) {
             ))}
         </div>
     )
+}
+
+function Header({ title, as: HeadingTag = 'h2', children }) {
+    if (children) {
+        return (
+            <header className={`${HeadingTag}-header`}>
+                <HeadingTag>{title}</HeadingTag>
+                {children}
+            </header>
+        );
+    }
+
+    return <HeadingTag>{title}</HeadingTag>;
 }
 
 export default HomePage;
