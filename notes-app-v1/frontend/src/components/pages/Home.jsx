@@ -412,6 +412,61 @@ const HomePageWithAbortController = () => {
     return <h1>Home page</h1>;
 };
 
+const HomePageWithAbortController2 = () => {
+    const [products, setProducts] = useState(null);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    const deleteControllerRef = useRef(null);
+
+    useEffect(() => {
+        const fetchController = new AbortController();
+
+        async function loadProducts() {
+            setLoading(true);
+            try {
+                const { products } = await getAllProducts(fetchController.signal);
+                setProducts(products);
+            } catch (err) {
+                if (err.name === 'AbortError') return;
+                setError(err.message);
+            } finally {
+                if (!fetchController.signal.aborted) setLoading(false);
+            }
+        }
+
+        loadProducts();
+
+        return () => {
+            fetchController.abort();
+        };
+    }, []);
+
+    async function deleteProduct(pid) {
+        if (deleteControllerRef.current) deleteControllerRef.current.abort();
+        deleteControllerRef.current = new AbortController();
+
+        try {
+            await fetch(`http://localhost:5000/api/products/${pid}`, {
+                method: "DELETE",
+                signal: deleteControllerRef.current.signal
+            });
+            setProducts(prev => prev.filter(p => p._id !== pid));
+        } catch (err) {
+            if (err.name === 'AbortError') return;
+            setError(err.message);
+        }
+    }
+
+    useEffect(() => {
+        return () => {
+            deleteControllerRef.current?.abort();
+        };
+    }, []);
+
+    return <h1>Home page</h1>;
+};
+
 function Links({products}) {
     return (
         <div className="links">
