@@ -613,6 +613,59 @@ const HomePageWithAbortController3 = () => {
     return <h1>Home page</h1>;
 };
 
+const HomePageWithAbortController4 = () => {
+    const [products, setProducts] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const mutationControllerRef = useRef(null);
+
+    const prepareMutationSignal = () => {
+        if (mutationControllerRef.current) {
+            mutationControllerRef.current.abort();
+        }
+        mutationControllerRef.current = new AbortController();
+        return mutationControllerRef.current.signal;
+    };
+
+    async function deleteProduct(pid) {
+        const signal = prepareMutationSignal();
+
+        try {
+            await fetch(`http://localhost:5000/api/products/${pid}`, {
+                method: "DELETE",
+                signal: signal
+            });
+            setProducts(prev => prev.filter(p => p._id !== pid));
+        } catch (err) {
+            if (err.name === 'AbortError') return;
+            console.error(err.message);
+        }
+    }
+
+    async function updateProduct(pid, updatedData) {
+        const signal = prepareMutationSignal();
+
+        try {
+            await fetch(`http://localhost:5000/api/products/${pid}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updatedData),
+                signal: signal
+            });
+            setIsModalOpen(false);
+        } catch (err) {
+            if (err.name === 'AbortError') return;
+            console.error(err.message);
+        }
+    }
+
+    useEffect(() => {
+        return () => mutationControllerRef.current?.abort();
+    }, []);
+
+    return <h1>Home Page Layout</h1>;
+};
+
 function Links({products}) {
     return (
         <div className="links">
