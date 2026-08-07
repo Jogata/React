@@ -525,6 +525,94 @@ const HomePageWithAbortController2 = () => {
     return <h1>Home page</h1>;
 };
 
+const HomePageWithAbortController3 = () => {
+    const [products, setProducts] = useState(null);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    const deleteControllerRef = useRef(null);
+    const updateControllerRef = useRef(null);
+
+    useEffect(() => {
+        const fetchController = new AbortController();
+
+        async function loadProducts() {
+            setLoading(true);
+            try {
+                const response = await fetch("http://localhost:5000/api/products", {
+                    signal: fetchController.signal
+                });
+
+                if (!response.ok) throw new Error("Fetch failed");
+                
+                const result = await response.json();
+                setProducts(result.data);
+            } catch (err) {
+                if (err.name === 'AbortError') return;
+                setError(err.message);
+            } finally {
+                if (!fetchController.signal.aborted) setLoading(false);
+            }
+        }
+
+        loadProducts();
+
+        return () => {
+            fetchController.abort();
+        };
+    }, []); 
+
+
+    async function deleteProduct(pid) {
+        if (deleteControllerRef.current) deleteControllerRef.current.abort();
+        deleteControllerRef.current = new AbortController();
+
+        try {
+            const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
+                method: "DELETE",
+                signal: deleteControllerRef.current.signal
+            });
+            if (!response.ok) throw new Error("Delete failed");
+            
+            setProducts(prev => prev.filter(p => p._id !== pid));
+        } catch (err) {
+            if (err.name === 'AbortError') return;
+            setError(err.message);
+        }
+    }
+
+    async function updateProduct(pid, updatedData) {
+        if (updateControllerRef.current) updateControllerRef.current.abort();
+        updateControllerRef.current = new AbortController();
+
+        try {
+            const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updatedData),
+                signal: updateControllerRef.current.signal
+            });
+            if (!response.ok) throw new Error("Update failed");
+            const result = await response.json();
+
+            setProducts(prev => prev.map(p => p._id === pid ? result.data : p));
+        } catch (err) {
+            if (err.name === 'AbortError') return;
+            setError(err.message);
+        }
+    }
+
+
+    useEffect(() => {
+        return () => {
+            deleteControllerRef.current?.abort();
+            updateControllerRef.current?.abort();
+        };
+    }, []);
+
+    return <h1>Home page</h1>;
+};
+
 function Links({products}) {
     return (
         <div className="links">
