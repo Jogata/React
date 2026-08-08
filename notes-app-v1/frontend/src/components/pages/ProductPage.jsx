@@ -58,7 +58,7 @@ export function ProductPage() {
                 // throw new Error("Unable to establish communication with the product catalog.", { cause: error });
             }
         }
-    }, [id, product]);
+    }, [id]);
 
     async function deleteProduct(pid) {
         // pid = "6a6db517423ac20b02df6b8s";
@@ -111,6 +111,52 @@ export function ProductPage() {
         setEditedProduct({...product});
     }
 
+    async function updateProduct(pid, editedProduct) {
+        const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(editedProduct),
+        });
+
+        if (!response.ok) {
+            const contentType = response.headers.get("content-type");
+            let errorMessage = "Update failed";
+
+            if (contentType && contentType.includes("application/json")) {
+                const errorData = await response.json();
+                errorMessage = errorData.message || errorMessage;
+            } else {
+                errorMessage = await response.text();
+            }
+
+            const error = new Error(errorMessage);
+            error.status = response.status;
+            
+            throw error;
+        }
+    
+        const result = await response.json();
+
+        return result;
+    }
+    
+    async function handleUpdateProduct(pid, editedProduct) {
+        try {
+            await updateProduct(pid, editedProduct);
+            // setProducts(prevProducts => prevProducts.filter(p => p._id !== pid));
+            // setProducts(products => {
+            //     const updatedProducts = products.map(product => product._id !== pid ? result.data : product);
+            //     return updatedProducts;
+            // });
+            setNotifications([{message: `Product ${pid} updated`, type: "success"}]);
+        } catch (err) {
+            // setError(err.message);
+            setNotifications([{message: err.message, type: "error"}]);
+        }
+    }
+        
     return (
         <>
             <div className="product-page">
