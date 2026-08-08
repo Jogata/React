@@ -3,8 +3,10 @@ import { useNavigate, useParams } from "react-router-dom";
 
 export function ProductPage() {
     const [product, setProduct] = useState(null);
+    const [editedProduct, setEditedProduct] = useState(null);
     const [error, setError] = useState(null);
-    const {id} = useParams();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const { id } = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,22 +20,22 @@ export function ProductPage() {
                 customError.status = "404";
                 throw customError;
             }
-                
+
             setProduct(product);
         })
-        .catch(err => {
-            console.log(err.message);
-            console.log(err.status);
-            setError(err.message);
-        })
-        
+            .catch(err => {
+                console.log(err.message);
+                console.log(err.status);
+                setError(err.message);
+            })
+
         async function getAllProducts() {
-            try {                
+            try {
                 const response = await fetch("http://localhost:5000/api/products");
-                
+
                 const contentType = response.headers.get("content-type");
                 let result = null;
-    
+
                 if (contentType && contentType.includes("application/json")) {
                     result = await response.json();
                     console.log(result);
@@ -56,7 +58,7 @@ export function ProductPage() {
                 // throw new Error("Unable to establish communication with the product catalog.", { cause: error });
             }
         }
-    }, []);
+    }, [id, product]);
 
     async function deleteProduct(pid) {
         // pid = "6a6db517423ac20b02df6b8s";
@@ -64,16 +66,16 @@ export function ProductPage() {
             const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
                 method: "DELETE",
             });
-    
+
             let result = null;
             const contentType = response.headers.get("content-type");
-    
+
             if (contentType && contentType.includes("application/json")) {
                 result = await response.json();
             } else {
                 result = await response.text();
             }
-    
+
             if (!response.ok) {
                 setError(result.message);
                 setTimeout(() => {
@@ -84,7 +86,7 @@ export function ProductPage() {
                 navigate("/", {
                     state: { product: id },
                 },);
-            }    
+            }
         } catch (error) {
             setError(result);
         }
@@ -104,32 +106,72 @@ export function ProductPage() {
         )
     }
 
+    function openModal() {
+        setIsModalOpen(true);
+        setEditedProduct({...product});
+    }
+
     return (
-        <div className="product-page">
-            <img src={product.image} alt={product.name} />
-            <h1>{product.name}</h1>
-            <h2>${product.price}</h2>
-            <div className="actions">
-                <button 
-                    type="button"
-                    className="icon edit-btn" 
-                    title="Edit"
-                >
-                    <span className="sr-only">Edit product {product.name}</span>
-                    <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
-                </button>
-                <button
-                    type="button"
-                    className="icon delete-btn"
-                    title="Delete"
-                    onClick={() => deleteProduct(product._id)}
-                >
-                    {/* Delete */}
-                    <span className="sr-only">Delete product {product.name}</span>
-                    <i className="fa fa-trash-o" aria-hidden="true"></i>
-                </button>
+        <>
+            <div className="product-page">
+                <img src={product.image} alt={product.name} />
+                <h1>{product.name}</h1>
+                <h2>${product.price}</h2>
+                <div className="actions">
+                    <button
+                        type="button"
+                        className="icon edit-btn"
+                        title="Edit"
+                        onClick={openModal}
+                    >
+                        <span className="sr-only">Edit product {product.name}</span>
+                        <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </button>
+                    <button
+                        type="button"
+                        className="icon delete-btn"
+                        title="Delete"
+                        onClick={() => deleteProduct(product._id)}
+                    >
+                        <span className="sr-only">Delete product {product.name}</span>
+                        <i className="fa fa-trash-o" aria-hidden="true"></i>
+                    </button>
+                </div>
             </div>
-        </div>
+
+            {isModalOpen ? (
+                <div className="modal">
+                    <form className="form centered" onSubmit={(e) => e.preventDefault()}>
+                        <input
+                            className="form-input"
+                            name="name"
+                            value={editedProduct.name}
+                            onChange={(e) => setEditedProduct({ ...editedProduct, name: e.target.value })}
+                            placeholder="Product Name"
+                        />
+                        <input
+                            className="form-input"
+                            type="number"
+                            name="price"
+                            value={editedProduct.price}
+                            onChange={(e) => setEditedProduct({ ...editedProduct, price: e.target.value })}
+                            placeholder="Price"
+                        />
+                        <input
+                            className="form-input"
+                            name="image"
+                            value={editedProduct.image}
+                            onChange={(e) => setEditedProduct({ ...editedProduct, image: e.target.value })}
+                            placeholder="Image URL"
+                        />
+
+                        <button className="btn">
+                            Edit Product
+                        </button>
+                    </form>
+                </div>
+            ) : null}
+        </>
     );
 };
 

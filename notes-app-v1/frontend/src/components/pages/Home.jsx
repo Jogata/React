@@ -144,7 +144,6 @@ const HomePage = () => {
     }
 
     async function updateProduct(pid, updatedProduct) {
-        // try {
             const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
                 method: "PUT",
                 headers: {
@@ -152,29 +151,6 @@ const HomePage = () => {
                 },
                 body: JSON.stringify(updatedProduct),
             });
-
-            // let result = null;
-            // const contentType = response.headers.get("content-type");
-    
-            // if (contentType && contentType.includes("application/json")) {
-            //     result = await response.json();
-            // } else {
-            //     result = await response.text();
-            // }
-
-            // if (!response.ok) {
-            //     setError(result.message);
-            //     setTimeout(() => {
-            //         setError(null);
-            //     }, 3000);
-            // } else {
-            //     const updatedProducts = products.map(product => product._id !== pid ? result.data : product);
-            //     setProducts(filteredProducts);
-            // } 
-    
-            // if (!result.success) return { success: false, message: result.message };
-        
-            // return { success: true, message: data.message };
 
             if (!response.ok) {
                 const contentType = response.headers.get("content-type");
@@ -196,9 +172,6 @@ const HomePage = () => {
             const result = await response.json();
     
             return result;
-        // } catch (error) {
-            
-        // }
 	}
 
     async function handleUpdateProduct(pid, updatedProduct) {
@@ -268,87 +241,39 @@ function ProductsSection({ products, handleDeleteProduct, handleUpdateProduct })
     )
 }
 
-function ProductCard1({ product, handleDeleteProduct, handleUpdateProduct }) {
-    return (
-        <article className="product-card">
-            <img src={product.image} alt={product.name} />
-
-            <div className="body">
-                <header>
-                    <h2>{product.name}</h2>
-                </header>
-                <h3 className="price">${product.price}</h3>
-
-                <div className="card-footer">
-                    <div className="actions">
-                        <button
-                            type="button"
-                            className="icon edit-btn"
-                            title="Edit"
-                        >
-                            <span className="sr-only">Edit product {product.name}</span>
-                            <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
-                        </button>
-                        <button
-                            type="button"
-                            className="icon delete-btn"
-                            title="Delete"
-                            onClick={() => handleDeleteProduct(product._id)}
-                        >
-                            <span className="sr-only">Delete product {product.name}</span>
-                            <i className="fa fa-trash-o" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                    <footer>
-                        {/* <p>{new Date("bghjvgvk").toLocaleTimeString}</p> */}
-                        {/* <p>{new Date(product.createdAt).toLocaleDateString()}</p> */}
-                        <p>{formatDate(new Date(product.createdAt))}</p>
-                    </footer>
-                </div>
-            </div>
-        </article>
-    );
-};
-
 function ProductCard({ product, handleDeleteProduct, handleUpdateProduct }) {
     return (
         <article className="product-card">
             <img src={product.image} alt={product.name} />
 
-            {/* <div className="body"> */}
-                {/* <header>
-                    <h2>{product.name}</h2>
-                </header> */}
-                {/* <h3 className="price">${product.price}</h3> */}
             <div className="content">
                 <h2>{product.name}</h2>
                 <data className="price" value={product.price}>${product.price}</data>
             </div>
 
-                    <div className="actions">
-                        <button
-                            type="button"
-                            className="icon edit-btn"
-                            title="Edit"
-                        >
-                            <span className="sr-only">Edit product {product.name}</span>
-                            <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
-                        </button>
-                        <button
-                            type="button"
-                            className="icon delete-btn"
-                            title="Delete"
-                            onClick={() => handleDeleteProduct(product._id)}
-                        >
-                            <span className="sr-only">Delete product {product.name}</span>
-                            <i className="fa fa-trash-o" aria-hidden="true"></i>
-                        </button>
-                    </div>
+            <div className="actions">
+                <button
+                    type="button"
+                    className="icon edit-btn"
+                    title="Edit"
+                >
+                    <span className="sr-only">Edit product {product.name}</span>
+                    <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
+                </button>
+                <button
+                    type="button"
+                    className="icon delete-btn"
+                    title="Delete"
+                    onClick={() => handleDeleteProduct(product._id)}
+                >
+                    <span className="sr-only">Delete product {product.name}</span>
+                    <i className="fa fa-trash-o" aria-hidden="true"></i>
+                </button>
+            </div>
 
-                    <footer className="metadata">
-                        <p>{formatDate(new Date(product.createdAt))}</p>
-                    </footer>
-            {/* </div> */}
+            <footer className="metadata">
+                <p>{formatDate(new Date(product.createdAt))}</p>
+            </footer>
         </article>
     );
 };
@@ -395,340 +320,6 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = 5000) {
 
     return response;
 }
-
-const HomePageWithAbortController = () => {
-    const [products, setProducts] = useState(null);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    const fetchControllerRef = useRef(null);
-    const deleteControllerRef = useRef(null);
-
-    useEffect(() => {
-        fetchControllerRef.current = new AbortController();
-
-        async function loadProducts() {
-            setLoading(true);
-            try {
-                const response = await fetch("http://localhost:5000/api/products", {
-                    signal: fetchControllerRef.current.signal
-                });
-                
-                if (!response.ok) throw new Error("Fetch failed");
-
-                const result = await response.json();
-                setProducts(result.data);
-            } catch (err) {
-                if (err.name === "AbortError") return;
-                setError(err.message);
-            } finally {
-                if (!fetchControllerRef.current?.signal.aborted) {
-                    setLoading(false);
-                }
-            }
-        }
-
-        loadProducts();
-
-        return () => {
-            fetchControllerRef.current?.abort();
-        };
-    }, []);
-
-    async function deleteProduct(pid) {
-        if (deleteControllerRef.current) {
-            deleteControllerRef.current.abort();
-        }
-        
-        deleteControllerRef.current = new AbortController();
-
-        try {
-            const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
-                method: "DELETE",
-                signal: deleteControllerRef.current.signal
-            });
-
-            if (!response.ok) throw new Error("Delete failed");
-            
-            setProducts(prev => prev.filter(p => p._id !== pid));
-        } catch (err) {
-            if (err.name === "AbortError") {
-                console.log("Delete request was cancelled by a newer action.");
-                return;
-            }
-            setError(err.message);
-        }
-    }
-
-    useEffect(() => {
-        return () => {
-            fetchControllerRef.current?.abort();
-            deleteControllerRef.current?.abort();
-        };
-    }, []);
-
-    return <h1>Home page</h1>;
-};
-
-const HomePageWithAbortController2 = () => {
-    const [products, setProducts] = useState(null);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    const deleteControllerRef = useRef(null);
-
-    useEffect(() => {
-        const fetchController = new AbortController();
-
-        async function loadProducts() {
-            setLoading(true);
-            try {
-                const { products } = await getAllProducts(fetchController.signal);
-                setProducts(products);
-            } catch (err) {
-                if (err.name === 'AbortError') return;
-                setError(err.message);
-            } finally {
-                if (!fetchController.signal.aborted) setLoading(false);
-            }
-        }
-
-        loadProducts();
-
-        return () => {
-            fetchController.abort();
-        };
-    }, []);
-
-    async function deleteProduct(pid) {
-        if (deleteControllerRef.current) deleteControllerRef.current.abort();
-        deleteControllerRef.current = new AbortController();
-
-        try {
-            await fetch(`http://localhost:5000/api/products/${pid}`, {
-                method: "DELETE",
-                signal: deleteControllerRef.current.signal
-            });
-            setProducts(prev => prev.filter(p => p._id !== pid));
-        } catch (err) {
-            if (err.name === 'AbortError') return;
-            setError(err.message);
-        }
-    }
-
-    useEffect(() => {
-        return () => {
-            deleteControllerRef.current?.abort();
-        };
-    }, []);
-
-    return <h1>Home page</h1>;
-};
-
-const HomePageWithAbortController3 = () => {
-    const [products, setProducts] = useState(null);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    const deleteControllerRef = useRef(null);
-    const updateControllerRef = useRef(null);
-
-    useEffect(() => {
-        const fetchController = new AbortController();
-
-        async function loadProducts() {
-            setLoading(true);
-            try {
-                const response = await fetch("http://localhost:5000/api/products", {
-                    signal: fetchController.signal
-                });
-
-                if (!response.ok) throw new Error("Fetch failed");
-                
-                const result = await response.json();
-                setProducts(result.data);
-            } catch (err) {
-                if (err.name === 'AbortError') return;
-                setError(err.message);
-            } finally {
-                if (!fetchController.signal.aborted) setLoading(false);
-            }
-        }
-
-        loadProducts();
-
-        return () => {
-            fetchController.abort();
-        };
-    }, []); 
-
-
-    async function deleteProduct(pid) {
-        if (deleteControllerRef.current) deleteControllerRef.current.abort();
-        deleteControllerRef.current = new AbortController();
-
-        try {
-            const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
-                method: "DELETE",
-                signal: deleteControllerRef.current.signal
-            });
-            if (!response.ok) throw new Error("Delete failed");
-            
-            setProducts(prev => prev.filter(p => p._id !== pid));
-        } catch (err) {
-            if (err.name === 'AbortError') return;
-            setError(err.message);
-        }
-    }
-
-    async function updateProduct(pid, updatedData) {
-        if (updateControllerRef.current) updateControllerRef.current.abort();
-        updateControllerRef.current = new AbortController();
-
-        try {
-            const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(updatedData),
-                signal: updateControllerRef.current.signal
-            });
-            if (!response.ok) throw new Error("Update failed");
-            const result = await response.json();
-
-            setProducts(prev => prev.map(p => p._id === pid ? result.data : p));
-        } catch (err) {
-            if (err.name === 'AbortError') return;
-            setError(err.message);
-        }
-    }
-
-
-    useEffect(() => {
-        return () => {
-            deleteControllerRef.current?.abort();
-            updateControllerRef.current?.abort();
-        };
-    }, []);
-
-    return <h1>Home page</h1>;
-};
-
-const HomePageWithAbortController4 = () => {
-    const [products, setProducts] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const mutationControllerRef = useRef(null);
-
-    const prepareMutationSignal = () => {
-        if (mutationControllerRef.current) {
-            mutationControllerRef.current.abort();
-        }
-        mutationControllerRef.current = new AbortController();
-        return mutationControllerRef.current.signal;
-    };
-
-    async function deleteProduct(pid) {
-        const signal = prepareMutationSignal();
-
-        try {
-            await fetch(`http://localhost:5000/api/products/${pid}`, {
-                method: "DELETE",
-                signal: signal
-            });
-            setProducts(prev => prev.filter(p => p._id !== pid));
-        } catch (err) {
-            if (err.name === 'AbortError') return;
-            console.error(err.message);
-        }
-    }
-
-    async function updateProduct(pid, updatedData) {
-        const signal = prepareMutationSignal();
-
-        try {
-            await fetch(`http://localhost:5000/api/products/${pid}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(updatedData),
-                signal: signal
-            });
-            setIsModalOpen(false);
-        } catch (err) {
-            if (err.name === 'AbortError') return;
-            console.error(err.message);
-        }
-    }
-
-    useEffect(() => {
-        return () => mutationControllerRef.current?.abort();
-    }, []);
-
-    return <h1>Home Page Layout</h1>;
-};
-
-const HomePageWithAbortController5 = () => {
-    const [products, setProducts] = useState([]);
-    const [error, setError] = useState(null);
-    const mutationControllerRef = useRef(null);
-
-    const prepareMutationSignal = () => {
-        if (mutationControllerRef.current) mutationControllerRef.current.abort();
-
-        mutationControllerRef.current = new AbortController();
-        
-        return mutationControllerRef.current.signal;
-    };
-
-    async function apiDeleteProduct(pid, signal) {
-        const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
-            method: "DELETE",
-            signal
-        });
-
-        if (!response.ok) throw new Error("Delete failed on server");
-        
-        return response;
-    }
-    
-    async function apiUpdateProduct(pid, updatedData, signal) {
-        const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(updatedData),
-            signal
-        });
-        
-        if (!response.ok) throw new Error("Update failed on server");
-        
-        const result = await response.json();
-
-        return result;
-    }
-
-    async function handleDelete(pid) {
-        const signal = prepareMutationSignal();
-        try {
-            await apiDeleteProduct(pid, signal); 
-            setProducts(prev => prev.filter(p => p._id !== pid)); 
-        } catch (err) {
-            if (err.name === 'AbortError') return;
-            setError(err.message);
-        }
-    }
-
-    async function handleUpdate(pid, updatedData) {
-        const signal = prepareMutationSignal();
-        try {
-            const updatedProduct = await apiUpdateProduct(pid, updatedData, signal); 
-            setProducts(prev => prev.map(p => p._id === pid ? updatedProduct : p)); 
-        } catch (err) {
-            if (err.name === 'AbortError') return;
-            setError(err.message);
-        }
-    }
-
-    return <h1>Home Page</h1>;
-};
 
 function Links({products}) {
     return (
