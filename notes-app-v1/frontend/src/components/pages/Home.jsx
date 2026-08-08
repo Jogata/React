@@ -666,6 +666,70 @@ const HomePageWithAbortController4 = () => {
     return <h1>Home Page Layout</h1>;
 };
 
+const HomePageWithAbortController5 = () => {
+    const [products, setProducts] = useState([]);
+    const [error, setError] = useState(null);
+    const mutationControllerRef = useRef(null);
+
+    const prepareMutationSignal = () => {
+        if (mutationControllerRef.current) mutationControllerRef.current.abort();
+
+        mutationControllerRef.current = new AbortController();
+        
+        return mutationControllerRef.current.signal;
+    };
+
+    async function apiDeleteProduct(pid, signal) {
+        const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
+            method: "DELETE",
+            signal
+        });
+
+        if (!response.ok) throw new Error("Delete failed on server");
+        
+        return response;
+    }
+    
+    async function apiUpdateProduct(pid, updatedData, signal) {
+        const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updatedData),
+            signal
+        });
+        
+        if (!response.ok) throw new Error("Update failed on server");
+        
+        const result = await response.json();
+
+        return result;
+    }
+
+    async function handleDelete(pid) {
+        const signal = prepareMutationSignal();
+        try {
+            await apiDeleteProduct(pid, signal); 
+            setProducts(prev => prev.filter(p => p._id !== pid)); 
+        } catch (err) {
+            if (err.name === 'AbortError') return;
+            setError(err.message);
+        }
+    }
+
+    async function handleUpdate(pid, updatedData) {
+        const signal = prepareMutationSignal();
+        try {
+            const updatedProduct = await apiUpdateProduct(pid, updatedData, signal); 
+            setProducts(prev => prev.map(p => p._id === pid ? updatedProduct : p)); 
+        } catch (err) {
+            if (err.name === 'AbortError') return;
+            setError(err.message);
+        }
+    }
+
+    return <h1>Home Page</h1>;
+};
+
 function Links({products}) {
     return (
         <div className="links">
