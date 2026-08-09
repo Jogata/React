@@ -5,6 +5,7 @@ export function ProductPage() {
     const [product, setProduct] = useState(null);
     const [editedProduct, setEditedProduct] = useState(null);
     const [error, setError] = useState(null);
+    const [notifications, setNotifications] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { id } = useParams();
     const navigate = useNavigate();
@@ -153,12 +154,12 @@ export function ProductPage() {
             //     const updatedProducts = products.map(product => product._id !== pid ? result.data : product);
             //     return updatedProducts;
             // });
-            // setNotifications([{message: `Product ${pid} updated`, type: "success"}]);
+            setNotifications([{message: `Product ${pid} updated`, type: "success"}]);
             setIsModalOpen(false);
             setProduct(response.data);
         } catch (err) {
             // setError(err.message);
-            // setNotifications([{message: err.message, type: "error"}]);
+            setNotifications([{message: err.message, type: "error"}]);
         }
     }
 
@@ -168,6 +169,12 @@ export function ProductPage() {
         
     return (
         <>
+            {notifications.length > 0 ? (
+                <Notifications notifications={notifications} />
+            ) :
+                null
+            }
+
             <div className="product-page">
                 <img src={product.image} alt={product.name} />
                 <h1>{product.name}</h1>
@@ -196,6 +203,14 @@ export function ProductPage() {
 
             {isModalOpen ? (
                 <div className="modal" onClick={closeModal}>
+                    <header>
+                        <button>
+                            close
+                            <i className="fa fa-times"></i>
+                        </button>
+                        <h1>Title</h1>
+                    </header>
+                    <div className="overflow">
                     <form className="form centered" 
                         onSubmit={(e) => handleUpdateProduct(e, id, editedProduct)} 
                         onClick={e => e.stopPropagation()}
@@ -227,10 +242,29 @@ export function ProductPage() {
                             Edit Product
                         </button>
                     </form>
+                    </div>
                 </div>
             ) : null}
         </>
     );
 };
+
+function Notifications({notifications}) {
+    return (
+        <div className="notifications-section">
+            <div className="body">
+                {notifications.map((notification, index) => {
+                    console.log(notification);
+                    const notificationClassName = `notification ${notification.type}`;
+                    return (
+                        <div key={index} className={notificationClassName}>
+                            {notification.message}
+                        </div>
+                    )
+                })}
+            </div>
+        </div>
+    )
+}
 
 export default ProductPage;

@@ -527,8 +527,33 @@ button {
   }  
 } */
 
+.modal {
+  display: flex;
+  flex-direction: column;
+}
 
+.modal header {
+  margin-top: auto;
+  text-align: right;
+}
 
+.modal h1 {
+  /* margin-top: auto; */
+  padding: 1rem 0;
+  font-size: 3rem;
+  text-align: center;
+}
+
+.overflow {
+  /* display: flex; */
+  margin: 0 auto auto;
+  padding: 6px;
+  overflow: auto;
+}
+
+body {
+  overflow: hidden;
+}
 
 
 /* .product-card {
