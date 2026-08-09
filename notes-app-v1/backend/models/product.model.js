@@ -24,3 +24,36 @@ const productSchema = new mongoose.Schema({
 const Product = mongoose.model("Product", productSchema);
 
 export default Product;
+
+// ==================================================================================
+// const projectSchema = new mongoose.Schema({
+// 	// _id is natively immutable, but you can explicitly declare it
+// 	_id: {
+// 		type: mongoose.Schema.Types.ObjectId,
+// 		immutable: true
+// 	},
+// 	name: {
+// 		type: String,
+// 		required: true
+// 	}
+// }, {
+// 	timestamps: true // Automatically creates 'createdAt' and 'updatedAt'
+// });
+
+// // Explicit safeguard: Force createdAt to be immutable just in case
+// projectSchema.path('createdAt').immutable(true);
+// ==================================================================================
+
+
+// const userSchema = new mongoose.Schema({
+// 	username: {
+// 		type: String,
+// 		required: true,
+// 		// Only prevents updates if the user is NOT an admin
+// 		immutable: (doc) => doc.role !== 'ADMIN'
+// 	},
+// 	role: {
+// 		type: String,
+// 		default: 'USER'
+// 	}
+// });

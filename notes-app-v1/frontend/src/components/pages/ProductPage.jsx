@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-export function ProductPage() {
+export function ProductPage({ setModalMode }) {
     const [product, setProduct] = useState(null);
     const [editedProduct, setEditedProduct] = useState(null);
     const [error, setError] = useState(null);
@@ -108,6 +108,7 @@ export function ProductPage() {
     }
 
     function openModal() {
+        setModalMode(true);
         setIsModalOpen(true);
         setEditedProduct({...product});
     }
@@ -120,6 +121,7 @@ export function ProductPage() {
             },
             body: JSON.stringify(editedProduct),
         });
+        console.log(response);
 
         if (!response.ok) {
             const contentType = response.headers.get("content-type");
@@ -144,6 +146,8 @@ export function ProductPage() {
     }
     
     async function handleUpdateProduct(e, pid, editedProduct) {
+        pid = "1";
+        pid = "6a7830fe90b4c7c19d5d0964";
         e.preventDefault();
         try {
             console.log("form sub");
@@ -155,7 +159,8 @@ export function ProductPage() {
             //     return updatedProducts;
             // });
             setNotifications([{message: `Product ${pid} updated`, type: "success"}]);
-            setIsModalOpen(false);
+            // setIsModalOpen(false);
+            closeModal();
             setProduct(response.data);
         } catch (err) {
             // setError(err.message);
@@ -164,6 +169,7 @@ export function ProductPage() {
     }
 
     function closeModal() {
+        setModalMode(false);
         setIsModalOpen(false);
     }
         
@@ -202,15 +208,21 @@ export function ProductPage() {
             </div>
 
             {isModalOpen ? (
-                <div className="modal" onClick={closeModal}>
+                <div 
+                    className="modal" 
+                    role="dialog" 
+                    aria-modal="true" 
+                    aria-labelledby="modal-title" 
+                    onClick={closeModal}
+                >
                     <header>
                         <button>
                             close
                             <i className="fa fa-times"></i>
                         </button>
-                        <h1>Title</h1>
+                        <h1 id="modal-title">Title</h1>
                     </header>
-                    <div className="overflow">
+                    {/* <div className="overflow"> */}
                     <form className="form centered" 
                         onSubmit={(e) => handleUpdateProduct(e, id, editedProduct)} 
                         onClick={e => e.stopPropagation()}
@@ -242,7 +254,7 @@ export function ProductPage() {
                             Edit Product
                         </button>
                     </form>
-                    </div>
+                    {/* </div> */}
                 </div>
             ) : null}
         </>

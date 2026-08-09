@@ -7,6 +7,7 @@ import ProductPage from "./components/pages/ProductPage";
 
 function App() {
   const [colorMode, toggleColorMode] = useState("dark");
+  const [modalMode, setModalMode] = useState(false);
 
   function toggleTheme() {
     const themes = {
@@ -18,7 +19,8 @@ function App() {
     toggleColorMode(newTheme);
   }
 
-  const pageClass = `page ${colorMode}`;
+  let pageClass = `page ${colorMode}`;
+  pageClass = modalMode ? `${pageClass} modal-mode` : pageClass;
 
   return (
     <div className={pageClass}>
@@ -26,7 +28,7 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/product/:id" element={<ProductPage />} />
+          <Route path="/product/:id" element={<ProductPage setModalMode={setModalMode} />} />
           <Route path="/create" element={<CreateProductPage />} />
         </Routes>
       </main>
