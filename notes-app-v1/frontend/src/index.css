@@ -451,6 +451,31 @@ main {
   }
 }
 
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 1;
+}
+
+.modal .form {
+  /* margin: auto; */
+  width: 100%;
+  color: #fff;
+  background-color: #242424;
+}
+
+@media screen and (max-width: 600px) {
+  .modal .form {
+    padding: 2rem 2%;
+  }
+}
+
 /* delete */
 .page {
   /* text-align: center; */

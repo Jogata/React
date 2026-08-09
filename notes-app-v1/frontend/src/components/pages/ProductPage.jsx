@@ -23,11 +23,11 @@ export function ProductPage() {
 
             setProduct(product);
         })
-            .catch(err => {
-                console.log(err.message);
-                console.log(err.status);
-                setError(err.message);
-            })
+        .catch(err => {
+            console.log(err.message);
+            console.log(err.status);
+            setError(err.message);
+        })
 
         async function getAllProducts() {
             try {
@@ -142,19 +142,28 @@ export function ProductPage() {
         return result;
     }
     
-    async function handleUpdateProduct(pid, editedProduct) {
+    async function handleUpdateProduct(e, pid, editedProduct) {
+        e.preventDefault();
         try {
-            await updateProduct(pid, editedProduct);
+            console.log("form sub");
+            const response = await updateProduct(pid, editedProduct);
+            console.log(response);
             // setProducts(prevProducts => prevProducts.filter(p => p._id !== pid));
             // setProducts(products => {
             //     const updatedProducts = products.map(product => product._id !== pid ? result.data : product);
             //     return updatedProducts;
             // });
-            setNotifications([{message: `Product ${pid} updated`, type: "success"}]);
+            // setNotifications([{message: `Product ${pid} updated`, type: "success"}]);
+            setIsModalOpen(false);
+            setProduct(response.data);
         } catch (err) {
             // setError(err.message);
-            setNotifications([{message: err.message, type: "error"}]);
+            // setNotifications([{message: err.message, type: "error"}]);
         }
+    }
+
+    function closeModal() {
+        setIsModalOpen(false);
     }
         
     return (
@@ -186,8 +195,11 @@ export function ProductPage() {
             </div>
 
             {isModalOpen ? (
-                <div className="modal">
-                    <form className="form centered" onSubmit={(e) => e.preventDefault()}>
+                <div className="modal" onClick={closeModal}>
+                    <form className="form centered" 
+                        onSubmit={(e) => handleUpdateProduct(e, id, editedProduct)} 
+                        onClick={e => e.stopPropagation()}
+                    >
                         <input
                             className="form-input"
                             name="name"
