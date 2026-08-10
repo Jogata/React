@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export function ProductPage({ setModalMode }) {
@@ -226,7 +226,39 @@ export function ProductPage({ setModalMode }) {
                 </div>
             </div>
 
-            <Modal isModalOpen={isModalOpen} onClose={closeModal} title={"Edit product"} />
+            <Modal isModalOpen={isModalOpen} onClose={closeModal} title={"Edit product"}>
+                <form className="modal-form centered"
+                    onSubmit={(e) => handleUpdateProduct(e, id, editedProduct)}
+                    onClick={e => e.stopPropagation()}
+                >
+                    <input
+                        className="form-input"
+                        name="name"
+                        value={editedProduct.name}
+                        onChange={(e) => setEditedProduct({ ...editedProduct, name: e.target.value })}
+                        placeholder="Product Name"
+                    />
+                    <input
+                        className="form-input"
+                        type="number"
+                        name="price"
+                        value={editedProduct.price}
+                        onChange={(e) => setEditedProduct({ ...editedProduct, price: e.target.value })}
+                        placeholder="Price"
+                    />
+                    <input
+                        className="form-input"
+                        name="image"
+                        value={editedProduct.image}
+                        onChange={(e) => setEditedProduct({ ...editedProduct, image: e.target.value })}
+                        placeholder="Image URL"
+                    />
+
+                    <button className="btn">
+                        Edit Product
+                    </button>
+                </form>
+            </Modal>
             {/* {isModalOpen ? (
                 <div className="modal-backdrop">
                     <dialog role="dialog" aria-modal="true" className="modal">
@@ -309,25 +341,40 @@ function Notifications({notifications}) {
 }
 
 function Modal({ isModalOpen, onClose, title, children }) {
-    const [shouldRender, setShouldRender] = useState(isModalOpen);
+    // const [shouldRender, setShouldRender] = useState(isModalOpen);
+
+    // useEffect(() => {
+    //     if (isModalOpen) {
+    //         setShouldRender(true);
+    //     } else {
+    //         const timer = setTimeout(() => setShouldRender(false), 300);
+    //         return () => clearTimeout(timer);
+    //     }
+    // }, [isModalOpen]);
+
+    const dialogRef = useRef(null);
 
     useEffect(() => {
+        const dialogNode = dialogRef.current;
+        if (!dialogNode) return;
+
         if (isModalOpen) {
-            setShouldRender(true);
+            dialogNode.showModal();
         } else {
-            const timer = setTimeout(() => setShouldRender(false), 300);
-            return () => clearTimeout(timer);
+            dialogNode.close();
         }
     }, [isModalOpen]);
 
-    if (!shouldRender) return null;
+    // if (!shouldRender) return null;
 
     return (
-        <div className={`modal-backdrop ${isModalOpen ? "show" : ""}`} onClick={onClose}>
+        // <div className={`modal-backdrop ${isModalOpen ? "show" : ""}`} onClick={onClose}>
             <dialog
                 className="modal"
-                onClick={(e) => e.stopPropagation()}
-                open={true}
+                ref={dialogRef} 
+                // onClick={(e) => e.stopPropagation()}
+                onClose={onClose}
+                // open={true}
             >
                 <button type="button" className="modal-close-btn" onClick={onClose}>
                     <span className="sr-only">Close Modal</span>
@@ -340,7 +387,7 @@ function Modal({ isModalOpen, onClose, title, children }) {
                     {children}
                 </div>
             </dialog>
-        </div>
+        // </div>
     );
 }
 

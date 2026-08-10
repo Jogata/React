@@ -463,7 +463,7 @@ main {
   }
 }
 
-.modal-backdrop {
+/* .modal-backdrop {
   position: fixed;
   top: 0;
   left: 0;
@@ -474,6 +474,20 @@ main {
   flex-direction: column;
   background-color: rgba(0, 0, 0, 0.8);
   z-index: 1;
+} */
+
+.modal {
+  width: 100%;
+  max-width: 500px;
+  /* max-height: 85vh; */
+  margin: auto;
+  padding: 1rem 2rem 2rem 2rem;
+  border: none;
+  border-radius: 12px;
+}
+
+.modal::backdrop {
+  background-color: rgba(0, 0, 0, 0.8);
 }
 
 .modal header {
@@ -481,24 +495,35 @@ main {
   text-align: right;
 }
 
-.modal h1 {
+.modal h2 {
   /* margin-top: auto; */
   padding: 1rem 0;
   font-size: 3rem;
   text-align: center;
 }
 
-.modal .form {
+.modal-body {
+  padding-top: 2rem;
+}
+
+/* .modal form {
   margin: 0 auto auto;
   width: 100%;
   color: #fff;
   background-color: #242424;
-}
+} 
 
 @media screen and (max-width: 600px) {
   .modal .form {
     padding: 2rem 2%;
   }
+} */
+
+.modal-form {
+  /* margin: 0 auto auto; */
+  width: 100%;
+  /* color: #fff; */
+  /* background-color: #242424; */
 }
 
 /* delete */
