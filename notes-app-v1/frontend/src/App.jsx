@@ -39,18 +39,4 @@ function App() {
   )
 }
 
-// function Cards() {
-//   const products = [
-//     {name: "test1"}, 
-//     {name: "test2"}, 
-//     {name: "test3"}, 
-//   ];
-
-//   return (
-//     products.map((product, index) => {
-//       return <h2 key={index}>{product.name}</h2>
-//     })
-//   )
-// }
-
 export default App;

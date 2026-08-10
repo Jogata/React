@@ -61,6 +61,19 @@ export function ProductPage({ setModalMode }) {
         }
     }, [id]);
 
+    useEffect(() => {
+        if (isModalOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [isModalOpen]);
+    
+
     async function deleteProduct(pid) {
         // pid = "6a6db517423ac20b02df6b8s";
         try {
@@ -208,6 +221,17 @@ export function ProductPage({ setModalMode }) {
             </div>
 
             {isModalOpen ? (
+                <div className="modal-backdrop">
+                    <dialog role="dialog" aria-modal="true" className="modal">
+                        <h1>Title</h1>
+                        <div className="modal-body" tabIndex={0} style={{ overscrollBehavior: "contain" }}>
+                            <h2>Body</h2>
+                        </div>
+                    </dialog>
+                </div>
+            ) : null}
+
+            {/* {isModalOpen ? (
                 <div 
                     className="modal" 
                     role="dialog" 
@@ -222,7 +246,6 @@ export function ProductPage({ setModalMode }) {
                         </button>
                         <h1 id="modal-title">Title</h1>
                     </header>
-                    {/* <div className="overflow"> */}
                     <form className="form centered" 
                         onSubmit={(e) => handleUpdateProduct(e, id, editedProduct)} 
                         onClick={e => e.stopPropagation()}
@@ -254,9 +277,8 @@ export function ProductPage({ setModalMode }) {
                             Edit Product
                         </button>
                     </form>
-                    {/* </div> */}
                 </div>
-            ) : null}
+            ) : null} */}
         </>
     );
 };
