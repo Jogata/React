@@ -61,17 +61,17 @@ export function ProductPage({ setModalMode }) {
         }
     }, [id]);
 
-    useEffect(() => {
-        if (isModalOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = '';
-        }
+    // useEffect(() => {
+    //     if (isModalOpen) {
+    //         document.body.style.overflow = 'hidden';
+    //     } else {
+    //         document.body.style.overflow = '';
+    //     }
 
-        return () => {
-            document.body.style.overflow = '';
-        };
-    }, [isModalOpen]);
+    //     return () => {
+    //         document.body.style.overflow = '';
+    //     };
+    // }, [isModalOpen]);
     
 
     async function deleteProduct(pid) {
@@ -120,11 +120,11 @@ export function ProductPage({ setModalMode }) {
         )
     }
 
-    function openModal() {
-        setModalMode(true);
-        setIsModalOpen(true);
-        setEditedProduct({...product});
-    }
+    // function openModal() {
+    //     setModalMode(true);
+    //     setIsModalOpen(true);
+    //     setEditedProduct({...product});
+    // }
 
     async function updateProduct(pid, editedProduct) {
         const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
@@ -181,6 +181,12 @@ export function ProductPage({ setModalMode }) {
         }
     }
 
+    function openModal() {
+        setModalMode(true);
+        setIsModalOpen(true);
+        setEditedProduct({...product});
+    }
+
     function closeModal() {
         setModalMode(false);
         setIsModalOpen(false);
@@ -220,7 +226,8 @@ export function ProductPage({ setModalMode }) {
                 </div>
             </div>
 
-            {isModalOpen ? (
+            <Modal isModalOpen={isModalOpen} onClose={closeModal} title={"Edit product"} />
+            {/* {isModalOpen ? (
                 <div className="modal-backdrop">
                     <dialog role="dialog" aria-modal="true" className="modal">
                         <h1>Title</h1>
@@ -229,7 +236,7 @@ export function ProductPage({ setModalMode }) {
                         </div>
                     </dialog>
                 </div>
-            ) : null}
+            ) : null} */}
 
             {/* {isModalOpen ? (
                 <div 
@@ -299,6 +306,42 @@ function Notifications({notifications}) {
             </div>
         </div>
     )
+}
+
+function Modal({ isModalOpen, onClose, title, children }) {
+    const [shouldRender, setShouldRender] = useState(isModalOpen);
+
+    useEffect(() => {
+        if (isModalOpen) {
+            setShouldRender(true);
+        } else {
+            const timer = setTimeout(() => setShouldRender(false), 300);
+            return () => clearTimeout(timer);
+        }
+    }, [isModalOpen]);
+
+    if (!shouldRender) return null;
+
+    return (
+        <div className={`modal-backdrop ${isModalOpen ? "show" : ""}`} onClick={onClose}>
+            <dialog
+                className="modal"
+                onClick={(e) => e.stopPropagation()}
+                open={true}
+            >
+                <button type="button" className="modal-close-btn" onClick={onClose}>
+                    <span className="sr-only">Close Modal</span>
+                    <i className="fa fa-times" aria-hidden="true"></i>
+                </button>
+
+                <h2 id="modal-title">{title}</h2>
+
+                <div className="modal-body" tabIndex={0} style={{ overscrollBehavior: "contain", overflowY: "auto" }}>
+                    {children}
+                </div>
+            </dialog>
+        </div>
+    );
 }
 
 export default ProductPage;
