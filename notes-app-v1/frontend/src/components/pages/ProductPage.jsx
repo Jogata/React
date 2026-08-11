@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-export function ProductPage({ modalMode, setModalMode }) {
+export function ProductPage({ setModalMode }) {
     const [product, setProduct] = useState(null);
     const [editedProduct, setEditedProduct] = useState(null);
     const [error, setError] = useState(null);
@@ -9,36 +9,7 @@ export function ProductPage({ modalMode, setModalMode }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { id } = useParams();
     const navigate = useNavigate();
-
-    // const dialogRef = useRef(null);
-
-    // useEffect(() => {
-    //     console.log("use effect / modal " + modalMode);
-    //     const dialogNode = dialogRef.current;
-    //     if (!dialogNode) return;
-
-    //     if (modalMode) {
-    //         openModal();
-    //     } else {
-    //         closeModal();
-    //     }
-
-    //     function openModal() {
-    //         setModalMode(true);
-    //         dialogNode.showModal();
-    //         setEditedProduct({...product});
-    //     }    
-    
-    //     function closeModal() {
-    //         setModalMode(false);
-    //         dialogNode.close();
-    //     }
-
-    //     return () => {
-    //         console.log("clean dialog");
-    //         closeModal(false);
-    //     };
-    // }, [modalMode]);
+    // const buttonRef = useRef(null);
 
     useEffect(() => {
         console.log("ProductPage / use effect / fetch products");
@@ -90,6 +61,13 @@ export function ProductPage({ modalMode, setModalMode }) {
             }
         }
     }, [id]);
+
+    // useEffect(() => {
+    //     if (!isModalOpen && buttonRef.current) {
+    //         console.log("yes");
+    //         buttonRef.current.focus();
+    //     }
+    // }, [isModalOpen])
 
     async function deleteProduct(pid) {
         // pid = "6a6db517423ac20b02df6b8s";
@@ -192,15 +170,17 @@ export function ProductPage({ modalMode, setModalMode }) {
         }
     }
 
-    function openModal() {
-        // setModalMode(true);
+    function openModal(e) {
+        // console.log(e.currentTarget);
         setIsModalOpen(true);
         setEditedProduct({...product});
+        // buttonRef.current = e.currentTarget;
     }
 
     function closeModal() {
-        // setModalMode(false);
+        // console.log(buttonRef.current);
         setIsModalOpen(false);
+        // buttonRef.current.focus();
     }
         
     return (
@@ -237,10 +217,10 @@ export function ProductPage({ modalMode, setModalMode }) {
                 </div>
             </div>
 
-            <Modal isModalOpen={isModalOpen} modalMode={modalMode} setModalMode={setModalMode} onClose={closeModal} title={"Edit product"}>
+            <Modal isModalOpen={isModalOpen} setModalMode={setModalMode} onClose={closeModal} title={"Edit product"}>
                 {isModalOpen ? <form className="modal-form centered"
                     onSubmit={(e) => handleUpdateProduct(e, id, editedProduct)}
-                    onClick={e => e.stopPropagation()}
+                    // onClick={e => e.stopPropagation()}
                 >
                     <input
                         className="form-input"
@@ -270,16 +250,6 @@ export function ProductPage({ modalMode, setModalMode }) {
                     </button>
                 </form> : null}
             </Modal>
-            {/* {isModalOpen ? (
-                <div className="modal-backdrop">
-                    <dialog role="dialog" aria-modal="true" className="modal">
-                        <h1>Title</h1>
-                        <div className="modal-body" tabIndex={0} style={{ overscrollBehavior: "contain" }}>
-                            <h2>Body</h2>
-                        </div>
-                    </dialog>
-                </div>
-            ) : null} */}
 
             {/* {isModalOpen ? (
                 <div 
@@ -351,39 +321,24 @@ function Notifications({notifications}) {
     )
 }
 
-function Modal({ isModalOpen, setModalMode, modalMode, onClose, title, children }) {
+function Modal({ isModalOpen, setModalMode, onClose, title, children }) {
     const dialogRef = useRef(null);
 
     useEffect(() => {
-        console.log("use effect / modal " + isModalOpen, modalMode);
+        // console.log("use effect / modal " + isModalOpen);
         const dialogNode = dialogRef.current;
         if (!dialogNode) return;
 
         if (isModalOpen) {
             dialogNode.showModal();
             setModalMode(true);
-            // openModal();
         } else {
             dialogNode.close();
             setModalMode(false);
-            // closeModal();
         }
 
-        // function openModal() {
-        //     setModalMode(true);
-        //     dialogNode.showModal();
-        //     setIsModalOpen(true);
-        //     setEditedProduct({...product});
-        // }
-    
-        // function closeModal() {
-        //     setModalMode(false);
-        //     dialogNode.close();
-        //     setIsModalOpen(false);
-        // }
-
         return () => {
-            console.log("clean dialog");
+            // console.log("clean dialog");
             setModalMode(false);
         };
     }, [isModalOpen]);
@@ -395,14 +350,16 @@ function Modal({ isModalOpen, setModalMode, modalMode, onClose, title, children 
             onClose={onClose}
             onClick={onClose}
         >
-            <button type="button" className="modal-close-btn" onClick={onClose}>
-                <span className="sr-only">Close Modal</span>
-                <i className="fa fa-times" aria-hidden="true"></i>
-            </button>
 
-            <h2 id="modal-title">{title}</h2>
+            <header>
+                <button type="button" className="icon" onClick={onClose}>
+                    <span className="sr-only">Close Modal</span>
+                    <i className="fa fa-times" aria-hidden="true"></i>
+                </button>
+                <h2 id="modal-title">{title}</h2>
+            </header>
 
-            <div className="modal-body" onClick={e => e.preventDefault()}>
+            <div className="modal-body" onClick={e => e.stopPropagation()}>
                 {children}
             </div>
         </dialog>

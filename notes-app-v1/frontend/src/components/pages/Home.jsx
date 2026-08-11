@@ -187,6 +187,55 @@ const HomePage = () => {
         }
     }
 
+    class RequestManager {
+        constructor() {
+            this.controllers = new Map()
+        }
+
+        async fetch(key, url, options = {}) {
+            this.cancel(key);
+
+            const controller = new AbortController();
+            this.controllers.set(key, controller);
+
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    signal: controller.signal
+                })
+
+                return response;
+            } finally {
+                this.controllers.delete(key);
+            }
+        }
+
+        cancel(key) {
+            const controller = this.controllers.get(key);
+
+            if (controller) {
+                controller.abort();
+                this.controllers.delete(key);
+            }
+        }
+
+        cancelAll() {
+            for (const controller of this.controllers.values()) {
+                controller.abort();
+            }
+            this.controllers.clear();
+        }
+    }
+
+const requestManager = new RequestManager();
+
+requestManager.fetch('user-profile', '/api/user/123');
+requestManager.fetch('user-posts', '/api/user/123/posts');
+
+requestManager.cancel('user-profile');
+
+requestManager.cancelAll();
+
     return (
         <>
             {notifications.length > 0 ? (
