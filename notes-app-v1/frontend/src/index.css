@@ -504,6 +504,7 @@ main {
 
 .modal-body {
   padding-top: 2rem;
+  border: 1px solid red;
 }
 
 /* .modal form {

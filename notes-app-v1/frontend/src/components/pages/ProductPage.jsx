@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-export function ProductPage({ setModalMode }) {
+export function ProductPage({ modalMode, setModalMode }) {
     const [product, setProduct] = useState(null);
     const [editedProduct, setEditedProduct] = useState(null);
     const [error, setError] = useState(null);
     const [notifications, setNotifications] = useState([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    // const [isModalOpen, setIsModalOpen] = useState(false);
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -61,19 +61,6 @@ export function ProductPage({ setModalMode }) {
         }
     }, [id]);
 
-    // useEffect(() => {
-    //     if (isModalOpen) {
-    //         document.body.style.overflow = 'hidden';
-    //     } else {
-    //         document.body.style.overflow = '';
-    //     }
-
-    //     return () => {
-    //         document.body.style.overflow = '';
-    //     };
-    // }, [isModalOpen]);
-    
-
     async function deleteProduct(pid) {
         // pid = "6a6db517423ac20b02df6b8s";
         try {
@@ -120,12 +107,6 @@ export function ProductPage({ setModalMode }) {
         )
     }
 
-    // function openModal() {
-    //     setModalMode(true);
-    //     setIsModalOpen(true);
-    //     setEditedProduct({...product});
-    // }
-
     async function updateProduct(pid, editedProduct) {
         const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
             method: "PUT",
@@ -159,8 +140,8 @@ export function ProductPage({ setModalMode }) {
     }
     
     async function handleUpdateProduct(e, pid, editedProduct) {
-        pid = "1";
-        pid = "6a7830fe90b4c7c19d5d0964";
+        // pid = "1";
+        // pid = "6a7830fe90b4c7c19d5d0964";
         e.preventDefault();
         try {
             console.log("form sub");
@@ -181,16 +162,16 @@ export function ProductPage({ setModalMode }) {
         }
     }
 
-    function openModal() {
-        setModalMode(true);
-        setIsModalOpen(true);
-        setEditedProduct({...product});
-    }
+    // function openModal() {
+    //     setModalMode(true);
+    //     setIsModalOpen(true);
+    //     setEditedProduct({...product});
+    // }
 
-    function closeModal() {
-        setModalMode(false);
-        setIsModalOpen(false);
-    }
+    // function closeModal() {
+    //     setModalMode(false);
+    //     setIsModalOpen(false);
+    // }
         
     return (
         <>
@@ -226,8 +207,8 @@ export function ProductPage({ setModalMode }) {
                 </div>
             </div>
 
-            <Modal isModalOpen={isModalOpen} onClose={closeModal} title={"Edit product"}>
-                <form className="modal-form centered"
+            <Modal modalMode={modalMode} setModalMode={setModalMode} setEditedProduct={setEditedProduct} title={"Edit product"}>
+                {modalMode ? <form className="modal-form centered"
                     onSubmit={(e) => handleUpdateProduct(e, id, editedProduct)}
                     onClick={e => e.stopPropagation()}
                 >
@@ -257,7 +238,7 @@ export function ProductPage({ setModalMode }) {
                     <button className="btn">
                         Edit Product
                     </button>
-                </form>
+                </form> : null}
             </Modal>
             {/* {isModalOpen ? (
                 <div className="modal-backdrop">
@@ -340,54 +321,61 @@ function Notifications({notifications}) {
     )
 }
 
-function Modal({ isModalOpen, onClose, title, children }) {
-    // const [shouldRender, setShouldRender] = useState(isModalOpen);
-
-    // useEffect(() => {
-    //     if (isModalOpen) {
-    //         setShouldRender(true);
-    //     } else {
-    //         const timer = setTimeout(() => setShouldRender(false), 300);
-    //         return () => clearTimeout(timer);
-    //     }
-    // }, [isModalOpen]);
-
+function Modal({ modalMode, setModalMode, setEditedProduct, title, children }) {
     const dialogRef = useRef(null);
 
     useEffect(() => {
+        console.log("use effect / modal " + modalMode);
         const dialogNode = dialogRef.current;
         if (!dialogNode) return;
 
-        if (isModalOpen) {
-            dialogNode.showModal();
+        if (modalMode) {
+            // dialogNode.showModal();
+            // setModalMode(true);
+            openModal();
         } else {
-            dialogNode.close();
+            // dialogNode.close();
+            // setModalMode(false);
+            closeModal();
         }
-    }, [isModalOpen]);
 
-    // if (!shouldRender) return null;
+        function openModal() {
+            setModalMode(true);
+            dialogNode.showModal();
+            // setIsModalOpen(true);
+            setEditedProduct({...product});
+        }
+    
+        function closeModal() {
+            setModalMode(false);
+            dialogNode.close();
+            // setIsModalOpen(false);
+        }
+
+        return () => {
+            console.log("clean dialog");
+            closeModal(false);
+        };
+    }, [modalMode]);
 
     return (
-        // <div className={`modal-backdrop ${isModalOpen ? "show" : ""}`} onClick={onClose}>
-            <dialog
-                className="modal"
-                ref={dialogRef} 
-                // onClick={(e) => e.stopPropagation()}
-                onClose={onClose}
-                // open={true}
-            >
-                <button type="button" className="modal-close-btn" onClick={onClose}>
-                    <span className="sr-only">Close Modal</span>
-                    <i className="fa fa-times" aria-hidden="true"></i>
-                </button>
+        <dialog
+            className="modal"
+            ref={dialogRef}
+            onClose={onClose}
+            onClick={onClose}
+        >
+            <button type="button" className="modal-close-btn" onClick={onClose}>
+                <span className="sr-only">Close Modal</span>
+                <i className="fa fa-times" aria-hidden="true"></i>
+            </button>
 
-                <h2 id="modal-title">{title}</h2>
+            <h2 id="modal-title">{title}</h2>
 
-                <div className="modal-body" tabIndex={0} style={{ overscrollBehavior: "contain", overflowY: "auto" }}>
-                    {children}
-                </div>
-            </dialog>
-        // </div>
+            <div className="modal-body" onClick={e => e.preventDefault()}>
+                {children}
+            </div>
+        </dialog>
     );
 }
 
