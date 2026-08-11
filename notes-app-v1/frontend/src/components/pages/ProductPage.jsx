@@ -6,9 +6,39 @@ export function ProductPage({ modalMode, setModalMode }) {
     const [editedProduct, setEditedProduct] = useState(null);
     const [error, setError] = useState(null);
     const [notifications, setNotifications] = useState([]);
-    // const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const { id } = useParams();
     const navigate = useNavigate();
+
+    // const dialogRef = useRef(null);
+
+    // useEffect(() => {
+    //     console.log("use effect / modal " + modalMode);
+    //     const dialogNode = dialogRef.current;
+    //     if (!dialogNode) return;
+
+    //     if (modalMode) {
+    //         openModal();
+    //     } else {
+    //         closeModal();
+    //     }
+
+    //     function openModal() {
+    //         setModalMode(true);
+    //         dialogNode.showModal();
+    //         setEditedProduct({...product});
+    //     }    
+    
+    //     function closeModal() {
+    //         setModalMode(false);
+    //         dialogNode.close();
+    //     }
+
+    //     return () => {
+    //         console.log("clean dialog");
+    //         closeModal(false);
+    //     };
+    // }, [modalMode]);
 
     useEffect(() => {
         console.log("ProductPage / use effect / fetch products");
@@ -162,16 +192,16 @@ export function ProductPage({ modalMode, setModalMode }) {
         }
     }
 
-    // function openModal() {
-    //     setModalMode(true);
-    //     setIsModalOpen(true);
-    //     setEditedProduct({...product});
-    // }
+    function openModal() {
+        // setModalMode(true);
+        setIsModalOpen(true);
+        setEditedProduct({...product});
+    }
 
-    // function closeModal() {
-    //     setModalMode(false);
-    //     setIsModalOpen(false);
-    // }
+    function closeModal() {
+        // setModalMode(false);
+        setIsModalOpen(false);
+    }
         
     return (
         <>
@@ -207,8 +237,8 @@ export function ProductPage({ modalMode, setModalMode }) {
                 </div>
             </div>
 
-            <Modal modalMode={modalMode} setModalMode={setModalMode} setEditedProduct={setEditedProduct} title={"Edit product"}>
-                {modalMode ? <form className="modal-form centered"
+            <Modal isModalOpen={isModalOpen} modalMode={modalMode} setModalMode={setModalMode} onClose={closeModal} title={"Edit product"}>
+                {isModalOpen ? <form className="modal-form centered"
                     onSubmit={(e) => handleUpdateProduct(e, id, editedProduct)}
                     onClick={e => e.stopPropagation()}
                 >
@@ -321,42 +351,42 @@ function Notifications({notifications}) {
     )
 }
 
-function Modal({ modalMode, setModalMode, setEditedProduct, title, children }) {
+function Modal({ isModalOpen, setModalMode, modalMode, onClose, title, children }) {
     const dialogRef = useRef(null);
 
     useEffect(() => {
-        console.log("use effect / modal " + modalMode);
+        console.log("use effect / modal " + isModalOpen, modalMode);
         const dialogNode = dialogRef.current;
         if (!dialogNode) return;
 
-        if (modalMode) {
-            // dialogNode.showModal();
-            // setModalMode(true);
-            openModal();
+        if (isModalOpen) {
+            dialogNode.showModal();
+            setModalMode(true);
+            // openModal();
         } else {
-            // dialogNode.close();
-            // setModalMode(false);
-            closeModal();
+            dialogNode.close();
+            setModalMode(false);
+            // closeModal();
         }
 
-        function openModal() {
-            setModalMode(true);
-            dialogNode.showModal();
-            // setIsModalOpen(true);
-            setEditedProduct({...product});
-        }
+        // function openModal() {
+        //     setModalMode(true);
+        //     dialogNode.showModal();
+        //     setIsModalOpen(true);
+        //     setEditedProduct({...product});
+        // }
     
-        function closeModal() {
-            setModalMode(false);
-            dialogNode.close();
-            // setIsModalOpen(false);
-        }
+        // function closeModal() {
+        //     setModalMode(false);
+        //     dialogNode.close();
+        //     setIsModalOpen(false);
+        // }
 
         return () => {
             console.log("clean dialog");
-            closeModal(false);
+            setModalMode(false);
         };
-    }, [modalMode]);
+    }, [isModalOpen]);
 
     return (
         <dialog
