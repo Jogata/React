@@ -442,6 +442,7 @@ main {
   text-align: center;
   pointer-events: none;
   z-index: 2;
+  border: 1px solid red;
 }
 
 .notifications-section .body {
@@ -449,9 +450,11 @@ main {
 }
 
 .notification {
+  margin-bottom: 1rem;
   padding: 1rem;
   border-radius: 12px;
   pointer-events: all;
+  border: 1px solid green;
 }
 
 .notification {

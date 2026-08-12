@@ -16,7 +16,6 @@ const HomePage = () => {
 
     if (location.state?.product) {
         console.log(location.state.message);
-        // setNotifications([location.state.message]);
         state = [location.state.message];
     } else {
         console.log("no product in the location state");
@@ -25,7 +24,6 @@ const HomePage = () => {
     const [products, setProducts] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
-    // const [notifications, setNotifications] = useState([]);
     const [notifications, setNotifications] = useState(state);
     const abortControllerRef = useRef(null);
 

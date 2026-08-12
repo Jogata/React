@@ -9,7 +9,7 @@ export function ProductPage({ setModalMode }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { id } = useParams();
     const navigate = useNavigate();
-    const buttonRef = useRef(null);
+    // const buttonRef = useRef(null);
 
     useEffect(() => {
         console.log("ProductPage / use effect / fetch products");
@@ -62,12 +62,12 @@ export function ProductPage({ setModalMode }) {
         }
     }, [id]);
 
-    useEffect(() => {
-        if (!isModalOpen && buttonRef.current) {
-            console.log("yes");
-            buttonRef.current.focus();
-        }
-    }, [isModalOpen])
+    // useEffect(() => {
+    //     if (!isModalOpen && buttonRef.current) {
+    //         console.log("yes");
+    //         buttonRef.current.focus();
+    //     }
+    // }, [isModalOpen])
 
     async function deleteProduct(pid) {
         // pid = "6a6db517423ac20b02df6b8s";
@@ -174,9 +174,28 @@ export function ProductPage({ setModalMode }) {
                 ];
                 return newNotifications;
             });
+
+            setTimeout(() => {
+                setNotifications(oldNotifications => oldNotifications.splice(0,1));
+            }, 2000);
+
             // setIsModalOpen(false);
             closeModal();
             setProduct(response.data);
+
+            setTimeout(() => {
+                setNotifications(oldNotifications => {
+                    const newNotifications = [
+                        ...oldNotifications, 
+                        {message: `timeout`, type: "success"}
+                    ];
+                    return newNotifications;
+                });
+            }, 1000);
+
+            setTimeout(() => {
+                setNotifications(oldNotifications => oldNotifications.splice(0,1));
+            }, 3000);
         } catch (err) {
             // setError(err.message);
             // setNotifications([{message: err.message, type: "error"}]);
@@ -192,16 +211,14 @@ export function ProductPage({ setModalMode }) {
     }
 
     function openModal(e) {
-        // console.log(e.currentTarget);
         setIsModalOpen(true);
         setEditedProduct({...product});
-        buttonRef.current = e.currentTarget;
+        // buttonRef.current = e.currentTarget;
     }
 
     function closeModal() {
-        // console.log(buttonRef.current);
         setIsModalOpen(false);
-        buttonRef.current.focus();
+        // buttonRef.current.focus();
     }
         
     return (
