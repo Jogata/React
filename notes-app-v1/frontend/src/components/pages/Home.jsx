@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-// import { Link, useLocation } from "react-router-dom";
+// import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 function formatDate(date) {
     return date.toLocaleDateString("en-US", {
@@ -11,18 +11,23 @@ function formatDate(date) {
 }
 
 const HomePage = () => {
+    const location = useLocation();
+    let state = [];
+
+    if (location.state?.product) {
+        console.log(location.state.message);
+        // setNotifications([location.state.message]);
+        state = [location.state.message];
+    } else {
+        console.log("no product in the location state");
+    }
+
     const [products, setProducts] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [notifications, setNotifications] = useState([]);
+    // const [notifications, setNotifications] = useState([]);
+    const [notifications, setNotifications] = useState(state);
     const abortControllerRef = useRef(null);
-    // const location = useLocation();
-
-    // if (location.state?.product) {
-    //     console.log(location.state.product);
-    // } else {
-    //     console.log("no product in the location state");
-    // }
 
     useEffect(() => {
         console.log("home / use effect / fetch products");
@@ -187,54 +192,54 @@ const HomePage = () => {
         }
     }
 
-    class RequestManager {
-        constructor() {
-            this.controllers = new Map()
-        }
+//     class RequestManager {
+//         constructor() {
+//             this.controllers = new Map()
+//         }
 
-        async fetch(key, url, options = {}) {
-            this.cancel(key);
+//         async fetch(key, url, options = {}) {
+//             this.cancel(key);
 
-            const controller = new AbortController();
-            this.controllers.set(key, controller);
+//             const controller = new AbortController();
+//             this.controllers.set(key, controller);
 
-            try {
-                const response = await fetch(url, {
-                    ...options,
-                    signal: controller.signal
-                })
+//             try {
+//                 const response = await fetch(url, {
+//                     ...options,
+//                     signal: controller.signal
+//                 })
 
-                return response;
-            } finally {
-                this.controllers.delete(key);
-            }
-        }
+//                 return response;
+//             } finally {
+//                 this.controllers.delete(key);
+//             }
+//         }
 
-        cancel(key) {
-            const controller = this.controllers.get(key);
+//         cancel(key) {
+//             const controller = this.controllers.get(key);
 
-            if (controller) {
-                controller.abort();
-                this.controllers.delete(key);
-            }
-        }
+//             if (controller) {
+//                 controller.abort();
+//                 this.controllers.delete(key);
+//             }
+//         }
 
-        cancelAll() {
-            for (const controller of this.controllers.values()) {
-                controller.abort();
-            }
-            this.controllers.clear();
-        }
-    }
+//         cancelAll() {
+//             for (const controller of this.controllers.values()) {
+//                 controller.abort();
+//             }
+//             this.controllers.clear();
+//         }
+//     }
 
-const requestManager = new RequestManager();
+// const requestManager = new RequestManager();
 
-requestManager.fetch('user-profile', '/api/user/123');
-requestManager.fetch('user-posts', '/api/user/123/posts');
+// requestManager.fetch('user-profile', '/api/user/123');
+// requestManager.fetch('user-posts', '/api/user/123/posts');
 
-requestManager.cancel('user-profile');
+// requestManager.cancel('user-profile');
 
-requestManager.cancelAll();
+// requestManager.cancelAll();
 
     return (
         <>

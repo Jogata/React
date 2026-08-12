@@ -148,10 +148,26 @@ body {
   background-color: rgba(255, 255, 255, 0.87);
 }
 
+/* html:has(.page.modal-mode) {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  height: 100vh;
+  overflow: hidden;
+} */
+
 body:has(.page.modal-mode) {
+  /* scrollbar-width: thin; */
+  /* scrollbar-color: transparent transparent; */
   /* height: 100vh; */
   overflow: hidden;
 }
+
+/* .page.modal-mode {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  height: 100vh;
+  overflow: hidden;
+} */
 
 nav {
   border-bottom: 1px solid;
@@ -316,6 +332,11 @@ main {
 
 .edit-btn {
   color: orange;
+}
+
+.modal-btn:focus {
+  /* outline: 3px solid red; */
+  outline: 1px solid #999;
 }
 
 .form {

@@ -22,7 +22,7 @@ function App() {
   let pageClass = `page ${colorMode}`;
   pageClass = modalMode ? `${pageClass} modal-mode` : pageClass;
 
-  console.log(modalMode, pageClass);
+  // console.log(modalMode, pageClass);
 
   return (
     <div className={pageClass}>

@@ -9,7 +9,7 @@ export function ProductPage({ setModalMode }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { id } = useParams();
     const navigate = useNavigate();
-    // const buttonRef = useRef(null);
+    const buttonRef = useRef(null);
 
     useEffect(() => {
         console.log("ProductPage / use effect / fetch products");
@@ -62,12 +62,12 @@ export function ProductPage({ setModalMode }) {
         }
     }, [id]);
 
-    // useEffect(() => {
-    //     if (!isModalOpen && buttonRef.current) {
-    //         console.log("yes");
-    //         buttonRef.current.focus();
-    //     }
-    // }, [isModalOpen])
+    useEffect(() => {
+        if (!isModalOpen && buttonRef.current) {
+            console.log("yes");
+            buttonRef.current.focus();
+        }
+    }, [isModalOpen])
 
     async function deleteProduct(pid) {
         // pid = "6a6db517423ac20b02df6b8s";
@@ -93,7 +93,13 @@ export function ProductPage({ setModalMode }) {
             } else {
                 console.log("navigate");
                 navigate("/", {
-                    state: { product: id },
+                    state: { 
+                        product: id, 
+                        message: {
+                            message: `Product ${pid} deleted`, 
+                            type: "success"
+                        }
+                    },
                 },);
             }
         } catch (error) {
@@ -160,13 +166,28 @@ export function ProductPage({ setModalMode }) {
             //     const updatedProducts = products.map(product => product._id !== pid ? result.data : product);
             //     return updatedProducts;
             // });
-            setNotifications([{message: `Product ${pid} updated`, type: "success"}]);
+            // setNotifications([{message: `Product ${pid} updated`, type: "success"}]);
+            setNotifications(oldNotifications => {
+                const newNotifications = [
+                    ...oldNotifications, 
+                    {message: `Product ${pid} updated`, type: "success"}
+                ];
+                return newNotifications;
+            });
             // setIsModalOpen(false);
             closeModal();
             setProduct(response.data);
         } catch (err) {
             // setError(err.message);
-            setNotifications([{message: err.message, type: "error"}]);
+            // setNotifications([{message: err.message, type: "error"}]);
+            setNotifications(oldNotifications => {
+                const newNotifications = [
+                    ...oldNotifications, 
+                    {message: err.message, type: "error"}
+                ];
+                return newNotifications;
+            });
+
         }
     }
 
@@ -174,19 +195,19 @@ export function ProductPage({ setModalMode }) {
         // console.log(e.currentTarget);
         setIsModalOpen(true);
         setEditedProduct({...product});
-        // buttonRef.current = e.currentTarget;
+        buttonRef.current = e.currentTarget;
     }
 
     function closeModal() {
         // console.log(buttonRef.current);
         setIsModalOpen(false);
-        // buttonRef.current.focus();
+        buttonRef.current.focus();
     }
         
     return (
         <>
             {notifications.length > 0 ? (
-                <Notifications notifications={notifications} />
+                <Notifications notifications={notifications} setNotifications={setNotifications} />
             ) :
                 null
             }
@@ -207,7 +228,7 @@ export function ProductPage({ setModalMode }) {
                     </button>
                     <button
                         type="button"
-                        className="icon delete-btn"
+                        className="icon delete-btn modal-btn"
                         title="Delete"
                         onClick={() => deleteProduct(product._id)}
                     >
@@ -220,7 +241,6 @@ export function ProductPage({ setModalMode }) {
             <Modal isModalOpen={isModalOpen} setModalMode={setModalMode} onClose={closeModal} title={"Edit product"}>
                 {isModalOpen ? <form className="modal-form centered"
                     onSubmit={(e) => handleUpdateProduct(e, id, editedProduct)}
-                    // onClick={e => e.stopPropagation()}
                 >
                     <input
                         className="form-input"
@@ -303,7 +323,9 @@ export function ProductPage({ setModalMode }) {
     );
 };
 
-function Notifications({notifications}) {
+function Notifications({notifications, setNotifications}) {
+    setTimeout(() => setNotifications([]), 5000);
+
     return (
         <div className="notifications-section">
             <div className="body">
@@ -325,7 +347,6 @@ function Modal({ isModalOpen, setModalMode, onClose, title, children }) {
     const dialogRef = useRef(null);
 
     useEffect(() => {
-        // console.log("use effect / modal " + isModalOpen);
         const dialogNode = dialogRef.current;
         if (!dialogNode) return;
 
@@ -338,7 +359,6 @@ function Modal({ isModalOpen, setModalMode, onClose, title, children }) {
         }
 
         return () => {
-            // console.log("clean dialog");
             setModalMode(false);
         };
     }, [isModalOpen]);
@@ -350,7 +370,6 @@ function Modal({ isModalOpen, setModalMode, onClose, title, children }) {
             onClose={onClose}
             onClick={onClose}
         >
-
             <header>
                 <button type="button" className="icon" onClick={onClose}>
                     <span className="sr-only">Close Modal</span>
