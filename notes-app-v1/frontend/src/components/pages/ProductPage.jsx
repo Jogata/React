@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+let counter = 0;
+
 export function ProductPage({ setModalMode }) {
     const [product, setProduct] = useState(null);
     const [editedProduct, setEditedProduct] = useState(null);
@@ -9,7 +11,8 @@ export function ProductPage({ setModalMode }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { id } = useParams();
     const navigate = useNavigate();
-    // const buttonRef = useRef(null);
+
+    console.log(notifications);
 
     useEffect(() => {
         console.log("ProductPage / use effect / fetch products");
@@ -61,13 +64,6 @@ export function ProductPage({ setModalMode }) {
             }
         }
     }, [id]);
-
-    // useEffect(() => {
-    //     if (!isModalOpen && buttonRef.current) {
-    //         console.log("yes");
-    //         buttonRef.current.focus();
-    //     }
-    // }, [isModalOpen])
 
     async function deleteProduct(pid) {
         // pid = "6a6db517423ac20b02df6b8s";
@@ -167,6 +163,8 @@ export function ProductPage({ setModalMode }) {
             //     return updatedProducts;
             // });
             // setNotifications([{message: `Product ${pid} updated`, type: "success"}]);
+            setProduct(response.data);
+
             setNotifications(oldNotifications => {
                 const newNotifications = [
                     ...oldNotifications, 
@@ -181,21 +179,37 @@ export function ProductPage({ setModalMode }) {
 
             // setIsModalOpen(false);
             closeModal();
-            setProduct(response.data);
 
-            setTimeout(() => {
+            setInterval(() => {
+                counter++;
                 setNotifications(oldNotifications => {
                     const newNotifications = [
                         ...oldNotifications, 
-                        {message: `timeout`, type: "success"}
+                        {message: `interval ${counter}`, type: "success"}
                     ];
                     return newNotifications;
                 });
             }, 1000);
 
-            setTimeout(() => {
-                setNotifications(oldNotifications => oldNotifications.splice(0,1));
-            }, 3000);
+            setInterval(() => {
+                setNotifications(oldNotifications => oldNotifications.slice(1));
+            }, 2000);
+
+            // console.log(notifications);
+
+            // setTimeout(() => {
+            //     setNotifications(oldNotifications => {
+            //         const newNotifications = [
+            //             ...oldNotifications, 
+            //             {message: `timeout`, type: "success"}
+            //         ];
+            //         return newNotifications;
+            //     });
+            // }, 1000);
+
+            // setTimeout(() => {
+            //     setNotifications(oldNotifications => oldNotifications.splice(0,1));
+            // }, 3000);
         } catch (err) {
             // setError(err.message);
             // setNotifications([{message: err.message, type: "error"}]);
@@ -210,15 +224,27 @@ export function ProductPage({ setModalMode }) {
         }
     }
 
+    function addNotification(message, type = "success") {
+        const newToast = {
+            id: crypto.randomUUID(),
+            message,
+            type
+        };
+
+        setNotifications(old => [...old, newToast]);
+    }
+
+    function removeNotification(id) {
+        setNotifications(old => old.filter(toast => toast.id !== id));
+    }
+
     function openModal(e) {
         setIsModalOpen(true);
         setEditedProduct({...product});
-        // buttonRef.current = e.currentTarget;
     }
 
     function closeModal() {
         setIsModalOpen(false);
-        // buttonRef.current.focus();
     }
         
     return (
@@ -340,11 +366,11 @@ export function ProductPage({ setModalMode }) {
     );
 };
 
-function Notifications({notifications, setNotifications}) {
-    setTimeout(() => setNotifications([]), 5000);
+function Notifications({ notifications }) {
+    // setTimeout(() => setNotifications([]), 5000);
 
     return (
-        <div className="notifications-section">
+        <div className="notifications-section" popover="manual">
             <div className="body">
                 {notifications.map((notification, index) => {
                     console.log(notification);
