@@ -8,6 +8,17 @@ import ProductPage from "./components/pages/ProductPage";
 function App() {
   const [colorMode, toggleColorMode] = useState("dark");
   const [modalMode, setModalMode] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+
+  function addNotification(message, type = "success") {
+    const newToast = {
+      id: crypto.randomUUID(),
+      message,
+      type
+    };
+
+    setNotifications(old => [...old, newToast]);
+  }
 
   function toggleTheme() {
     const themes = {
@@ -22,17 +33,15 @@ function App() {
   let pageClass = `page ${colorMode}`;
   pageClass = modalMode ? `${pageClass} modal-mode` : pageClass;
 
-  // console.log(modalMode, pageClass);
-
   return (
     <div className={pageClass}>
       <Navbar toggleTheme={toggleTheme} colorMode={colorMode} />
-      <NotificationManager />
+      <NotificationManager notifications={notifications} setNotifications={setNotifications} />
       <main>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/product/:id" element={<ProductPage modalMode={modalMode} setModalMode={setModalMode} />} />
-          <Route path="/create" element={<CreateProductPage />} />
+          <Route path="/create" element={<CreateProductPage addNotification={addNotification} />} />
         </Routes>
       </main>
       <footer>
@@ -42,18 +51,18 @@ function App() {
   )
 }
 
-function NotificationManager() {
-  const [notifications, setNotifications] = useState([]);
+function NotificationManager({ notifications, setNotifications }) {
+  // const [notifications, setNotifications] = useState([]);
 
-  function addNotification(message, type = "success") {
-    const newToast = {
-      id: crypto.randomUUID(),
-      message,
-      type
-    };
+  // function addNotification(message, type = "success") {
+  //   const newToast = {
+  //     id: crypto.randomUUID(),
+  //     message,
+  //     type
+  //   };
 
-    setNotifications(old => [...old, newToast]);
-  }
+  //   setNotifications(old => [...old, newToast]);
+  // }
 
   function removeNotification(id) {
     setNotifications(old => old.filter(toast => toast.id !== id));
@@ -61,9 +70,37 @@ function NotificationManager() {
 
   return (
     <div className="toast-container" popover="manual">
-      {notifications.map((toast) => (
-        <h2>{toast.message}</h2>
+      {notifications.map(toast => (
+        <ToastNotification
+          key={toast.id}
+          toast={toast}
+          onDismiss={() => removeNotification(toast.id)}
+        />
       ))}
+    </div>
+  );
+}
+
+function ToastNotification({ toast, onDismiss }) {
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onDismiss();
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [onDismiss]);
+
+  return (
+    <div className={`toast-box ${toast.type}`}>
+      <p>{toast.message}</p>
+      <button 
+        type="button" 
+        onClick={onDismiss} 
+        aria-label="Dismiss alert"
+      >
+        x
+      </button>
     </div>
   );
 }
