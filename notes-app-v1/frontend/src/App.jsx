@@ -27,6 +27,7 @@ function App() {
   return (
     <div className={pageClass}>
       <Navbar toggleTheme={toggleTheme} colorMode={colorMode} />
+      <NotificationManager />
       <main>
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -39,6 +40,32 @@ function App() {
       </footer>
     </div>
   )
+}
+
+function NotificationManager() {
+  const [notifications, setNotifications] = useState([]);
+
+  function addNotification(message, type = "success") {
+    const newToast = {
+      id: crypto.randomUUID(),
+      message,
+      type
+    };
+
+    setNotifications(old => [...old, newToast]);
+  }
+
+  function removeNotification(id) {
+    setNotifications(old => old.filter(toast => toast.id !== id));
+  }
+
+  return (
+    <div className="toast-container" popover="manual">
+      {notifications.map((toast) => (
+        <h2>{toast.message}</h2>
+      ))}
+    </div>
+  );
 }
 
 export default App;
