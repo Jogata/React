@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function CreateProductPage() {
+function CreateProductPage({ addNotification }) {
     const [newProduct, setNewProduct] = useState({
         name: "test1",
         price: "55",
@@ -19,7 +19,8 @@ function CreateProductPage() {
     async function createProduct(e) {
         e.preventDefault();
         if (!newProduct.name || !newProduct.image || !newProduct.price) {
-            console.log("Please fill in all fields.");
+            // console.log("Please fill in all fields.");
+            addNotification("Please fill in all fields.", "error");
             return { success: false, message: "Please fill in all fields." };
         }
 
@@ -38,6 +39,7 @@ function CreateProductPage() {
             if (contentType && contentType.includes("application/json")) {
                 // console.log("created");
                 result = await response.json();
+                // addNotification({type: "success", message: "Product created successfully"});
                 // return { success: true, message: "Product created successfully" };
             } else {
                 result = await response.text();
@@ -47,15 +49,17 @@ function CreateProductPage() {
             if (!response.ok) {
                 if (response.status == 409) {
                     console.log(result.message);
+                    addNotification(result.message, "error");
                     return { success: false, message: result.message };
                 }
                 // setError("Custom error");
             }
 
             console.log("Product created successfully");
+            addNotification("Product created successfully");
             return { success: true, message: "Product created successfully" };
         } catch (error) {
-            setError(result);
+            setError(error.message);
         }
     }
 
@@ -94,7 +98,7 @@ function CreateProductPage() {
                 </button>
             </form>
 
-            <Button setNewProduct={setNewProduct} />
+            <DevButton setNewProduct={setNewProduct} />
         </>
     );
 };
@@ -132,12 +136,11 @@ function ProductForm() {
     )
 }
 
-function Button({ setNewProduct }) {
+function DevButton({ setNewProduct }) {
     function generate() {
         setNewProduct(old => {
             const newProduct = { ...old };
             const number = Number(old.name[old.name.length - 1]);
-            // console.log(number);
             const newName = newProduct.name.substring(0, 4) + (number + 1);
             newProduct.name = newName;
             return newProduct;

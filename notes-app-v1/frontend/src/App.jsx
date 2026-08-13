@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Navbar from "./components/Navbar";
 import HomePage from "./components/pages/Home";
 import CreateProductPage from "./components/pages/CreateProductPage";
@@ -52,24 +52,25 @@ function App() {
 }
 
 function NotificationManager({ notifications, setNotifications }) {
-  // const [notifications, setNotifications] = useState([]);
+  const popoverRef = useRef(null);
 
-  // function addNotification(message, type = "success") {
-  //   const newToast = {
-  //     id: crypto.randomUUID(),
-  //     message,
-  //     type
-  //   };
+  useEffect(() => {
+    const popoverNode = popoverRef.current;
+    if (!popoverNode) return;
 
-  //   setNotifications(old => [...old, newToast]);
-  // }
+    if (notifications.length > 0) {
+      popoverNode.showPopover();
+    } else {
+      popoverNode.hidePopover();
+    }
+  }, [notifications.length]);
 
   function removeNotification(id) {
     setNotifications(old => old.filter(toast => toast.id !== id));
   }
 
   return (
-    <div className="toast-container" popover="manual">
+    <div className="toast-container" ref={popoverRef} popover="manual">
       {notifications.map(toast => (
         <ToastNotification
           key={toast.id}
@@ -82,24 +83,26 @@ function NotificationManager({ notifications, setNotifications }) {
 }
 
 function ToastNotification({ toast, onDismiss }) {
+  console.log(toast);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       onDismiss();
-    }, 3000);
+    }, 30000);
 
     return () => clearTimeout(timer);
   }, [onDismiss]);
 
   return (
     <div className={`toast-box ${toast.type}`}>
-      <p>{toast.message}</p>
+      {/* <p>{toast.message}</p> */}
+      <p>Toast</p>
       <button 
         type="button" 
         onClick={onDismiss} 
         aria-label="Dismiss alert"
       >
-        x
+        <span>X</span>
       </button>
     </div>
   );
