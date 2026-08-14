@@ -18,7 +18,7 @@ function CreateProductPage() {
         )
     }
 
-    async function createProduct(e) {
+    async function createProduct1(e) {
         e.preventDefault();
         if (!newProduct.name || !newProduct.image || !newProduct.price) {
             // console.log("Please fill in all fields.");
@@ -63,6 +63,49 @@ function CreateProductPage() {
         } catch (error) {
             setError(error.message);
         }
+    }
+
+    async function createProduct(e) {
+        e.preventDefault();
+        // try {
+            const response = await fetch("http://localhost:5000/api/products", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newProduct),
+            });
+
+            const contentType = response.headers.get("content-type");
+            let result = null;
+
+            if (contentType && contentType.includes("application/json")) {
+                // console.log("created");
+                result = await response.json();
+                // addNotification({type: "success", message: "Product created successfully"});
+                // return { success: true, message: "Product created successfully" };
+            } else {
+                result = await response.text();
+                // setError(result);
+            }
+
+            if (!response.ok) {
+                // if (response.status == 409) {
+                    // console.log(result.message);
+                    // addNotification(result.message, "error");
+                    // return { success: false, message: result.message };
+                    const customError = new Error(result.message);
+                    customError.status = response.status;
+                    throw customError;
+                // }
+                // setError("Custom error");
+            }
+
+            console.log("Product created successfully");
+            console.log(result);
+            // addNotification("Product created successfully");
+            // return { success: true, message: "Product created successfully" };
+            return result;
     }
 
     return (
