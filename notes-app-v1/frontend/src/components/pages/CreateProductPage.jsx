@@ -1,12 +1,14 @@
 import { useState } from "react";
+import { useNotify } from "../../context/NotificationProvider";
 
-function CreateProductPage({ addNotification }) {
+function CreateProductPage() {
     const [newProduct, setNewProduct] = useState({
         name: "test1",
         price: "55",
         image: "https://cdn.pixabay.com/photo/2016/11/21/13/58/analog-watch-1845547_1280.jpg",
     });
-    const [error, setError] = useState(null);
+    const [ error, setError ] = useState(null);
+    const { addNotification } = useNotify();
 
     if (error) {
         return (
