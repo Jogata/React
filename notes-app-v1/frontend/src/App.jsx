@@ -20,6 +20,10 @@ function App() {
     setNotifications(old => [...old, newToast]);
   }
 
+  function removeNotification(id) {
+    setNotifications(old => old.filter(toast => toast.id !== id));
+  }
+
   function toggleTheme() {
     const themes = {
       "dark": "light",
@@ -36,7 +40,7 @@ function App() {
   return (
     <div className={pageClass}>
       <Navbar toggleTheme={toggleTheme} colorMode={colorMode} />
-      <NotificationManager notifications={notifications} setNotifications={setNotifications} />
+      <NotificationManager notifications={notifications} removeNotification={removeNotification} />
       <main>
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -51,7 +55,7 @@ function App() {
   )
 }
 
-function NotificationManager({ notifications, setNotifications }) {
+function NotificationManager({ notifications, removeNotification }) {
   const popoverRef = useRef(null);
 
   useEffect(() => {
@@ -65,9 +69,9 @@ function NotificationManager({ notifications, setNotifications }) {
     }
   }, [notifications.length]);
 
-  function removeNotification(id) {
-    setNotifications(old => old.filter(toast => toast.id !== id));
-  }
+  // function removeNotification(id) {
+  //   setNotifications(old => old.filter(toast => toast.id !== id));
+  // }
 
   return (
     <div className="toast-container" ref={popoverRef} popover="manual">
@@ -75,7 +79,8 @@ function NotificationManager({ notifications, setNotifications }) {
         <ToastNotification
           key={toast.id}
           toast={toast}
-          onDismiss={() => removeNotification(toast.id)}
+          // onDismiss={() => removeNotification(toast.id)}
+          onDismiss={removeNotification}
         />
       ))}
     </div>
@@ -83,15 +88,17 @@ function NotificationManager({ notifications, setNotifications }) {
 }
 
 function ToastNotification({ toast, onDismiss }) {
-  console.log(toast);
+  // console.log(toast);
 
   useEffect(() => {
+    console.log(toast.id);
+    // console.log("------------------");
     const timer = setTimeout(() => {
-      onDismiss();
+      onDismiss(toast.id);
     }, 30000);
 
     return () => clearTimeout(timer);
-  }, [onDismiss]);
+  }, [toast]);
 
   return (
     <div className={`toast-box ${toast.type}`}>
@@ -99,7 +106,8 @@ function ToastNotification({ toast, onDismiss }) {
       <p>Toast</p>
       <button 
         type="button" 
-        onClick={onDismiss} 
+        // onClick={onDismiss} 
+        onClick={() => onDismiss(toast.id)} 
         aria-label="Dismiss alert"
       >
         <span>X</span>
