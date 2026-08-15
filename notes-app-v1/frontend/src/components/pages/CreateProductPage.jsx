@@ -65,47 +65,87 @@ function CreateProductPage() {
         }
     }
 
-    async function createProduct(e) {
+    async function createProduct(newProduct) {
+        // e.preventDefault();
+        const response = await fetch("http://localhost:5000/api/products", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newProduct),
+        });
+
+        const contentType = response.headers.get("content-type");
+        let result = null;
+
+        if (contentType && contentType.includes("application/json")) {
+            result = await response.json();
+        } else {
+            result = await response.text();
+        }
+
+        if (!response.ok) {
+            const customError = new Error(result.message);
+            customError.status = response.status;
+            throw customError;
+        }
+
+        console.log("Product created successfully");
+        console.log(result);
+        return result;
+    }
+
+    async function handleCreateProduct1(e) {
         e.preventDefault();
-        // try {
-            const response = await fetch("http://localhost:5000/api/products", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(newProduct),
-            });
 
-            const contentType = response.headers.get("content-type");
-            let result = null;
+        if (!newProduct.name || !newProduct.image || !newProduct.price) {
+            addNotification("Please fill in all fields.", "error");
+            // return { success: false, message: "Please fill in all fields." };
+            return;
+        }
 
-            if (contentType && contentType.includes("application/json")) {
+        try {
+            // const response = await fetch("http://localhost:5000/api/products", {
+            //     method: "POST",
+            //     headers: {
+            //         "Content-Type": "application/json",
+            //     },
+            //     body: JSON.stringify(newProduct),
+            // });
+
+            const response = await createProduct(newProduct);
+
+            // const contentType = response.headers.get("content-type");
+            // let result = null;
+
+            // if (contentType && contentType.includes("application/json")) {
                 // console.log("created");
-                result = await response.json();
+                // result = await response.json();
                 // addNotification({type: "success", message: "Product created successfully"});
                 // return { success: true, message: "Product created successfully" };
-            } else {
-                result = await response.text();
+            // } else {
+                // result = await response.text();
                 // setError(result);
-            }
+            // }
 
-            if (!response.ok) {
+            // if (!response.ok) {
                 // if (response.status == 409) {
-                    // console.log(result.message);
-                    // addNotification(result.message, "error");
-                    // return { success: false, message: result.message };
-                    const customError = new Error(result.message);
-                    customError.status = response.status;
-                    throw customError;
+                // console.log(result.message);
+                // addNotification(result.message, "error");
+                // return { success: false, message: result.message };
                 // }
                 // setError("Custom error");
-            }
+                // return;
+            // }
 
             console.log("Product created successfully");
-            console.log(result);
-            // addNotification("Product created successfully");
+            addNotification("Product created successfully");
             // return { success: true, message: "Product created successfully" };
-            return result;
+        } catch (error) {
+            // setError(error.message);
+            console.log(error.message);
+            addNotification(error.message, "error");
+        }
     }
 
     return (
@@ -114,7 +154,7 @@ function CreateProductPage() {
                 <h1>Create New Product</h1>
             </header>
 
-            <form className="form centered" onSubmit={createProduct}>
+            <form className="form centered" onSubmit={handleCreateProduct1}>
                 <input
                     className="form-input"
                     name="name"
