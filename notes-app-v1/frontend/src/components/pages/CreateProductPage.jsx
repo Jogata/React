@@ -18,55 +18,7 @@ function CreateProductPage() {
         )
     }
 
-    async function createProduct1(e) {
-        e.preventDefault();
-        if (!newProduct.name || !newProduct.image || !newProduct.price) {
-            // console.log("Please fill in all fields.");
-            addNotification("Please fill in all fields.", "error");
-            return { success: false, message: "Please fill in all fields." };
-        }
-
-        try {
-            const response = await fetch("http://localhost:5000/api/products", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(newProduct),
-            });
-
-            const contentType = response.headers.get("content-type");
-            let result = null;
-
-            if (contentType && contentType.includes("application/json")) {
-                // console.log("created");
-                result = await response.json();
-                // addNotification({type: "success", message: "Product created successfully"});
-                // return { success: true, message: "Product created successfully" };
-            } else {
-                result = await response.text();
-                // setError(result);
-            }
-
-            if (!response.ok) {
-                if (response.status == 409) {
-                    console.log(result.message);
-                    addNotification(result.message, "error");
-                    return { success: false, message: result.message };
-                }
-                // setError("Custom error");
-            }
-
-            console.log("Product created successfully");
-            addNotification("Product created successfully");
-            return { success: true, message: "Product created successfully" };
-        } catch (error) {
-            setError(error.message);
-        }
-    }
-
     async function createProduct(newProduct) {
-        // e.preventDefault();
         const response = await fetch("http://localhost:5000/api/products", {
             method: "POST",
             headers: {
@@ -91,7 +43,7 @@ function CreateProductPage() {
         }
 
         console.log("Product created successfully");
-        console.log(result);
+        // console.log(result);
         return result;
     }
 
@@ -100,47 +52,15 @@ function CreateProductPage() {
 
         if (!newProduct.name || !newProduct.image || !newProduct.price) {
             addNotification("Please fill in all fields.", "error");
-            // return { success: false, message: "Please fill in all fields." };
             return;
         }
 
         try {
-            // const response = await fetch("http://localhost:5000/api/products", {
-            //     method: "POST",
-            //     headers: {
-            //         "Content-Type": "application/json",
-            //     },
-            //     body: JSON.stringify(newProduct),
-            // });
-
             const response = await createProduct(newProduct);
 
-            // const contentType = response.headers.get("content-type");
-            // let result = null;
-
-            // if (contentType && contentType.includes("application/json")) {
-                // console.log("created");
-                // result = await response.json();
-                // addNotification({type: "success", message: "Product created successfully"});
-                // return { success: true, message: "Product created successfully" };
-            // } else {
-                // result = await response.text();
-                // setError(result);
-            // }
-
-            // if (!response.ok) {
-                // if (response.status == 409) {
-                // console.log(result.message);
-                // addNotification(result.message, "error");
-                // return { success: false, message: result.message };
-                // }
-                // setError("Custom error");
-                // return;
-            // }
-
-            console.log("Product created successfully");
-            addNotification("Product created successfully");
-            // return { success: true, message: "Product created successfully" };
+            console.log("Product created successfully", response);
+            // addNotification("Product created successfully");
+            addNotification(`Product ${response.data.name} created successfully`);
         } catch (error) {
             // setError(error.message);
             console.log(error.message);
@@ -240,6 +160,46 @@ function DevButton({ setNewProduct }) {
             generate
         </button>
     )
+}
+
+async function request(url, options = {}) {
+  const headers = { ...options.headers };
+
+  const isInternalRequest = url.startsWith("/") || url.includes("your-api-domain.com");
+
+  if (isInternalRequest) {
+    const token = localStorage.getItem("token");
+    
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+  }
+
+  if (options.body && typeof options.body === "object") {
+    headers["Content-Type"] = "application/json";
+    options.body = JSON.stringify(options.body);
+  }
+
+  const response = await fetch(url, { ...options, headers });
+  return handleResponse(response);
+}
+
+async function handleResponse(response) {
+    const contentType = response.headers.get("content-type");
+    let data;
+  
+    if (contentType && contentType.includes("application/json")) {
+      data = await response.json();
+    } else {
+      data = await response.text();
+    }
+  
+    if (!response.ok) {
+      const errorMessage = data?.message || data || "Network response was not ok";
+      throw new Error(errorMessage);
+    }
+  
+    return data;
 }
 
 export default CreateProductPage;
