@@ -10,6 +10,10 @@ export function NotificationProvider({ children }) {
         setNotifications(old => [...old, newToast]);
     }
 
+    // function removeNotification(id) {
+    //     setNotifications(old => old.filter(toast => toast.id !== id));
+    // }
+
     return (
         <NotificationContext.Provider value={{ addNotification }}>
             {children}
@@ -39,10 +43,46 @@ function Notifications({ notifications, setNotifications }) {
   return (
     <div className="toast-container" ref={popoverRef} popover="manual">
       {notifications.map(toast => (
-        <p className={`toast-box ${toast.type}`}>{toast.message}</p>
+        // <p className={`toast-box ${toast.type}`}>{toast.message}</p>
+        <Notification key={toast.id} toast={toast} setNotifications={setNotifications} />
       ))}
     </div>
   );
+}
+
+function Notification({ toast, setNotifications }) {
+    // console.log(toast);
+    const id = toast.id;
+
+    useEffect(() => {
+        console.log(id);
+        function removeNotification(id) {
+            setNotifications(old => old.filter(toast => toast.id !== id));
+        }
+
+        const timer = setTimeout(() => {
+            removeNotification(id);
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }, [setNotifications, id]);
+
+    function onDismiss(id) {
+        setNotifications(old => old.filter(toast => toast.id !== id));
+    }
+
+    return (
+        <div className={`toast-box ${toast.type}`}>
+            <p>{toast.message}</p>
+            <button
+                type="button"
+                onClick={() => onDismiss(id)}
+                aria-label="Dismiss alert"
+            >
+                x
+            </button>
+        </div>
+    );
 }
 
 export const useNotify = () => useContext(NotificationContext);
