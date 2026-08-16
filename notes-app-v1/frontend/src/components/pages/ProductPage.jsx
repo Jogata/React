@@ -2,8 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useNotify } from "../../context/NotificationProvider";
 
-// let counter = 0;
-
 export function ProductPage({ setModalMode }) {
     const [product, setProduct] = useState(null);
     const [editedProduct, setEditedProduct] = useState(null);
@@ -82,21 +80,7 @@ export function ProductPage({ setModalMode }) {
 
             if (!response.ok) {
                 addNotification(result.message, "error");
-                // setError(result.message);
-                // setTimeout(() => {
-                //     setError(null);
-                // }, 3000);
             } else {
-                // console.log("navigate");
-                // navigate("/", {
-                //     state: { 
-                //         product: id, 
-                //         message: {
-                //             message: `Product ${pid} deleted`, 
-                //             type: "success"
-                //         }
-                //     },
-                // },);
                 addNotification(`Product ${pid} deleted`);
                 navigate("/");
             }
@@ -160,32 +144,27 @@ export function ProductPage({ setModalMode }) {
         // pid = "6a7830fe90b4c7c19d5d0964";
         e.preventDefault();
 
-        // if (!editedProduct.name || !editedProduct.image || !editedProduct.price) {
-        //     addNotification("Please fill in all fields.", "error");
-        //     return;
-        // }
+        if (!editedProduct.name || !editedProduct.image || !editedProduct.price) {
+            addNotification("Please fill in all fields.", "error");
+            return;
+        }
 
         try {
-            // console.log("form sub");
             const response = await updateProduct(pid, editedProduct);
-            // console.log(response);
             setProduct(response.data);
             addNotification(`Product ${pid} updated`);
             closeModal();
         } catch (err) {
-            // setError(err.message);
-            // console.dir(err);
             console.log(err.status, err.errors);
-            // addNotification(err.message, "error");
-            // for (const iterator of object) {
-                
-            // }
-            const keys = Object.keys(err.errors);
-            console.log(keys);
-            keys.forEach(key => {
-                console.log(key);
-                addNotification(err.errors[key], "error")
-            });
+            // const keys = Object.keys(err.errors);
+            // console.log(keys);
+            // keys.forEach(key => {
+            //     console.log(key);
+            //     addNotification(err.errors[key], "error")
+            // });
+            err.errors.forEach(error => {
+                addNotification(error.message, "error");
+            })
         }
     }
 
