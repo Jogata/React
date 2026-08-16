@@ -1,7 +1,6 @@
 export async function request(url, options = {}) {
     const headers = { ...options.headers };
 
-    // const isInternalRequest = url.startsWith("/") || url.includes("your-api-domain.com");
     let isInternalRequest = url.startsWith("/");
 
     if (!isInternalRequest) {

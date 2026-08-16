@@ -1,32 +1,39 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 
 const NotificationContext = createContext(null);
 
 export function NotificationProvider({ children }) {
     const [notifications, setNotifications] = useState([]);
 
-    function addNotification(message, type = "success") {
+    // function addNotification(message, type = "success") {
+    //     const newToast = { id: crypto.randomUUID(), message, type };
+    //     setNotifications(old => [...old, newToast]);
+    // }
+    const addNotification = useCallback((message, type = "success") => {
         const newToast = { id: crypto.randomUUID(), message, type };
         setNotifications(old => [...old, newToast]);
-    }
-
+    }, []);
+        
     // function removeNotification(id) {
     //     setNotifications(old => old.filter(toast => toast.id !== id));
     // }
-
+    const removeNotification = useCallback((id) => {
+        setNotifications(old => old.filter(toast => toast.id !== id));
+    }, []);
+        
     return (
         <NotificationContext.Provider value={{ addNotification }}>
             {children}
 
             <Notifications
                 notifications={notifications}
-                setNotifications={setNotifications}
+                removeNotification={removeNotification}
             />
         </NotificationContext.Provider>
     );
 }
 
-function Notifications({ notifications, setNotifications }) {
+function Notifications({ notifications, removeNotification }) {
   const popoverRef = useRef(null);
 
   useEffect(() => {
@@ -44,32 +51,31 @@ function Notifications({ notifications, setNotifications }) {
     <div className="toast-container" ref={popoverRef} popover="manual">
       {notifications.map(toast => (
         // <p className={`toast-box ${toast.type}`}>{toast.message}</p>
-        <Notification key={toast.id} toast={toast} setNotifications={setNotifications} />
+        <Notification key={toast.id} toast={toast} onDismiss={removeNotification} />
       ))}
     </div>
   );
 }
 
-function Notification({ toast, setNotifications }) {
-    // console.log(toast);
+function Notification({ toast, onDismiss }) {
     const id = toast.id;
 
     useEffect(() => {
-        console.log(id);
-        function removeNotification(id) {
-            setNotifications(old => old.filter(toast => toast.id !== id));
-        }
+        // console.log(id);
+        // function removeNotification(id) {
+        //     setNotifications(old => old.filter(toast => toast.id !== id));
+        // }
 
         const timer = setTimeout(() => {
-            removeNotification(id);
+            onDismiss(id);
         }, 3000);
 
         return () => clearTimeout(timer);
-    }, [setNotifications, id]);
+    }, [onDismiss, id]);
 
-    function onDismiss(id) {
-        setNotifications(old => old.filter(toast => toast.id !== id));
-    }
+    // function onDismiss(id) {
+    //     setNotifications(old => old.filter(toast => toast.id !== id));
+    // }
 
     return (
         <div className={`toast-box ${toast.type}`}>
@@ -79,7 +85,7 @@ function Notification({ toast, setNotifications }) {
                 onClick={() => onDismiss(id)}
                 aria-label="Dismiss alert"
             >
-                x
+                <span>X</span>
             </button>
         </div>
     );

@@ -527,8 +527,10 @@ main {
 .toast-box button span {
   display: inline-block;
   padding: 0.8em 0.5em;
-  font-size: 0.6rem;
-  transform: skewX(0.9);
+  font-size: 0.8rem;
+  font-weight: bold;
+  transform: scaleY(0.8);
+  /* border: 1px solid black; */
 }
 
 @media screen and (max-width: 600px) {
