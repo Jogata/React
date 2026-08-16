@@ -47,7 +47,11 @@ export const updateProduct = async (req, res) => {
 
 	try {
 		// const updatedProduct = await Product.findByIdAndUpdate(id, product, { new: true });
-		const updatedProduct = await Product.findByIdAndUpdate(id, product, {returnDocument: "after"});
+		const updatedProduct = await Product.findByIdAndUpdate(
+			id, product, {returnDocument: "after", runValidators: true}
+		);
+
+		console.log(updateProduct);
 
 		if (!updatedProduct) {
 			return res.status(404).json({ 
@@ -58,6 +62,21 @@ export const updateProduct = async (req, res) => {
 		
 		res.status(200).json({ success: true, data: updatedProduct });
 	} catch (error) {
+
+		if (error.name === "ValidationError") {
+			const errorMessages = {};
+
+			// console.log(error.errors);
+
+			Object.keys(error.errors).forEach((key) => {
+				console.log(key);
+				console.log(error.errors[key].message);
+				errorMessages[key] = error.errors[key].message;
+			});
+
+			return res.status(400).json({ success: false, errors: errorMessages });
+		}
+
 		res.status(500).json({ success: false, message: "Server Error" });
 	}
 };

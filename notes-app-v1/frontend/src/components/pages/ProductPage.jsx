@@ -2,19 +2,16 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useNotify } from "../../context/NotificationProvider";
 
-let counter = 0;
+// let counter = 0;
 
 export function ProductPage({ setModalMode }) {
     const [product, setProduct] = useState(null);
     const [editedProduct, setEditedProduct] = useState(null);
     const [error, setError] = useState(null);
-    // const [notifications, setNotifications] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { addNotification } = useNotify();
     const { id } = useParams();
     const navigate = useNavigate();
-
-    // console.log(notifications);
 
     useEffect(() => {
         console.log("ProductPage / use effect / fetch products");
@@ -68,7 +65,7 @@ export function ProductPage({ setModalMode }) {
     }, [id]);
 
     async function deleteProduct(pid) {
-        // pid = "6a6db517423ac20b02df6b8s";
+        pid = "6a8035aec850cd3671afad7a";
         try {
             const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
                 method: "DELETE",
@@ -84,21 +81,24 @@ export function ProductPage({ setModalMode }) {
             }
 
             if (!response.ok) {
-                setError(result.message);
-                setTimeout(() => {
-                    setError(null);
-                }, 3000);
+                addNotification(result.message, "error");
+                // setError(result.message);
+                // setTimeout(() => {
+                //     setError(null);
+                // }, 3000);
             } else {
-                console.log("navigate");
-                navigate("/", {
-                    state: { 
-                        product: id, 
-                        message: {
-                            message: `Product ${pid} deleted`, 
-                            type: "success"
-                        }
-                    },
-                },);
+                // console.log("navigate");
+                // navigate("/", {
+                //     state: { 
+                //         product: id, 
+                //         message: {
+                //             message: `Product ${pid} deleted`, 
+                //             type: "success"
+                //         }
+                //     },
+                // },);
+                addNotification(`Product ${pid} deleted`);
+                navigate("/");
             }
         } catch (error) {
             setError(result);
@@ -132,16 +132,20 @@ export function ProductPage({ setModalMode }) {
         if (!response.ok) {
             const contentType = response.headers.get("content-type");
             let errorMessage = "Update failed";
+            let errors = ["Update failed"];
 
             if (contentType && contentType.includes("application/json")) {
                 const errorData = await response.json();
-                errorMessage = errorData.message || errorMessage;
+                // console.log(errorData);
+                errorMessage = "Form validation failed";
+                errors = errorData.errors || errors;
             } else {
-                errorMessage = await response.text();
+                errors[0] = await response.text();
             }
 
             const error = new Error(errorMessage);
             error.status = response.status;
+            error.errors = errors;
             
             throw error;
         }
@@ -155,90 +159,35 @@ export function ProductPage({ setModalMode }) {
         // pid = "1";
         // pid = "6a7830fe90b4c7c19d5d0964";
         e.preventDefault();
+
+        // if (!editedProduct.name || !editedProduct.image || !editedProduct.price) {
+        //     addNotification("Please fill in all fields.", "error");
+        //     return;
+        // }
+
         try {
-            console.log("form sub");
+            // console.log("form sub");
             const response = await updateProduct(pid, editedProduct);
-            console.log(response);
-            // setProducts(prevProducts => prevProducts.filter(p => p._id !== pid));
-            // setProducts(products => {
-            //     const updatedProducts = products.map(product => product._id !== pid ? result.data : product);
-            //     return updatedProducts;
-            // });
-            // setNotifications([{message: `Product ${pid} updated`, type: "success"}]);
+            // console.log(response);
             setProduct(response.data);
-            addNotification(`Product ${pid} updated`, "success");
-
-            // setNotifications(oldNotifications => {
-            //     const newNotifications = [
-            //         ...oldNotifications, 
-            //         {message: `Product ${pid} updated`, type: "success"}
-            //     ];
-            //     return newNotifications;
-            // });
-
-            // setTimeout(() => {
-            //     setNotifications(oldNotifications => oldNotifications.splice(0,1));
-            // }, 2000);
-
+            addNotification(`Product ${pid} updated`);
             closeModal();
-
-            // setInterval(() => {
-            //     counter++;
-            //     setNotifications(oldNotifications => {
-            //         const newNotifications = [
-            //             ...oldNotifications, 
-            //             {message: `interval ${counter}`, type: "success"}
-            //         ];
-            //         return newNotifications;
-            //     });
-            // }, 1000);
-
-            // setInterval(() => {
-            //     setNotifications(oldNotifications => oldNotifications.slice(1));
-            // }, 2000);
-
-            // console.log(notifications);
-
-            // setTimeout(() => {
-            //     setNotifications(oldNotifications => {
-            //         const newNotifications = [
-            //             ...oldNotifications, 
-            //             {message: `timeout`, type: "success"}
-            //         ];
-            //         return newNotifications;
-            //     });
-            // }, 1000);
-
-            // setTimeout(() => {
-            //     setNotifications(oldNotifications => oldNotifications.splice(0,1));
-            // }, 3000);
         } catch (err) {
             // setError(err.message);
-            // setNotifications([{message: err.message, type: "error"}]);
-            // setNotifications(oldNotifications => {
-            //     const newNotifications = [
-            //         ...oldNotifications, 
-            //         {message: err.message, type: "error"}
-            //     ];
-            //     return newNotifications;
-            // });
-            addNotification(err.message, "error");
+            // console.dir(err);
+            console.log(err.status, err.errors);
+            // addNotification(err.message, "error");
+            // for (const iterator of object) {
+                
+            // }
+            const keys = Object.keys(err.errors);
+            console.log(keys);
+            keys.forEach(key => {
+                console.log(key);
+                addNotification(err.errors[key], "error")
+            });
         }
     }
-
-    // function addNotification(message, type = "success") {
-    //     const newToast = {
-    //         id: crypto.randomUUID(),
-    //         message,
-    //         type
-    //     };
-
-    //     setNotifications(old => [...old, newToast]);
-    // }
-
-    // function removeNotification(id) {
-    //     setNotifications(old => old.filter(toast => toast.id !== id));
-    // }
 
     function openModal(e) {
         setIsModalOpen(true);
@@ -251,12 +200,6 @@ export function ProductPage({ setModalMode }) {
         
     return (
         <>
-            {/* {notifications.length > 0 ? (
-                <Notifications notifications={notifications} setNotifications={setNotifications} />
-            ) :
-                null
-            } */}
-
             <div className="product-page">
                 <img src={product.image} alt={product.name} />
                 <h1>{product.name}</h1>
@@ -367,24 +310,6 @@ export function ProductPage({ setModalMode }) {
         </>
     );
 };
-
-// function Notifications({ notifications }) {
-//     return (
-//         <div className="notifications-section" popover="manual">
-//             <div className="body">
-//                 {notifications.map((notification, index) => {
-//                     console.log(notification);
-//                     const notificationClassName = `notification ${notification.type}`;
-//                     return (
-//                         <div key={index} className={notificationClassName}>
-//                             {notification.message}
-//                         </div>
-//                     )
-//                 })}
-//             </div>
-//         </div>
-//     )
-// }
 
 function Modal({ isModalOpen, setModalMode, onClose, title, children }) {
     const dialogRef = useRef(null);

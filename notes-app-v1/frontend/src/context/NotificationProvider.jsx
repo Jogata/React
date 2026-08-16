@@ -5,18 +5,11 @@ const NotificationContext = createContext(null);
 export function NotificationProvider({ children }) {
     const [notifications, setNotifications] = useState([]);
 
-    // function addNotification(message, type = "success") {
-    //     const newToast = { id: crypto.randomUUID(), message, type };
-    //     setNotifications(old => [...old, newToast]);
-    // }
     const addNotification = useCallback((message, type = "success") => {
         const newToast = { id: crypto.randomUUID(), message, type };
         setNotifications(old => [...old, newToast]);
     }, []);
-        
-    // function removeNotification(id) {
-    //     setNotifications(old => old.filter(toast => toast.id !== id));
-    // }
+    
     const removeNotification = useCallback((id) => {
         setNotifications(old => old.filter(toast => toast.id !== id));
     }, []);
@@ -50,7 +43,6 @@ function Notifications({ notifications, removeNotification }) {
   return (
     <div className="toast-container" ref={popoverRef} popover="manual">
       {notifications.map(toast => (
-        // <p className={`toast-box ${toast.type}`}>{toast.message}</p>
         <Notification key={toast.id} toast={toast} onDismiss={removeNotification} />
       ))}
     </div>
@@ -61,21 +53,12 @@ function Notification({ toast, onDismiss }) {
     const id = toast.id;
 
     useEffect(() => {
-        // console.log(id);
-        // function removeNotification(id) {
-        //     setNotifications(old => old.filter(toast => toast.id !== id));
-        // }
-
         const timer = setTimeout(() => {
             onDismiss(id);
         }, 3000);
 
         return () => clearTimeout(timer);
     }, [onDismiss, id]);
-
-    // function onDismiss(id) {
-    //     setNotifications(old => old.filter(toast => toast.id !== id));
-    // }
 
     return (
         <div className={`toast-box ${toast.type}`}>
