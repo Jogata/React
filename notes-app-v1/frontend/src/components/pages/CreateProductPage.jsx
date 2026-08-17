@@ -104,6 +104,7 @@ function CreateProductPage() {
             </form>
 
             <DevButton setNewProduct={setNewProduct} />
+            <TestButton />
         </>
     );
 };
@@ -158,6 +159,33 @@ function DevButton({ setNewProduct }) {
             onClick={generate}
         >
             generate
+        </button>
+    )
+}
+
+function TestButton() {
+    let a = 5;
+
+    function test() {
+        try {
+            console.log(a);
+            return ++a;
+        } catch (error) {
+            console.log(error);
+        } finally {
+            // a = 5;
+            console.log("finally " + a);
+        }
+    }
+
+    // console.log(a);
+
+    return (
+        <button
+            className="btn"
+            onClick={test}
+        >
+            test finally
         </button>
     )
 }

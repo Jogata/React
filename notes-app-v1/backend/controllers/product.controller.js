@@ -64,29 +64,17 @@ export const updateProduct = async (req, res) => {
 	} catch (error) {
 
 		if (error.name === "ValidationError") {
-			// const errorMessages = {};
-
-			// console.log(error.errors);
-
-			// Object.keys(error.errors).forEach((key) => {
-			// 	console.log(key);
-			// 	console.log(error.errors[key].message);
-			// 	errorMessages[key] = error.errors[key].message;
-			// });
-
 			const errorList = Object.keys(error.errors).map((key) => ({
 				field: key,
 				message: error.errors[key].message
 			}));
 
-			// return res.status(400).json({ success: false, errors: errorMessages });
 			return res.status(422).json({
 				success: false,
 				errors: errorList
 			});
 		}
 
-		// res.status(500).json({ success: false, message: "Server Error" });
 		res.status(500).json({
 			success: false,
 			errors: [
