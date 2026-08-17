@@ -14,11 +14,11 @@ function CreateProductPage() {
     useEffect(() => {
         return () => {
             if (abortControllerRef.current) {
-                console.log("clean up abort");
+                console.log("clean up abort", abortControllerRef.current);
                 abortControllerRef.current?.abort();
             }
         }
-    })
+    }, [])
 
     if (error) {
         return (
@@ -30,7 +30,7 @@ function CreateProductPage() {
 
     async function createProduct(newProduct, abortController) {
         abortController.current = new AbortController();
-        console.log(abortControllerRef.current);
+        // console.log(abortControllerRef.current);
 
         const response = await fetch("http://localhost:5000/api/products", {
             method: "POST",
@@ -55,20 +55,8 @@ function CreateProductPage() {
             customError.status = response.status;
             throw customError;
         }
-
-        // console.log(result);
-        // return result;
-        // setTimeout(() => {
-            //     console.log(result);
-            // }, 5000);
-            await new Promise((resolve) => {
-                setTimeout(() => {
-                    console.log("settimeout started");
-                    resolve();
-                }, 5000);
-            });
-
-            console.log("Product created successfully");
+        
+        console.log("Product created successfully");
             
         return result;
     }
@@ -77,9 +65,12 @@ function CreateProductPage() {
         e.preventDefault();
 
         if (abortControllerRef.current) {
-            console.log("fetch aborted");
-            abortControllerRef.current.abort();
-            abortControllerRef.current = null;
+            // console.log("fetch aborted");
+            console.log("currently creating");
+            // abortControllerRef.current.abort();
+            // abortControllerRef.current = null;
+            addNotification("You are currently creating a product");
+            return;
         }
 
         if (!newProduct.name || !newProduct.image || !newProduct.price) {
@@ -87,20 +78,25 @@ function CreateProductPage() {
             return;
         }
 
-        console.log(abortControllerRef.current);
+        // console.log(abortControllerRef.current);
 
         try {
             const response = await createProduct(newProduct, abortControllerRef);
             abortControllerRef.current = null;
 
             console.log("Product created successfully", response);
-            // addNotification("Product created successfully");
             addNotification(`Product ${response.data.name} created successfully`);
         } catch (error) {
             // setError(error.message);
+            // console.log(abortControllerRef.current);
+            // console.log(error.name);
             abortControllerRef.current = null;
-            console.log(error.message);
-            addNotification(error.message, "error");
+            // console.log(abortControllerRef.current);
+            // console.log(error.message);
+
+            if (error.name !== "AbortError") {
+                addNotification(error.message, "error");
+            }
         }
     }
 

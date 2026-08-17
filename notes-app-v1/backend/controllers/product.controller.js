@@ -20,7 +20,10 @@ export const createProduct = async (req, res) => {
 		const newProduct = await Product.create(product);
 		const productUrl = `/api/products/${newProduct._id}`;
 	
-		res.status(201).location(productUrl).json({ success: true, data: newProduct });
+		// res.status(201).location(productUrl).json({ success: true, data: newProduct });
+		setTimeout(() => {
+			res.status(201).location(productUrl).json({ success: true, data: newProduct });
+		}, 5000);
 	} catch (error) {
 		// todo: ValidationError
 		let message = error.message;
