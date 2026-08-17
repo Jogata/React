@@ -330,24 +330,24 @@ function ProductCard({ product, handleDeleteProduct, handleUpdateProduct }) {
     );
 };
 
-function ProductCard1({product}) {
-    return (
-        <Link to={`/products/${product.id}`} className="product-card">
-            <img src={product.image} alt="" />
-            <h3>{product.name}</h3>
+// function ProductCard1({product}) {
+//     return (
+//         <Link to={`/products/${product.id}`} className="product-card">
+//             <img src={product.image} alt="" />
+//             <h3>{product.name}</h3>
 
-            <button
-                onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    // addToCart(product);
-                }}
-            >
-                Add to Cart
-            </button>
-        </Link>
-    )
-}
+//             <button
+//                 onClick={(e) => {
+//                     e.preventDefault();
+//                     e.stopPropagation();
+//                     addToCart(product);
+//                 }}
+//             >
+//                 Add to Cart
+//             </button>
+//         </Link>
+//     )
+// }
 
 function Notifications({notifications}) {
     return (

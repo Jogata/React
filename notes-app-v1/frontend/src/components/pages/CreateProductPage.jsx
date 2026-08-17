@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNotify } from "../../context/NotificationProvider";
 
 function CreateProductPage() {
@@ -9,6 +9,16 @@ function CreateProductPage() {
     });
     const [ error, setError ] = useState(null);
     const { addNotification } = useNotify();
+    const abortControllerRef = useRef(null);
+
+    useEffect(() => {
+        return () => {
+            if (abortControllerRef.current) {
+                console.log("clean up abort");
+                abortControllerRef.current?.abort();
+            }
+        }
+    })
 
     if (error) {
         return (
@@ -18,13 +28,17 @@ function CreateProductPage() {
         )
     }
 
-    async function createProduct(newProduct) {
+    async function createProduct(newProduct, abortController) {
+        abortController.current = new AbortController();
+        console.log(abortControllerRef.current);
+
         const response = await fetch("http://localhost:5000/api/products", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(newProduct),
+            signal: abortController.current.signal
         });
 
         const contentType = response.headers.get("content-type");
@@ -42,27 +56,49 @@ function CreateProductPage() {
             throw customError;
         }
 
-        console.log("Product created successfully");
         // console.log(result);
+        // return result;
+        // setTimeout(() => {
+            //     console.log(result);
+            // }, 5000);
+            await new Promise((resolve) => {
+                setTimeout(() => {
+                    console.log("settimeout started");
+                    resolve();
+                }, 5000);
+            });
+
+            console.log("Product created successfully");
+            
         return result;
     }
 
-    async function handleCreateProduct1(e) {
+    async function handleCreateProduct(e) {
         e.preventDefault();
+
+        if (abortControllerRef.current) {
+            console.log("fetch aborted");
+            abortControllerRef.current.abort();
+            abortControllerRef.current = null;
+        }
 
         if (!newProduct.name || !newProduct.image || !newProduct.price) {
             addNotification("Please fill in all fields.", "error");
             return;
         }
 
+        console.log(abortControllerRef.current);
+
         try {
-            const response = await createProduct(newProduct);
+            const response = await createProduct(newProduct, abortControllerRef);
+            abortControllerRef.current = null;
 
             console.log("Product created successfully", response);
             // addNotification("Product created successfully");
             addNotification(`Product ${response.data.name} created successfully`);
         } catch (error) {
             // setError(error.message);
+            abortControllerRef.current = null;
             console.log(error.message);
             addNotification(error.message, "error");
         }
@@ -74,7 +110,7 @@ function CreateProductPage() {
                 <h1>Create New Product</h1>
             </header>
 
-            <form className="form centered" onSubmit={handleCreateProduct1}>
+            <form className="form centered" onSubmit={handleCreateProduct}>
                 <input
                     className="form-input"
                     name="name"
@@ -104,7 +140,7 @@ function CreateProductPage() {
             </form>
 
             <DevButton setNewProduct={setNewProduct} />
-            <TestButton />
+            {/* <TestButton /> */}
         </>
     );
 };
@@ -163,31 +199,31 @@ function DevButton({ setNewProduct }) {
     )
 }
 
-function TestButton() {
-    let a = 5;
+// function TestButton() {
+//     let a = 5;
 
-    function test() {
-        try {
-            console.log(a);
-            return ++a;
-        } catch (error) {
-            console.log(error);
-        } finally {
-            // a = 5;
-            console.log("finally " + a);
-        }
-    }
+//     function test() {
+//         try {
+//             console.log(a);
+//             return ++a;
+//         } catch (error) {
+//             console.log(error);
+//         } finally {
+//             a = 5;
+//             console.log("finally " + a);
+//         }
+//     }
 
-    // console.log(a);
+//     console.log(a);
 
-    return (
-        <button
-            className="btn"
-            onClick={test}
-        >
-            test finally
-        </button>
-    )
-}
+//     return (
+//         <button
+//             className="btn"
+//             onClick={test}
+//         >
+//             test finally
+//         </button>
+//     )
+// }
 
 export default CreateProductPage;
