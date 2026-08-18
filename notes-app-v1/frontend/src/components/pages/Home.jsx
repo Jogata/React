@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-// import { Link } from "react-router-dom";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useNotify } from "../../context/NotificationProvider";
+// import { Link, useLocation } from "react-router-dom";
 
 function formatDate(date) {
     return date.toLocaleDateString("en-US", {
@@ -11,24 +12,25 @@ function formatDate(date) {
 }
 
 const HomePage = () => {
-    const location = useLocation();
-    let state = [];
+    // const location = useLocation();
+    // let state = [];
 
-    if (location.state?.product) {
-        console.log(location.state.message);
-        state = [location.state.message];
-    } else {
-        console.log("no product in the location state");
-    }
+    // if (location.state?.product) {
+    //     console.log(location.state.message);
+    //     state = [location.state.message];
+    // } else {
+    //     console.log("no product in the location state");
+    // }
 
     const [products, setProducts] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [notifications, setNotifications] = useState(state);
+    // const [notifications, setNotifications] = useState(state);
+    const {addNotification} = useNotify();
     const abortControllerRef = useRef(null);
 
     useEffect(() => {
-        console.log("home / use effect / fetch products");
+        // console.log("home / use effect / fetch products");
 
         loadProducts();
 
@@ -38,20 +40,10 @@ const HomePage = () => {
                 const { products } = await getAllProducts();
                 setProducts(products);
                 setError(null);
-                // setTimeout(() => {
-                //     setProducts(products);
-                //     setError(null);
-                // }, 3000);
             } catch (err) {
                 setError(err.message);
-                // setTimeout(() => {
-                //     setError(err.message);
-                // }, 3000);
             } finally {
                 setLoading(false);
-                // if (!controller.signal.aborted) {
-                //     setLoading(false);
-                // }
             }
         }
 
@@ -139,10 +131,12 @@ const HomePage = () => {
         try {
             await deleteProduct(pid);
             setProducts(prevProducts => prevProducts.filter(p => p._id !== pid));
-            setNotifications([{message: `Product ${pid} deleted`, type: "success"}]);
+            // setNotifications([{message: `Product ${pid} deleted`, type: "success"}]);
+            addNotification(`Product ${pid} deleted`);
         } catch (err) {
             // setError(err.message);
-            setNotifications([{message: err.message, type: "error"}]);
+            // setNotifications([{message: err.message, type: "error"}]);
+            addNotification(err.message, "error");
         }
     }
 
@@ -183,10 +177,12 @@ const HomePage = () => {
             // setProducts(prevProducts => prevProducts.filter(p => p._id !== pid));
             const updatedProducts = products.map(product => product._id !== pid ? result.data : product);
             setProducts(updatedProducts);
-            setNotifications([{message: `Product ${pid} updated`, type: "success"}]);
+            // setNotifications([{message: `Product ${pid} updated`, type: "success"}]);
+            addNotification(`Product ${pid} updated`);
         } catch (err) {
             // setError(err.message);
-            setNotifications([{message: err.message, type: "error"}]);
+            // setNotifications([{message: err.message, type: "error"}]);
+            addNotification(err.message, "error");
         }
     }
 
@@ -241,11 +237,11 @@ const HomePage = () => {
 
     return (
         <>
-            {notifications.length > 0 ? (
+            {/* {notifications.length > 0 ? (
                 <Notifications notifications={notifications} />
             ) :
                 null
-            }
+            } */}
 
             {products.length === 0 ? (
                 <header className="main-header">
@@ -330,42 +326,23 @@ function ProductCard({ product, handleDeleteProduct, handleUpdateProduct }) {
     );
 };
 
-// function ProductCard1({product}) {
+// function Notifications({notifications}) {
 //     return (
-//         <Link to={`/products/${product.id}`} className="product-card">
-//             <img src={product.image} alt="" />
-//             <h3>{product.name}</h3>
-
-//             <button
-//                 onClick={(e) => {
-//                     e.preventDefault();
-//                     e.stopPropagation();
-//                     addToCart(product);
-//                 }}
-//             >
-//                 Add to Cart
-//             </button>
-//         </Link>
+//         <div className="notifications-section">
+//             <div className="body">
+//                 {notifications.map((notification, index) => {
+//                     console.log(notification);
+//                     const notificationClassName = `notification ${notification.type}`;
+//                     return (
+//                         <div key={index} className={notificationClassName}>
+//                             {notification.message}
+//                         </div>
+//                     )
+//                 })}
+//             </div>
+//         </div>
 //     )
 // }
-
-function Notifications({notifications}) {
-    return (
-        <div className="notifications-section">
-            <div className="body">
-                {notifications.map((notification, index) => {
-                    console.log(notification);
-                    const notificationClassName = `notification ${notification.type}`;
-                    return (
-                        <div key={index} className={notificationClassName}>
-                            {notification.message}
-                        </div>
-                    )
-                })}
-            </div>
-        </div>
-    )
-}
 
 async function fetchWithTimeout(url, options = {}, timeoutMs = 5000) {
     const timeoutController = new AbortController();

@@ -8,13 +8,14 @@ function CreateProductPage() {
         image: "https://cdn.pixabay.com/photo/2016/11/21/13/58/analog-watch-1845547_1280.jpg",
     });
     const [ error, setError ] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const { addNotification } = useNotify();
     const abortControllerRef = useRef(null);
 
     useEffect(() => {
         return () => {
             if (abortControllerRef.current) {
-                console.log("clean up abort", abortControllerRef.current);
+                // console.log("clean up abort", abortControllerRef.current);
                 abortControllerRef.current?.abort();
             }
         }
@@ -30,7 +31,6 @@ function CreateProductPage() {
 
     async function createProduct(newProduct, abortController) {
         abortController.current = new AbortController();
-        // console.log(abortControllerRef.current);
 
         const response = await fetch("http://localhost:5000/api/products", {
             method: "POST",
@@ -65,10 +65,7 @@ function CreateProductPage() {
         e.preventDefault();
 
         if (abortControllerRef.current) {
-            // console.log("fetch aborted");
-            console.log("currently creating");
-            // abortControllerRef.current.abort();
-            // abortControllerRef.current = null;
+            // console.log("currently creating");
             addNotification("You are currently creating a product");
             return;
         }
@@ -78,8 +75,6 @@ function CreateProductPage() {
             return;
         }
 
-        // console.log(abortControllerRef.current);
-
         try {
             const response = await createProduct(newProduct, abortControllerRef);
             abortControllerRef.current = null;
@@ -88,11 +83,7 @@ function CreateProductPage() {
             addNotification(`Product ${response.data.name} created successfully`);
         } catch (error) {
             // setError(error.message);
-            // console.log(abortControllerRef.current);
-            // console.log(error.name);
             abortControllerRef.current = null;
-            // console.log(abortControllerRef.current);
-            // console.log(error.message);
 
             if (error.name !== "AbortError") {
                 addNotification(error.message, "error");
@@ -130,13 +121,12 @@ function CreateProductPage() {
                     placeholder="Image URL"
                 />
 
-                <button className="btn">
+                <button className="btn" aria-disabled={isSubmitting}>
                     Add Product
                 </button>
             </form>
 
             <DevButton setNewProduct={setNewProduct} />
-            {/* <TestButton /> */}
         </>
     );
 };
@@ -167,7 +157,7 @@ function ProductForm() {
                 placeholder="Image URL"
             />
 
-            <button className="btn">
+            <button className="btn" aria-disabled={isSubmitting}>
                 Add Product
             </button>
         </form>
@@ -194,32 +184,5 @@ function DevButton({ setNewProduct }) {
         </button>
     )
 }
-
-// function TestButton() {
-//     let a = 5;
-
-//     function test() {
-//         try {
-//             console.log(a);
-//             return ++a;
-//         } catch (error) {
-//             console.log(error);
-//         } finally {
-//             a = 5;
-//             console.log("finally " + a);
-//         }
-//     }
-
-//     console.log(a);
-
-//     return (
-//         <button
-//             className="btn"
-//             onClick={test}
-//         >
-//             test finally
-//         </button>
-//     )
-// }
 
 export default CreateProductPage;
