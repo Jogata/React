@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNotify } from "../../context/NotificationProvider";
-// import { Link, useLocation } from "react-router-dom";
 
 function formatDate(date) {
     return date.toLocaleDateString("en-US", {
@@ -12,26 +11,13 @@ function formatDate(date) {
 }
 
 const HomePage = () => {
-    // const location = useLocation();
-    // let state = [];
-
-    // if (location.state?.product) {
-    //     console.log(location.state.message);
-    //     state = [location.state.message];
-    // } else {
-    //     console.log("no product in the location state");
-    // }
-
     const [products, setProducts] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
-    // const [notifications, setNotifications] = useState(state);
     const {addNotification} = useNotify();
     const abortControllerRef = useRef(null);
 
     useEffect(() => {
-        // console.log("home / use effect / fetch products");
-
         loadProducts();
 
         async function loadProducts() {
@@ -131,11 +117,9 @@ const HomePage = () => {
         try {
             await deleteProduct(pid);
             setProducts(prevProducts => prevProducts.filter(p => p._id !== pid));
-            // setNotifications([{message: `Product ${pid} deleted`, type: "success"}]);
             addNotification(`Product ${pid} deleted`);
         } catch (err) {
             // setError(err.message);
-            // setNotifications([{message: err.message, type: "error"}]);
             addNotification(err.message, "error");
         }
     }
@@ -177,11 +161,9 @@ const HomePage = () => {
             // setProducts(prevProducts => prevProducts.filter(p => p._id !== pid));
             const updatedProducts = products.map(product => product._id !== pid ? result.data : product);
             setProducts(updatedProducts);
-            // setNotifications([{message: `Product ${pid} updated`, type: "success"}]);
             addNotification(`Product ${pid} updated`);
         } catch (err) {
             // setError(err.message);
-            // setNotifications([{message: err.message, type: "error"}]);
             addNotification(err.message, "error");
         }
     }
@@ -228,10 +210,10 @@ const HomePage = () => {
 
 // const requestManager = new RequestManager();
 
-// requestManager.fetch('user-profile', '/api/user/123');
-// requestManager.fetch('user-posts', '/api/user/123/posts');
+// requestManager.fetch("user-profile", "/api/user/123");
+// requestManager.fetch("user-posts", "/api/user/123/posts");
 
-// requestManager.cancel('user-profile');
+// requestManager.cancel("user-profile");
 
 // requestManager.cancelAll();
 
@@ -326,23 +308,54 @@ function ProductCard({ product, handleDeleteProduct, handleUpdateProduct }) {
     );
 };
 
-// function Notifications({notifications}) {
-//     return (
-//         <div className="notifications-section">
-//             <div className="body">
-//                 {notifications.map((notification, index) => {
-//                     console.log(notification);
-//                     const notificationClassName = `notification ${notification.type}`;
-//                     return (
-//                         <div key={index} className={notificationClassName}>
-//                             {notification.message}
-//                         </div>
-//                     )
-//                 })}
-//             </div>
-//         </div>
-//     )
-// }
+
+function ProductList({ initialProducts }) {
+  const [products, setProducts] = useState(initialProducts);
+  const { addNotification } = useNotify();
+
+  const handleDelete = async (productId, productName) => {
+    const originalProducts = [...products];
+
+    setProducts(prev => prev.filter(p => p.id !== productId));
+
+    try {
+      await fetch(`/api/products/${productId}/delete`, { method: "PATCH" });
+
+      addNotification(
+        `"${productName}" was deleted.`, 
+        "neutral", 
+        {
+          label: "Undo",
+          onClick: () => handleUndo(productId, originalProducts)
+        }
+      );
+    } catch (err) {
+      setProducts(originalProducts);
+      addNotification("Failed to delete product.", "error");
+    }
+  };
+
+  const handleUndo = async (productId, originalProducts) => {
+    try {
+      await fetch(`/api/products/${productId}/undo`, { method: "POST" });
+      
+      setProducts(originalProducts);
+    } catch (err) {
+      addNotification("Could not undo deletion. The time frame expired.", "error");
+    }
+  };
+
+  return (
+    <div>
+      {products.map(product => (
+        <div key={product.id} className="product-row">
+          <span>{product.name}</span>
+          <button onClick={() => handleDelete(product.id, product.name)}>Delete</button>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 async function fetchWithTimeout(url, options = {}, timeoutMs = 5000) {
     const timeoutController = new AbortController();
@@ -381,7 +394,7 @@ function Links({products}) {
     )
 }
 
-function Header({ title, as: HeadingTag = 'h2', children }) {
+function Header({ title, as: HeadingTag = "h2", children }) {
     if (children) {
         return (
             <header className={`${HeadingTag}-header`}>

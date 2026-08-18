@@ -55,7 +55,6 @@ function Notification({ toast, onDismiss }) {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      // onDismiss(id);
       setFadeout(true);
     }, 6000);
 
