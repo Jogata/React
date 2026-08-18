@@ -67,6 +67,8 @@ export default Product;
 // 	sku: {
 // 		type: String,
 // 		required: [true, "SKU is required"],
+//      uppercase: true,
+//      minlength: [8, 'SKU must be at least 8 characters long'],
 // 		validate: [
 // 			{
 // 				validator: function (val) {

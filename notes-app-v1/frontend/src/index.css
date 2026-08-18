@@ -513,6 +513,16 @@ main {
   --local-color: crimson;
 }
 
+.toast-box.fade-out {
+  animation: fade-out 1s linear forwards;
+}
+
+@keyframes fade-out {
+  100% {
+    opacity: 0;
+  }
+}
+
 .toast-box {
   /* border: 3px solid var(--local-color); */
   /* background-color: var(--local-color); */

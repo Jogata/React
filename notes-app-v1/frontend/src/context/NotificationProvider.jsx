@@ -41,7 +41,7 @@ function Notifications({ notifications, removeNotification }) {
   }, [notifications.length]);
 
   return (
-    <div className="toast-container" ref={popoverRef} popover="manual">
+    <div className="toast-container" ref={popoverRef} popover="manual" role="status">
       {notifications.map(toast => (
         <Notification key={toast.id} toast={toast} onDismiss={removeNotification} />
       ))}
@@ -50,28 +50,34 @@ function Notifications({ notifications, removeNotification }) {
 }
 
 function Notification({ toast, onDismiss }) {
-    const id = toast.id;
+  const [fadeout, setFadeout] = useState(false)
+  const id = toast.id;
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            onDismiss(id);
-        }, 3000);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // onDismiss(id);
+      setFadeout(true);
+    }, 6000);
 
-        return () => clearTimeout(timer);
-    }, [onDismiss, id]);
+    return () => clearTimeout(timer);
+  }, [onDismiss, id]);
 
-    return (
-        <div className={`toast-box ${toast.type}`}>
-            <p>{toast.message}</p>
-            <button
-                type="button"
-                onClick={() => onDismiss(id)}
-                aria-label="Dismiss alert"
-            >
-                <span>X</span>
-            </button>
-        </div>
-    );
+  // const accessibilityRole = toast.type === "error" ? "alert" : "status";
+  const notificationClassName = fadeout ? `toast-box ${toast.type} fade-out` : `toast-box ${toast.type}`;
+
+  return (
+    // <div className={`toast-box ${toast.type}`} role={accessibilityRole}>
+    <div className={notificationClassName} onAnimationEnd={() => onDismiss(id)}>
+      <p>{toast.message}</p>
+      <button
+        type="button"
+        onClick={() => onDismiss(id)}
+        aria-label="Dismiss alert"
+      >
+        <span>X</span>
+      </button>
+    </div>
+  );
 }
 
 export const useNotify = () => useContext(NotificationContext);
