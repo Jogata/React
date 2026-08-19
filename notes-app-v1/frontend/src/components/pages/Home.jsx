@@ -318,43 +318,72 @@ function ProductCard({ product, handleDeleteProduct, handleUpdateProduct }) {
 
 function ProductCardLink({ product, handleDeleteProduct, handleUpdateProduct }) {
     return (
-        <article className="product-card">
-            <img src={product.image} alt={product.name} />
+        // <article className="product-card">
+        //     <img src={product.image} alt={product.name} />
 
-            <div className="content">
-                {/* <h2>{product.name}</h2> */}
-                <h2>
-                    <Link to={`/products/${product._id}`} className="main-card-link">
-                        {product.name}
-                    </Link>
-                </h2>
-                <data className="price" value={product.price}>${product.price}</data>
-            </div>
+        //     <div className="content">
+        //         <h2>
+        //             <Link to={`/products/${product._id}`} className="main-card-link">
+        //                 {product.name}
+        //             </Link>
+        //         </h2>
+        //         <data className="price" value={product.price}>${product.price}</data>
+        //     </div>
 
-            <div className="actions">
-                <button
-                    type="button"
-                    className="icon edit-btn"
-                    title="Edit"
-                >
-                    <span className="sr-only">Edit product {product.name}</span>
-                    <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
-                </button>
-                <button
-                    type="button"
-                    className="icon delete-btn"
-                    title="Delete"
-                    onClick={() => handleDeleteProduct(product._id)}
-                >
-                    <span className="sr-only">Delete product {product.name}</span>
-                    <i className="fa fa-trash-o" aria-hidden="true"></i>
-                </button>
-            </div>
+        //     <div className="actions">
+        //         <button
+        //             type="button"
+        //             className="icon edit-btn"
+        //             title="Edit"
+        //         >
+        //             <span className="sr-only">Edit product {product.name}</span>
+        //             <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
+        //         </button>
+        //         <button
+        //             type="button"
+        //             className="icon delete-btn"
+        //             title="Delete"
+        //             onClick={() => handleDeleteProduct(product._id)}
+        //         >
+        //             <span className="sr-only">Delete product {product.name}</span>
+        //             <i className="fa fa-trash-o" aria-hidden="true"></i>
+        //         </button>
+        //     </div>
 
-            <footer className="metadata">
-                <p>{formatDate(new Date(product.createdAt))}</p>
-            </footer>
-        </article>
+        //     <footer className="metadata">
+        //         <p>{formatDate(new Date(product.createdAt))}</p>
+        //     </footer>
+        // </article>
+        <div className="product-card">
+
+            <a href="/products/1" tabIndex="-1" aria-hidden="true">
+                <img src="shirt.jpg" alt="" />
+            </a>
+
+            <h3>
+                <a href="/products/1">Blue Shirt</a>
+            </h3>
+
+            <p>Our best selling shirt.</p>
+
+            <button
+                type="button"
+                className="icon edit-btn"
+                title="Edit"
+            >
+                <span className="sr-only">Edit product {product.name}</span>
+                <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
+            </button>
+            <button
+                type="button"
+                className="icon delete-btn"
+                title="Delete"
+                onClick={() => handleDeleteProduct(product._id)}
+            >
+                <span className="sr-only">Delete product {product.name}</span>
+                <i className="fa fa-trash-o" aria-hidden="true"></i>
+            </button>
+        </div>
     );
 }
 
@@ -436,7 +465,7 @@ function Links({products}) {
     return (
         <div className="links">
             {products.map(product => (
-                <Link key={product._id} to={`product/${product._id}`}>
+                <Link key={product._id} to={`products/${product._id}`}>
                     {product.name}
                 </Link>
             ))}
