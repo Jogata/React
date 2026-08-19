@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useNotify } from "../../context/NotificationProvider";
 
 function CreateProductPage() {
@@ -8,18 +8,17 @@ function CreateProductPage() {
         image: "https://cdn.pixabay.com/photo/2016/11/21/13/58/analog-watch-1845547_1280.jpg",
     });
     const [ error, setError ] = useState(null);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [ isSubmitting, setIsSubmitting ] = useState(false);
     const { addNotification } = useNotify();
-    const abortControllerRef = useRef(null);
+    // const abortControllerRef = useRef(null);
 
-    useEffect(() => {
-        return () => {
-            if (abortControllerRef.current) {
-                // console.log("clean up abort", abortControllerRef.current);
-                abortControllerRef.current?.abort();
-            }
-        }
-    }, [])
+    // useEffect(() => {
+    //     return () => {
+    //         if (abortControllerRef.current) {
+    //             abortControllerRef.current?.abort();
+    //         }
+    //     }
+    // }, [])
 
     if (error) {
         return (
@@ -29,8 +28,8 @@ function CreateProductPage() {
         )
     }
 
-    async function createProduct(newProduct, abortController) {
-        abortController.current = new AbortController();
+    async function createProduct(newProduct) {
+        // abortController.current = new AbortController();
 
         const response = await fetch("http://localhost:5000/api/products", {
             method: "POST",
@@ -38,7 +37,7 @@ function CreateProductPage() {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(newProduct),
-            signal: abortController.current.signal
+            // signal: abortController.current.signal
         });
 
         const contentType = response.headers.get("content-type");
@@ -64,11 +63,10 @@ function CreateProductPage() {
     async function handleCreateProduct(e) {
         e.preventDefault();
 
-        if (abortControllerRef.current) {
-            // console.log("currently creating");
-            addNotification("You are currently creating a product");
-            return;
-        }
+        // if (abortControllerRef.current) {
+        //     addNotification("You are currently creating a product");
+        //     return;
+        // }
 
         if (!newProduct.name || !newProduct.image || !newProduct.price) {
             addNotification("Please fill in all fields.", "error");
@@ -77,27 +75,31 @@ function CreateProductPage() {
 
         try {
             const response = await createProduct(newProduct, abortControllerRef);
-            abortControllerRef.current = null;
+            // abortControllerRef.current = null;
 
             console.log("Product created successfully", response);
             addNotification(`Product ${response.data.name} created successfully`);
         } catch (error) {
             // setError(error.message);
-            abortControllerRef.current = null;
+            // abortControllerRef.current = null;
 
-            if (error.name !== "AbortError") {
+            // if (error.name !== "AbortError") {
                 addNotification(error.message, "error");
-            }
+            // }
         }
     }
 
     return (
         <>
-            <header className="main-header">
+            <header className="main-header" id="form-title">
                 <h1>Create New Product</h1>
             </header>
 
-            <form className="form centered" onSubmit={handleCreateProduct}>
+            <form 
+                className="form centered" 
+                aria-labelledby="form-title" 
+                onSubmit={handleCreateProduct}
+            >
                 <input
                     className="form-input"
                     name="name"

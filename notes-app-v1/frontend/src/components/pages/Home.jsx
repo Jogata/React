@@ -39,6 +39,7 @@ const HomePage = () => {
             const response = await fetch("http://localhost:5000/api/products", {
                 signal: abortControllerRef.current.signal
             });
+            
             const contentType = response.headers.get("content-type");
         
             if (!response.ok) {
