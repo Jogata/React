@@ -10,15 +10,6 @@ function CreateProductPage() {
     const [ error, setError ] = useState(null);
     const [ isSubmitting, setIsSubmitting ] = useState(false);
     const { addNotification } = useNotify();
-    // const abortControllerRef = useRef(null);
-
-    // useEffect(() => {
-    //     return () => {
-    //         if (abortControllerRef.current) {
-    //             abortControllerRef.current?.abort();
-    //         }
-    //     }
-    // }, [])
 
     if (error) {
         return (
@@ -29,7 +20,6 @@ function CreateProductPage() {
     }
 
     async function createProduct(newProduct) {
-        // abortController.current = new AbortController();
 
         const response = await fetch("http://localhost:5000/api/products", {
             method: "POST",
@@ -37,7 +27,6 @@ function CreateProductPage() {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(newProduct),
-            // signal: abortController.current.signal
         });
 
         const contentType = response.headers.get("content-type");
@@ -62,11 +51,12 @@ function CreateProductPage() {
 
     async function handleCreateProduct(e) {
         e.preventDefault();
+        setIsSubmitting(true);
 
-        // if (abortControllerRef.current) {
-        //     addNotification("You are currently creating a product");
-        //     return;
-        // }
+        if (isSubmitting) {
+            console.log("the foerm is submitting");
+            return;
+        }
 
         if (!newProduct.name || !newProduct.image || !newProduct.price) {
             addNotification("Please fill in all fields.", "error");
@@ -75,17 +65,14 @@ function CreateProductPage() {
 
         try {
             const response = await createProduct(newProduct, abortControllerRef);
-            // abortControllerRef.current = null;
 
             console.log("Product created successfully", response);
             addNotification(`Product ${response.data.name} created successfully`);
         } catch (error) {
             // setError(error.message);
-            // abortControllerRef.current = null;
-
-            // if (error.name !== "AbortError") {
-                addNotification(error.message, "error");
-            // }
+            addNotification(error.message, "error");
+        } finally {
+            setIsSubmitting(false);
         }
     }
 

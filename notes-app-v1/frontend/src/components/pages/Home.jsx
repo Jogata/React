@@ -39,7 +39,7 @@ const HomePage = () => {
             const response = await fetch("http://localhost:5000/api/products", {
                 signal: abortControllerRef.current.signal
             });
-            
+
             const contentType = response.headers.get("content-type");
         
             if (!response.ok) {
@@ -257,12 +257,18 @@ function ProductsSection({ products, handleDeleteProduct, handleUpdateProduct })
                 <section className="section">
                     <div className="products">
                         {products.map(product => (
-                            <ProductCard 
+                            <ProductCardLink 
                                 key={product._id} 
                                 product={product} 
                                 handleDeleteProduct={handleDeleteProduct} 
                                 handleUpdateProduct={handleUpdateProduct}
                             />
+                            // <ProductCard 
+                            //     key={product._id} 
+                            //     product={product} 
+                            //     handleDeleteProduct={handleDeleteProduct} 
+                            //     handleUpdateProduct={handleUpdateProduct}
+                            // />
                         ))}
                     </div>
                 </section>
@@ -310,53 +316,96 @@ function ProductCard({ product, handleDeleteProduct, handleUpdateProduct }) {
 };
 
 
-function ProductList({ initialProducts }) {
-  const [products, setProducts] = useState(initialProducts);
-  const { addNotification } = useNotify();
+function ProductCardLink({ product, handleDeleteProduct, handleUpdateProduct }) {
+    return (
+        <article className="product-card">
+            <img src={product.image} alt={product.name} />
 
-  const handleDelete = async (productId, productName) => {
-    const originalProducts = [...products];
+            <div className="content">
+                {/* <h2>{product.name}</h2> */}
+                <h2>
+                    <Link to={`/products/${product._id}`} className="main-card-link">
+                        {product.name}
+                    </Link>
+                </h2>
+                <data className="price" value={product.price}>${product.price}</data>
+            </div>
 
-    setProducts(prev => prev.filter(p => p.id !== productId));
+            <div className="actions">
+                <button
+                    type="button"
+                    className="icon edit-btn"
+                    title="Edit"
+                >
+                    <span className="sr-only">Edit product {product.name}</span>
+                    <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
+                </button>
+                <button
+                    type="button"
+                    className="icon delete-btn"
+                    title="Delete"
+                    onClick={() => handleDeleteProduct(product._id)}
+                >
+                    <span className="sr-only">Delete product {product.name}</span>
+                    <i className="fa fa-trash-o" aria-hidden="true"></i>
+                </button>
+            </div>
 
-    try {
-      await fetch(`/api/products/${productId}/delete`, { method: "PATCH" });
-
-      addNotification(
-        `"${productName}" was deleted.`, 
-        "neutral", 
-        {
-          label: "Undo",
-          onClick: () => handleUndo(productId, originalProducts)
-        }
-      );
-    } catch (err) {
-      setProducts(originalProducts);
-      addNotification("Failed to delete product.", "error");
-    }
-  };
-
-  const handleUndo = async (productId, originalProducts) => {
-    try {
-      await fetch(`/api/products/${productId}/undo`, { method: "POST" });
-      
-      setProducts(originalProducts);
-    } catch (err) {
-      addNotification("Could not undo deletion. The time frame expired.", "error");
-    }
-  };
-
-  return (
-    <div>
-      {products.map(product => (
-        <div key={product.id} className="product-row">
-          <span>{product.name}</span>
-          <button onClick={() => handleDelete(product.id, product.name)}>Delete</button>
-        </div>
-      ))}
-    </div>
-  );
+            <footer className="metadata">
+                <p>{formatDate(new Date(product.createdAt))}</p>
+            </footer>
+        </article>
+    );
 }
+
+
+// function ProductList({ initialProducts }) {
+//   const [products, setProducts] = useState(initialProducts);
+//   const { addNotification } = useNotify();
+
+//   const handleDelete = async (productId, productName) => {
+//     const originalProducts = [...products];
+
+//     setProducts(prev => prev.filter(p => p.id !== productId));
+
+//     try {
+//       await fetch(`/api/products/${productId}/delete`, { method: "PATCH" });
+
+//       addNotification(
+//         `"${productName}" was deleted.`, 
+//         "neutral", 
+//         {
+//           label: "Undo",
+//           onClick: () => handleUndo(productId, originalProducts)
+//         }
+//       );
+//     } catch (err) {
+//       setProducts(originalProducts);
+//       addNotification("Failed to delete product.", "error");
+//     }
+//   };
+
+//   const handleUndo = async (productId, originalProducts) => {
+//     try {
+//       await fetch(`/api/products/${productId}/undo`, { method: "POST" });
+      
+//       setProducts(originalProducts);
+//     } catch (err) {
+//       addNotification("Could not undo deletion. The time frame expired.", "error");
+//     }
+//   };
+
+//   return (
+//     <div>
+//       {products.map(product => (
+//         <div key={product.id} className="product-row">
+//           <span>{product.name}</span>
+//           <button onClick={() => handleDelete(product.id, product.name)}>Delete</button>
+//         </div>
+//       ))}
+//     </div>
+//   );
+// }
 
 async function fetchWithTimeout(url, options = {}, timeoutMs = 5000) {
     const timeoutController = new AbortController();

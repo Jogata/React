@@ -46,7 +46,7 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/product/:id" element={<ProductPage modalMode={modalMode} setModalMode={setModalMode} />} />
+          <Route path="/products/:id" element={<ProductPage modalMode={modalMode} setModalMode={setModalMode} />} />
           <Route path="/create" element={<CreateProductPage />} />
         </Routes>
       </main>
