@@ -387,6 +387,41 @@ function ProductCardLink({ product, handleDeleteProduct, handleUpdateProduct }) 
     );
 }
 
+function ProductCardAsLink({ product, buyProduct }) {
+    const linkRef = useRef(null);
+
+    function openProductPage(e) {
+        e.preventDefault();
+        linkRef.click();
+    }
+
+    function handleBuyProduct(e, id) {
+        e.stopPropagation();
+        buyProduct(id);
+    }
+
+    return (
+        <div className="product-card" onClick={openProductPage}>
+
+            <img src="shirt.jpg" alt="" />
+
+            <h3>
+                <Link ref={linkRef} to="/products/1">Blue Shirt</Link>
+            </h3>
+
+            <p>Our best selling shirt.</p>
+
+            <button
+                type="button"
+                className="btn"
+                title="Buy product"
+                onClick={() => handleBuyProduct(product._id)}
+            >
+                Buy product
+            </button>
+        </div>
+    );
+}
 
 // function ProductList({ initialProducts }) {
 //   const [products, setProducts] = useState(initialProducts);
