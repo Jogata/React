@@ -64,7 +64,7 @@ function CreateProductPage() {
         }
 
         try {
-            const response = await createProduct(newProduct, abortControllerRef);
+            const response = await createProduct(newProduct);
 
             console.log("Product created successfully", response);
             addNotification(`Product ${response.data.name} created successfully`);

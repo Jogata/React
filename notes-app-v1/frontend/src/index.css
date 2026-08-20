@@ -735,3 +735,24 @@ main {
   position: relative;
   z-index: 2; 
 }
+
+.cRH23c {
+  position: relative;
+  padding-block: 14px;
+  padding-inline: 16px;
+}
+
+.vIWmYe {
+  position: absolute;
+  inset: 2px;
+  z-index: 1;
+}
+
+.EsZCkf {
+  margin: 0 16px;
+  border-block-start: 1px solid var(--Aqn7xd);
+}
+
+.product-card p {
+  border: 1px solid red;
+}

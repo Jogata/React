@@ -220,12 +220,6 @@ const HomePage = () => {
 
     return (
         <>
-            {/* {notifications.length > 0 ? (
-                <Notifications notifications={notifications} />
-            ) :
-                null
-            } */}
-
             {products.length === 0 ? (
                 <header className="main-header">
                     <h1>No products found</h1>
@@ -257,7 +251,7 @@ function ProductsSection({ products, handleDeleteProduct, handleUpdateProduct })
                 <section className="section">
                     <div className="products">
                         {products.map(product => (
-                            <ProductCardLink 
+                            <ProductCardLink
                                 key={product._id} 
                                 product={product} 
                                 handleDeleteProduct={handleDeleteProduct} 
@@ -318,109 +312,131 @@ function ProductCard({ product, handleDeleteProduct, handleUpdateProduct }) {
 
 function ProductCardLink({ product, handleDeleteProduct, handleUpdateProduct }) {
     return (
-        // <article className="product-card">
-        //     <img src={product.image} alt={product.name} />
+        <article className="product-card">
+            <img src={product.image} alt={product.name} />
 
-        //     <div className="content">
-        //         <h2>
-        //             <Link to={`/products/${product._id}`} className="main-card-link">
-        //                 {product.name}
-        //             </Link>
-        //         </h2>
-        //         <data className="price" value={product.price}>${product.price}</data>
-        //     </div>
+            <div className="content">
+                <h2>
+                    <Link to={`/products/${product._id}`} className="main-card-link">
+                        {product.name}
+                    </Link>
+                </h2>
+                <data className="price" value={product.price}>${product.price}</data>
+            </div>
 
-        //     <div className="actions">
-        //         <button
-        //             type="button"
-        //             className="icon edit-btn"
-        //             title="Edit"
-        //         >
-        //             <span className="sr-only">Edit product {product.name}</span>
-        //             <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
-        //         </button>
-        //         <button
-        //             type="button"
-        //             className="icon delete-btn"
-        //             title="Delete"
-        //             onClick={() => handleDeleteProduct(product._id)}
-        //         >
-        //             <span className="sr-only">Delete product {product.name}</span>
-        //             <i className="fa fa-trash-o" aria-hidden="true"></i>
-        //         </button>
-        //     </div>
+            <div className="actions">
+                <button
+                    type="button"
+                    className="icon edit-btn"
+                    title="Edit"
+                >
+                    <span className="sr-only">Edit product {product.name}</span>
+                    <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
+                </button>
+                <button
+                    type="button"
+                    className="icon delete-btn"
+                    title="Delete"
+                    onClick={() => handleDeleteProduct(product._id)}
+                >
+                    <span className="sr-only">Delete product {product.name}</span>
+                    <i className="fa fa-trash-o" aria-hidden="true"></i>
+                </button>
+            </div>
 
-        //     <footer className="metadata">
-        //         <p>{formatDate(new Date(product.createdAt))}</p>
-        //     </footer>
-        // </article>
-        <div className="product-card">
+            <footer className="metadata">
+                <p>{formatDate(new Date(product.createdAt))}</p>
+            </footer>
+        </article>
 
-            <a href="/products/1" tabIndex="-1" aria-hidden="true">
-                <img src="shirt.jpg" alt="" />
-            </a>
+        // <div className="product-card">
 
-            <h3>
-                <a href="/products/1">Blue Shirt</a>
-            </h3>
+        //     <a href="/products/1" tabIndex="-1" aria-hidden="true">
+        //         <img src="shirt.jpg" alt="" />
+        //     </a>
 
-            <p>Our best selling shirt.</p>
+        //     <h3>
+        //         <a href="/products/1">Blue Shirt</a>
+        //     </h3>
 
-            <button
-                type="button"
-                className="icon edit-btn"
-                title="Edit"
-            >
-                <span className="sr-only">Edit product {product.name}</span>
-                <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
-            </button>
-            <button
-                type="button"
-                className="icon delete-btn"
-                title="Delete"
-                onClick={() => handleDeleteProduct(product._id)}
-            >
-                <span className="sr-only">Delete product {product.name}</span>
-                <i className="fa fa-trash-o" aria-hidden="true"></i>
-            </button>
-        </div>
+        //     <p>Our best selling shirt.</p>
+
+        //     <button
+        //         type="button"
+        //         className="icon edit-btn"
+        //         title="Edit"
+        //     >
+        //         <span className="sr-only">Edit product {product.name}</span>
+        //         <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
+        //     </button>
+        //     <button
+        //         type="button"
+        //         className="icon delete-btn"
+        //         title="Delete"
+        //         onClick={() => handleDeleteProduct(product._id)}
+        //     >
+        //         <span className="sr-only">Delete product {product.name}</span>
+        //         <i className="fa fa-trash-o" aria-hidden="true"></i>
+        //     </button>
+        // </div>
     );
 }
 
-function ProductCardAsLink({ product, buyProduct }) {
-    const linkRef = useRef(null);
 
-    function openProductPage(e) {
-        e.preventDefault();
-        linkRef.click();
-    }
-
-    function handleBuyProduct(e, id) {
-        e.stopPropagation();
-        buyProduct(id);
-    }
-
+function TestCardAsLink() {
     return (
-        <div className="product-card" onClick={openProductPage}>
+        <div data-src-id="1" data-src-fp="false" data-crb-el="uBWDxb" data-crb-gbl="false" decode-data-ved="1" className="cRH23c" data-ved="0CAAQqIcPahcKEwjA5urdtqyWAxUAAAAAHQAAAAAQLg" data-hveid="0">
+            <a className="vIWmYe" data-link-behavior="cobrowse" target="_blank" aria-label="Most JavaScript developers use async/await every day without actually understanding what runs it. The Event Loop is that thing. I spent two years writing JavaScript before I truly understood how the Event Loop worked. Once I did, bugs that used to take me hours to debug started making complete sense in minutes. Here is what you actually need to know: 1. JavaScript is single-threaded but not blocking The Event Loop is what makes async behavior possible without multiple threads. 2. The Call Stack runs your synchronous code first, always Anything async waits in the queue until the stack is completely empty. 3. Microtasks run before Macrotasks Promise callbacks (.then) execute before setTimeout, even if the timer is zero. This catches a lot of developers off guard. 4. Understanding this helps you write better async code You stop writing setTimeout hacks and start understanding why certain code runs out of order. 5. It explains why heavy computations block the UI A long synchronous task freezes the browser because nothing else can run until the stack clears. The mindset shift: JavaScript is not magic. It follows a very specific execution order and once you see it clearly, you write code. Opens in a new tab." rel="noopener" data-ved="0CAEQqYcPahcKEwjA5urdtqyWAxUAAAAAHQAAAAAQLg" href="/url?sa=t&amp;source=web&amp;rct=j&amp;url=https%3A%2F%2Fwww.instagram.com%2Fp%2FDWE-tI6DLip%2F&amp;ved=0CAEQqYcPahcKEwjA5urdtqyWAxUAAAAAHQAAAAAQLg&amp;opi=89978449"></a>
+            <div className="Wgphwb">
+                <div className="xWZV4e">
+                    <div className="NTHYXc" aria-hidden="true">
+                        <div aria-hidden="true" className="U9BD8 eRvckb Wsaimf QyEYne">
+                            {/* <img src="https://encrypted-tbn1.gstatic.com/faviconV2?url=https://www.instagram.com&amp;client=AIM&amp;size=128&amp;type=FAVICON&amp;fallback_opts=TYPE,SIZE,URL" className="sGgDgb" alt=""> */}
+                        </div>
+                    </div>
+                    <div className="jdxGff">
+                        <span className="k0vrc">
+                            <span className="EsfOKc">
+                                <span>Instagram</span>
+                            </span>
+                        </span>
+                    </div>
+                    <div className="ac3w5">
+                        <div className="xXnAhe">
+                            <div data-ved="0CAMQ980PahcKEwjA5urdtqyWAxUAAAAAHQAAAAAQLg">
+                                <button className="FTsWP RmjGdc IsqrXb" id="snui-atr-242" aria-label="About this result" aria-describedby="241">
+                                    <span className="XjoK4b kkxvEb"></span>
+                                    <span jsaction="QBlI0e:.CLIENT;BTifte:.CLIENT;nqgE9d:.CLIENT;fHTtBd:.CLIENT" className="UTNHae"></span>
+                                    <span className="I36Cje" aria-hidden="true">
+                                        <svg aria-hidden="true" className="H1b7D" fill="currentColor" height="18px" viewBox="0 -960 960 960" width="18px">
+                                            <path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"></path>
+                                        </svg>
+                                    </span>
+                                    <div className="ypuoue"></div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-            <img src="shirt.jpg" alt="" />
-
-            <h3>
-                <Link ref={linkRef} to="/products/1">Blue Shirt</Link>
-            </h3>
-
-            <p>Our best selling shirt.</p>
-
-            <button
-                type="button"
-                className="btn"
-                title="Buy product"
-                onClick={() => handleBuyProduct(product._id)}
-            >
-                Buy product
-            </button>
+                <div className="pNAzYe">
+                    <div className="uzRjgd">
+                        <div className="gpZmoc Hnm1Fe" id="241">
+                            <span>Most JavaScript developers use async/await every day without actually understanding what runs it. The Event Loop is that thing. I spent two years writing JavaScript before I truly understood how the Event Loop worked. Once I did, bugs that used to take me hours to debug started making complete sense in minutes. Here is what you actually need to know: 1. JavaScript is single-threaded but not blocking The Event Loop is what makes async behavior possible without multiple threads. 2. The Call Stack runs your synchronous code first, always Anything async waits in the queue until the stack is completely empty. 3. Microtasks run before Macrotasks Promise callbacks (.then) execute before setTimeout, even if the timer is zero. This catches a lot of developers off guard. 4. Understanding this helps you write better async code You stop writing setTimeout hacks and start understanding why certain code runs out of order. 5. It explains why heavy computations block the UI A long synchronous task freezes the browser because nothing else can run until the stack clears. The mindset shift: JavaScript is not magic. It follows a very specific execution order and once you see it clearly, you write code</span>
+                        </div>
+                        <div className="hxIQcc">
+                            <span className="hxIQcc">Mar 19, 2026 —
+                                <span data-crb-snippet-text="true">And there are two main ones people mix up: microtasks and macrotasks. So here's the mental model that finally made sense… when the...</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div className="qK4NEc" style="--thumbnail-width: 82px;">
+                        {/* <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdmbBhIcujIzVdxlK4Aq0Um1-eEaKHvEHe4i_YezfLZ-cuScvMeqbtYTDIGVRn34mcB8rgKw" className="WrlSEe" alt=""> */}
+                    </div>
+                </div>
+            </div>
         </div>
-    );
+    )
 }
 
 // function ProductList({ initialProducts }) {
