@@ -10,7 +10,7 @@ function formatDate(date) {
     });
 }
 
-const HomePage = () => {
+const HomePage = ({setModalMode}) => {
     const [products, setProducts] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -235,13 +235,16 @@ const HomePage = () => {
                     products={products}
                     handleDeleteProduct={handleDeleteProduct}
                     handleUpdateProduct={handleUpdateProduct}
+                    setModalMode={setModalMode}
                 />
             )}
         </>
     );
 };
 
-function ProductsSection({ products, handleDeleteProduct, handleUpdateProduct }) {
+function ProductsSection({ products, handleDeleteProduct, handleUpdateProduct, setModalMode }) {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     return (
         <>
             <header className="main-header">
@@ -267,6 +270,40 @@ function ProductsSection({ products, handleDeleteProduct, handleUpdateProduct })
                     </div>
                 </section>
             </div>
+
+            <Modal isModalOpen={isModalOpen} setModalMode={setModalMode} onClose={closeModal} title={"Edit product"}>
+                {isModalOpen ? <form className="modal-form centered"
+                    onSubmit={(e) => handleUpdateProduct(e, id, editedProduct)}
+                >
+                    <input
+                        className="form-input"
+                        name="name"
+                        value={editedProduct.name}
+                        onChange={(e) => setEditedProduct({ ...editedProduct, name: e.target.value })}
+                        placeholder="Product Name"
+                    />
+                    <input
+                        className="form-input"
+                        type="number"
+                        name="price"
+                        value={editedProduct.price}
+                        onChange={(e) => setEditedProduct({ ...editedProduct, price: e.target.value })}
+                        placeholder="Price"
+                    />
+                    <input
+                        className="form-input"
+                        name="image"
+                        value={editedProduct.image}
+                        onChange={(e) => setEditedProduct({ ...editedProduct, image: e.target.value })}
+                        placeholder="Image URL"
+                    />
+
+                    <button className="btn">
+                        Edit Product
+                    </button>
+                </form> : null}
+            </Modal>
+
             <Links products={products} />
         </>
     )
@@ -398,62 +435,44 @@ function ProductCardAsLink({ product, handleDeleteProduct }) {
 
     return (
         <article className="product-card" onClick={openProductPage}>
-        <img src={product.image} alt={product.name} />
+            <img src={product.image} alt={product.name} />
 
-        <div className="content">
-            <h2>
-                <Link to={`/products/${product._id}`} className="main-card-link1" ref={linkRef}>
-                    {product.name}
-                </Link>
-            </h2>
-            <data className="price" value={product.price}>${product.price}</data>
-            <p onClick={e => e.stopPropagation()}>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet eos labore, ratione similique error culpa. Voluptates corrupti quisquam accusantium quasi omnis, nisi numquam nihil itaque eos atque alias voluptatibus molestiae soluta possimus consequatur dolores repudiandae, aut rem! Quidem dolores libero ipsum, rem eos eveniet ea praesentium voluptatem magnam esse itaque.</p>
-        </div>
+            <div className="content">
+                <h2>
+                    <Link to={`/products/${product._id}`} className="main-card-link1" ref={linkRef}>
+                        {product.name}
+                    </Link>
+                </h2>
+                <data className="price" value={product.price}>${product.price}</data>
+                <p onClick={e => e.stopPropagation()}>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet eos labore, ratione similique error culpa. Voluptates corrupti quisquam accusantium quasi omnis, nisi numquam nihil itaque eos atque alias voluptatibus molestiae soluta possimus consequatur dolores repudiandae, aut rem! Quidem dolores libero ipsum, rem eos eveniet ea praesentium voluptatem magnam esse itaque.
+                </p>
+            </div>
 
-        <div className="actions">
-            <button
-                type="button"
-                className="icon edit-btn"
-                title="Edit"
-            >
-                <span className="sr-only">Edit product {product.name}</span>
-                <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
-            </button>
-            <button
-                type="button"
-                className="icon delete-btn"
-                title="Delete"
-                onClick={(e) => handleDeleteProductWithStop(e, product._id)}
-            >
-                <span className="sr-only">Delete product {product.name}</span>
-                <i className="fa fa-trash-o" aria-hidden="true"></i>
-            </button>
-        </div>
+            <div className="actions">
+                <button
+                    type="button"
+                    className="icon edit-btn"
+                    title="Edit"
+                >
+                    <span className="sr-only">Edit product {product.name}</span>
+                    <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
+                </button>
+                <button
+                    type="button"
+                    className="icon delete-btn"
+                    title="Delete"
+                    onClick={(e) => handleDeleteProductWithStop(e, product._id)}
+                >
+                    <span className="sr-only">Delete product {product.name}</span>
+                    <i className="fa fa-trash-o" aria-hidden="true"></i>
+                </button>
+            </div>
 
-        <footer className="metadata">
-            <p>{formatDate(new Date(product.createdAt))}</p>
-        </footer>
-    </article>
-
-        // <div className="product-card" onClick={openProductPage}>
-
-        //     <img src="shirt.jpg" alt="" />
-
-        //     <h3>
-        //         <Link ref={linkRef} to="/products/1">Blue Shirt</Link>
-        //     </h3>
-
-        //     <p>Our best selling shirt.</p>
-
-        //     <button
-        //         type="button"
-        //         className="btn"
-        //         title="Buy product"
-        //         onClick={() => handleBuyProduct(product._id)}
-        //     >
-        //         Buy product
-        //     </button>
-        // </div>
+            <footer className="metadata">
+                <p>{formatDate(new Date(product.createdAt))}</p>
+            </footer>
+        </article>
     );
 }
 

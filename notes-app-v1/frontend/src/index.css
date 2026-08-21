@@ -310,6 +310,7 @@ main {
 .product-card {
   display: grid;
   gap: 1rem;
+  cursor: pointer;
 }
 
 @media (min-width: 360px) {
@@ -717,25 +718,6 @@ main {
   }
 } */
 
-.product-card {
-  position: relative;
-}
-
-.main-card-link::after {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  content: "";
-  z-index: 1;
-}
-
-.product-card button {
-  position: relative;
-  z-index: 2; 
-}
-
 .cRH23c {
   position: relative;
   padding-block: 14px;
@@ -754,5 +736,6 @@ main {
 }
 
 .product-card p {
+  padding: 1rem 0;
   border: 1px solid red;
 }
