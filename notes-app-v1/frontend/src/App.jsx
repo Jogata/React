@@ -45,7 +45,7 @@ function App() {
       {/* <NotificationManager notifications={notifications} removeNotification={removeNotification} /> */}
       <main>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<HomePage modalMode={modalMode} setModalMode={setModalMode} />} />
           <Route path="/products/:id" element={<ProductPage modalMode={modalMode} setModalMode={setModalMode} />} />
           <Route path="/create" element={<CreateProductPage />} />
         </Routes>

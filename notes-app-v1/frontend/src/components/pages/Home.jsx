@@ -10,7 +10,7 @@ function formatDate(date) {
     });
 }
 
-const HomePage = ({setModalMode}) => {
+const HomePage = ({modalMode, setModalMode}) => {
     const [products, setProducts] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -243,7 +243,23 @@ const HomePage = ({setModalMode}) => {
 };
 
 function ProductsSection({ products, handleDeleteProduct, handleUpdateProduct, setModalMode }) {
+    const [editedProduct, setEditedProduct] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    function openModal(e) {
+        e.stopPropagation();
+        setIsModalOpen(true);
+        // setEditedProduct({...product});
+    }
+    
+    function hadleEditProduct(e, product) {
+        openModal(e);
+        setEditedProduct({...product});
+    }
+
+    function closeModal() {
+        setIsModalOpen(false);
+    }
 
     return (
         <>
@@ -259,6 +275,7 @@ function ProductsSection({ products, handleDeleteProduct, handleUpdateProduct, s
                                 product={product} 
                                 handleDeleteProduct={handleDeleteProduct} 
                                 handleUpdateProduct={handleUpdateProduct}
+                                hadleEditProduct={hadleEditProduct}
                             />
                             // <ProductCard 
                             //     key={product._id} 
@@ -419,7 +436,7 @@ function ProductCardLink({ product, handleDeleteProduct, handleUpdateProduct }) 
     );
 }
 
-function ProductCardAsLink({ product, handleDeleteProduct }) {
+function ProductCardAsLink({ product, handleDeleteProduct, hadleEditProduct }) {
     const linkRef = useRef(null);
 
     function openProductPage(e) {
@@ -454,6 +471,7 @@ function ProductCardAsLink({ product, handleDeleteProduct }) {
                     type="button"
                     className="icon edit-btn"
                     title="Edit"
+                    onClick={e => hadleEditProduct(e, product)}
                 >
                     <span className="sr-only">Edit product {product.name}</span>
                     <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
