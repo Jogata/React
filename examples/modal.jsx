@@ -1,3 +1,66 @@
+const [modalMode, setModalMode] = useState(false);
+
+let pageClass = `page`;
+pageClass = modalMode ? `${pageClass} modal-mode` : pageClass;
+
+const [isModalOpen, setIsModalOpen] = useState(false);
+
+function openModal(e) {
+    e.stopPropagation();
+    setIsModalOpen(true);
+}
+
+function hadleEditProduct(e, product) {
+    openModal(e);
+    setEditedProduct({ ...product });
+}
+
+function closeModal() {
+    setIsModalOpen(false);
+}
+
+// .modal {
+//     width: 100 %;
+//     max - width: 500px;
+//     margin: auto;
+//     padding: 0.5rem;
+//     border: 0px solid;
+//     border - radius: 12px;
+// }
+  
+// .modal::backdrop {
+//     background - color: rgba(0, 0, 0, 0.8);
+// }
+  
+// .modal header {
+//     margin - top: auto;
+//     text - align: right;
+// }
+  
+// .modal.icon {
+//     box - shadow: none;
+// }
+  
+// .modal.icon i.fa - times {
+//     padding: 0.2em 0.4em;
+//     color: #999;
+// }
+  
+// .modal h2 {
+//     padding: 1rem 0;
+//     font - size: 3rem;
+//     text - align: center;
+// }
+  
+// .modal - body {
+//     padding - top: 1rem;
+// }
+  
+// .modal - form {
+//     width: 100 %;
+//     padding: 1rem 5 % 2rem;
+// }
+
 <Modal isModalOpen={isModalOpen} setModalMode={setModalMode} onClose={closeModal} title={"Edit product"}>
     {isModalOpen ? <form className="modal-form centered"
         onSubmit={(e) => handleUpdateProduct(e, id, editedProduct)}
