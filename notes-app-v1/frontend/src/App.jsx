@@ -9,21 +9,6 @@ import { NotificationProvider } from "./context/NotificationProvider";
 function App() {
   const [colorMode, toggleColorMode] = useState("dark");
   const [modalMode, setModalMode] = useState(false);
-  // const [notifications, setNotifications] = useState([]);
-
-  // function addNotification(message, type = "success") {
-  //   const newToast = {
-  //     id: crypto.randomUUID(),
-  //     message,
-  //     type
-  //   };
-
-  //   setNotifications(old => [...old, newToast]);
-  // }
-
-  // function removeNotification(id) {
-  //   setNotifications(old => old.filter(toast => toast.id !== id));
-  // }
 
   function toggleTheme() {
     const themes = {
@@ -40,20 +25,19 @@ function App() {
 
   return (
     <NotificationProvider>
-    <div className={pageClass}>
-      <Navbar toggleTheme={toggleTheme} colorMode={colorMode} />
-      {/* <NotificationManager notifications={notifications} removeNotification={removeNotification} /> */}
-      <main>
-        <Routes>
-          <Route path="/" element={<HomePage modalMode={modalMode} setModalMode={setModalMode} />} />
-          <Route path="/products/:id" element={<ProductPage modalMode={modalMode} setModalMode={setModalMode} />} />
-          <Route path="/create" element={<CreateProductPage />} />
-        </Routes>
-      </main>
-      <footer>
-        <h2>footer</h2>
-      </footer>
-    </div>
+      <div className={pageClass}>
+        <Navbar toggleTheme={toggleTheme} colorMode={colorMode} />
+        <main>
+          <Routes>
+            <Route path="/" element={<HomePage modalMode={modalMode} setModalMode={setModalMode} />} />
+            <Route path="/products/:id" element={<ProductPage modalMode={modalMode} setModalMode={setModalMode} />} />
+            <Route path="/create" element={<CreateProductPage />} />
+          </Routes>
+        </main>
+        <footer>
+          <h2>footer</h2>
+        </footer>
+      </div>
     </NotificationProvider>
   )
 }
