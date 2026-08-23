@@ -1,12 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useNotify } from "../../context/NotificationProvider";
+import { useModal } from "../../context/ModalProvider";
+import { Modal } from "../Modal";
 
-export function ProductPage({ setModalMode }) {
+export function ProductPage() {
     const [product, setProduct] = useState(null);
     const [editedProduct, setEditedProduct] = useState(null);
     const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { setModalMode } = useModal();
     const { addNotification } = useNotify();
     const { id } = useParams();
     const navigate = useNavigate();
@@ -63,7 +66,7 @@ export function ProductPage({ setModalMode }) {
     }, [id]);
 
     async function deleteProduct(pid) {
-        pid = "6a8035aec850cd3671afad7a";
+        // pid = "6a8035aec850cd3671afad7a";
         try {
             const response = await fetch(`http://localhost:5000/api/products/${pid}`, {
                 method: "DELETE",
@@ -205,7 +208,12 @@ export function ProductPage({ setModalMode }) {
                 </div>
             </div>
 
-            <Modal isModalOpen={isModalOpen} setModalMode={setModalMode} onClose={closeModal} title={"Edit product"}>
+            <Modal 
+                title={"Edit product"}
+                isModalOpen={isModalOpen} 
+                onClose={closeModal} 
+                setModalMode={setModalMode} 
+            >
                 {isModalOpen ? <form className="modal-form centered"
                     onSubmit={(e) => handleUpdateProduct(e, id, editedProduct)}
                 >
@@ -290,46 +298,46 @@ export function ProductPage({ setModalMode }) {
     );
 };
 
-function Modal({ isModalOpen, setModalMode, onClose, title, children }) {
-    const dialogRef = useRef(null);
+// function Modal({ isModalOpen, setModalMode, onClose, title, children }) {
+//     const dialogRef = useRef(null);
 
-    useEffect(() => {
-        const dialogNode = dialogRef.current;
-        if (!dialogNode) return;
+//     useEffect(() => {
+//         const dialogNode = dialogRef.current;
+//         if (!dialogNode) return;
 
-        if (isModalOpen) {
-            dialogNode.showModal();
-            setModalMode(true);
-        } else {
-            dialogNode.close();
-            setModalMode(false);
-        }
+//         if (isModalOpen) {
+//             dialogNode.showModal();
+//             setModalMode(true);
+//         } else {
+//             dialogNode.close();
+//             setModalMode(false);
+//         }
 
-        return () => {
-            setModalMode(false);
-        };
-    }, [isModalOpen]);
+//         return () => {
+//             setModalMode(false);
+//         };
+//     }, [isModalOpen]);
 
-    return (
-        <dialog
-            className="modal"
-            ref={dialogRef}
-            onClose={onClose}
-            onClick={onClose}
-        >
-            <header>
-                <button type="button" className="icon" onClick={onClose}>
-                    <span className="sr-only">Close Modal</span>
-                    <i className="fa fa-times" aria-hidden="true"></i>
-                </button>
-                <h2 id="modal-title">{title}</h2>
-            </header>
+//     return (
+//         <dialog
+//             className="modal"
+//             ref={dialogRef}
+//             onClose={onClose}
+//             onClick={onClose}
+//         >
+//             <header>
+//                 <button type="button" className="icon" onClick={onClose}>
+//                     <span className="sr-only">Close Modal</span>
+//                     <i className="fa fa-times" aria-hidden="true"></i>
+//                 </button>
+//                 <h2 id="modal-title">{title}</h2>
+//             </header>
 
-            <div className="modal-body" onClick={e => e.stopPropagation()}>
-                {children}
-            </div>
-        </dialog>
-    );
-}
+//             <div className="modal-body" onClick={e => e.stopPropagation()}>
+//                 {children}
+//             </div>
+//         </dialog>
+//     );
+// }
 
 export default ProductPage;
