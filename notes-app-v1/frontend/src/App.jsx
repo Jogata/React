@@ -5,10 +5,12 @@ import HomePage from "./components/pages/Home";
 import CreateProductPage from "./components/pages/CreateProductPage";
 import ProductPage from "./components/pages/ProductPage";
 import { NotificationProvider } from "./context/NotificationProvider";
+import { useModal } from "./context/ModalProvider";
 
 function App() {
   const [colorMode, toggleColorMode] = useState("dark");
-  const [modalMode, setModalMode] = useState(false);
+  // const [modalMode, setModalMode] = useState(false);
+  const { modalMode } = useModal();
 
   function toggleTheme() {
     const themes = {
@@ -24,21 +26,25 @@ function App() {
   pageClass = modalMode ? `${pageClass} modal-mode` : pageClass;
 
   return (
-    <NotificationProvider>
-      <div className={pageClass}>
-        <Navbar toggleTheme={toggleTheme} colorMode={colorMode} />
-        <main>
-          <Routes>
-            <Route path="/" element={<HomePage modalMode={modalMode} setModalMode={setModalMode} />} />
-            <Route path="/products/:id" element={<ProductPage modalMode={modalMode} setModalMode={setModalMode} />} />
-            <Route path="/create" element={<CreateProductPage />} />
-          </Routes>
-        </main>
-        <footer>
-          <h2>footer</h2>
-        </footer>
-      </div>
-    </NotificationProvider>
+    // <ModalProvider>
+      <NotificationProvider>
+        <div className={pageClass}>
+          <Navbar toggleTheme={toggleTheme} colorMode={colorMode} />
+          <main>
+            <Routes>
+              {/* <Route path="/" element={<HomePage modalMode={modalMode} setModalMode={setModalMode} />} /> */}
+              <Route path="/" element={<HomePage />} />
+              {/* <Route path="/products/:id" element={<ProductPage modalMode={modalMode} setModalMode={setModalMode} />} /> */}
+              <Route path="/products/:id" element={<ProductPage />} />
+              <Route path="/create" element={<CreateProductPage />} />
+            </Routes>
+          </main>
+          <footer>
+            <h2>footer</h2>
+          </footer>
+        </div>
+      </NotificationProvider>
+    // </ModalProvider>
   )
 }
 
