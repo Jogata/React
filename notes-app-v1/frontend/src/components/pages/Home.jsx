@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNotify } from "../../context/NotificationProvider";
+import { useModal } from "../../context/ModalProvider";
 
 function formatDate(date) {
     return date.toLocaleDateString("en-US", {
@@ -10,7 +11,7 @@ function formatDate(date) {
     });
 }
 
-const HomePage = ({modalMode, setModalMode}) => {
+const HomePage = () => {
     const [products, setProducts] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -156,11 +157,15 @@ const HomePage = ({modalMode, setModalMode}) => {
             return result;
 	}
 
-    async function handleUpdateProduct(pid, updatedProduct) {
+    async function handleUpdateProduct(e, updatedProduct) {
+        e.preventDefault();
+        const pid = updatedProduct._id;
+
         try {
-            await updateProduct(pid, updatedProduct);
+            const result = await updateProduct(pid, updatedProduct);
             // setProducts(prevProducts => prevProducts.filter(p => p._id !== pid));
-            const updatedProducts = products.map(product => product._id !== pid ? result.data : product);
+            // console.log(result);
+            const updatedProducts = products.map(product => product._id === pid ? result.data : product);
             setProducts(updatedProducts);
             addNotification(`Product ${pid} updated`);
         } catch (err) {
@@ -235,21 +240,19 @@ const HomePage = ({modalMode, setModalMode}) => {
                     products={products}
                     handleDeleteProduct={handleDeleteProduct}
                     handleUpdateProduct={handleUpdateProduct}
-                    setModalMode={setModalMode}
                 />
             )}
         </>
     );
 };
 
-function ProductsSection({ products, handleDeleteProduct, handleUpdateProduct, setModalMode }) {
+function ProductsSection({ products, handleDeleteProduct, handleUpdateProduct }) {
     const [editedProduct, setEditedProduct] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     function openModal(e) {
         e.stopPropagation();
         setIsModalOpen(true);
-        // setEditedProduct({...product});
     }
     
     function hadleEditProduct(e, product) {
@@ -288,9 +291,9 @@ function ProductsSection({ products, handleDeleteProduct, handleUpdateProduct, s
                 </section>
             </div>
 
-            <Modal isModalOpen={isModalOpen} setModalMode={setModalMode} onClose={closeModal} title={"Edit product"}>
+            <Modal isModalOpen={isModalOpen} onClose={closeModal} title={"Edit product"}>
                 {isModalOpen ? <form className="modal-form centered"
-                    onSubmit={(e) => handleUpdateProduct(e, id, editedProduct)}
+                    onSubmit={(e) => handleUpdateProduct(e, editedProduct)}
                 >
                     <input
                         className="form-input"
@@ -494,8 +497,9 @@ function ProductCardAsLink({ product, handleDeleteProduct, hadleEditProduct }) {
     );
 }
 
-function Modal({ isModalOpen, setModalMode, onClose, title, children }) {
+function Modal({ isModalOpen, onClose, title, children }) {
     const dialogRef = useRef(null);
+    const { setModalMode } = useModal();
 
     useEffect(() => {
         const dialogNode = dialogRef.current;
