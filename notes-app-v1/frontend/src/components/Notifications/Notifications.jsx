@@ -1,4 +1,6 @@
 import { useEffect, useRef } from "react";
+import { Notification } from "./Notification";
+import "./notifications.css";
 
 export function Notifications({ notifications, removeNotification }) {
     const popoverRef = useRef(null);
