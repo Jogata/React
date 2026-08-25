@@ -1,4 +1,4 @@
-:root {
+/* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -65,4 +65,81 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+} */
+
+
+:root {
+  color-scheme: light dark;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+noscript {
+  padding: 3rem 2%;
+}
+
+noscript h1 {
+  max-width: 600px;
+  margin: auto;
+  text-align: center;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  display: inline-block;
+  padding: 0.4em 1em;
+  text-decoration: none;
+  transition: color 300ms;
+}
+
+button {
+  padding: 0.4em 1em;
+  font-family: inherit;
+  border: 0px solid transparent;
+  outline: 1px solid transparent;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  overflow: hidden;
+}
+
+input {
+  font-family: inherit;
+  border: 0px solid transparent;
+  outline: 1px solid transparent;
+  background-color: transparent;
+}
+
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 1px solid #999;
 }
