@@ -143,3 +143,38 @@ input:focus-visible,
 a:focus-visible {
   outline: 1px solid #999;
 }
+
+img {
+  display: block;
+  /* display: flex; */
+  width: 100%;
+}
+
+body {
+  font-family: Georgia, serif;
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page.dark {
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+}
+
+.page.light {
+  color: #242424;
+  background-color: rgba(255, 255, 255, 0.87);
+}
+
+.test {
+  padding-top: 3rem;
+  color: transparent;
+  font-size: 10vw;
+  text-align: center;
+  text-transform: capitalize;
+  -webkit-text-stroke: 2px salmon;
+}
