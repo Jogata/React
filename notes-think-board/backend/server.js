@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import mongoose from "mongoose";
 
 dotenv.config();
 
@@ -10,16 +11,33 @@ const PORT = process.env.PORT || 5001;
 if (process.env.NODE_ENV !== "production") {
     app.use(
         cors({
-            origin: "http://localhost:5173",
+            origin: "http://localhost:5174",
         })
     );
 }
+
 app.use(express.json());
 
-app.use((req, res, next) => {
-    console.log(`Req method is ${req.method} & Req URL is ${req.url}`);
-    next();
-});
+// app.use((req, res, next) => {
+//     console.log(`Req method is ${req.method} & Req URL is ${req.url}`);
+//     next();
+// });
+
+app.get("/", (req, res) => {
+    res.send("Server is ready");
+})
+
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("MONGODB CONNECTED SUCCESSFULLY!");
+  } catch (error) {
+    console.error("Error connecting to MONGODB", error);
+    process.exit(1);
+  }
+};
+
+connectDB();
 
 app.listen(PORT, () => {
     console.log("Server started on PORT:", PORT);
