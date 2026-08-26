@@ -38,9 +38,32 @@ import { Route, Routes } from "react-router";
 
 const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Test />} />
-    </Routes>
+    <>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Test />} />
+      </Routes>
+    </>
+  );
+};
+
+import { Link } from "react-router";
+
+const Navbar = () => {
+  return (
+    <header>
+      <div>
+        <nav>
+          <Link className="logo"><span>Think</span>Board</Link>
+          <div>
+            <Link to={"/create"} className="btn btn-primary">
+              <i className="fa fa-plus" aria-hidden="true"></i>
+              <span>New Note</span>
+            </Link>
+          </div>
+        </nav>
+      </div>
+    </header>
   );
 };
 

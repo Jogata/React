@@ -170,6 +170,33 @@ body {
   background-color: rgba(255, 255, 255, 0.87);
 }
 
+nav {
+  padding: 1rem 2%;
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  color: tomato;
+  font-size: 2rem;
+  font-weight: bold;
+  text-transform: capitalize;
+  -webkit-text-stroke: 1px tomato;
+}
+
+.logo span {
+  /* vertical-align: middle; */
+  color: transparent;
+  -webkit-text-stroke: 1px tomato;
+}
+
+.btn i {
+  margin-right: 0.5rem;
+}
+
 .test {
   padding-top: 3rem;
   color: transparent;
