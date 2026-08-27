@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-// import mongoose from "mongoose";
 
 import { connectDB } from "./config/db.js";
 
@@ -33,18 +32,6 @@ app.get("/test-get", (req, res) => {
     };
     res.json(jsonresponse);
 })
-
-// const connectDB = async () => {
-//   try {
-//     await mongoose.connect(process.env.MONGO_URI);
-//     console.log("MONGODB CONNECTED SUCCESSFULLY!");
-//   } catch (error) {
-//     console.error("Error connecting to MONGODB", error);
-//     process.exit(1);
-//   }
-// };
-
-// connectDB();
 
 connectDB().then(() => {
     app.listen(PORT, () => {
