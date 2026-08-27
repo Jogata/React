@@ -1,7 +1,9 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import mongoose from "mongoose";
+// import mongoose from "mongoose";
+
+import { connectDB } from "./config/db.js";
 
 dotenv.config();
 
@@ -25,25 +27,27 @@ app.use(express.json());
 
 app.get("/test-get", (req, res) => {
     const jsonresponse = {
-        message: "Server is ready", 
-        method: req.method, 
+        message: "Server is ready",
+        method: req.method,
         url: req.url
     };
     res.json(jsonresponse);
 })
 
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log("MONGODB CONNECTED SUCCESSFULLY!");
-  } catch (error) {
-    console.error("Error connecting to MONGODB", error);
-    process.exit(1);
-  }
-};
+// const connectDB = async () => {
+//   try {
+//     await mongoose.connect(process.env.MONGO_URI);
+//     console.log("MONGODB CONNECTED SUCCESSFULLY!");
+//   } catch (error) {
+//     console.error("Error connecting to MONGODB", error);
+//     process.exit(1);
+//   }
+// };
 
-connectDB();
+// connectDB();
 
-app.listen(PORT, () => {
-    console.log("Server started on PORT:", PORT);
+connectDB().then(() => {
+    app.listen(PORT, () => {
+        console.log("Server started on PORT:", PORT);
+    });
 });
