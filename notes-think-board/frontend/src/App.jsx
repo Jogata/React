@@ -42,6 +42,7 @@ const App = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={<Test />} />
+        <Route path="/create" element={<TestCreate />} />
       </Routes>
     </>
   );
@@ -54,9 +55,9 @@ const Navbar = () => {
     <header>
       <div>
         <nav>
-          <Link className="logo"><span>Think</span>Board</Link>
+          <Link to="/" className="logo"><span>Think</span>Board</Link>
           <div>
-            <Link to={"/create"} className="btn btn-primary">
+            <Link to={"/create"} className="link-btn">
               <i className="fa fa-plus" aria-hidden="true"></i>
               <span>New Note</span>
             </Link>
@@ -68,7 +69,11 @@ const Navbar = () => {
 };
 
 function Test() {
-  return <h1 className="test">Test</h1>
+  return <h1 className="test">Test Home</h1>
+}
+
+function TestCreate() {
+  return <h1 className="test">Test Create page</h1>
 }
 
 export default App;

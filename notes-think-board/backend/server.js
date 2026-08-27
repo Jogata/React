@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 5001;
 if (process.env.NODE_ENV !== "production") {
     app.use(
         cors({
-            origin: "http://localhost:5174",
+            origin: "http://localhost:5173",
         })
     );
 }
@@ -23,8 +23,13 @@ app.use(express.json());
 //     next();
 // });
 
-app.get("/", (req, res) => {
-    res.send("Server is ready");
+app.get("/test-get", (req, res) => {
+    const jsonresponse = {
+        message: "Server is ready", 
+        method: req.method, 
+        url: req.url
+    };
+    res.json(jsonresponse);
 })
 
 const connectDB = async () => {
