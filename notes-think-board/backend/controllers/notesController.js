@@ -37,20 +37,50 @@ export async function createNote(req, res) {
 export async function updateNote(req, res) {
     try {
         const { title, content } = req.body;
+        const { id } = req.params;
+
         const updatedNote = await Note.findByIdAndUpdate(
-            req.params.id,
+            // req.params.id,
+            id,
             { title, content },
             {
-                new: true,
+                // new: true,
+                returnDocument: "after", 
+                runValidators: true
             }
         );
 
         if (!updatedNote) return res.status(404).json({ message: "Note not found" });
 
+        console.log(updatedNote);
+
         res.status(200).json(updatedNote);
     } catch (error) {
         console.error("Error in updateNote controller", error);
-        res.status(500).json({ message: "Internal server error" });
+
+        if (error.name === "ValidationError") {
+			const errorList = Object.keys(error.errors).map((key) => ({
+				field: key,
+				message: error.errors[key].message
+			}));
+
+			return res.status(422).json({
+				// success: false,
+				errors: errorList
+			});
+		}
+
+		res.status(500).json({
+			// success: false,
+			errors: [
+				{
+					field: "server",
+					message: "An unexpected internal server error occurred"
+				}
+			]
+		});
+
+        // res.status(500).json({ message: "Internal server error" });
     }
 }
 
