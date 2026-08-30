@@ -22,14 +22,30 @@ export async function getNoteById(req, res) {
 }
 
 export async function createNote(req, res) {
+    const { title, content } = req.body;
+    
     try {
-        const { title, content } = req.body;
+        // const { title, content } = req.body;
         const note = new Note({ title, content });
 
         const savedNote = await note.save();
-        res.status(201).json(savedNote);
+        const notetUrl = `/api/note/${savedNote._id}`;
+
+        res.status(201).location(notetUrl).json(savedNote);
+        // setTimeout(() => {
+		// 	res.status(201).location(notetUrl).json(savedNote);
+		// }, 5000);
     } catch (error) {
         console.error("Error in createNote controller", error);
+
+        let message = error.message;
+		
+		if (error.code == 11000) {
+			message = `A note with the title '${title}' already exists. Please choose a different title.`;
+			console.log(11000, message);
+			return res.status(409).json({ message });
+		}
+
         res.status(500).json({ message: "Internal server error" });
     }
 }
@@ -40,11 +56,9 @@ export async function updateNote(req, res) {
         const { id } = req.params;
 
         const updatedNote = await Note.findByIdAndUpdate(
-            // req.params.id,
             id,
             { title, content },
             {
-                // new: true,
                 returnDocument: "after", 
                 runValidators: true
             }
@@ -65,13 +79,11 @@ export async function updateNote(req, res) {
 			}));
 
 			return res.status(422).json({
-				// success: false,
 				errors: errorList
 			});
 		}
 
 		res.status(500).json({
-			// success: false,
 			errors: [
 				{
 					field: "server",
@@ -79,8 +91,6 @@ export async function updateNote(req, res) {
 				}
 			]
 		});
-
-        // res.status(500).json({ message: "Internal server error" });
     }
 }
 
