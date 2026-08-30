@@ -3,7 +3,10 @@ import Note from "../models/Note.js";
 export async function getAllNotes(req, res) {
     try {
         const notes = await Note.find().sort({ createdAt: -1 });
-        res.status(200).json(notes);
+        // res.status(200).json(notes);
+        setTimeout(() => {
+            res.status(200).json(notes);
+		}, 5000);
     } catch (error) {
         console.error("Error in getAllNotes controller", error);
         res.status(500).json({ message: "Internal server error" });
@@ -11,10 +14,17 @@ export async function getAllNotes(req, res) {
 }
 
 export async function getNoteById(req, res) {
+	if (!mongoose.Types.ObjectId.isValid(id)) {
+		return res.status(404).json({ message: "Invalid Note ID" });
+	}
+
     try {
         const note = await Note.findById(req.params.id);
         if (!note) return res.status(404).json({ message: "Note not found!" });
-        res.json(note);
+        // res.status(200).json(note);
+        setTimeout(() => {
+            res.status(200).json(note);
+		}, 5000);
     } catch (error) {
         console.error("Error in getNoteById controller", error);
         res.status(500).json({ message: "Internal server error" });
@@ -31,10 +41,10 @@ export async function createNote(req, res) {
         const savedNote = await note.save();
         const notetUrl = `/api/note/${savedNote._id}`;
 
-        res.status(201).location(notetUrl).json(savedNote);
-        // setTimeout(() => {
-		// 	res.status(201).location(notetUrl).json(savedNote);
-		// }, 5000);
+        // res.status(201).location(notetUrl).json(savedNote);
+        setTimeout(() => {
+			res.status(201).location(notetUrl).json(savedNote);
+		}, 5000);
     } catch (error) {
         console.error("Error in createNote controller", error);
 
@@ -51,6 +61,10 @@ export async function createNote(req, res) {
 }
 
 export async function updateNote(req, res) {
+	if (!mongoose.Types.ObjectId.isValid(id)) {
+		return res.status(404).json({ message: "Invalid Note ID" });
+	}
+
     try {
         const { title, content } = req.body;
         const { id } = req.params;
@@ -66,9 +80,12 @@ export async function updateNote(req, res) {
 
         if (!updatedNote) return res.status(404).json({ message: "Note not found" });
 
-        console.log(updatedNote);
+        console.log("updated note: ", updatedNote);
 
-        res.status(200).json(updatedNote);
+        // res.status(200).json(updatedNote);
+        setTimeout(() => {
+            res.status(200).json(updatedNote);
+		}, 5000);
     } catch (error) {
         console.error("Error in updateNote controller", error);
 
@@ -95,10 +112,17 @@ export async function updateNote(req, res) {
 }
 
 export async function deleteNote(req, res) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+		return res.status(404).json({ message: "Invalid Note ID" });
+	}
+
     try {
         const deletedNote = await Note.findByIdAndDelete(req.params.id);
         if (!deletedNote) return res.status(404).json({ message: "Note not found" });
-        res.status(200).json({ message: "Note deleted successfully!" });
+        // res.status(200).json({ message: "Note deleted successfully!" });
+        setTimeout(() => {
+            res.status(200).json({ message: "Note deleted successfully!" });
+        }, 5000);
     } catch (error) {
         console.error("Error in deleteNote controller", error);
         res.status(500).json({ message: "Internal server error" });
