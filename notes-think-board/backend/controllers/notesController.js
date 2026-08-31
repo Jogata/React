@@ -112,12 +112,14 @@ export async function updateNote(req, res) {
 }
 
 export async function deleteNote(req, res) {
+    const { id } = req.params;
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
 		return res.status(404).json({ message: "Invalid Note ID" });
 	}
 
     try {
-        const deletedNote = await Note.findByIdAndDelete(req.params.id);
+        const deletedNote = await Note.findByIdAndDelete(id);
         if (!deletedNote) return res.status(404).json({ message: "Note not found" });
         // res.status(200).json({ message: "Note deleted successfully!" });
         setTimeout(() => {
