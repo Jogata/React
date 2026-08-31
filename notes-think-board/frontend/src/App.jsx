@@ -76,4 +76,15 @@ function TestCreate() {
   return <h1 className="test">Test Create page</h1>
 }
 
+const Spinner = () => {
+  return (
+      <span className="loader">
+          <div className="logo-ring"></div>
+          <div className="logo-ring"></div>
+          <div className="logo-ring"></div>
+          <div className="logo-ring"></div>
+      </span>
+  )
+}
+
 export default App;
