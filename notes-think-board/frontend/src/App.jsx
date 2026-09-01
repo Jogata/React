@@ -1,39 +1,3 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-// import './App.css'
-
-// function App() {
-//   const [count, setCount] = useState(0)
-
-//   return (
-//     <>
-//       <div>
-//         <a href="https://vitejs.dev" target="_blank">
-//           <img src={viteLogo} className="logo" alt="Vite logo" />
-//         </a>
-//         <a href="https://react.dev" target="_blank">
-//           <img src={reactLogo} className="logo react" alt="React logo" />
-//         </a>
-//       </div>
-//       <h1>Vite + React</h1>
-//       <div className="card">
-//         <button onClick={() => setCount((count) => count + 1)}>
-//           count is {count}
-//         </button>
-//         <p>
-//           Edit <code>src/App.jsx</code> and save to test HMR
-//         </p>
-//       </div>
-//       <p className="read-the-docs">
-//         Click on the Vite and React logos to learn more
-//       </p>
-//     </>
-//   )
-// }
-
-// export default App;
-
 import { Route, Routes } from "react-router";
 
 const App = () => {
@@ -41,7 +5,8 @@ const App = () => {
     <>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Test />} />
+        {/* <Route path="/" element={<Test />} /> */}
+        <Route path="/" element={<HomePage />} />
         <Route path="/create" element={<TestCreate />} />
       </Routes>
     </>
@@ -49,6 +14,7 @@ const App = () => {
 };
 
 import { Link } from "react-router";
+import HomePage from "./components/pages/HomePage";
 
 const Navbar = () => {
   return (
@@ -68,26 +34,26 @@ const Navbar = () => {
   );
 };
 
-const NotesNotFound = () => {
-  return (
-    <div className="">
-      <div className="">
-        <i className="fa fa-notebook"></i>
-      </div>
-      <h3 className="">No notes yet</h3>
-      <p className="">
-        Ready to organize your thoughts? Create your first note to get started on your journey.
-      </p>
-      <Link to="/create" className="btn">
-        Create Your First Note
-      </Link>
-    </div>
-  );
-};
+// const NotesNotFound = () => {
+//   return (
+//     <div className="">
+//       <div className="">
+//         <i className="fa fa-notebook"></i>
+//       </div>
+//       <h3 className="">No notes yet</h3>
+//       <p className="">
+//         Ready to organize your thoughts? Create your first note to get started on your journey.
+//       </p>
+//       <Link to="/create" className="btn">
+//         Create Your First Note
+//       </Link>
+//     </div>
+//   );
+// };
 
-function Test() {
-  return <h1 className="test">Test Home</h1>
-}
+// function Test() {
+//   return <h1 className="test">Test Home</h1>
+// }
 
 function TestCreate() {
   return <h1 className="test">Test Create page</h1>
