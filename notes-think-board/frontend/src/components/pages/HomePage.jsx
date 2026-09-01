@@ -28,7 +28,6 @@ const HomePage = () => {
     return (
         <div className="">
             <div className="">
-                {/* {loading && <h1>Loading notes...</h1>} */}
                 {loading && <Spinner />}
 
                 {notes && notes.length === 0 && <NotesNotFound />}
@@ -42,6 +41,42 @@ const HomePage = () => {
                 )}
             </div>
         </div>
+    );
+};
+
+const NoteCard = ({ note, setNotes }) => {
+    return (
+        <Link to={`/notes/${note._id}`}>
+            <div className="card-body">
+                <h3 className="card-title">{note.title}</h3>
+                <p className="card-content">{note.content}</p>
+                <div className="card-footer">
+                    <span className="date">
+                        {formatDate(new Date(note.createdAt))}
+                    </span>
+                    <div className="card-actions">
+                        <button
+                            type="button"
+                            className="icon edit-btn"
+                            title="Edit"
+                            onClick={openModal}
+                        >
+                            <span className="sr-only">Edit note {note.title}</span>
+                            <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
+                        </button>
+                        <button
+                            type="button"
+                            className="icon delete-btn modal-btn"
+                            title="Delete"
+                            onClick={() => handleDeleteNote(note._id)}
+                        >
+                            <span className="sr-only">Delete note {note.title}</span>
+                            <i className="fa fa-trash-o" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </Link>
     );
 };
 
@@ -65,11 +100,16 @@ const NotesNotFound = () => {
 
 const Spinner = () => {
     return (
-        <span className="loader">
+        <span
+            className="loader"
+            role="status"
+            aria-live="polite"
+        >
             <div className="logo-ring"></div>
             <div className="logo-ring"></div>
             <div className="logo-ring"></div>
             <div className="logo-ring"></div>
+            <span className="sr-only">Loading content, please wait.</span>
         </span>
     )
 }
