@@ -2,13 +2,15 @@ import { Route, Routes } from "react-router";
 
 const App = () => {
   return (
-    <>
+    <div className="page">
       <Navbar />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/create" element={<TestCreate />} />
-      </Routes>
-    </>
+      <main>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/create" element={<TestCreate />} />
+        </Routes>
+      </main>
+    </div>
   );
 };
 
@@ -18,7 +20,7 @@ import HomePage from "./components/pages/HomePage";
 const Navbar = () => {
   return (
     <header>
-      <div>
+      {/* <div> */}
         <nav>
           <Link to="/" className="logo"><span>Think</span>Board</Link>
           <div>
@@ -28,7 +30,7 @@ const Navbar = () => {
             </Link>
           </div>
         </nav>
-      </div>
+      {/* </div> */}
     </header>
   );
 };

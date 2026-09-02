@@ -18,9 +18,9 @@ const HomePage = () => {
             // console.log("fetch started");
             try {
                 const response = await fetch("http://localhost:5000/api/notes");
-                console.log(response);
+                // console.log(response);
                 const data = await response.json();
-                console.log(data);
+                // console.log(data);
                 setNotes(data);
             } catch (error) {
                 console.log("Error fetching notes");
@@ -35,22 +35,25 @@ const HomePage = () => {
     }, []);
 
     return (
-        <div className="">
-            <div className="">
+        // <div className="">
+            <>
                 {loading && <Spinner />}
 
                 {notes && notes.length === 0 && <NotesNotFound />}
 
                 {notes && notes.length > 0 && (
-                    <div className="">
-                        {notes.map(note => (
-                            // <h2 key={note._id}>{note.title}</h2>
-                            <NoteCard key={note._id} note={note} setNotes={setNotes} />
-                        ))}
+                    <div className="section notes-section">
+                        <h1 className="section-title">Notes</h1>
+                        <div className="notes">
+                            {notes.map(note => (
+                                // <h2 key={note._id}>{note.title}</h2>
+                                <NoteCard key={note._id} note={note} setNotes={setNotes} />
+                            ))}
+                        </div>
                     </div>
                 )}
-            </div>
-        </div>
+            </>
+        // </div>
     );
 };
 
@@ -58,7 +61,7 @@ const NoteCard = ({ note, setNotes }) => {
     const handleDeleteNote = async (e, id) => {
         e.preventDefault();
 
-        if (!window.confirm("Are you sure you want to delete this note?")) return;
+        // if (!window.confirm("Are you sure you want to delete this note?")) return;
 
         try {
             const response = await fetch(`http://localhost:5000/api/notes/${id}`, {method: "DELETE"});
@@ -78,10 +81,10 @@ const NoteCard = ({ note, setNotes }) => {
     };
 
     return (
-        <Link to={`/notes/${note._id}`}>
+        <Link to={`/notes/${note._id}`} className="note">
             <div className="card-body">
                 <h3 className="card-title">{note.title}</h3>
-                <p className="card-content">{note.content}</p>
+                <p className="card-text">{note.text}</p>
                 <div className="card-footer">
                     <span className="date">
                         {formatDate(new Date(note.createdAt))}
