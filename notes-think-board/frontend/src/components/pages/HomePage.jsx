@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 
 function formatDate(date) {
@@ -12,48 +12,79 @@ function formatDate(date) {
 const HomePage = () => {
     const [notes, setNotes] = useState(null);
     const [loading, setLoading] = useState(true);
+    const abortControllerRef = useRef(null);
 
     useEffect(() => {
-        async function fetchNotes() {
-            // console.log("fetch started");
+        loadNotes();
+
+        async function loadNotes() {
+            // setLoading(true);
             try {
-                const response = await fetch("http://localhost:5000/api/notes");
-                // console.log(response);
-                const data = await response.json();
-                // console.log(data);
-                setNotes(data);
+                const notes = await getAllNotes();
+                setNotes(notes);
+                // setError(null);
             } catch (error) {
+                // setError(err.message);
                 console.log("Error fetching notes");
-                console.log(error.response);
+                console.log(error.message);
                 console.log("Failed to load notes");
             } finally {
                 setLoading(false);
             }
-        };
+        }
 
-        fetchNotes();
+        async function getAllNotes() {
+            // try {
+                abortControllerRef.current = new AbortController();
+
+                const response = await fetch("http://localhost:5000/api/notes", {
+                    signal: abortControllerRef.current.signal
+                });
+
+                const contentType = response.headers.get("content-type");
+                let result = null;
+
+                if (contentType && contentType.includes("application/json")) {
+                    result = await response.json();
+                } else {
+                    result = await response.text();
+                }
+
+                if (response.ok) {
+                    return result;
+                } else {
+                    // let errorMessage = "An error occurred";
+                    const errorMessage = result.message || "An error occurred";
+                    throw new Error(errorMessage);
+                }
+            // } catch (error) {
+            //     console.log("Error fetching notes");
+            //     console.log(error.message);
+            //     console.log("Failed to load notes");
+            // } finally {
+            //     setLoading(false);
+            // }
+        };
     }, []);
 
     return (
-        // <div className="">
-            <>
-                {loading && <Spinner />}
+        <>
+            {loading && <Spinner />}
 
-                {notes && notes.length === 0 && <NotesNotFound />}
+            {notes && notes.length === 0 && <NotesNotFound />}
 
-                {notes && notes.length > 0 && (
-                    <div className="section notes-section">
-                        <h1 className="section-title">Notes</h1>
-                        <div className="notes">
-                            {notes.map(note => (
-                                // <h2 key={note._id}>{note.title}</h2>
-                                <NoteCard key={note._id} note={note} setNotes={setNotes} />
-                            ))}
-                        </div>
+            {notes && notes.length > 0 && (
+                <div className="section notes-section">
+                    <h1 className="section-title">Notes</h1>
+                    <div className="notes">
+                        {notes.map(note => (
+                            // <h2 key={note._id}>{note.title}</h2>
+                            <NoteCard key={note._id} note={note} setNotes={setNotes} />
+                        ))}
                     </div>
-                )}
-            </>
-        // </div>
+                </div>
+            )}
+        </>
     );
 };
 
@@ -64,7 +95,10 @@ const NoteCard = ({ note, setNotes }) => {
         // if (!window.confirm("Are you sure you want to delete this note?")) return;
 
         try {
-            const response = await fetch(`http://localhost:5000/api/notes/${id}`, {method: "DELETE"});
+            const response = await fetch(
+                `http://localhost:5000/api/notes/${id}`, {
+                    method: "DELETE"
+                });
             // const response = await fetch(`http://localhost:5000/api/notes/fakeid`, {method: "DELETE"});
 
             if (!response.ok) {
