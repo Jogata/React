@@ -14,60 +14,87 @@ const HomePage = () => {
     const [loading, setLoading] = useState(true);
     const abortControllerRef = useRef(null);
 
+    // console.log("loading: " + loading);
     useEffect(() => {
-        // 1. Create the abort controller FIRST before doing anything else
         const controller = new AbortController();
         abortControllerRef.current = controller;
-    
-        // 2. Define your helper functions
+        // abortControllerRef.current = new AbortController();
+        loadNotes();
+        
+        async function loadNotes() {
+            console.log("load started");
+            setLoading(true);
+            try {
+                const notes = await getAllNotes();
+                setNotes(notes);
+                // setError(null);
+                // setLoading(false);
+                abortControllerRef.current = null;
+            } catch (error) {
+                // setError(err.message);
+                if (error.name === "AbortError") {
+                    console.log("Fetch safely aborted by layout unmount");
+                    return;
+                }
+                
+                abortControllerRef.current = null;
+                console.log("Error fetching notes");
+                console.log(error.message);
+                console.log("Failed to load notes");
+                // setLoading(false);
+            } finally {
+                if (!abortControllerRef.current) {
+                    setLoading(false);
+                }
+            }
+        }
+
         async function getAllNotes() {
+            // abortControllerRef.current = new AbortController();
+
             const response = await fetch("http://localhost:5000/api/notes", {
-                signal: controller.signal // Use the local controller instance
+                signal: abortControllerRef.current.signal
             });
-    
+
             const contentType = response.headers.get("content-type");
             let result = null;
-    
+
             if (contentType && contentType.includes("application/json")) {
                 result = await response.json();
             } else {
                 result = await response.text();
             }
-    
-            if (response.ok) {
+
+            if (!response.ok) {
                 return result;
             } else {
+                // let errorMessage = "An error occurred";
                 const errorMessage = result.message || "An error occurred";
+                
                 throw new Error(errorMessage);
             }
-        }
-    
-        async function loadNotes() {
-            setLoading(true); // Trigger the loading spinner state cleanly
-            try {
-                const notes = await getAllNotes();
-                setNotes(notes);
-            } catch (error) {
-                // 3. Ignore standard abort errors so they don't break your logs
-                if (error.name === 'AbortError') {
-                    console.log("Fetch safely aborted by layout unmount");
-                    return; 
-                }
-                console.log("Error fetching notes:", error.message);
-            } finally {
-                setLoading(false); // Turn off the spinner
+        };
+
+        return () => {
+            console.log("clean up");
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+                // abortControllerRef.current = null;
             }
         }
-    
-        // 4. FINALLY, execute the function execution after everything is safely defined
-        loadNotes();
-    
-        // 5. Clean up perfectly if the user navigates away mid-stream
-        return () => {
-            controller.abort();
-        };
     }, []);
-    
+
+    // if (loading) {
+    //     return <Spinner />
+    // }
+
+    // if (notes.length == 0) {
+    //     return <NotesNotFound />
+    // }
+
+    // if (notes) {
+    //     return <Notes />
+    // }
 
     return (
         <>
