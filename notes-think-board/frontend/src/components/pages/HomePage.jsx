@@ -13,8 +13,7 @@ const HomePage = () => {
     const [notes, setNotes] = useState(null);
     const [loading, setLoading] = useState(true);
     const abortControllerRef = useRef(null);
-
-    // console.log("loading: " + loading);
+    
     useEffect(() => {
         const controller = new AbortController();
         abortControllerRef.current = controller;
@@ -65,7 +64,7 @@ const HomePage = () => {
                 result = await response.text();
             }
 
-            if (!response.ok) {
+            if (response.ok) {
                 return result;
             } else {
                 // let errorMessage = "An error occurred";
@@ -84,37 +83,54 @@ const HomePage = () => {
         }
     }, []);
 
-    // if (loading) {
-    //     return <Spinner />
-    // }
+    if (loading) {
+        return <Spinner />
+    }
 
-    // if (notes.length == 0) {
-    //     return <NotesNotFound />
-    // }
+    if (!notes) {
+        return <h1>Data not received</h1>
+    }
+
+    if (notes.length == 0) {
+        return <NotesNotFound />
+    }
 
     // if (notes) {
-    //     return <Notes />
+        return <Notes notes={notes} setNotes={setNotes} />
     // }
 
-    return (
-        <>
-            {loading && <Spinner />}
+    // return (
+    //     <>
+    //         {loading && <Spinner />}
 
-            {notes && notes.length === 0 && <NotesNotFound />}
+    //         {notes && notes.length === 0 && <NotesNotFound />}
 
-            {notes && notes.length > 0 && (
-                <div className="section notes-section">
-                    <h1 className="section-title">Notes</h1>
-                    <div className="notes">
-                        {notes.map(note => (
-                            <NoteCard key={note._id} note={note} setNotes={setNotes} />
-                        ))}
-                    </div>
-                </div>
-            )}
-        </>
-    );
+    //         {notes && notes.length > 0 && (
+    //             <div className="section notes-section">
+    //                 <h1 className="section-title">Notes</h1>
+    //                 <div className="notes">
+    //                     {notes.map(note => (
+    //                         <NoteCard key={note._id} note={note} setNotes={setNotes} />
+    //                     ))}
+    //                 </div>
+    //             </div>
+    //         )}
+    //     </>
+    // );
 };
+
+function Notes({ notes, setNotes }) {
+    return (
+        <div className="section notes-section">
+            <h1 className="section-title">Notes</h1>
+            <div className="notes">
+                {notes.map(note => (
+                    <NoteCard key={note._id} note={note} setNotes={setNotes} />
+                ))}
+            </div>
+        </div>
+    )
+}
 
 const NoteCard = ({ note, setNotes }) => {
     const handleDeleteNote = async (e, id) => {
