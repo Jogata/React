@@ -26,15 +26,6 @@ app.use(express.json());
 //     next();
 // });
 
-// app.get("/test-get", (req, res) => {
-//     const jsonresponse = {
-//         message: "Server is ready",
-//         method: req.method,
-//         url: req.url
-//     };
-//     res.json(jsonresponse);
-// })
-
 app.use("/api/notes", notesRoutes);
 
 connectDB().then(() => {

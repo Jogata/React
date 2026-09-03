@@ -15,57 +15,59 @@ const HomePage = () => {
     const abortControllerRef = useRef(null);
 
     useEffect(() => {
-        loadNotes();
-
+        // 1. Create the abort controller FIRST before doing anything else
+        const controller = new AbortController();
+        abortControllerRef.current = controller;
+    
+        // 2. Define your helper functions
+        async function getAllNotes() {
+            const response = await fetch("http://localhost:5000/api/notes", {
+                signal: controller.signal // Use the local controller instance
+            });
+    
+            const contentType = response.headers.get("content-type");
+            let result = null;
+    
+            if (contentType && contentType.includes("application/json")) {
+                result = await response.json();
+            } else {
+                result = await response.text();
+            }
+    
+            if (response.ok) {
+                return result;
+            } else {
+                const errorMessage = result.message || "An error occurred";
+                throw new Error(errorMessage);
+            }
+        }
+    
         async function loadNotes() {
-            // setLoading(true);
+            setLoading(true); // Trigger the loading spinner state cleanly
             try {
                 const notes = await getAllNotes();
                 setNotes(notes);
-                // setError(null);
             } catch (error) {
-                // setError(err.message);
-                console.log("Error fetching notes");
-                console.log(error.message);
-                console.log("Failed to load notes");
+                // 3. Ignore standard abort errors so they don't break your logs
+                if (error.name === 'AbortError') {
+                    console.log("Fetch safely aborted by layout unmount");
+                    return; 
+                }
+                console.log("Error fetching notes:", error.message);
             } finally {
-                setLoading(false);
+                setLoading(false); // Turn off the spinner
             }
         }
-
-        async function getAllNotes() {
-            // try {
-                abortControllerRef.current = new AbortController();
-
-                const response = await fetch("http://localhost:5000/api/notes", {
-                    signal: abortControllerRef.current.signal
-                });
-
-                const contentType = response.headers.get("content-type");
-                let result = null;
-
-                if (contentType && contentType.includes("application/json")) {
-                    result = await response.json();
-                } else {
-                    result = await response.text();
-                }
-
-                if (response.ok) {
-                    return result;
-                } else {
-                    // let errorMessage = "An error occurred";
-                    const errorMessage = result.message || "An error occurred";
-                    throw new Error(errorMessage);
-                }
-            // } catch (error) {
-            //     console.log("Error fetching notes");
-            //     console.log(error.message);
-            //     console.log("Failed to load notes");
-            // } finally {
-            //     setLoading(false);
-            // }
+    
+        // 4. FINALLY, execute the function execution after everything is safely defined
+        loadNotes();
+    
+        // 5. Clean up perfectly if the user navigates away mid-stream
+        return () => {
+            controller.abort();
         };
     }, []);
+    
 
     return (
         <>
@@ -78,7 +80,6 @@ const HomePage = () => {
                     <h1 className="section-title">Notes</h1>
                     <div className="notes">
                         {notes.map(note => (
-                            // <h2 key={note._id}>{note.title}</h2>
                             <NoteCard key={note._id} note={note} setNotes={setNotes} />
                         ))}
                     </div>

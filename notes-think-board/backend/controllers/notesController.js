@@ -14,10 +14,6 @@ export async function getAllNotes(req, res) {
 }
 
 export async function getNoteById(req, res) {
-	// if (!mongoose.Types.ObjectId.isValid(id)) {
-	// 	return res.status(404).json({ message: "Invalid Note ID" });
-	// }
-
     try {
         const note = await Note.findById(req.params.id);
         if (!note) return res.status(404).json({ message: "Note not found!" });
@@ -61,10 +57,6 @@ export async function createNote(req, res) {
 }
 
 export async function updateNote(req, res) {
-	// if (!mongoose.Types.ObjectId.isValid(id)) {
-	// 	return res.status(404).json({ message: "Invalid Note ID" });
-	// }
-
     try {
         const { title, content } = req.body;
         const { id } = req.params;
@@ -113,10 +105,6 @@ export async function updateNote(req, res) {
 
 export async function deleteNote(req, res) {
     const { id } = req.params;
-
-    // if (!mongoose.Types.ObjectId.isValid(id)) {
-	// 	return res.status(404).json({ message: "Invalid Note ID" });
-	// }
 
     try {
         const deletedNote = await Note.findByIdAndDelete(id);
