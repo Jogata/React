@@ -159,7 +159,28 @@ nav {
   font-weight: bold;
   text-transform: capitalize;
   -webkit-text-stroke: 1px cornflowerblue;
-  transition: all 600ms;
+  transition: transform 600ms;
+}
+
+/* .logo-box:hover .logo {
+  transform: rotateX(360deg);
+} */
+
+.logo span {
+  display: inline-block;
+  color: transparent;
+  -webkit-text-stroke: 1px cornflowerblue;
+  transition: color 300ms, transform 600ms;
+}
+
+.logo:hover span {
+  color: cornflowerblue;
+  transform: rotateX(360deg);
+}
+
+.logo-box:hover .logo span {
+  /* color: cornflowerblue; */
+  /* transform: rotateX(360deg); */
 }
 
 /* .test {
@@ -289,7 +310,7 @@ main {
 .note {
   width: 100%;
   max-width: 400px;
-  margin: auto;
+  margin: 0 auto;
   border-radius: 12px;
   box-shadow: 3px 3px 3px #000, 
           -3px -3px 3px #fff3;

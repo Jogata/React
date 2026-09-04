@@ -134,16 +134,17 @@ function Notes({ notes, deleteNote }) {
 }
 
 const NoteCard = ({ note, deleteNote }) => {
+    // console.log(note);
     const handleDeleteNote = async (e, id) => {
         e.preventDefault();
 
         // if (!window.confirm("Are you sure you want to delete this note?")) return;
 
         try {
-            // const response = await deleteNote(id);
-            const response = await deleteNote("nvfdsbhk");
+            const response = await deleteNote(id);
+            // const response = await deleteNote("nvfdsbhk");
 
-            setNotes(currentNotes => currentNotes.filter(note => note._id !== id));
+            // setNotes(currentNotes => currentNotes.filter(note => note._id !== id));
             console.log("Note deleted successfully");
         } catch (error) {
             console.log("Error in handleDelete: ", error.message);
@@ -155,7 +156,7 @@ const NoteCard = ({ note, deleteNote }) => {
         <Link to={`/notes/${note._id}`} className="note">
             <div className="card-body">
                 <h3 className="card-title">{note.title}</h3>
-                <p className="card-text">{note.text}</p>
+                <p className="card-text">{note.content}</p>
                 <div className="card-footer">
                     <span className="date">
                         {formatDate(new Date(note.createdAt))}
