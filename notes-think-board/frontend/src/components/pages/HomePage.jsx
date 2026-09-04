@@ -15,19 +15,18 @@ const HomePage = () => {
     const abortControllerRef = useRef(null);
     
     useEffect(() => {
-        const controller = new AbortController();
-        abortControllerRef.current = controller;
-        // abortControllerRef.current = new AbortController();
+        // const controller = new AbortController();
+        // abortControllerRef.current = controller;
+        abortControllerRef.current = new AbortController();
         loadNotes();
         
         async function loadNotes() {
-            console.log("load started");
+            // console.log("load started");
             setLoading(true);
             try {
                 const notes = await getAllNotes();
                 setNotes(notes);
                 // setError(null);
-                // setLoading(false);
                 abortControllerRef.current = null;
             } catch (error) {
                 // setError(err.message);
@@ -40,7 +39,6 @@ const HomePage = () => {
                 console.log("Error fetching notes");
                 console.log(error.message);
                 console.log("Failed to load notes");
-                // setLoading(false);
             } finally {
                 if (!abortControllerRef.current) {
                     setLoading(false);
@@ -78,7 +76,6 @@ const HomePage = () => {
             console.log("clean up");
             if (abortControllerRef.current) {
                 abortControllerRef.current.abort();
-                // abortControllerRef.current = null;
             }
         }
     }, []);
@@ -95,65 +92,61 @@ const HomePage = () => {
         return <NotesNotFound />
     }
 
-    // if (notes) {
-        return <Notes notes={notes} setNotes={setNotes} />
-    // }
+    async function deleteNote(id) {
+        const response = await fetch(
+            `http://localhost:5000/api/notes/${id}`, {
+                method: "DELETE"
+            });
 
-    // return (
-    //     <>
-    //         {loading && <Spinner />}
+        const contentType = response.headers.get("content-type");
+        let result = null;
 
-    //         {notes && notes.length === 0 && <NotesNotFound />}
+        if (contentType && contentType.includes("application/json")) {
+            result = await response.json();
+        } else {
+            result = await response.text();
+        }
 
-    //         {notes && notes.length > 0 && (
-    //             <div className="section notes-section">
-    //                 <h1 className="section-title">Notes</h1>
-    //                 <div className="notes">
-    //                     {notes.map(note => (
-    //                         <NoteCard key={note._id} note={note} setNotes={setNotes} />
-    //                     ))}
-    //                 </div>
-    //             </div>
-    //         )}
-    //     </>
-    // );
+        if (response.ok) {
+            return result;
+        } else {
+            // let errorMessage = "An error occurred";
+            const errorMessage = result.message || "An error occurred";
+            
+            throw new Error(errorMessage);
+        }
+    }
+
+    return <Notes notes={notes} deleteNote={deleteNote} />
 };
 
-function Notes({ notes, setNotes }) {
+function Notes({ notes, deleteNote }) {
     return (
         <div className="section notes-section">
             <h1 className="section-title">Notes</h1>
             <div className="notes">
                 {notes.map(note => (
-                    <NoteCard key={note._id} note={note} setNotes={setNotes} />
+                    <NoteCard key={note._id} note={note} deleteNote={deleteNote} />
                 ))}
             </div>
         </div>
     )
 }
 
-const NoteCard = ({ note, setNotes }) => {
+const NoteCard = ({ note, deleteNote }) => {
     const handleDeleteNote = async (e, id) => {
         e.preventDefault();
 
         // if (!window.confirm("Are you sure you want to delete this note?")) return;
 
         try {
-            const response = await fetch(
-                `http://localhost:5000/api/notes/${id}`, {
-                    method: "DELETE"
-                });
-            // const response = await fetch(`http://localhost:5000/api/notes/fakeid`, {method: "DELETE"});
-
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message);
-            }
+            // const response = await deleteNote(id);
+            const response = await deleteNote("nvfdsbhk");
 
             setNotes(currentNotes => currentNotes.filter(note => note._id !== id));
             console.log("Note deleted successfully");
         } catch (error) {
-            console.log("Error in handleDelete", error.message);
+            console.log("Error in handleDelete: ", error.message);
             console.log("Failed to delete note");
         }
     };
