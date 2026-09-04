@@ -159,12 +159,7 @@ nav {
   font-weight: bold;
   text-transform: capitalize;
   -webkit-text-stroke: 1px cornflowerblue;
-}
-
-.logo span {
-  /* vertical-align: middle; */
-  color: transparent;
-  -webkit-text-stroke: 1px cornflowerblue;
+  transition: all 600ms;
 }
 
 /* .test {

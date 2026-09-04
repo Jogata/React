@@ -1,4 +1,7 @@
 import { Route, Routes } from "react-router";
+import { Link } from "react-router";
+import HomePage from "./components/pages/HomePage";
+import CreatePage from "./components/pages/CreatePage";
 
 const App = () => {
   return (
@@ -7,37 +10,32 @@ const App = () => {
       <main>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/create" element={<TestCreate />} />
+          <Route path="/create" element={<CreatePage />} />
         </Routes>
       </main>
     </div>
   );
 };
 
-import { Link } from "react-router";
-import HomePage from "./components/pages/HomePage";
-
 const Navbar = () => {
   return (
     <header>
-      {/* <div> */}
-        <nav>
-          <Link to="/" className="logo"><span>Think</span>Board</Link>
-          <div>
-            <Link to={"/create"} className="link-btn">
-              <i className="fa fa-plus" aria-hidden="true"></i>
-              <span>New Note</span>
-            </Link>
-          </div>
-        </nav>
-      {/* </div> */}
+      <nav>
+        <Link to="/" className="logo"><span>Think</span>Board</Link>
+        <div>
+          <Link to={"/create"} className="link-btn">
+            <i className="fa fa-plus" aria-hidden="true"></i>
+            <span>New Note</span>
+          </Link>
+        </div>
+      </nav>
     </header>
   );
 };
 
-function TestCreate() {
-  return <h1 className="test">Test Create page</h1>
-}
+// function TestCreate() {
+//   return <h1 className="test">Test Create page</h1>
+// }
 
 // const Spinner = () => {
 //   return (
