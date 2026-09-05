@@ -97,6 +97,17 @@ img {
   padding: 0.4em 1em;
 }
 
+.link-btn.alt {
+  color: cornflowerblue;
+  border: 1px solid cornflowerblue;
+  background-color: transparent;
+}
+
+.link-btn.alt:hover {
+  color: #242424;
+  background-color: cornflowerblue;
+}
+
 .link-btn:hover, 
 .btn:hover {
   color: cornflowerblue;

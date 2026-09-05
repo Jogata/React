@@ -12,22 +12,22 @@ function formatDate(date) {
 const HomePage = () => {
     const [notes, setNotes] = useState(null);
     const [loading, setLoading] = useState(true);
-    const abortControllerRef = useRef(null);
+    // const abortControllerRef = useRef(null);
     
     useEffect(() => {
-        // const controller = new AbortController();
+        let controller = new AbortController();
         // abortControllerRef.current = controller;
-        abortControllerRef.current = new AbortController();
+        // abortControllerRef.current = new AbortController();
         loadNotes();
         
         async function loadNotes() {
-            // console.log("load started");
             setLoading(true);
             try {
                 const notes = await getAllNotes();
                 setNotes(notes);
                 // setError(null);
-                abortControllerRef.current = null;
+                // abortControllerRef.current = null;
+                controller = null;
             } catch (error) {
                 // setError(err.message);
                 if (error.name === "AbortError") {
@@ -35,22 +35,25 @@ const HomePage = () => {
                     return;
                 }
                 
-                abortControllerRef.current = null;
+                // abortControllerRef.current = null;
+                controller = null;
                 console.log("Error fetching notes");
                 console.log(error.message);
                 console.log("Failed to load notes");
             } finally {
-                if (!abortControllerRef.current) {
+                // if (!abortControllerRef.current) {
+                //     setLoading(false);
+                // }
+                if (!controller) {
                     setLoading(false);
                 }
             }
         }
 
         async function getAllNotes() {
-            // abortControllerRef.current = new AbortController();
-
             const response = await fetch("http://localhost:5000/api/notes", {
-                signal: abortControllerRef.current.signal
+                // signal: abortControllerRef.current.signal
+                signal: controller.signal
             });
 
             const contentType = response.headers.get("content-type");
@@ -65,31 +68,32 @@ const HomePage = () => {
             if (response.ok) {
                 return result;
             } else {
-                // let errorMessage = "An error occurred";
-                const errorMessage = result.message || "An error occurred";
-                
+                const errorMessage = result.message || "An error occurred";                
                 throw new Error(errorMessage);
             }
         };
 
         return () => {
-            console.log("clean up");
-            if (abortControllerRef.current) {
-                abortControllerRef.current.abort();
+            // console.log("clean up");
+            // if (abortControllerRef.current) {
+            //     abortControllerRef.current.abort();
+            // }
+            if (controller) {
+                controller.abort();
             }
         }
     }, []);
 
     if (loading) {
-        return <Spinner />
+        return <Spinner />;
     }
 
     if (!notes) {
-        return <h1>Data not received</h1>
+        return <h1>Data not received</h1>;
     }
 
     if (notes.length == 0) {
-        return <NotesNotFound />
+        return <NotesNotFound />;
     }
 
     async function deleteNote(id) {
@@ -110,42 +114,53 @@ const HomePage = () => {
         if (response.ok) {
             return result;
         } else {
-            // let errorMessage = "An error occurred";
             const errorMessage = result.message || "An error occurred";
-            
             throw new Error(errorMessage);
         }
     }
 
-    return <Notes notes={notes} deleteNote={deleteNote} />
+    async function handleDeleteNote(id) {
+        try {
+            const response = await deleteNote(id);
+            // const response = await deleteNote("nvfdsbhk");
+
+            setNotes(currentNotes => currentNotes.filter(note => note._id !== id));
+            console.log("Note deleted successfully");
+        } catch (error) {
+            console.log("Error in handleDelete: ", error.message);
+            console.log("Failed to delete note");
+            throw new Error(error.message);
+        }
+    };
+
+    return <Notes notes={notes} handleDeleteNote={handleDeleteNote} />
 };
 
-function Notes({ notes, deleteNote }) {
+function Notes({ notes, handleDeleteNote }) {
     return (
         <div className="section notes-section">
             <h1 className="section-title">Notes</h1>
             <div className="notes">
                 {notes.map(note => (
-                    <NoteCard key={note._id} note={note} deleteNote={deleteNote} />
+                    <NoteCard 
+                        key={note._id} 
+                        note={note} 
+                        handleDeleteNote={handleDeleteNote} 
+                    />
                 ))}
             </div>
         </div>
     )
 }
 
-const NoteCard = ({ note, deleteNote }) => {
-    // console.log(note);
-    const handleDeleteNote = async (e, id) => {
+const NoteCard = ({ note, handleDeleteNote }) => {
+    const handleClickDeleteNote = async (e) => {
         e.preventDefault();
 
         // if (!window.confirm("Are you sure you want to delete this note?")) return;
 
         try {
-            const response = await deleteNote(id);
-            // const response = await deleteNote("nvfdsbhk");
-
-            // setNotes(currentNotes => currentNotes.filter(note => note._id !== id));
-            console.log("Note deleted successfully");
+            const response = await handleDeleteNote(note._id);
         } catch (error) {
             console.log("Error in handleDelete: ", error.message);
             console.log("Failed to delete note");
@@ -175,7 +190,7 @@ const NoteCard = ({ note, deleteNote }) => {
                             type="button"
                             className="icon delete-btn modal-btn"
                             title="Delete"
-                            onClick={(e) => handleDeleteNote(e, note._id)}
+                            onClick={handleClickDeleteNote}
                         >
                             <span className="sr-only">Delete note {note.title}</span>
                             <i className="fa fa-trash-o" aria-hidden="true"></i>
@@ -193,7 +208,7 @@ const NotesNotFound = () => {
             <div className="">
                 <i className="fa fa-notebook"></i>
             </div>
-            <h3 className="">No notes yet</h3>
+            <h1 className="">No notes yet</h1>
             <p className="">
                 Ready to organize your thoughts? Create your
                 first note to get started on your journey.

@@ -41,14 +41,15 @@ const CreatePage = () => {
     };
 
     return (
-        <div>
-            <div>
-                <div>
-                    <Link to={"/"}>
+        <div className="section">
+            {/* <div> */}
+                {/* <div> */}
+                    <Link to={"/"} className="link-btn alt">
+                        <i className="fa fa-angle-double-left" aria-hidden={true}></i>
                         Back to Notes
                     </Link>
 
-                    <div>
+                    <div className="inner-section">
                         <div className="card-body">
                             <h2 className="card-title">Create New Note</h2>
                             <form onSubmit={handleSubmit}>
@@ -86,8 +87,8 @@ const CreatePage = () => {
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            // </div>
+        // </div>
     );
 };
 
