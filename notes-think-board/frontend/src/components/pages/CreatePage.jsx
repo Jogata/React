@@ -3,12 +3,40 @@ import { Link, useNavigate } from "react-router";
 
 const CreatePage = () => {
     // const [title, setTitle] = useState("");
-    const [title, setTitle] = useState("test note 12");
+    const [title, setTitle] = useState("test note 1");
     // const [content, setContent] = useState("");
-    const [content, setContent] = useState("test note 12 text");
+    const [content, setContent] = useState("test note 1 text");
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
+
+    async function createNote(data) {
+        const response = await fetch("http://localhost:5000/api/notes", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ title, content })
+        });
+        console.log(response);
+
+        const contentType = response.headers.get("content-type");
+        let result = null;
+
+        if (contentType && contentType.includes("application/json")) {
+            result = await response.json();
+        } else {
+            result = await response.text();
+        }
+        console.log(result);
+
+        if (response.ok) {
+            return result;
+        } else {
+            const errorMessage = result.message || "An error occurred during creation";
+            throw new Error(errorMessage);
+        }
+    }
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -21,15 +49,17 @@ const CreatePage = () => {
         setLoading(true);
 
         try {
-            const response = await fetch("http://localhost:5000/api/notes", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ title, content })
-            });
+            const response = await createNote(note);
+            // const response = await fetch("http://localhost:5000/api/notes", {
+            //     method: "POST",
+            //     headers: {
+            //         "Content-Type": "application/json"
+            //     },
+            //     body: JSON.stringify({ title, content })
+            // });
 
             console.log(response);
+            // TODO: update notes state
 
             // navigate("/");
         } catch (error) {
@@ -94,7 +124,7 @@ const CreatePage = () => {
 };
 
 function GenerateButton({setTitle, setContent}) {
-    const [ number, setNumber ] = useState(0);
+    const [ number, setNumber ] = useState(1);
 
     function generate() {
         const newNumber = number + 1;

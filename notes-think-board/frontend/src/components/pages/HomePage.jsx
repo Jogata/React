@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 function formatDate(date) {
@@ -12,12 +12,9 @@ function formatDate(date) {
 const HomePage = () => {
     const [notes, setNotes] = useState(null);
     const [loading, setLoading] = useState(true);
-    // const abortControllerRef = useRef(null);
     
     useEffect(() => {
         let controller = new AbortController();
-        // abortControllerRef.current = controller;
-        // abortControllerRef.current = new AbortController();
         loadNotes();
         
         async function loadNotes() {
@@ -26,7 +23,6 @@ const HomePage = () => {
                 const notes = await getAllNotes();
                 setNotes(notes);
                 // setError(null);
-                // abortControllerRef.current = null;
                 controller = null;
             } catch (error) {
                 // setError(err.message);
@@ -35,16 +31,12 @@ const HomePage = () => {
                     return;
                 }
                 
-                // abortControllerRef.current = null;
                 controller = null;
                 console.log("Error fetching notes");
                 console.log(error.message);
                 console.log("Failed to load notes");
             } finally {
-                // if (!abortControllerRef.current) {
-                //     setLoading(false);
-                // }
-                if (!controller) {
+                if (controller === null) {
                     setLoading(false);
                 }
             }
@@ -52,7 +44,6 @@ const HomePage = () => {
 
         async function getAllNotes() {
             const response = await fetch("http://localhost:5000/api/notes", {
-                // signal: abortControllerRef.current.signal
                 signal: controller.signal
             });
 
@@ -68,16 +59,12 @@ const HomePage = () => {
             if (response.ok) {
                 return result;
             } else {
-                const errorMessage = result.message || "An error occurred";                
+                const errorMessage = result.message || "An error occurred";
                 throw new Error(errorMessage);
             }
         };
 
         return () => {
-            // console.log("clean up");
-            // if (abortControllerRef.current) {
-            //     abortControllerRef.current.abort();
-            // }
             if (controller) {
                 controller.abort();
             }
