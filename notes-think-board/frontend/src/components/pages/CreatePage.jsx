@@ -22,7 +22,7 @@ const CreatePage = () => {
 
         try {
             const response = await fetch("http://localhost:5000/api/notes", {
-                method: "POST", 
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -31,7 +31,7 @@ const CreatePage = () => {
 
             console.log(response);
 
-            navigate("/");
+            // navigate("/");
         } catch (error) {
             console.log("Error creating note", error);
             console.log("Failed to create note");
@@ -42,54 +42,73 @@ const CreatePage = () => {
 
     return (
         <div className="section">
-            {/* <div> */}
-                {/* <div> */}
-                    <Link to={"/"} className="link-btn alt">
-                        <i className="fa fa-angle-double-left" aria-hidden={true}></i>
-                        Back to Notes
-                    </Link>
+            <Link to={"/"} className="link-btn alt">
+                <i className="fa fa-angle-double-left" aria-hidden={true}></i>
+                Back to Notes
+            </Link>
 
-                    <div className="inner-section">
-                        <div className="card-body">
-                            <h2 className="card-title">Create New Note</h2>
-                            <form onSubmit={handleSubmit}>
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">Title</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        placeholder="Note Title"
-                                        className="input input-bordered"
-                                        value={title}
-                                        onChange={(e) => setTitle(e.target.value)}
-                                    />
-                                </div>
+            <div className="inner-section">
+                <div className="form">
+                    <h1 className="form-title" aria-labelledby="form-title">
+                        Create New Note
+                    </h1>
 
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">Content</span>
-                                    </label>
-                                    <textarea
-                                        className="textarea textarea-bordered"
-                                        placeholder="Write your note here..."
-                                        value={content}
-                                        onChange={(e) => setContent(e.target.value)}
-                                    />
-                                </div>
-
-                                <div className="card-actions">
-                                    <button type="submit" className="btn btn-primary">
-                                        {loading ? "Creating..." : "Create Note"}
-                                    </button>
-                                </div>
-                            </form>
+                    <form onSubmit={handleSubmit} aria-labelledby="form-title">
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Title</span>
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Note Title"
+                                className="input input-bordered"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                            />
                         </div>
-                    </div>
+
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Content</span>
+                            </label>
+                            <textarea
+                                className="textarea textarea-bordered"
+                                placeholder="Write your note here..."
+                                value={content}
+                                onChange={(e) => setContent(e.target.value)}
+                            />
+                        </div>
+
+                        <div className="card-actions">
+                            <button type="submit" className="btn btn-primary">
+                                {loading ? "Creating..." : "Create Note"}
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            // </div>
-        // </div>
+            </div>
+
+            <GenerateButton setTitle={setTitle} setContent={setContent} />
+        </div>
     );
 };
+
+function GenerateButton({setTitle, setContent}) {
+    const [ number, setNumber ] = useState(0);
+
+    function generate() {
+        const newNumber = number + 1;
+        console.log(newNumber);
+        setNumber(newNumber);
+        setTitle(`test note ${newNumber}`);
+        setContent(`test note ${newNumber} text`);
+    }
+
+    return (
+        <button className="btn" onClick={generate}>
+            GENERATE
+        </button>
+    )
+}
 
 export default CreatePage;

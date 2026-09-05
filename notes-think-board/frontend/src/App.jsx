@@ -21,10 +21,7 @@ const Navbar = () => {
   return (
     <header>
       <nav>
-        {/* <div className="logo-box"> */}
-          <Link to="/" className="logo"><span>Think</span>Board</Link>
-          {/* <Link to="/" className="logo"><div>Think</div>Board</Link> */}
-        {/* </div> */}
+        <Link to="/" className="logo"><span>Think</span>Board</Link>
         <div>
           <Link to={"/create"} className="link-btn">
             <i className="fa fa-plus" aria-hidden="true"></i>
@@ -35,10 +32,6 @@ const Navbar = () => {
     </header>
   );
 };
-
-// function TestCreate() {
-//   return <h1 className="test">Test Create page</h1>
-// }
 
 // const Spinner = () => {
 //   return (

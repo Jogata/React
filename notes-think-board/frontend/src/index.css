@@ -60,7 +60,7 @@ button {
   overflow: hidden;
 }
 
-input {
+input, textarea {
   font-family: inherit;
   border: 0px solid transparent;
   outline: 1px solid transparent;
@@ -310,6 +310,10 @@ main {
   padding: 2rem 2%;
 }
 
+.inner-section {
+  padding: 2rem 0;
+}
+
 .notes {
   padding: 2rem 2%;
   display: grid;
@@ -322,6 +326,7 @@ main {
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
+  color: #fff;
   border-radius: 12px;
   box-shadow: 3px 3px 3px #000, 
           -3px -3px 3px #fff3;
@@ -348,5 +353,67 @@ main {
 }
 
 .card-actions .icon {
+  margin: 0.5rem;
   font-size: 1.4rem;
 }
+
+.card-actions .icon.edit-btn {
+  padding: 0.4em 0.47em;
+  color: orange;
+}
+
+.card-actions .icon.delete-btn {
+  padding: 0.4em 0.58em;
+  color: red;
+}
+
+.form {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 3px 3px 3px #0004, 
+            -3px -3px 3px #fff1;
+}
+
+.form-title {
+  padding: 1rem 2%;
+  text-align: center;
+  /* border: 1px solid red; */
+}
+
+.form form {
+  padding: 1rem 2%;
+  /* border: 1px solid blue; */
+}
+
+.form-control {
+  margin-bottom: 1.2rem;
+}
+
+.form-control .label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1.4rem;
+}
+
+.form-control .textarea, 
+.form-control .input {
+  width: 100%;
+  padding: 0.5em 1em;
+  color: #999;
+  font-size: 1.2rem;
+  border-radius: 6px;
+  border: 1px solid #fff3;
+}
+
+.form .card-actions {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.form .card-actions button {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
