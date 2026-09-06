@@ -417,3 +417,33 @@ main {
   font-weight: bold;
 }
 
+.toast-container {
+  max-width: 420px;
+  padding: 1rem 1rem 0;
+  margin: 0 auto;
+  background-color: transparent;
+}
+
+.toast-box {
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 12px;
+  /* border: 1px solid green; */
+  border: 3px solid var(--local-color);
+  background-color: var(--local-color);
+  box-shadow: inset 1px 1px 3px #0008,
+      inset -1px -1px 3px #fff8;
+  pointer-events: all;
+}
+
+.toast-box.success {
+  --local-color: green;
+}
+
+.toast-box.error {
+  --local-color: crimson;
+}

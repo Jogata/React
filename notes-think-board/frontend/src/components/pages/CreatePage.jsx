@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 
 const CreatePage = () => {
@@ -11,6 +11,15 @@ const CreatePage = () => {
     const [notifications, setNotifications] = useState([]);
 
     const navigate = useNavigate();
+
+    const addNotification = useCallback((message, type = "success") => {
+        const newToast = { id: crypto.randomUUID(), message, type };
+        setNotifications(old => [...old, newToast]);
+    }, []);
+    
+    const removeNotification = useCallback((id) => {
+        setNotifications(old => old.filter(toast => toast.id !== id));
+    }, []);
 
     async function createNote(data) {
         const response = await fetch("http://localhost:5000/api/notes", {
@@ -69,7 +78,7 @@ const CreatePage = () => {
 
     return (
         <div className="section">
-            <Notifications notifications={notifications} />
+            <Notifications notifications={notifications} removeNotification={removeNotification} />
 
             <Link to={"/"} className="link-btn alt">
                 <i className="fa fa-angle-double-left" aria-hidden={true}></i>
@@ -122,7 +131,7 @@ const CreatePage = () => {
     );
 };
 
-function Notifications({ notifications }) {
+function Notifications({ notifications, removeNotification }) {
     const popoverRef = useRef(null);
 
     useEffect(() => {
@@ -137,14 +146,27 @@ function Notifications({ notifications }) {
     }, [notifications.length]);
 
     return (
-        <div 
-            className="toast-container" 
-            ref={popoverRef} 
-            popover="manual" 
+        <div
+            className="toast-container"
+            ref={popoverRef}
+            popover="manual"
             role="status"
         >
             {notifications.map(toast => (
-                <h2>toast</h2>
+                <div 
+                    key={toast.id}
+                    className={`toast-box ${toast.type}`} 
+                >
+                    {/* <p>{toast.message}</p> */}
+                    <p>{toast}</p>
+                    <button
+                        type="button"
+                        aria-label="Dismiss alert"
+                        onClick={() => removeNotification(toast.id)}
+                    >
+                        <span>X</span>
+                    </button>
+                </div>
             ))}
         </div>
     );
