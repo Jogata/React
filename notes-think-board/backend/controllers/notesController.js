@@ -31,7 +31,6 @@ export async function createNote(req, res) {
     const { title, content } = req.body;
     
     try {
-        // const { title, content } = req.body;
         const note = new Note({ title, content });
 
         const savedNote = await note.save();
@@ -50,6 +49,12 @@ export async function createNote(req, res) {
 			message = `A note with the title '${title}' already exists. Please choose a different title.`;
 			console.log(11000, message);
 			return res.status(409).json({ message });
+		}
+
+        if (error.name == "ValidationError") {
+			message = `All fields are required.`;
+			console.log("ValidationError in createNote: ", message);
+			return res.status(422).json({ message });
 		}
 
         res.status(500).json({ message: "Internal server error" });

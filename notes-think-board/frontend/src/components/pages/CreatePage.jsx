@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 
 const CreatePage = () => {
@@ -8,6 +8,8 @@ const CreatePage = () => {
     const [content, setContent] = useState("test note 1 text");
     const [loading, setLoading] = useState(false);
 
+    const [notifications, setNotifications] = useState([]);
+
     const navigate = useNavigate();
 
     async function createNote(data) {
@@ -16,7 +18,7 @@ const CreatePage = () => {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ title, content })
+            body: JSON.stringify(data)
         });
         console.log(response);
 
@@ -38,28 +40,23 @@ const CreatePage = () => {
         }
     }
 
-    async function handleSubmit(e) {
+    async function handleSubmitCreateNoteForm(e) {
         e.preventDefault();
 
         if (!title.trim() || !content.trim()) {
-            console.log("All fields are required");
+            // console.log("All fields are required");
+            setNotifications(["All fields are required"]);
             return;
         }
 
         setLoading(true);
 
         try {
-            const response = await createNote(note);
-            // const response = await fetch("http://localhost:5000/api/notes", {
-            //     method: "POST",
-            //     headers: {
-            //         "Content-Type": "application/json"
-            //     },
-            //     body: JSON.stringify({ title, content })
-            // });
-
+            // const response = await createNote({ title, content });
+            const response = await createNote({ title, content });
             console.log(response);
             // TODO: update notes state
+            setNotifications([`${response.title} was created`]);
 
             // navigate("/");
         } catch (error) {
@@ -72,6 +69,8 @@ const CreatePage = () => {
 
     return (
         <div className="section">
+            <Notifications notifications={notifications} />
+
             <Link to={"/"} className="link-btn alt">
                 <i className="fa fa-angle-double-left" aria-hidden={true}></i>
                 Back to Notes
@@ -83,7 +82,7 @@ const CreatePage = () => {
                         Create New Note
                     </h1>
 
-                    <form onSubmit={handleSubmit} aria-labelledby="form-title">
+                    <form onSubmit={handleSubmitCreateNoteForm} aria-labelledby="form-title">
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text">Title</span>
@@ -122,6 +121,34 @@ const CreatePage = () => {
         </div>
     );
 };
+
+function Notifications({ notifications }) {
+    const popoverRef = useRef(null);
+
+    useEffect(() => {
+        const popoverNode = popoverRef.current;
+        if (!popoverNode) return;
+
+        if (notifications.length > 0) {
+            popoverNode.showPopover();
+        } else {
+            popoverNode.hidePopover();
+        }
+    }, [notifications.length]);
+
+    return (
+        <div 
+            className="toast-container" 
+            ref={popoverRef} 
+            popover="manual" 
+            role="status"
+        >
+            {notifications.map(toast => (
+                <h2>toast</h2>
+            ))}
+        </div>
+    );
+}
 
 function GenerateButton({setTitle, setContent}) {
     const [ number, setNumber ] = useState(1);
