@@ -118,15 +118,18 @@ const HomePage = () => {
 
     async function handleDeleteNote(id) {
         try {
-            const response = await deleteNote(id);
-            // const response = await deleteNote("nvfdsbhk");
+            // const response = await deleteNote(id);
+            const response = await deleteNote("nvfdsbhk");
 
             setNotes(currentNotes => currentNotes.filter(note => note._id !== id));
-            console.log("Note deleted successfully");
+            // console.log("Note deleted successfully");
+            addNotification("Note deleted successfully", "success");
         } catch (error) {
             console.log("Error in handleDelete: ", error.message);
-            console.log("Failed to delete note");
-            throw new Error(error.message);
+            // console.log("Failed to delete note");
+            addNotification("Failed to delete note", "error");
+            addNotification(error.message, "error");
+            // throw new Error(error.message);
         }
     };
 
@@ -196,6 +199,7 @@ const NoteCard = ({ note, handleDeleteNote }) => {
                         >
                             <span className="sr-only">Delete note {note.title}</span>
                             <i className="fa fa-trash-o" aria-hidden="true"></i>
+                            {/* <i className="fa fa-spinner" aria-hidden="true"></i> */}
                         </button>
                     </div>
                 </div>
@@ -244,8 +248,47 @@ function Notifications({ notifications, removeNotification }) {
             role="status"
         >
             {notifications.map(toast => (
-                <h1>{toast.message}</h1>
+                <Notification
+                    key={toast.id}
+                    toast={toast}
+                    onDismiss={removeNotification}
+                />
             ))}
+        </div>
+    );
+}
+
+function Notification({ toast, onDismiss }) {
+    const [fadeout, setFadeout] = useState(false)
+    const id = toast.id;
+    console.log(toast);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setFadeout(true);
+        }, 6000);
+
+        return () => clearTimeout(timer);
+    }, [onDismiss, id]);
+
+    // const accessibilityRole = toast.type === "error" ? "alert" : "status";
+    const notificationClassName = fadeout ? (
+        `toast-box ${toast.type} fade-out`
+    ) : (
+        `toast-box ${toast.type}`
+    );
+
+    return (
+        // <div className={`toast-box ${toast.type}`} role={accessibilityRole}>
+        <div className={notificationClassName} onAnimationEnd={() => onDismiss(id)}>
+            <p>{toast.message}</p>
+            <button
+                type="button"
+                onClick={() => onDismiss(id)}
+                aria-label="Dismiss alert"
+            >
+                <span>X</span>
+            </button>
         </div>
     );
 }

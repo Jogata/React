@@ -177,8 +177,12 @@ function Notification({ toast, onDismiss }) {
     }, [onDismiss, id]);
 
     // const accessibilityRole = toast.type === "error" ? "alert" : "status";
-    const notificationClassName = fadeout ? `toast-box ${toast.type} fade-out` : `toast-box ${toast.type}`;
-
+    const notificationClassName = fadeout ? (
+        `toast-box ${toast.type} fade-out`
+    ) : (
+        `toast-box ${toast.type}`
+    );
+    
     return (
         // <div className={`toast-box ${toast.type}`} role={accessibilityRole}>
         <div className={notificationClassName} onAnimationEnd={() => onDismiss(id)}>
