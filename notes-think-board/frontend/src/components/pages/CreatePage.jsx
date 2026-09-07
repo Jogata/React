@@ -54,7 +54,6 @@ const CreatePage = () => {
 
         if (!title.trim() || !content.trim()) {
             // console.log("All fields are required");
-            // setNotifications(["All fields are required"]);
             addNotification("All fields are required", "error");
             return;
         }
@@ -62,17 +61,16 @@ const CreatePage = () => {
         setLoading(true);
 
         try {
-            // const response = await createNote({ title, content });
             const response = await createNote({ title, content });
             console.log(response);
             // TODO: update notes state
-            // setNotifications([`${response.title} was created`]);
             addNotification(`${response.title} was created`, "success");
 
             // navigate("/");
         } catch (error) {
             console.log("Error creating note", error);
-            console.log("Failed to create note");
+            // console.log("Failed to create note");
+            addNotification("Failed to create note", "error");
         } finally {
             setLoading(false);
         }
@@ -160,19 +158,6 @@ function Notifications({ notifications, removeNotification }) {
                     toast={toast} 
                     onDismiss={removeNotification} 
                 />
-                // <div 
-                //     key={toast.id}
-                //     className={`toast-box ${toast.type}`} 
-                // >
-                //     <p>{toast}</p>
-                //     <button
-                //         type="button"
-                //         aria-label="Dismiss alert"
-                //         onClick={() => removeNotification(toast.id)}
-                //     >
-                //         <span>X</span>
-                //     </button>
-                // </div>
             ))}
         </div>
     );

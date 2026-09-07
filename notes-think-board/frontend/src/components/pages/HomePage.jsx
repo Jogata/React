@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 
 function formatDate(date) {
@@ -12,6 +12,7 @@ function formatDate(date) {
 const HomePage = () => {
     const [notes, setNotes] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [notifications, setNotifications] = useState([]);
     
     useEffect(() => {
         let controller = new AbortController();
@@ -71,6 +72,15 @@ const HomePage = () => {
         }
     }, []);
 
+    const addNotification = useCallback((message, type = "success") => {
+        const newToast = { id: crypto.randomUUID(), message, type };
+        setNotifications(old => [...old, newToast]);
+    }, []);
+    
+    const removeNotification = useCallback((id) => {
+        setNotifications(old => old.filter(toast => toast.id !== id));
+    }, []);
+
     if (loading) {
         return <Spinner />;
     }
@@ -120,7 +130,12 @@ const HomePage = () => {
         }
     };
 
-    return <Notes notes={notes} handleDeleteNote={handleDeleteNote} />
+    return (
+        <>
+            <Notifications notifications={notifications} removeNotification={removeNotification} />
+            <Notes notes={notes} handleDeleteNote={handleDeleteNote} />
+        </>
+    )
 };
 
 function Notes({ notes, handleDeleteNote }) {
@@ -206,6 +221,34 @@ const NotesNotFound = () => {
         </div>
     );
 };
+
+function Notifications({ notifications, removeNotification }) {
+    const popoverRef = useRef(null);
+
+    useEffect(() => {
+        const popoverNode = popoverRef.current;
+        if (!popoverNode) return;
+
+        if (notifications.length > 0) {
+            popoverNode.showPopover();
+        } else {
+            popoverNode.hidePopover();
+        }
+    }, [notifications.length]);
+
+    return (
+        <div
+            className="toast-container"
+            ref={popoverRef}
+            popover="manual"
+            role="status"
+        >
+            {notifications.map(toast => (
+                <h1>{toast.message}</h1>
+            ))}
+        </div>
+    );
+}
 
 const Spinner = () => {
     return (
