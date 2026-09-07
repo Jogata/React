@@ -54,7 +54,8 @@ const CreatePage = () => {
 
         if (!title.trim() || !content.trim()) {
             // console.log("All fields are required");
-            setNotifications(["All fields are required"]);
+            // setNotifications(["All fields are required"]);
+            addNotification("All fields are required", "error");
             return;
         }
 
@@ -65,7 +66,8 @@ const CreatePage = () => {
             const response = await createNote({ title, content });
             console.log(response);
             // TODO: update notes state
-            setNotifications([`${response.title} was created`]);
+            // setNotifications([`${response.title} was created`]);
+            addNotification(`${response.title} was created`, "success");
 
             // navigate("/");
         } catch (error) {
@@ -153,21 +155,56 @@ function Notifications({ notifications, removeNotification }) {
             role="status"
         >
             {notifications.map(toast => (
-                <div 
+                <Notification 
                     key={toast.id}
-                    className={`toast-box ${toast.type}`} 
-                >
-                    {/* <p>{toast.message}</p> */}
-                    <p>{toast}</p>
-                    <button
-                        type="button"
-                        aria-label="Dismiss alert"
-                        onClick={() => removeNotification(toast.id)}
-                    >
-                        <span>X</span>
-                    </button>
-                </div>
+                    toast={toast} 
+                    onDismiss={removeNotification} 
+                />
+                // <div 
+                //     key={toast.id}
+                //     className={`toast-box ${toast.type}`} 
+                // >
+                //     <p>{toast}</p>
+                //     <button
+                //         type="button"
+                //         aria-label="Dismiss alert"
+                //         onClick={() => removeNotification(toast.id)}
+                //     >
+                //         <span>X</span>
+                //     </button>
+                // </div>
             ))}
+        </div>
+    );
+}
+
+function Notification({ toast, onDismiss }) {
+    const [fadeout, setFadeout] = useState(false)
+    const id = toast.id;
+    console.log(toast);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setFadeout(true);
+        }, 6000);
+
+        return () => clearTimeout(timer);
+    }, [onDismiss, id]);
+
+    // const accessibilityRole = toast.type === "error" ? "alert" : "status";
+    const notificationClassName = fadeout ? `toast-box ${toast.type} fade-out` : `toast-box ${toast.type}`;
+
+    return (
+        // <div className={`toast-box ${toast.type}`} role={accessibilityRole}>
+        <div className={notificationClassName} onAnimationEnd={() => onDismiss(id)}>
+            <p>{toast.message}</p>
+            <button
+                type="button"
+                onClick={() => onDismiss(id)}
+                aria-label="Dismiss alert"
+            >
+                <span>X</span>
+            </button>
         </div>
     );
 }

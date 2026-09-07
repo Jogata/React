@@ -417,7 +417,7 @@ main {
   font-weight: bold;
 }
 
-.notifications-section {
+/* .notifications-section {
   position: fixed;
   top: 1rem;
   left: 0;
@@ -426,21 +426,21 @@ main {
   pointer-events: none;
   z-index: 2;
   border: 1px solid red;
-}
+} */
 
-.notifications-section .body {
+/* .notifications-section .body {
   display: inline-block;
-}
+} */
 
 .notification {
-  margin-bottom: 1rem;
+  /* margin-bottom: 1rem;
   padding: 1rem;
   border-radius: 12px;
   border: 3px solid var(--local-color);
   background-color: var(--local-color);
   box-shadow: inset 1px 1px 3px #0008,
       inset -1px -1px 3px #fff8;
-  pointer-events: all;
+  pointer-events: all; */
   /* border: 1px solid green; */
 }
 
@@ -451,26 +451,31 @@ main {
             inset -1px -1px 3px #fff8; */
 /* } */
 
-.notification.success {
+/* .notification.success {
   --local-color: green;
-}
+} */
 
-.notification.error {
+/* .notification.error {
   --local-color: crimson;
-}
+} */
 
-@media screen and (max-width: 600px) {
+/* @media screen and (max-width: 600px) {
   .notifications-section {
       left: 0;
   }
-}
+} */
 
 .toast-container {
   max-width: 420px;
   padding: 1rem 1rem 0;
   margin: 0 auto;
   background-color: transparent;
+  border: 0px solid transparent;
 }
+
+/* .toast-container::backdrop {
+  border: 1px solid red;
+} */
 
 .toast-box {
   margin-bottom: 1rem;
@@ -484,7 +489,7 @@ main {
   border: 3px solid var(--local-color);
   background-color: var(--local-color);
   box-shadow: inset 1px 1px 3px #0008,
-      inset -1px -1px 3px #fff8;
+            inset -1px -1px 3px #fff8;
   pointer-events: all;
 }
 
