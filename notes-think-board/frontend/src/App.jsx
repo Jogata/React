@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router";
 import { Link } from "react-router";
 import HomePage from "./components/pages/HomePage";
 import CreatePage from "./components/pages/CreatePage";
+import NoteDetailPage from "./components/pages/NotePage";
 
 const App = () => {
   return (
@@ -11,6 +12,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/create" element={<CreatePage />} />
+          <Route path="/notes/:id" element={<NoteDetailPage />} />
         </Routes>
       </main>
     </div>
