@@ -36,6 +36,12 @@ const NoteDetailPage = () => {
           return;
         }
 
+        if (error.message == "Note not found!") {
+          setNote({});
+          controller = null;
+          return;
+        }
+
         controller = null;
         console.log("Error fetching note");
         console.log(error.message);
@@ -79,6 +85,20 @@ const NoteDetailPage = () => {
 
   if (loading) {
     return <Spinner />;
+  }
+
+  if (!note.title) {
+    return (
+      <div className="section">
+        <Link to={"/"} className="link-btn alt section-btn">
+          <i className="fa fa-angle-double-left" aria-hidden={true}></i>
+          Back to Notes
+        </Link>
+        <div className="inner-section">
+          <h1 className="section-title">Note not found!</h1>
+        </div>
+      </div>
+    )
   }
 
   async function deleteNote(id) {
@@ -149,7 +169,6 @@ const NoteDetailPage = () => {
       </button>
 
       <div className="inner-section">
-        {/* <div> */}
         <div className="note-deatails-section">
           <div className="note-details">
             <h3 className="note-title">{note.title}</h3>
@@ -160,41 +179,8 @@ const NoteDetailPage = () => {
               </span>
             </div>
           </div>
-            {/* <div className="card-body">
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Title</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="Note title"
-                  className="input input-bordered"
-                  value={note.title}
-                  onChange={(e) => setNote({ ...note, title: e.target.value })}
-                />
-              </div>
-
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Content</span>
-                </label>
-                <textarea
-                  placeholder="Write your note here..."
-                  className="textarea textarea-bordered"
-                  value={note.content}
-                  onChange={(e) => setNote({ ...note, content: e.target.value })}
-                />
-              </div>
-
-              <div className="card-actions">
-                <button className="btn btn-primary">
-                  {saving ? "Saving..." : "Save Changes"}
-                </button>
-              </div>
-            </div> */}
-          </div>
         </div>
-      {/* </div> */}
+      </div>
     </div>
   );
 };

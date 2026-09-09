@@ -187,6 +187,7 @@ const NoteCard = ({ note, handleDeleteNote }) => {
                             className="icon edit-btn"
                             title="Edit"
                             // onClick={openModal}
+                            onClick={e => e.stopPropagation()}
                         >
                             <span className="sr-only">Edit note {note.title}</span>
                             <i className="fa fa-pencil-square-o" aria-hidden="true"></i>

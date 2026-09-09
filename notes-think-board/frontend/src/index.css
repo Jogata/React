@@ -126,7 +126,8 @@ img {
             -2px -2px 2px #fff1;
 }
 
-.btn:active {
+.btn:active, 
+.icon:active {
   box-shadow: inset 2px 2px 2px #0004, 
             inset -2px -2px 2px #fff1;
 }
@@ -433,7 +434,22 @@ main {
 
 .note-deatails-section {
   max-width: 600px;
-  border: 1px solid;
+  /* border: 1px solid; */
+}
+
+.note-details {}
+
+.note-title {
+  font-size: 3rem;
+}
+
+.note-text {
+  padding: 1.5rem 0 1rem;
+  font-size: 1.6rem;
+}
+
+.note-footer {
+  font-size: 1.2rem;
 }
 
 /* .notifications-section {
@@ -555,11 +571,4 @@ main {
   .notifications-section {
       left: 0;
   }
-}
-
-
-
-
-.icon {
-  border: 1px solid;
 }
