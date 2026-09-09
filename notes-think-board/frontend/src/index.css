@@ -359,14 +359,26 @@ main {
   font-size: 1.4rem;
 }
 
-.card-actions .icon.edit-btn {
+.icon.edit-btn {
   padding: 0.4em 0.47em;
   color: orange;
 }
 
-.card-actions .icon.delete-btn {
+.icon.delete-btn {
   padding: 0.4em 0.58em;
   color: red;
+}
+
+.section-btn {
+  margin: 0.5rem;
+}
+
+.section-btn.icon.delete-btn {
+  padding: 0.22em 0.42em;
+}
+
+.section-btn.icon.edit-btn {
+  padding: 0.22em 0.3em;
 }
 
 .form {
@@ -417,6 +429,11 @@ main {
 .form .card-actions button {
   font-size: 1.2rem;
   font-weight: bold;
+}
+
+.note-deatails-section {
+  max-width: 600px;
+  border: 1px solid;
 }
 
 /* .notifications-section {
@@ -538,4 +555,11 @@ main {
   .notifications-section {
       left: 0;
   }
+}
+
+
+
+
+.icon {
+  border: 1px solid;
 }

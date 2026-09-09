@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 
+function formatDate(date) {
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 const NoteDetailPage = () => {
   const [note, setNote] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -117,24 +125,42 @@ const NoteDetailPage = () => {
   return (
     <div className="section">
 
-      <Link to={"/"} className="link-btn alt">
+      <Link to={"/"} className="link-btn alt section-btn">
         <i className="fa fa-angle-double-left" aria-hidden={true}></i>
         Back to Notes
       </Link>
       <button
         type="button"
-        className="icon delete-btn"
+        className="icon delete-btn section-btn"
         title="Delete"
         onClick={() => handleDeleteNote(note._id)}
       >
         <span className="sr-only">Delete note {note.title}</span>
         <i className="fa fa-trash-o" aria-hidden="true"></i>
       </button>
+      <button
+        type="button"
+        className="icon edit-btn section-btn"
+        title="Edit"
+        onClick={() => console.log("todo edit note")}
+      >
+        <span className="sr-only">Edit note {note.title}</span>
+        <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
+      </button>
 
       <div className="inner-section">
-        <div>
-          <div className="card">
-            <div className="card-body">
+        {/* <div> */}
+        <div className="note-deatails-section">
+          <div className="note-details">
+            <h3 className="note-title">{note.title}</h3>
+            <p className="note-text">{note.content}</p>
+            <div className="note-footer">
+              <span className="date">
+                {formatDate(new Date(note.createdAt))}
+              </span>
+            </div>
+          </div>
+            {/* <div className="card-body">
               <div className="form-control">
                 <label className="label">
                   <span className="label-text">Title</span>
@@ -165,10 +191,10 @@ const NoteDetailPage = () => {
                   {saving ? "Saving..." : "Save Changes"}
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
-      </div>
+      {/* </div> */}
     </div>
   );
 };
@@ -184,7 +210,9 @@ const Spinner = () => {
       <div className="logo-ring"></div>
       <div className="logo-ring"></div>
       <div className="logo-ring"></div>
-      <span className="sr-only">Loading content, please wait.</span>
+      <span className="sr-only">
+        Loading content, please wait.
+      </span>
     </span>
   )
 }
