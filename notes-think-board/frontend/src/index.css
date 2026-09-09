@@ -117,8 +117,10 @@ img {
 /* .link-btn:hover {} */
 
 .icon {
-  padding: 0.4em;
+  /* padding: 0.4em; */
+  padding: 0.2em 0.4em;
   /* font-size: 0px; */
+  font-size: 1.2rem;
   border-radius: 4px;
   box-shadow: 2px 2px 2px #0004, 
             -2px -2px 2px #fff1;

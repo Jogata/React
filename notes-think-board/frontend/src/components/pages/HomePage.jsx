@@ -118,8 +118,8 @@ const HomePage = () => {
 
     async function handleDeleteNote(id) {
         try {
-            // const response = await deleteNote(id);
-            const response = await deleteNote("nvfdsbhk");
+            const response = await deleteNote(id);
+            // const response = await deleteNote("nvfdsbhk");
 
             setNotes(currentNotes => currentNotes.filter(note => note._id !== id));
             // console.log("Note deleted successfully");

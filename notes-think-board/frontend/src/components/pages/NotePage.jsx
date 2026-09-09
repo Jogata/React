@@ -73,6 +73,47 @@ const NoteDetailPage = () => {
     return <Spinner />;
   }
 
+  async function deleteNote(id) {
+    const response = await fetch(
+      `http://localhost:5000/api/notes/${id}`, {
+      method: "DELETE"
+    });
+
+    const contentType = response.headers.get("content-type");
+    let result = null;
+
+    if (contentType && contentType.includes("application/json")) {
+      result = await response.json();
+    } else {
+      result = await response.text();
+    }
+
+    if (response.ok) {
+      return result;
+    } else {
+      const errorMessage = result.message || "An error occurred";
+      throw new Error(errorMessage);
+    }
+  }
+
+  async function handleDeleteNote(id) {
+    try {
+      const response = await deleteNote(id);
+      // const response = await deleteNote("nvfdsbhk");
+
+      navigate("/");
+      // setNotes(currentNotes => currentNotes.filter(note => note._id !== id));
+      // console.log("Note deleted successfully");
+      // addNotification("Note deleted successfully", "success");
+    } catch (error) {
+      console.log("Error in handleDelete: ", error.message);
+      console.log("Failed to delete note");
+      // addNotification("Failed to delete note", "error");
+      // addNotification(error.message, "error");
+      // throw new Error(error.message);
+    }
+  };
+
   return (
     <div className="section">
 
@@ -84,6 +125,7 @@ const NoteDetailPage = () => {
         type="button"
         className="icon delete-btn"
         title="Delete"
+        onClick={() => handleDeleteNote(note._id)}
       >
         <span className="sr-only">Delete note {note.title}</span>
         <i className="fa fa-trash-o" aria-hidden="true"></i>
@@ -91,12 +133,6 @@ const NoteDetailPage = () => {
 
       <div className="inner-section">
         <div>
-          <div>
-            {/* <button className="btn">
-              Delete Note
-            </button> */}
-          </div>
-
           <div className="card">
             <div className="card-body">
               <div className="form-control">
