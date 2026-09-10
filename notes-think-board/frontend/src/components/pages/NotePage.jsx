@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 
 function formatDate(date) {
@@ -14,6 +14,12 @@ const NoteDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+
+  const [notifications, setNotifications] = useState([]);
+
+  const removeNotification = (id) => {
+    setNotifications(old => old.filter(toast => toast.id !== id));
+  }
 
   const navigate = useNavigate();
 
@@ -153,6 +159,8 @@ const NoteDetailPage = () => {
   return (
     <div className="section">
 
+      <Notifications notifications={notifications} removeNotification={removeNotification} />
+
       <Link to={"/"} className="link-btn alt section-btn">
         <i className="fa fa-angle-double-left" aria-hidden={true}></i>
         Back to Notes
@@ -201,6 +209,34 @@ const NoteDetailPage = () => {
     </div>
   );
 };
+
+function Notifications({ notifications, removeNotification }) {
+  const popoverRef = useRef(null);
+
+  useEffect(() => {
+      const popoverNode = popoverRef.current;
+      if (!popoverNode) return;
+
+      if (notifications.length > 0) {
+          popoverNode.showPopover();
+      } else {
+          popoverNode.hidePopover();
+      }
+  }, [notifications.length]);
+
+  return (
+      <div
+          className="toast-container"
+          ref={popoverRef}
+          popover="manual"
+          role="status"
+      >
+          {notifications.map(toast => (
+              <h1>{toast.message}</h1>
+          ))}
+      </div>
+  );
+}
 
 const Spinner = () => {
   return (
