@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 
 function formatDate(date) {
@@ -16,6 +16,12 @@ const NoteDetailPage = () => {
   const [deleting, setDeleting] = useState(false);
 
   const [notifications, setNotifications] = useState([]);
+
+  const addNotification = useCallback((message, type = "success") => {
+    const newToast = { id: crypto.randomUUID(), message, type };
+    setNotifications(old => [...old, newToast]);
+  }, []);
+
 
   const removeNotification = (id) => {
     setNotifications(old => old.filter(toast => toast.id !== id));
@@ -139,18 +145,18 @@ const NoteDetailPage = () => {
 
     try {
       setDeleting(true);
-      const response = await deleteNote(id);
-      // const response = await deleteNote("nvfdsbhk");
+      // const response = await deleteNote(id);
+      const response = await deleteNote("nvfdsbhk");
 
-      navigate("/");
+      // navigate("/");
       // setNotes(currentNotes => currentNotes.filter(note => note._id !== id));
-      // console.log("Note deleted successfully");
-      // addNotification("Note deleted successfully", "success");
+      console.log("Note deleted successfully");
+      addNotification("Note deleted successfully", "success");
     } catch (error) {
       console.log("Error in handleDelete: ", error.message);
       console.log("Failed to delete note");
-      // addNotification("Failed to delete note", "error");
-      // addNotification(error.message, "error");
+      addNotification("Failed to delete note", "error");
+      addNotification(error.message, "error");
       // throw new Error(error.message);
       setDeleting(false);
     }
@@ -225,16 +231,55 @@ function Notifications({ notifications, removeNotification }) {
   }, [notifications.length]);
 
   return (
-      <div
-          className="toast-container"
-          ref={popoverRef}
-          popover="manual"
-          role="status"
+    <div
+      className="toast-container"
+      ref={popoverRef}
+      popover="manual"
+      role="status"
+    >
+      {notifications.map(toast => (
+        <Notification
+          key={toast.id}
+          toast={toast}
+          onDismiss={removeNotification}
+        />
+      ))}
+    </div>
+  );
+}
+
+function Notification({ toast, onDismiss }) {
+  const [fadeout, setFadeout] = useState(false)
+  const id = toast.id;
+  console.log(toast);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setFadeout(true);
+    }, 6000);
+
+    return () => clearTimeout(timer);
+  }, [onDismiss, id]);
+
+  // const accessibilityRole = toast.type === "error" ? "alert" : "status";
+  const notificationClassName = fadeout ? (
+    `toast-box ${toast.type} fade-out`
+  ) : (
+    `toast-box ${toast.type}`
+  );
+
+  return (
+    // <div className={`toast-box ${toast.type}`} role={accessibilityRole}>
+    <div className={notificationClassName} onAnimationEnd={() => onDismiss(id)}>
+      <p>{toast.message}</p>
+      <button
+        type="button"
+        onClick={() => onDismiss(id)}
+        aria-label="Dismiss alert"
       >
-          {notifications.map(toast => (
-              <h1>{toast.message}</h1>
-          ))}
-      </div>
+        <span>X</span>
+      </button>
+    </div>
   );
 }
 
