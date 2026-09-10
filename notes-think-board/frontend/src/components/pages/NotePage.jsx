@@ -13,6 +13,7 @@ const NoteDetailPage = () => {
   const [note, setNote] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const navigate = useNavigate();
 
@@ -125,7 +126,13 @@ const NoteDetailPage = () => {
   }
 
   async function handleDeleteNote(id) {
+    if (deleting) {
+      console.log("The note is being deleted right now.");
+      return;
+    }
+
     try {
+      setDeleting(true);
       const response = await deleteNote(id);
       // const response = await deleteNote("nvfdsbhk");
 
@@ -139,6 +146,7 @@ const NoteDetailPage = () => {
       // addNotification("Failed to delete note", "error");
       // addNotification(error.message, "error");
       // throw new Error(error.message);
+      setDeleting(false);
     }
   };
 
@@ -155,8 +163,17 @@ const NoteDetailPage = () => {
         title="Delete"
         onClick={() => handleDeleteNote(note._id)}
       >
-        <span className="sr-only">Delete note {note.title}</span>
-        <i className="fa fa-trash-o" aria-hidden="true"></i>
+        {deleting ? (
+          <>
+            <span className="sr-only">Delete note {note.title}</span>
+            <i className="fa fa-spinner" aria-hidden="true"></i>
+          </>
+        ) : (
+          <>
+            <span className="sr-only">Deleting note {note.title}</span>
+            <i className="fa fa-trash-o" aria-hidden="true"></i>
+          </>
+        )}
       </button>
       <button
         type="button"

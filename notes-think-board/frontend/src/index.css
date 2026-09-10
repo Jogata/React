@@ -370,6 +370,17 @@ main {
   color: red;
 }
 
+.icon.delete-btn .fa-spinner {
+  color: cornflowerblue;
+  animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .section-btn {
   margin: 0.5rem;
 }
