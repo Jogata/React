@@ -212,6 +212,45 @@ const NoteDetailPage = () => {
           </div>
         </div>
       </div>
+
+      <Modal isModalOpen={isModalOpen} setModalMode={setModalMode} onClose={closeModal} title={"Edit product"}>
+        {isModalOpen ? <form className="modal-form centered"
+          onSubmit={(e) => e.preventDefault()}
+        >
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">Title</span>
+            </label>
+            <input
+              type="text"
+              placeholder="Note Title"
+              className="input input-bordered"
+              value={note.title}
+              onChange={(e) => setNote(old => console.log(old))}
+            />
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">Content</span>
+            </label>
+            <textarea
+              className="textarea textarea-bordered"
+              placeholder="Write your note here..."
+              value={note.content}
+              onChange={(e) => setNote(old => console.log(old))}
+            />
+          </div>
+
+          <button 
+            type="submit"
+            className="btn"
+          >
+            Edit Note
+          </button>
+        </form> : null}
+      </Modal>
+
     </div>
   );
 };
