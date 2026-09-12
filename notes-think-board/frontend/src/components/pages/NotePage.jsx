@@ -12,6 +12,7 @@ function formatDate(date) {
 const NoteDetailPage = () => {
   const [note, setNote] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [updatedNote, setUpdatedNote] = useState(null);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -94,14 +95,13 @@ const NoteDetailPage = () => {
     setNotifications(old => [...old, newToast]);
   }, []);
 
-
   const removeNotification = (id) => {
     setNotifications(old => old.filter(toast => toast.id !== id));
   }
 
   function openModal() {
     setIsModalOpen(true);
-    // setNote({ ...note });
+    setUpdatedNote({ ...note });
   }
 
   function closeModal() {
@@ -180,7 +180,7 @@ const NoteDetailPage = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(editedProduct),
+      body: JSON.stringify(updatedNote),
     });
     console.log(response);
 
@@ -198,6 +198,37 @@ const NoteDetailPage = () => {
     } else {
       const errorMessage = result.message || "An error occurred";
       throw new Error(errorMessage);
+    }
+  }
+
+  async function handleUpdateNote(e, updatedNote) {
+    const id = updatedNote._id;
+    // id = "1";
+    // id = "6a7830fe90b4c7c19d5d0964";
+    e.preventDefault();
+
+    if (!updatedNote.title || !updatedNote.content) {
+      addNotification("Please fill in all fields.", "error");
+      return;
+    }
+
+    try {
+      const response = await updateNote(updatedNote);
+      setNote(response);
+      addNotification(`Note ${id} updated`);
+      closeModal();
+    } catch (error) {
+      console.log(error);
+      // console.log(err.status, err.errors);
+      // const keys = Object.keys(err.errors);
+      // console.log(keys);
+      // keys.forEach(key => {
+      //     console.log(key);
+      //     addNotification(err.errors[key], "error")
+      // });
+      // err.errors.forEach(error => {
+      //   addNotification(error.message, "error");
+      // })
     }
   }
 
@@ -254,7 +285,7 @@ const NoteDetailPage = () => {
 
       <Modal isModalOpen={isModalOpen} setModalMode={setModalMode} onClose={closeModal} title={"Edit product"}>
         {isModalOpen ? <form className="modal-form centered"
-          onSubmit={(e) => updateNote(e, note)}
+          onSubmit={(e) => handleUpdateNote(e, updatedNote)}
         >
           <div className="form-control">
             <label className="label">
