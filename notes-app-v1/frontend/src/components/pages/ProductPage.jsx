@@ -171,7 +171,7 @@ export function ProductPage() {
         }
     }
 
-    function openModal(e) {
+    function openModal() {
         setIsModalOpen(true);
         setEditedProduct({...product});
     }

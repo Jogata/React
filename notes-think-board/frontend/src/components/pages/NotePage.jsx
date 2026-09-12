@@ -16,20 +16,13 @@ const NoteDetailPage = () => {
   const [deleting, setDeleting] = useState(false);
 
   const [notifications, setNotifications] = useState([]);
-
-  const addNotification = useCallback((message, type = "success") => {
-    const newToast = { id: crypto.randomUUID(), message, type };
-    setNotifications(old => [...old, newToast]);
-  }, []);
-
-
-  const removeNotification = (id) => {
-    setNotifications(old => old.filter(toast => toast.id !== id));
-  }
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const navigate = useNavigate();
 
   const { id } = useParams();
+
+  const setModalMode = () => console.log("todo setModalMode");
 
   useEffect(() => {
     let controller = new AbortController();
@@ -95,6 +88,25 @@ const NoteDetailPage = () => {
       }
     }
   }, []);
+
+  const addNotification = useCallback((message, type = "success") => {
+    const newToast = { id: crypto.randomUUID(), message, type };
+    setNotifications(old => [...old, newToast]);
+  }, []);
+
+
+  const removeNotification = (id) => {
+    setNotifications(old => old.filter(toast => toast.id !== id));
+  }
+
+  function openModal() {
+    setIsModalOpen(true);
+    // setNote({ ...note });
+  }
+
+  function closeModal() {
+    setIsModalOpen(false);
+  }
 
   if (loading) {
     return <Spinner />;
@@ -220,7 +232,7 @@ const NoteDetailPage = () => {
         type="button"
         className="icon edit-btn section-btn"
         title="Edit"
-        onClick={() => console.log("todo edit note")}
+        onClick={openModal}
       >
         <span className="sr-only">Edit note {note.title}</span>
         <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
