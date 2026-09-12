@@ -162,6 +162,33 @@ const NoteDetailPage = () => {
     }
   };
 
+  async function updateNote(updatedNote) {
+    const response = await fetch(`http://localhost:5000/api/notes/${updatedNote._id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(editedProduct),
+    });
+    console.log(response);
+
+    const contentType = response.headers.get("content-type");
+    let result = null;
+
+    if (contentType && contentType.includes("application/json")) {
+      result = await response.json();
+    } else {
+      result = await response.text();
+    }
+
+    if (response.ok) {
+      return result;
+    } else {
+      const errorMessage = result.message || "An error occurred";
+      throw new Error(errorMessage);
+    }
+  }
+
   return (
     <div className="section">
 
@@ -215,7 +242,7 @@ const NoteDetailPage = () => {
 
       <Modal isModalOpen={isModalOpen} setModalMode={setModalMode} onClose={closeModal} title={"Edit product"}>
         {isModalOpen ? <form className="modal-form centered"
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={(e) => updateNote(e, note)}
         >
           <div className="form-control">
             <label className="label">
