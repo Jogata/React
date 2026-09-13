@@ -12,7 +12,7 @@ function formatDate(date) {
 const NoteDetailPage = () => {
   const [note, setNote] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [updatedNote, setUpdatedNote] = useState(null);
+  // const [updatedNote, setUpdatedNote] = useState(null);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -105,22 +105,11 @@ const NoteDetailPage = () => {
 
   function openModal() {
     setIsModalOpen(true);
-    setUpdatedNote({ ...note });
+    // setUpdatedNote({ ...note });
   }
 
   function closeModal() {
     setIsModalOpen(false);
-  }
-
-  function handleInputChange(e) {
-    setUpdatedNote(old => {
-      console.log(old);
-      console.log(e.target.name, e.target.value);
-      return {
-        ...old, 
-        [e.target.name]: e.target.value
-      }
-    })
   }
 
   if (loading) {
@@ -307,46 +296,7 @@ const NoteDetailPage = () => {
         onClose={closeModal} 
         // title={"Edit product"}
       >
-        {isModalOpen ? (    <form className="modal-form centered"
-      onSubmit={(e) => handleUpdateNote(e, updatedNote)}
-    >
-      <div className="form-control">
-        <label className="label">
-          <span className="label-text">Title</span>
-        </label>
-        <input
-          type="text"
-          name="title"
-          className="input input-bordered"
-          value={updatedNote.title}
-          // onChange={(e) => setNote(old => console.log(old))}
-          onChange={handleInputChange}
-          placeholder="Note Title"
-        />
-      </div>
-
-      <div className="form-control">
-        <label className="label">
-          <span className="label-text">Content</span>
-        </label>
-        <textarea
-          className="textarea textarea-bordered"
-          name="content"
-          value={updatedNote.content}
-          // onChange={(e) => setNote(old => console.log(old))}
-          onChange={handleInputChange}
-          placeholder="Write your note here..."
-        />
-      </div>
-
-      <button
-        type="submit"
-        className="btn"
-      >
-        Edit Note
-      </button>
-    </form>
-) : null}
+        {isModalOpen ? <Form title={"Edit Note"} note={{...note}} handleUpdateNote={handleUpdateNote} /> : null}
       </Modal>
 
     </div>
@@ -460,6 +410,64 @@ function Modal({ isModalOpen, setModalMode, onClose, title, children }) {
       </div>
     </dialog>
   );
+}
+
+function Form({title, note, handleUpdateNote}) {
+  const [updatedNote, setUpdatedNote] = useState(note);
+
+  function handleInputChange(e) {
+    setUpdatedNote(old => {
+      console.log(old);
+      console.log(e.target.name, e.target.value);
+      return {
+        ...old, 
+        [e.target.name]: e.target.value
+      }
+    })
+  }
+
+  return (
+    <>
+    <h2>{title}</h2>
+    <form className="modal-form centered"
+      onSubmit={(e) => handleUpdateNote(e, updatedNote)}
+    >
+      <div className="form-control">
+        <label className="label">
+          <span className="label-text">Title</span>
+        </label>
+        <input
+          type="text"
+          name="title"
+          className="input input-bordered"
+          value={updatedNote.title}
+          onChange={handleInputChange}
+          placeholder="Note Title"
+        />
+      </div>
+
+      <div className="form-control">
+        <label className="label">
+          <span className="label-text">Content</span>
+        </label>
+        <textarea
+          className="textarea textarea-bordered"
+          name="content"
+          value={updatedNote.content}
+          onChange={handleInputChange}
+          placeholder="Write your note here..."
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="btn"
+      >
+        Edit Note
+      </button>
+    </form>
+    </>
+  )
 }
 
 const Spinner = () => {
