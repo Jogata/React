@@ -13,7 +13,7 @@ const NoteDetailPage = () => {
   const [note, setNote] = useState(null);
   const [loading, setLoading] = useState(true);
   // const [updatedNote, setUpdatedNote] = useState(null);
-  const [saving, setSaving] = useState(false);
+  // const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
   const [notifications, setNotifications] = useState([]);
@@ -208,11 +208,11 @@ const NoteDetailPage = () => {
     }
   }
 
-  async function handleUpdateNote(e, updatedNote) {
+  async function handleUpdateNote(updatedNote) {
     // const id = updatedNote._id;
     // const id = "1";
     // id = "6a7830fe90b4c7c19d5d0964";
-    e.preventDefault();
+    // e.preventDefault();
 
     if (!updatedNote.title || !updatedNote.content) {
       addNotification("Please fill in all fields.", "error");
@@ -295,8 +295,9 @@ const NoteDetailPage = () => {
         setModalMode={setModalMode} 
         onClose={closeModal} 
         // title={"Edit product"}
+        title={"Edit Note"} 
       >
-        {isModalOpen ? <Form title={"Edit Note"} note={{...note}} handleUpdateNote={handleUpdateNote} /> : null}
+        {isModalOpen ? <Form note={{...note}} handleUpdateNote={handleUpdateNote} /> : null}
       </Modal>
 
     </div>
@@ -412,8 +413,9 @@ function Modal({ isModalOpen, setModalMode, onClose, title, children }) {
   );
 }
 
-function Form({title, note, handleUpdateNote}) {
+function Form({note, handleUpdateNote}) {
   const [updatedNote, setUpdatedNote] = useState(note);
+  const [saving, setSaving] = useState(false);
 
   function handleInputChange(e) {
     setUpdatedNote(old => {
@@ -426,11 +428,24 @@ function Form({title, note, handleUpdateNote}) {
     })
   }
 
+  async function handleSubmitForm(e) {
+    e.preventDefault();
+
+    try {
+      setSaving(true);
+      await handleUpdateNote(updatedNote);
+    } catch (error) {
+      console.log("Note wasn't updated");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
-    <>
-    <h2>{title}</h2>
+    // <>
+    // <h2>{title}</h2>
     <form className="modal-form centered"
-      onSubmit={(e) => handleUpdateNote(e, updatedNote)}
+      onSubmit={handleSubmitForm}
     >
       <div className="form-control">
         <label className="label">
@@ -463,10 +478,11 @@ function Form({title, note, handleUpdateNote}) {
         type="submit"
         className="btn"
       >
-        Edit Note
+        {saving ? "Saving..." : "Edit Note"}
+        {/* Edit Note */}
       </button>
     </form>
-    </>
+    // </>
   )
 }
 
