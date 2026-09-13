@@ -95,9 +95,13 @@ const NoteDetailPage = () => {
     setNotifications(old => [...old, newToast]);
   }, []);
 
-  const removeNotification = (id) => {
+  // const removeNotification = (id) => {
+  //   setNotifications(old => old.filter(toast => toast.id !== id));
+  // }
+
+  const removeNotification = useCallback((id) => {
     setNotifications(old => old.filter(toast => toast.id !== id));
-  }
+}, []);
 
   function openModal() {
     setIsModalOpen(true);
@@ -106,6 +110,17 @@ const NoteDetailPage = () => {
 
   function closeModal() {
     setIsModalOpen(false);
+  }
+
+  function handleInputChange(e) {
+    setUpdatedNote(old => {
+      console.log(old);
+      console.log(e.target.name, e.target.value);
+      return {
+        ...old, 
+        [e.target.name]: e.target.value
+      }
+    })
   }
 
   if (loading) {
@@ -175,7 +190,10 @@ const NoteDetailPage = () => {
   };
 
   async function updateNote(updatedNote) {
-    const response = await fetch(`http://localhost:5000/api/notes/${updatedNote._id}`, {
+    const id = updatedNote._id;
+    // const id = "1";
+    // const id = "6aa26eb711fab78068173901";
+    const response = await fetch(`http://localhost:5000/api/notes/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -202,8 +220,8 @@ const NoteDetailPage = () => {
   }
 
   async function handleUpdateNote(e, updatedNote) {
-    const id = updatedNote._id;
-    // id = "1";
+    // const id = updatedNote._id;
+    // const id = "1";
     // id = "6a7830fe90b4c7c19d5d0964";
     e.preventDefault();
 
@@ -215,19 +233,19 @@ const NoteDetailPage = () => {
     try {
       const response = await updateNote(updatedNote);
       setNote(response);
-      addNotification(`Note ${id} updated`);
+      addNotification(`Note ${updatedNote.title} updated`);
       closeModal();
     } catch (error) {
       console.log(error);
-      // console.log(err.status, err.errors);
-      // const keys = Object.keys(err.errors);
+      // console.log(error.status, error.errors);
+      // const keys = Object.keys(error.errors);
       // console.log(keys);
       // keys.forEach(key => {
       //     console.log(key);
-      //     addNotification(err.errors[key], "error")
+      //     addNotification(error.errors[key], "error")
       // });
-      // err.errors.forEach(error => {
-      //   addNotification(error.message, "error");
+      // error.errors.forEach(error => {
+        addNotification(error.message, "error");
       // })
     }
   }
@@ -283,42 +301,52 @@ const NoteDetailPage = () => {
         </div>
       </div>
 
-      <Modal isModalOpen={isModalOpen} setModalMode={setModalMode} onClose={closeModal} title={"Edit product"}>
-        {isModalOpen ? <form className="modal-form centered"
-          onSubmit={(e) => handleUpdateNote(e, updatedNote)}
-        >
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text">Title</span>
-            </label>
-            <input
-              type="text"
-              placeholder="Note Title"
-              className="input input-bordered"
-              value={note.title}
-              onChange={(e) => setNote(old => console.log(old))}
-            />
-          </div>
+      <Modal 
+        isModalOpen={isModalOpen} 
+        setModalMode={setModalMode} 
+        onClose={closeModal} 
+        // title={"Edit product"}
+      >
+        {isModalOpen ? (    <form className="modal-form centered"
+      onSubmit={(e) => handleUpdateNote(e, updatedNote)}
+    >
+      <div className="form-control">
+        <label className="label">
+          <span className="label-text">Title</span>
+        </label>
+        <input
+          type="text"
+          name="title"
+          className="input input-bordered"
+          value={updatedNote.title}
+          // onChange={(e) => setNote(old => console.log(old))}
+          onChange={handleInputChange}
+          placeholder="Note Title"
+        />
+      </div>
 
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text">Content</span>
-            </label>
-            <textarea
-              className="textarea textarea-bordered"
-              placeholder="Write your note here..."
-              value={note.content}
-              onChange={(e) => setNote(old => console.log(old))}
-            />
-          </div>
+      <div className="form-control">
+        <label className="label">
+          <span className="label-text">Content</span>
+        </label>
+        <textarea
+          className="textarea textarea-bordered"
+          name="content"
+          value={updatedNote.content}
+          // onChange={(e) => setNote(old => console.log(old))}
+          onChange={handleInputChange}
+          placeholder="Write your note here..."
+        />
+      </div>
 
-          <button 
-            type="submit"
-            className="btn"
-          >
-            Edit Note
-          </button>
-        </form> : null}
+      <button
+        type="submit"
+        className="btn"
+      >
+        Edit Note
+      </button>
+    </form>
+) : null}
       </Modal>
 
     </div>
