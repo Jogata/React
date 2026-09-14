@@ -313,6 +313,47 @@ function Notification({ toast, onDismiss }) {
     );
 }
 
+function Form({ note, handleUpdateNote }) {
+    const [updatedNote, setUpdatedNote] = useState(note);
+    const [saving, setSaving] = useState(false);
+
+    return (
+        <form className="modal-form centered">
+            <div className="form-control">
+                <label className="label">
+                    <span className="label-text">Title</span>
+                </label>
+                <input
+                    type="text"
+                    name="title"
+                    className="input input-bordered"
+                    value={updatedNote.title}
+                    placeholder="Note Title"
+                />
+            </div>
+
+            <div className="form-control">
+                <label className="label">
+                    <span className="label-text">Content</span>
+                </label>
+                <textarea
+                    className="textarea textarea-bordered"
+                    name="content"
+                    value={updatedNote.content}
+                    placeholder="Write your note here..."
+                />
+            </div>
+
+            <button
+                type="submit"
+                className="btn"
+            >
+                {saving ? "Saving..." : "Edit Note"}
+            </button>
+        </form>
+    )
+}
+
 const Spinner = () => {
     return (
         <span
