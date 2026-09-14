@@ -317,8 +317,39 @@ function Form({ note, handleUpdateNote }) {
     const [updatedNote, setUpdatedNote] = useState(note);
     const [saving, setSaving] = useState(false);
 
+    function handleInputChange(e) {
+        setUpdatedNote(old => {
+            // console.log(old);
+            console.log(e.target.name, e.target.value);
+            return {
+                ...old,
+                [e.target.name]: e.target.value
+            }
+        })
+    }
+
+    async function handleSubmitForm(e) {
+        e.preventDefault();
+
+        if (saving) {
+            console.log("The note is currently being updated.");
+            return;
+        }
+
+        try {
+            setSaving(true);
+            await handleUpdateNote(updatedNote);
+        } catch (error) {
+            console.log("Note wasn't updated");
+        } finally {
+            setSaving(false);
+        }
+    }
+
     return (
-        <form className="modal-form centered">
+        <form className="modal-form centered"
+            onSubmit={handleSubmitForm}
+        >
             <div className="form-control">
                 <label className="label">
                     <span className="label-text">Title</span>
@@ -328,6 +359,7 @@ function Form({ note, handleUpdateNote }) {
                     name="title"
                     className="input input-bordered"
                     value={updatedNote.title}
+                    onChange={handleInputChange}
                     placeholder="Note Title"
                 />
             </div>
@@ -340,6 +372,7 @@ function Form({ note, handleUpdateNote }) {
                     className="textarea textarea-bordered"
                     name="content"
                     value={updatedNote.content}
+                    onChange={handleInputChange}
                     placeholder="Write your note here..."
                 />
             </div>
