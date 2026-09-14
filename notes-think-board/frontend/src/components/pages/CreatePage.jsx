@@ -6,7 +6,8 @@ const CreatePage = () => {
     const [title, setTitle] = useState("test note 1");
     // const [content, setContent] = useState("");
     const [content, setContent] = useState("test note 1 text");
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
+    const [creating, setCreating] = useState(false);
 
     const [notifications, setNotifications] = useState([]);
 
@@ -52,13 +53,19 @@ const CreatePage = () => {
     async function handleSubmitCreateNoteForm(e) {
         e.preventDefault();
 
+        if (creating) {
+            console.log("A new note is currently being created.");
+            return;
+        }
+
         if (!title.trim() || !content.trim()) {
             // console.log("All fields are required");
             addNotification("All fields are required", "error");
             return;
         }
 
-        setLoading(true);
+        // setLoading(true);
+        setCreating(true);
 
         try {
             const response = await createNote({ title, content });
@@ -72,7 +79,8 @@ const CreatePage = () => {
             // console.log("Failed to create note");
             addNotification("Failed to create note", "error");
         } finally {
-            setLoading(false);
+            // setLoading(false);
+            setCreating(false);
         }
     };
 
@@ -119,7 +127,8 @@ const CreatePage = () => {
 
                         <div className="card-actions">
                             <button type="submit" className="btn btn-primary">
-                                {loading ? "Creating..." : "Create Note"}
+                                {/* {loading ? "Creating..." : "Create Note"} */}
+                                {creating ? "Creating..." : "Create Note"}
                             </button>
                         </div>
                     </form>
@@ -203,7 +212,7 @@ function GenerateButton({setTitle, setContent}) {
 
     function generate() {
         const newNumber = number + 1;
-        console.log(newNumber);
+        // console.log(newNumber);
         setNumber(newNumber);
         setTitle(`test note ${newNumber}`);
         setContent(`test note ${newNumber} text`);

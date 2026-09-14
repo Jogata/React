@@ -159,16 +159,26 @@ function Notes({ notes, handleDeleteNote }) {
 }
 
 const NoteCard = ({ note, handleDeleteNote }) => {
+    const [deleting, setDeleting] = useState(false);
+
     const handleClickDeleteNote = async (e) => {
         e.preventDefault();
 
-        // if (!window.confirm("Are you sure you want to delete this note?")) return;
+        if (deleting) {
+            console.log("The note is being deleted right now.");
+            return;
+        }
 
+        // if (!window.confirm("Are you sure you want to delete this note?")) return;
+            
         try {
+            setDeleting(true);
             const response = await handleDeleteNote(note._id);
         } catch (error) {
             console.log("Error in handleDelete: ", error.message);
             console.log("Failed to delete note");
+        } finally {
+            setDeleting(false);
         }
     };
 
@@ -198,9 +208,18 @@ const NoteCard = ({ note, handleDeleteNote }) => {
                             title="Delete"
                             onClick={handleClickDeleteNote}
                         >
-                            <span className="sr-only">Delete note {note.title}</span>
-                            <i className="fa fa-trash-o" aria-hidden="true"></i>
-                            {/* <i className="fa fa-spinner" aria-hidden="true"></i> */}
+                            {/* <span className="sr-only">Delete note {note.title}</span> */}
+                            {deleting ? (
+                                <>
+                                    <span className="sr-only">Deleting note {note.title}</span>
+                                    <i className="fa fa-spinner" aria-hidden="true"></i>
+                                </>
+                            ) : (
+                                <>
+                                    <span className="sr-only">Delete note {note.title}</span>
+                                    <i className="fa fa-trash-o" aria-hidden="true"></i>
+                                </>
+                            )}
                         </button>
                     </div>
                 </div>

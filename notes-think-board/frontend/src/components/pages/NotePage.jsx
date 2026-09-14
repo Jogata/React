@@ -12,8 +12,6 @@ function formatDate(date) {
 const NoteDetailPage = () => {
   const [note, setNote] = useState(null);
   const [loading, setLoading] = useState(true);
-  // const [updatedNote, setUpdatedNote] = useState(null);
-  // const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
   const [notifications, setNotifications] = useState([]);
@@ -95,17 +93,12 @@ const NoteDetailPage = () => {
     setNotifications(old => [...old, newToast]);
   }, []);
 
-  // const removeNotification = (id) => {
-  //   setNotifications(old => old.filter(toast => toast.id !== id));
-  // }
-
   const removeNotification = useCallback((id) => {
     setNotifications(old => old.filter(toast => toast.id !== id));
 }, []);
 
   function openModal() {
     setIsModalOpen(true);
-    // setUpdatedNote({ ...note });
   }
 
   function closeModal() {
@@ -209,11 +202,6 @@ const NoteDetailPage = () => {
   }
 
   async function handleUpdateNote(updatedNote) {
-    // const id = updatedNote._id;
-    // const id = "1";
-    // id = "6a7830fe90b4c7c19d5d0964";
-    // e.preventDefault();
-
     if (!updatedNote.title || !updatedNote.content) {
       addNotification("Please fill in all fields.", "error");
       return;
@@ -256,12 +244,12 @@ const NoteDetailPage = () => {
       >
         {deleting ? (
           <>
-            <span className="sr-only">Delete note {note.title}</span>
+            <span className="sr-only">Deleting note {note.title}</span>
             <i className="fa fa-spinner" aria-hidden="true"></i>
           </>
         ) : (
           <>
-            <span className="sr-only">Deleting note {note.title}</span>
+            <span className="sr-only">Delete note {note.title}</span>
             <i className="fa fa-trash-o" aria-hidden="true"></i>
           </>
         )}
@@ -419,7 +407,7 @@ function Form({note, handleUpdateNote}) {
 
   function handleInputChange(e) {
     setUpdatedNote(old => {
-      console.log(old);
+      // console.log(old);
       console.log(e.target.name, e.target.value);
       return {
         ...old, 
@@ -430,6 +418,11 @@ function Form({note, handleUpdateNote}) {
 
   async function handleSubmitForm(e) {
     e.preventDefault();
+
+    if (saving) {
+      console.log("The note is currently being updated.");
+      return;
+    }
 
     try {
       setSaving(true);
@@ -442,8 +435,6 @@ function Form({note, handleUpdateNote}) {
   }
 
   return (
-    // <>
-    // <h2>{title}</h2>
     <form className="modal-form centered"
       onSubmit={handleSubmitForm}
     >
@@ -479,10 +470,8 @@ function Form({note, handleUpdateNote}) {
         className="btn"
       >
         {saving ? "Saving..." : "Edit Note"}
-        {/* Edit Note */}
       </button>
     </form>
-    // </>
   )
 }
 
