@@ -146,12 +146,42 @@ const HomePage = () => {
         }
     };
 
+    async function updateNote(updatedNote) {
+        const id = updatedNote._id;
+        // const id = "1";
+        // const id = "6aa26eb711fab78068173901";
+        const response = await fetch(`http://localhost:5000/api/notes/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedNote),
+        });
+        console.log(response);
+    
+        const contentType = response.headers.get("content-type");
+        let result = null;
+    
+        if (contentType && contentType.includes("application/json")) {
+          result = await response.json();
+        } else {
+          result = await response.text();
+        }
+    
+        if (response.ok) {
+          return result;
+        } else {
+          const errorMessage = result.message || "An error occurred";
+          throw new Error(errorMessage);
+        }
+      }
+    
     return (
         <>
             <Notifications notifications={notifications} removeNotification={removeNotification} />
             <Notes notes={notes} handleDeleteNote={handleDeleteNote} />
             <Modal
-                isModalOpen={isModalOpen}
+                // isModalOpen={isModalOpen}
                 setModalMode={setModalMode}
                 onClose={closeModal}
                 title={"Edit Note"}
@@ -203,6 +233,12 @@ const NoteCard = ({ note, handleDeleteNote }) => {
         }
     };
 
+    const handleClickUpdateNote = async (e) => {
+        e.preventDefault();
+        // e.stopPropagation();
+        console.log("update");
+    };
+
     return (
         <Link to={`/notes/${note._id}`} className="note">
             <div className="card-body">
@@ -218,7 +254,7 @@ const NoteCard = ({ note, handleDeleteNote }) => {
                             className="icon edit-btn"
                             title="Edit"
                             // onClick={openModal}
-                            onClick={e => e.stopPropagation()}
+                            onClick={handleClickUpdateNote}
                         >
                             <span className="sr-only">Edit note {note.title}</span>
                             <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
@@ -229,7 +265,6 @@ const NoteCard = ({ note, handleDeleteNote }) => {
                             title="Delete"
                             onClick={handleClickDeleteNote}
                         >
-                            {/* <span className="sr-only">Delete note {note.title}</span> */}
                             {deleting ? (
                                 <>
                                     <span className="sr-only">Deleting note {note.title}</span>
@@ -463,104 +498,6 @@ const Spinner = () => {
             <span className="sr-only">Loading content, please wait.</span>
         </span>
     )
-}
-
-// const HomePage = () => {
-//     const [notes, setNotes] = useState(null);
-//     const [notifications, setNotifications] = useState([]);
-
-//     const [isModalOpen, setIsModalOpen] = useState(false);
-
-//     return (
-//         <>
-//             <Notifications notifications={notifications} removeNotification={removeNotification} />
-//             <Notes notes={notes} handleDeleteNote={handleDeleteNote} />
-//             <Modal
-//                 isModalOpen={isModalOpen}
-//                 setModalMode={setModalMode}
-//                 onClose={closeModal}
-//                 title={"Edit Note"}
-//             >
-//                 {isModalOpen ? <UpdateNoteForm note={{ ...note }} handleUpdateNote={handleUpdateNote} /> : null}
-//             </Modal>
-//         </>
-//     )
-// };
-
-// const NoteDetailPage = () => {
-//     const [note, setNote] = useState(null);
-  
-//     const [notifications, setNotifications] = useState([]);
-//     const [isModalOpen, setIsModalOpen] = useState(false);
-    
-//     const { id } = useParams();
-  
-//     function openModal() {
-//       setIsModalOpen(true);
-//     }
-  
-//     function closeModal() {
-//       setIsModalOpen(false);
-//     }
-  
-//     return (
-//       <div className="section">
-  
-//         <Notifications notifications={notifications} removeNotification={removeNotification} />
-  
-//         <Link to={"/"} className="link-btn alt section-btn">
-//           <i className="fa fa-angle-double-left" aria-hidden={true}></i>
-//           Back to Notes
-//         </Link>
-//         <button
-//           type="button"
-//           className="icon edit-btn section-btn"
-//           title="Edit"
-//           onClick={openModal}
-//         >
-//           <span className="sr-only">Edit note {note.title}</span>
-//           <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
-//         </button>
-  
-//         <div className="inner-section">
-//           <div className="note-deatails-section">
-//             <div className="note-details">
-//               <h3 className="note-title">{note.title}</h3>
-//               <p className="note-text">{note.content}</p>
-//               <div className="note-footer">
-//                 <span className="date">
-//                   {formatDate(new Date(note.createdAt))}
-//                 </span>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-  
-//         <Modal 
-//           isModalOpen={isModalOpen} 
-//           setModalMode={setModalMode} 
-//           onClose={closeModal} 
-//           title={"Edit Note"} 
-//         >
-//           {isModalOpen ? <Form note={{...note}} handleUpdateNote={handleUpdateNote} /> : null}
-//         </Modal>
-  
-//       </div>
-//     );
-//   };
-
-function useModal() {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    
-    const { id } = useParams();
-  
-    function openModal() {
-      setIsModalOpen(true);
-    }
-  
-    function closeModal() {
-      setIsModalOpen(false);
-    }
 }
 
 export default HomePage;
