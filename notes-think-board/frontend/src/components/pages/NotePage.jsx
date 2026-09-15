@@ -95,7 +95,7 @@ const NoteDetailPage = () => {
 
   const removeNotification = useCallback((id) => {
     setNotifications(old => old.filter(toast => toast.id !== id));
-}, []);
+  }, []);
 
   function openModal() {
     setIsModalOpen(true);
@@ -282,7 +282,6 @@ const NoteDetailPage = () => {
         isModalOpen={isModalOpen} 
         setModalMode={setModalMode} 
         onClose={closeModal} 
-        // title={"Edit product"}
         title={"Edit Note"} 
       >
         {isModalOpen ? <Form note={{...note}} handleUpdateNote={handleUpdateNote} /> : null}
