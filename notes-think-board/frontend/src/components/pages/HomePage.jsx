@@ -147,9 +147,9 @@ const HomePage = () => {
     };
 
     async function updateNote(updatedNote) {
-        const id = updatedNote._id;
+        // const id = updatedNote._id;
         // const id = "1";
-        // const id = "6aa26eb711fab78068173901";
+        const id = "6aa26eb711fab78068173901";
         const response = await fetch(`http://localhost:5000/api/notes/${id}`, {
             method: "PUT",
             headers: {
@@ -184,7 +184,7 @@ const HomePage = () => {
 
         try {
             const response = await updateNote(updatedNote);
-            console.log("updated");
+            // console.log("updated");
             setNote(null);
             setNotes(old => old.map(note => note._id === response._id ? updatedNote : note));
             addNotification(`Note ${updatedNote.title} updated`);

@@ -1,5 +1,4 @@
 import { createContext, useCallback, useContext, useState } from "react";
-import { Notifications } from "../components/Notifications/Notifications";
 
 const NotificationContext = createContext(null);
 
@@ -18,11 +17,6 @@ export function NotificationProvider({ children }) {
     return (
         <NotificationContext.Provider value={{ addNotification }}>
             {children}
-
-            <Notifications
-                notifications={notifications}
-                removeNotification={removeNotification}
-            />
         </NotificationContext.Provider>
     );
 }
