@@ -151,37 +151,65 @@ const HomePage = () => {
         // const id = "1";
         // const id = "6aa26eb711fab78068173901";
         const response = await fetch(`http://localhost:5000/api/notes/${id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedNote),
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedNote),
         });
         console.log(response);
-    
+
         const contentType = response.headers.get("content-type");
         let result = null;
-    
+
         if (contentType && contentType.includes("application/json")) {
-          result = await response.json();
+            result = await response.json();
         } else {
-          result = await response.text();
+            result = await response.text();
         }
-    
+
         if (response.ok) {
-          return result;
+            return result;
         } else {
-          const errorMessage = result.message || "An error occurred";
-          throw new Error(errorMessage);
+            const errorMessage = result.message || "An error occurred";
+            throw new Error(errorMessage);
         }
-      }
-    
+    }
+
+    async function handleUpdateNote(updatedNote) {
+        if (!updatedNote.title || !updatedNote.content) {
+            addNotification("Please fill in all fields.", "error");
+            return;
+        }
+
+        try {
+            const response = await updateNote(updatedNote);
+            console.log("updated");
+            setNote(null);
+            setNotes(old => old.map(note => note._id === response._id ? updatedNote : note));
+            addNotification(`Note ${updatedNote.title} updated`);
+            closeModal();
+        } catch (error) {
+            console.log(error);
+            // console.log(error.status, error.errors);
+            // const keys = Object.keys(error.errors);
+            // console.log(keys);
+            // keys.forEach(key => {
+            //     console.log(key);
+            //     addNotification(error.errors[key], "error")
+            // });
+            // error.errors.forEach(error => {
+            addNotification(error.message, "error");
+            // })
+        }
+    }
+
     return (
         <>
             <Notifications notifications={notifications} removeNotification={removeNotification} />
-            <Notes notes={notes} handleDeleteNote={handleDeleteNote} />
+            <Notes notes={notes} handleDeleteNote={handleDeleteNote} openModal={openModal} setNote={setNote} />
             <Modal
-                // isModalOpen={isModalOpen}
+                isModalOpen={isModalOpen}
                 setModalMode={setModalMode}
                 onClose={closeModal}
                 title={"Edit Note"}
@@ -192,7 +220,7 @@ const HomePage = () => {
     )
 };
 
-function Notes({ notes, handleDeleteNote }) {
+function Notes({ notes, handleDeleteNote, openModal, setNote }) {
     return (
         <div className="section notes-section">
             <h1 className="section-title">Notes</h1>
@@ -202,6 +230,8 @@ function Notes({ notes, handleDeleteNote }) {
                         key={note._id} 
                         note={note} 
                         handleDeleteNote={handleDeleteNote} 
+                        openModal={openModal}
+                        setNote={setNote}
                     />
                 ))}
             </div>
@@ -209,7 +239,7 @@ function Notes({ notes, handleDeleteNote }) {
     )
 }
 
-const NoteCard = ({ note, handleDeleteNote }) => {
+const NoteCard = ({ note, handleDeleteNote, openModal, setNote }) => {
     const [deleting, setDeleting] = useState(false);
 
     const handleClickDeleteNote = async (e) => {
@@ -236,7 +266,9 @@ const NoteCard = ({ note, handleDeleteNote }) => {
     const handleClickUpdateNote = async (e) => {
         e.preventDefault();
         // e.stopPropagation();
-        console.log("update");
+        // console.log("update");
+        openModal(note);
+        setNote(note);
     };
 
     return (
@@ -253,7 +285,6 @@ const NoteCard = ({ note, handleDeleteNote }) => {
                             type="button"
                             className="icon edit-btn"
                             title="Edit"
-                            // onClick={openModal}
                             onClick={handleClickUpdateNote}
                         >
                             <span className="sr-only">Edit note {note.title}</span>
