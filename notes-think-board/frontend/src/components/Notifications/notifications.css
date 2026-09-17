@@ -1,4 +1,4 @@
-/* .notifications-section {
+.notifications-section {
     position: fixed;
     top: 1rem;
     left: 0;
@@ -6,6 +6,7 @@
     text-align: center;
     pointer-events: none;
     z-index: 2;
+    border: 1px solid red;
 }
 
 .notifications-section .body {
@@ -21,7 +22,15 @@
     box-shadow: inset 1px 1px 3px #0008,
         inset -1px -1px 3px #fff8;
     pointer-events: all;
+    /* border: 1px solid green; */
 }
+
+/* .notification { */
+/* border: 3px solid var(--local-color);
+    background-color: var(--local-color);
+    box-shadow: inset 1px 1px 3px #0008, 
+              inset -1px -1px 3px #fff8; */
+/* } */
 
 .notification.success {
     --local-color: green;
@@ -35,7 +44,7 @@
     .notifications-section {
         left: 0;
     }
-} */
+}
 
 .toast-container {
     max-width: 420px;
@@ -52,10 +61,11 @@
     align-items: center;
     justify-content: space-between;
     border-radius: 12px;
+    /* border: 1px solid green; */
     border: 3px solid var(--local-color);
     background-color: var(--local-color);
     box-shadow: inset 1px 1px 3px #0008,
-              inset -1px -1px 3px #fff8;
+        inset -1px -1px 3px #fff8;
     pointer-events: all;
 }
 
@@ -77,6 +87,13 @@
     }
 }
 
+.toast-box {
+    /* border: 3px solid var(--local-color); */
+    /* background-color: var(--local-color); */
+    /* box-shadow: inset 1px 1px 3px #0008, 
+              inset -1px -1px 3px #fff8; */
+}
+
 .toast-box button {
     padding: 0;
     line-height: 0;
@@ -88,6 +105,7 @@
     font-size: 0.8rem;
     font-weight: bold;
     transform: scaleY(0.8);
+    /* border: 1px solid black; */
 }
 
 @media screen and (max-width: 600px) {
