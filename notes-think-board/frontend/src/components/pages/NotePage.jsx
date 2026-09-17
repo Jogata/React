@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
+import { useNotify } from "../../context/NotificationProvider";
 
 function formatDate(date) {
   return date.toLocaleDateString("en-US", {
@@ -14,7 +15,8 @@ const NoteDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
 
-  const [notifications, setNotifications] = useState([]);
+  // const [notifications, setNotifications] = useState([]);
+  const { addNotification } = useNotify();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -88,14 +90,18 @@ const NoteDetailPage = () => {
     }
   }, []);
 
-  const addNotification = useCallback((message, type = "success") => {
-    const newToast = { id: crypto.randomUUID(), message, type };
-    setNotifications(old => [...old, newToast]);
-  }, []);
+  // function addNotification() {
+  //   console.log("todo");
+  // }
 
-  const removeNotification = useCallback((id) => {
-    setNotifications(old => old.filter(toast => toast.id !== id));
-  }, []);
+  // const addNotification = useCallback((message, type = "success") => {
+  //   const newToast = { id: crypto.randomUUID(), message, type };
+  //   setNotifications(old => [...old, newToast]);
+  // }, []);
+
+  // const removeNotification = useCallback((id) => {
+  //   setNotifications(old => old.filter(toast => toast.id !== id));
+  // }, []);
 
   function openModal() {
     setIsModalOpen(true);
@@ -157,7 +163,7 @@ const NoteDetailPage = () => {
       const response = await deleteNote(id);
       // const response = await deleteNote("nvfdsbhk");
 
-      // navigate("/");
+      navigate("/");
       // setNotes(currentNotes => currentNotes.filter(note => note._id !== id));
       console.log("Note deleted successfully");
       addNotification("Note deleted successfully", "success");
@@ -230,7 +236,7 @@ const NoteDetailPage = () => {
   return (
     <div className="section">
 
-      <Notifications notifications={notifications} removeNotification={removeNotification} />
+      {/* <Notifications notifications={notifications} removeNotification={removeNotification} /> */}
 
       <Link to={"/"} className="link-btn alt section-btn">
         <i className="fa fa-angle-double-left" aria-hidden={true}></i>
@@ -278,85 +284,88 @@ const NoteDetailPage = () => {
         </div>
       </div>
 
-      <Modal 
-        isModalOpen={isModalOpen} 
-        setModalMode={setModalMode} 
-        onClose={closeModal} 
-        title={"Edit Note"} 
+      <Modal
+        isModalOpen={isModalOpen}
+        setModalMode={setModalMode}
+        onClose={closeModal}
+        title={"Edit Note"}
       >
-        {isModalOpen ? <Form note={{...note}} handleUpdateNote={handleUpdateNote} /> : null}
+        {isModalOpen ?
+          <Form
+            note={{ ...note }}
+            handleUpdateNote={handleUpdateNote}
+          />
+          : null}
       </Modal>
 
     </div>
   );
 };
 
-function Notifications({ notifications, removeNotification }) {
-  const popoverRef = useRef(null);
+// function Notifications({ notifications, removeNotification }) {
+//   const popoverRef = useRef(null);
 
-  useEffect(() => {
-      const popoverNode = popoverRef.current;
-      if (!popoverNode) return;
+//   useEffect(() => {
+//       const popoverNode = popoverRef.current;
+//       if (!popoverNode) return;
 
-      if (notifications.length > 0) {
-          popoverNode.showPopover();
-      } else {
-          popoverNode.hidePopover();
-      }
-  }, [notifications.length]);
+//       if (notifications.length > 0) {
+//           popoverNode.showPopover();
+//       } else {
+//           popoverNode.hidePopover();
+//       }
+//   }, [notifications.length]);
 
-  return (
-    <div
-      className="toast-container"
-      ref={popoverRef}
-      popover="manual"
-      role="status"
-    >
-      {notifications.map(toast => (
-        <Notification
-          key={toast.id}
-          toast={toast}
-          onDismiss={removeNotification}
-        />
-      ))}
-    </div>
-  );
-}
+//   return (
+//     <div
+//       className="toast-container"
+//       ref={popoverRef}
+//       popover="manual"
+//       role="status"
+//     >
+//       {notifications.map(toast => (
+//         <Notification
+//           key={toast.id}
+//           toast={toast}
+//           onDismiss={removeNotification}
+//         />
+//       ))}
+//     </div>
+//   );
+// }
 
-function Notification({ toast, onDismiss }) {
-  const [fadeout, setFadeout] = useState(false)
-  const id = toast.id;
-  console.log(toast);
+// function Notification({ toast, onDismiss }) {
+//   const [fadeout, setFadeout] = useState(false)
+//   const id = toast.id;
+//   console.log(toast);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setFadeout(true);
-    }, 6000);
+//   useEffect(() => {
+//     const timer = setTimeout(() => {
+//       setFadeout(true);
+//     }, 6000);
 
-    return () => clearTimeout(timer);
-  }, [onDismiss, id]);
+//     return () => clearTimeout(timer);
+//   }, [onDismiss, id]);
 
-  // const accessibilityRole = toast.type === "error" ? "alert" : "status";
-  const notificationClassName = fadeout ? (
-    `toast-box ${toast.type} fade-out`
-  ) : (
-    `toast-box ${toast.type}`
-  );
+//   const notificationClassName = fadeout ? (
+//     `toast-box ${toast.type} fade-out`
+//   ) : (
+//     `toast-box ${toast.type}`
+//   );
 
-  return (
-    // <div className={`toast-box ${toast.type}`} role={accessibilityRole}>
-    <div className={notificationClassName} onAnimationEnd={() => onDismiss(id)}>
-      <p>{toast.message}</p>
-      <button
-        type="button"
-        onClick={() => onDismiss(id)}
-        aria-label="Dismiss alert"
-      >
-        <span>X</span>
-      </button>
-    </div>
-  );
-}
+//   return (
+//     <div className={notificationClassName} onAnimationEnd={() => onDismiss(id)}>
+//       <p>{toast.message}</p>
+//       <button
+//         type="button"
+//         onClick={() => onDismiss(id)}
+//         aria-label="Dismiss alert"
+//       >
+//         <span>X</span>
+//       </button>
+//     </div>
+//   );
+// }
 
 function Modal({ isModalOpen, setModalMode, onClose, title, children }) {
   const dialogRef = useRef(null);
