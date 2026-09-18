@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router";
+import { useNotify } from "../../context/NotificationProvider";
 
 const CreatePage = () => {
     // const [title, setTitle] = useState("");
@@ -9,18 +10,19 @@ const CreatePage = () => {
     // const [loading, setLoading] = useState(false);
     const [creating, setCreating] = useState(false);
 
-    const [notifications, setNotifications] = useState([]);
+    // const [notifications, setNotifications] = useState([]);
+    const { addNotification } = useNotify();
 
     const navigate = useNavigate();
 
-    const addNotification = useCallback((message, type = "success") => {
-        const newToast = { id: crypto.randomUUID(), message, type };
-        setNotifications(old => [...old, newToast]);
-    }, []);
+    // const addNotification = useCallback((message, type = "success") => {
+    //     const newToast = { id: crypto.randomUUID(), message, type };
+    //     setNotifications(old => [...old, newToast]);
+    // }, []);
     
-    const removeNotification = useCallback((id) => {
-        setNotifications(old => old.filter(toast => toast.id !== id));
-    }, []);
+    // const removeNotification = useCallback((id) => {
+    //     setNotifications(old => old.filter(toast => toast.id !== id));
+    // }, []);
 
     async function createNote(data) {
         const response = await fetch("http://localhost:5000/api/notes", {
@@ -86,7 +88,7 @@ const CreatePage = () => {
 
     return (
         <div className="section">
-            <Notifications notifications={notifications} removeNotification={removeNotification} />
+            {/* <Notifications notifications={notifications} removeNotification={removeNotification} /> */}
 
             <Link to={"/"} className="link-btn alt">
                 <i className="fa fa-angle-double-left" aria-hidden={true}></i>
@@ -127,7 +129,6 @@ const CreatePage = () => {
 
                         <div className="card-actions">
                             <button type="submit" className="btn btn-primary">
-                                {/* {loading ? "Creating..." : "Create Note"} */}
                                 {creating ? "Creating..." : "Create Note"}
                             </button>
                         </div>
@@ -140,79 +141,76 @@ const CreatePage = () => {
     );
 };
 
-function Notifications({ notifications, removeNotification }) {
-    const popoverRef = useRef(null);
+// function Notifications({ notifications, removeNotification }) {
+//     const popoverRef = useRef(null);
 
-    useEffect(() => {
-        const popoverNode = popoverRef.current;
-        if (!popoverNode) return;
+//     useEffect(() => {
+//         const popoverNode = popoverRef.current;
+//         if (!popoverNode) return;
 
-        if (notifications.length > 0) {
-            popoverNode.showPopover();
-        } else {
-            popoverNode.hidePopover();
-        }
-    }, [notifications.length]);
+//         if (notifications.length > 0) {
+//             popoverNode.showPopover();
+//         } else {
+//             popoverNode.hidePopover();
+//         }
+//     }, [notifications.length]);
 
-    return (
-        <div
-            className="toast-container"
-            ref={popoverRef}
-            popover="manual"
-            role="status"
-        >
-            {notifications.map(toast => (
-                <Notification 
-                    key={toast.id}
-                    toast={toast} 
-                    onDismiss={removeNotification} 
-                />
-            ))}
-        </div>
-    );
-}
+//     return (
+//         <div
+//             className="toast-container"
+//             ref={popoverRef}
+//             popover="manual"
+//             role="status"
+//         >
+//             {notifications.map(toast => (
+//                 <Notification 
+//                     key={toast.id}
+//                     toast={toast} 
+//                     onDismiss={removeNotification} 
+//                 />
+//             ))}
+//         </div>
+//     );
+// }
 
-function Notification({ toast, onDismiss }) {
-    const [fadeout, setFadeout] = useState(false)
-    const id = toast.id;
-    console.log(toast);
+// function Notification({ toast, onDismiss }) {
+//     const [fadeout, setFadeout] = useState(false)
+//     const id = toast.id;
+//     console.log(toast);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setFadeout(true);
-        }, 6000);
+//     useEffect(() => {
+//         const timer = setTimeout(() => {
+//             setFadeout(true);
+//         }, 6000);
 
-        return () => clearTimeout(timer);
-    }, [onDismiss, id]);
+//         return () => clearTimeout(timer);
+//     }, [onDismiss, id]);
 
-    // const accessibilityRole = toast.type === "error" ? "alert" : "status";
-    const notificationClassName = fadeout ? (
-        `toast-box ${toast.type} fade-out`
-    ) : (
-        `toast-box ${toast.type}`
-    );
+//     const notificationClassName = fadeout ? (
+//         `toast-box ${toast.type} fade-out`
+//     ) : (
+//         `toast-box ${toast.type}`
+//     );
     
-    return (
-        // <div className={`toast-box ${toast.type}`} role={accessibilityRole}>
-        <div className={notificationClassName} onAnimationEnd={() => onDismiss(id)}>
-            <p>{toast.message}</p>
-            <button
-                type="button"
-                onClick={() => onDismiss(id)}
-                aria-label="Dismiss alert"
-            >
-                <span>X</span>
-            </button>
-        </div>
-    );
-}
+//     return (
+//         <div className={notificationClassName} onAnimationEnd={() => onDismiss(id)}>
+//             <p>{toast.message}</p>
+//             <button
+//                 type="button"
+//                 onClick={() => onDismiss(id)}
+//                 aria-label="Dismiss alert"
+//             >
+//                 <span>X</span>
+//             </button>
+//         </div>
+//     );
+// }
 
 function GenerateButton({setTitle, setContent}) {
     const [ number, setNumber ] = useState(1);
 
     function generate() {
         const newNumber = number + 1;
-        // console.log(newNumber);
         setNumber(newNumber);
         setTitle(`test note ${newNumber}`);
         setContent(`test note ${newNumber} text`);
