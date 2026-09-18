@@ -13,7 +13,7 @@ function formatDate(date) {
 const HomePage = () => {
     const [notes, setNotes] = useState(null);
     const [loading, setLoading] = useState(true);
-    // const [notifications, setNotifications] = useState([]);
+
     const { addNotification } = useNotify();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -76,15 +76,6 @@ const HomePage = () => {
             }
         }
     }, []);
-
-    // const addNotification = useCallback((message, type = "success") => {
-    //     const newToast = { id: crypto.randomUUID(), message, type };
-    //     setNotifications(old => [...old, newToast]);
-    // }, []);
-    
-    // const removeNotification = useCallback((id) => {
-    //     setNotifications(old => old.filter(toast => toast.id !== id));
-    // }, []);
 
     const setModalMode = () => console.log("todo setModalMode");
 
@@ -208,7 +199,6 @@ const HomePage = () => {
 
     return (
         <>
-            {/* <Notifications notifications={notifications} removeNotification={removeNotification} /> */}
             <Notes 
                 notes={notes} 
                 handleDeleteNote={handleDeleteNote} 
@@ -344,71 +334,6 @@ const NotesNotFound = () => {
         </div>
     );
 };
-
-// function Notifications({ notifications, removeNotification }) {
-//     const popoverRef = useRef(null);
-
-//     useEffect(() => {
-//         const popoverNode = popoverRef.current;
-//         if (!popoverNode) return;
-
-//         if (notifications.length > 0) {
-//             popoverNode.showPopover();
-//         } else {
-//             popoverNode.hidePopover();
-//         }
-//     }, [notifications.length]);
-
-//     return (
-//         <div
-//             className="toast-container"
-//             ref={popoverRef}
-//             popover="manual"
-//             role="status"
-//         >
-//             {notifications.map(toast => (
-//                 <Notification
-//                     key={toast.id}
-//                     toast={toast}
-//                     onDismiss={removeNotification}
-//                 />
-//             ))}
-//         </div>
-//     );
-// }
-
-// function Notification({ toast, onDismiss }) {
-//     const [fadeout, setFadeout] = useState(false)
-//     const id = toast.id;
-//     console.log(toast);
-
-//     useEffect(() => {
-//         const timer = setTimeout(() => {
-//             setFadeout(true);
-//         }, 6000);
-
-//         return () => clearTimeout(timer);
-//     }, [onDismiss, id]);
-
-//     const notificationClassName = fadeout ? (
-//         `toast-box ${toast.type} fade-out`
-//     ) : (
-//         `toast-box ${toast.type}`
-//     );
-
-//     return (
-//         <div className={notificationClassName} onAnimationEnd={() => onDismiss(id)}>
-//             <p>{toast.message}</p>
-//             <button
-//                 type="button"
-//                 onClick={() => onDismiss(id)}
-//                 aria-label="Dismiss alert"
-//             >
-//                 <span>X</span>
-//             </button>
-//         </div>
-//     );
-// }
 
 function Modal({ isModalOpen, setModalMode, onClose, title, children }) {
     const dialogRef = useRef(null);
