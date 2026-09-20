@@ -1,4 +1,4 @@
-async function getAllNotes() {
+async function getAllNotes(controller) {
     const response = await fetch("http://localhost:5000/api/notes", {
         signal: controller.signal
     });
@@ -20,8 +20,8 @@ async function getAllNotes() {
     }
 }
 
-async function getNoteByID(id) {
-    console.log(id);
+async function getNoteByID(id, controller) {
+    // console.log(id);
     const response = await fetch(`http://localhost:5000/api/notes/${id}`, {
         signal: controller.signal
     });

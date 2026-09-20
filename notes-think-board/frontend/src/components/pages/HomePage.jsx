@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { useNotify } from "../../context/NotificationProvider";
+import { notesApi } from "../../services/notes";
+import { NotesContext, useNotes } from "../../context/NotesProvider";
 
 function formatDate(date) {
     return date.toLocaleDateString("en-US", {
@@ -11,8 +13,11 @@ function formatDate(date) {
 }
 
 const HomePage = () => {
-    const [notes, setNotes] = useState(null);
+    // const [notes, setNotes] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    const { notes, initializeNotes } = useNotes();
+    // const { notes, initializeNotes } = useContext(NotesContext);
 
     const { addNotification } = useNotify();
 
@@ -26,8 +31,11 @@ const HomePage = () => {
         async function loadNotes() {
             setLoading(true);
             try {
-                const notes = await getAllNotes();
-                setNotes(notes);
+                // const notes = await getAllNotes();
+                const notes = await notesApi.getAllNotes(controller);
+                // setNotes(notes);
+                initializeNotes(notes);
+                // console.log(initializeNotes);
                 // setError(null);
                 controller = null;
             } catch (error) {
@@ -48,27 +56,27 @@ const HomePage = () => {
             }
         }
 
-        async function getAllNotes() {
-            const response = await fetch("http://localhost:5000/api/notes", {
-                signal: controller.signal
-            });
+        // async function getAllNotes() {
+        //     const response = await fetch("http://localhost:5000/api/notes", {
+        //         signal: controller.signal
+        //     });
 
-            const contentType = response.headers.get("content-type");
-            let result = null;
+        //     const contentType = response.headers.get("content-type");
+        //     let result = null;
 
-            if (contentType && contentType.includes("application/json")) {
-                result = await response.json();
-            } else {
-                result = await response.text();
-            }
+        //     if (contentType && contentType.includes("application/json")) {
+        //         result = await response.json();
+        //     } else {
+        //         result = await response.text();
+        //     }
 
-            if (response.ok) {
-                return result;
-            } else {
-                const errorMessage = result.message || "An error occurred";
-                throw new Error(errorMessage);
-            }
-        };
+        //     if (response.ok) {
+        //         return result;
+        //     } else {
+        //         const errorMessage = result.message || "An error occurred";
+        //         throw new Error(errorMessage);
+        //     }
+        // };
 
         return () => {
             if (controller) {

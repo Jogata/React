@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useState } from "react";
 
-const NotesContext = createContext(null);
+export const NotesContext = createContext(null);
 
 export function NotesProvider({ children }) {
     const [notes, setNotes] = useState(null);
@@ -31,7 +31,7 @@ export function NotesProvider({ children }) {
     };
 
     return (
-        <NotesContext.Provider value={{ context }}>
+        <NotesContext.Provider value={ context }>
             {children}
         </NotesContext.Provider>
     );
