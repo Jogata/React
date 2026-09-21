@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useState } from "react";
 
-export const NotesContext = createContext(null);
+const NotesContext = createContext(null);
 
 export function NotesProvider({ children }) {
     const [notes, setNotes] = useState(null);

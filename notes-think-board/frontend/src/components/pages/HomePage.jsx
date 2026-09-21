@@ -1,8 +1,8 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { useNotify } from "../../context/NotificationProvider";
 import { notesApi } from "../../services/notes";
-import { NotesContext, useNotes } from "../../context/NotesProvider";
+import { useNotes } from "../../context/NotesProvider";
 
 function formatDate(date) {
     return date.toLocaleDateString("en-US", {
@@ -13,11 +13,9 @@ function formatDate(date) {
 }
 
 const HomePage = () => {
-    // const [notes, setNotes] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const { notes, initializeNotes } = useNotes();
-    // const { notes, initializeNotes } = useContext(NotesContext);
+    const { notes, initializeNotes, deleteNote } = useNotes();
 
     const { addNotification } = useNotify();
 
@@ -31,11 +29,8 @@ const HomePage = () => {
         async function loadNotes() {
             setLoading(true);
             try {
-                // const notes = await getAllNotes();
                 const notes = await notesApi.getAllNotes(controller);
-                // setNotes(notes);
                 initializeNotes(notes);
-                // console.log(initializeNotes);
                 // setError(null);
                 controller = null;
             } catch (error) {
@@ -55,28 +50,6 @@ const HomePage = () => {
                 }
             }
         }
-
-        // async function getAllNotes() {
-        //     const response = await fetch("http://localhost:5000/api/notes", {
-        //         signal: controller.signal
-        //     });
-
-        //     const contentType = response.headers.get("content-type");
-        //     let result = null;
-
-        //     if (contentType && contentType.includes("application/json")) {
-        //         result = await response.json();
-        //     } else {
-        //         result = await response.text();
-        //     }
-
-        //     if (response.ok) {
-        //         return result;
-        //     } else {
-        //         const errorMessage = result.message || "An error occurred";
-        //         throw new Error(errorMessage);
-        //     }
-        // };
 
         return () => {
             if (controller) {
@@ -107,35 +80,39 @@ const HomePage = () => {
         return <NotesNotFound />;
     }
 
-    async function deleteNote(id) {
-        const response = await fetch(
-            `http://localhost:5000/api/notes/${id}`, {
-                method: "DELETE"
-            });
+    // async function deleteNote(id) {
+    //     const response = await fetch(
+    //         `http://localhost:5000/api/notes/${id}`, {
+    //             method: "DELETE"
+    //         });
 
-        const contentType = response.headers.get("content-type");
-        let result = null;
+    //     const contentType = response.headers.get("content-type");
+    //     let result = null;
 
-        if (contentType && contentType.includes("application/json")) {
-            result = await response.json();
-        } else {
-            result = await response.text();
-        }
+    //     if (contentType && contentType.includes("application/json")) {
+    //         result = await response.json();
+    //     } else {
+    //         result = await response.text();
+    //     }
 
-        if (response.ok) {
-            return result;
-        } else {
-            const errorMessage = result.message || "An error occurred";
-            throw new Error(errorMessage);
-        }
-    }
+    //     if (response.ok) {
+    //         return result;
+    //     } else {
+    //         const errorMessage = result.message || "An error occurred";
+    //         throw new Error(errorMessage);
+    //     }
+    // }
 
     async function handleDeleteNote(id) {
         try {
-            const response = await deleteNote(id);
+            // const response = await deleteNote(id);
+            // const response = 
+            await notesApi.deleteNote(id);
             // const response = await deleteNote("nvfdsbhk");
+            // const response = await notesApi.deleteNote("nvfdsbhk");
 
-            setNotes(currentNotes => currentNotes.filter(note => note._id !== id));
+            // setNotes(currentNotes => currentNotes.filter(note => note._id !== id));
+            deleteNote(id);
             // console.log("Note deleted successfully");
             addNotification("Note deleted successfully", "success");
         } catch (error) {
