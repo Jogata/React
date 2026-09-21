@@ -13,8 +13,9 @@ export function NotesProvider({ children }) {
         setNotes(old => notes == null ? null : [...old, note]);
     }
 
-    function updateNote(id) {
-        setNotes(old => old.map(note => note._id !== id));
+    function updateNote(updatedNote) {
+        console.log(updatedNote._id);
+        setNotes(old => old.map(note => note._id == updatedNote._id ? updatedNote : note));
     }
 
     function deleteNote(id) {

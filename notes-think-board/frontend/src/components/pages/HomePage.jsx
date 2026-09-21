@@ -15,7 +15,7 @@ function formatDate(date) {
 const HomePage = () => {
     const [loading, setLoading] = useState(true);
 
-    const { notes, initializeNotes, deleteNote } = useNotes();
+    const { notes, initializeNotes, updateNote, deleteNote } = useNotes();
 
     const { addNotification } = useNotify();
 
@@ -80,11 +80,33 @@ const HomePage = () => {
         return <NotesNotFound />;
     }
 
-    // async function deleteNote(id) {
-    //     const response = await fetch(
-    //         `http://localhost:5000/api/notes/${id}`, {
-    //             method: "DELETE"
-    //         });
+    async function handleDeleteNote(id) {
+        try {
+            // const response = 
+            await notesApi.deleteNote(id);
+            // const response = await notesApi.deleteNote("nvfdsbhk");
+
+            deleteNote(id);
+            // console.log("Note deleted successfully");
+            addNotification("Note deleted successfully", "success");
+        } catch (error) {
+            console.log("Error in handleDelete: ", error.message);
+            // console.log("Failed to delete note");
+            addNotification("Failed to delete note", "error");
+            addNotification(error.message, "error");
+        }
+    };
+
+    // async function updateNote(updatedNote) {
+    //     const id = "6aa26eb711fab78068173901";
+    //     const response = await fetch(`http://localhost:5000/api/notes/${id}`, {
+    //         method: "PUT",
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //         },
+    //         body: JSON.stringify(updatedNote),
+    //     });
+    //     console.log(response);
 
     //     const contentType = response.headers.get("content-type");
     //     let result = null;
@@ -103,57 +125,6 @@ const HomePage = () => {
     //     }
     // }
 
-    async function handleDeleteNote(id) {
-        try {
-            // const response = await deleteNote(id);
-            // const response = 
-            await notesApi.deleteNote(id);
-            // const response = await deleteNote("nvfdsbhk");
-            // const response = await notesApi.deleteNote("nvfdsbhk");
-
-            // setNotes(currentNotes => currentNotes.filter(note => note._id !== id));
-            deleteNote(id);
-            // console.log("Note deleted successfully");
-            addNotification("Note deleted successfully", "success");
-        } catch (error) {
-            console.log("Error in handleDelete: ", error.message);
-            // console.log("Failed to delete note");
-            addNotification("Failed to delete note", "error");
-            addNotification(error.message, "error");
-            // throw new Error(error.message);
-        }
-    };
-
-    async function updateNote(updatedNote) {
-        // const id = updatedNote._id;
-        // const id = "1";
-        const id = "6aa26eb711fab78068173901";
-        const response = await fetch(`http://localhost:5000/api/notes/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(updatedNote),
-        });
-        console.log(response);
-
-        const contentType = response.headers.get("content-type");
-        let result = null;
-
-        if (contentType && contentType.includes("application/json")) {
-            result = await response.json();
-        } else {
-            result = await response.text();
-        }
-
-        if (response.ok) {
-            return result;
-        } else {
-            const errorMessage = result.message || "An error occurred";
-            throw new Error(errorMessage);
-        }
-    }
-
     async function handleUpdateNote(updatedNote) {
         if (!updatedNote.title || !updatedNote.content) {
             addNotification("Please fill in all fields.", "error");
@@ -161,10 +132,10 @@ const HomePage = () => {
         }
 
         try {
-            const response = await updateNote(updatedNote);
-            // console.log("updated");
+            const response = await notesApi.updateNote(updatedNote);
             setNote(null);
-            setNotes(old => old.map(note => note._id === response._id ? updatedNote : note));
+            // setNotes(old => old.map(note => note._id === response._id ? updatedNote : note));
+            updateNote(response);
             addNotification(`Note ${updatedNote.title} updated`);
             closeModal();
         } catch (error) {

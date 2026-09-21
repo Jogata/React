@@ -72,9 +72,9 @@ async function createNote(data) {
 }
 
 async function updateNote(updatedNote) {
-    // const id = updatedNote._id;
+    const id = updatedNote._id;
     // const id = "1";
-    const id = "6aa26eb711fab78068173901";
+    // const id = "6aa26eb711fab78068173901";
     const response = await fetch(`http://localhost:5000/api/notes/${id}`, {
         method: "PUT",
         headers: {
