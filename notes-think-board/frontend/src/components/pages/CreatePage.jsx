@@ -1,62 +1,56 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { useNotify } from "../../context/NotificationProvider";
+import { notesApi } from "../../services/notes";
+import { useNotes } from "../../context/NotesProvider";
 
 const CreatePage = () => {
     // const [title, setTitle] = useState("");
     const [title, setTitle] = useState("test note 1");
     // const [content, setContent] = useState("");
     const [content, setContent] = useState("test note 1 text");
-    // const [loading, setLoading] = useState(false);
     const [creating, setCreating] = useState(false);
 
-    // const [notifications, setNotifications] = useState([]);
+    const { addNote } = useNotes();
+
     const { addNotification } = useNotify();
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
-    // const addNotification = useCallback((message, type = "success") => {
-    //     const newToast = { id: crypto.randomUUID(), message, type };
-    //     setNotifications(old => [...old, newToast]);
-    // }, []);
-    
-    // const removeNotification = useCallback((id) => {
-    //     setNotifications(old => old.filter(toast => toast.id !== id));
-    // }, []);
+    // async function createNote(data) {
+    //     const response = await fetch("http://localhost:5000/api/notes", {
+    //         method: "POST",
+    //         headers: {
+    //             "Content-Type": "application/json"
+    //         },
+    //         body: JSON.stringify(data)
+    //     });
+    //     console.log(response);
 
-    async function createNote(data) {
-        const response = await fetch("http://localhost:5000/api/notes", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        });
-        console.log(response);
+    //     const contentType = response.headers.get("content-type");
+    //     let result = null;
 
-        const contentType = response.headers.get("content-type");
-        let result = null;
+    //     if (contentType && contentType.includes("application/json")) {
+    //         result = await response.json();
+    //     } else {
+    //         result = await response.text();
+    //     }
+    //     console.log(result);
 
-        if (contentType && contentType.includes("application/json")) {
-            result = await response.json();
-        } else {
-            result = await response.text();
-        }
-        console.log(result);
-
-        if (response.ok) {
-            return result;
-        } else {
-            const errorMessage = result.message || "An error occurred during creation";
-            throw new Error(errorMessage);
-        }
-    }
+    //     if (response.ok) {
+    //         return result;
+    //     } else {
+    //         const errorMessage = result.message || "An error occurred during creation";
+    //         throw new Error(errorMessage);
+    //     }
+    // }
 
     async function handleSubmitCreateNoteForm(e) {
         e.preventDefault();
 
         if (creating) {
-            console.log("A new note is currently being created.");
+            // console.log("A new note is currently being created.");
+            addNotification("A new note is currently being created.", "success");
             return;
         }
 
@@ -66,13 +60,14 @@ const CreatePage = () => {
             return;
         }
 
-        // setLoading(true);
         setCreating(true);
 
         try {
-            const response = await createNote({ title, content });
-            console.log(response);
+            // const response = await createNote({ title, content });
+            const response = await notesApi.createNote({ title, content });
+            // console.log(response);
             // TODO: update notes state
+            addNote(response);
             addNotification(`${response.title} was created`, "success");
 
             // navigate("/");
@@ -81,14 +76,12 @@ const CreatePage = () => {
             // console.log("Failed to create note");
             addNotification("Failed to create note", "error");
         } finally {
-            // setLoading(false);
             setCreating(false);
         }
     };
 
     return (
         <div className="section">
-            {/* <Notifications notifications={notifications} removeNotification={removeNotification} /> */}
 
             <Link to={"/"} className="link-btn alt">
                 <i className="fa fa-angle-double-left" aria-hidden={true}></i>
@@ -140,71 +133,6 @@ const CreatePage = () => {
         </div>
     );
 };
-
-// function Notifications({ notifications, removeNotification }) {
-//     const popoverRef = useRef(null);
-
-//     useEffect(() => {
-//         const popoverNode = popoverRef.current;
-//         if (!popoverNode) return;
-
-//         if (notifications.length > 0) {
-//             popoverNode.showPopover();
-//         } else {
-//             popoverNode.hidePopover();
-//         }
-//     }, [notifications.length]);
-
-//     return (
-//         <div
-//             className="toast-container"
-//             ref={popoverRef}
-//             popover="manual"
-//             role="status"
-//         >
-//             {notifications.map(toast => (
-//                 <Notification 
-//                     key={toast.id}
-//                     toast={toast} 
-//                     onDismiss={removeNotification} 
-//                 />
-//             ))}
-//         </div>
-//     );
-// }
-
-// function Notification({ toast, onDismiss }) {
-//     const [fadeout, setFadeout] = useState(false)
-//     const id = toast.id;
-//     console.log(toast);
-
-//     useEffect(() => {
-//         const timer = setTimeout(() => {
-//             setFadeout(true);
-//         }, 6000);
-
-//         return () => clearTimeout(timer);
-//     }, [onDismiss, id]);
-
-//     const notificationClassName = fadeout ? (
-//         `toast-box ${toast.type} fade-out`
-//     ) : (
-//         `toast-box ${toast.type}`
-//     );
-    
-//     return (
-//         <div className={notificationClassName} onAnimationEnd={() => onDismiss(id)}>
-//             <p>{toast.message}</p>
-//             <button
-//                 type="button"
-//                 onClick={() => onDismiss(id)}
-//                 aria-label="Dismiss alert"
-//             >
-//                 <span>X</span>
-//             </button>
-//         </div>
-//     );
-// }
 
 function GenerateButton({setTitle, setContent}) {
     const [ number, setNumber ] = useState(1);
