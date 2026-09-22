@@ -83,9 +83,9 @@ const HomePage = () => {
     async function handleDeleteNote(id) {
         try {
             // const response = 
-            // await notesApi.deleteNote(id);
+            await notesApi.deleteNote(id);
             // const response = 
-            await notesApi.deleteNote("nvfdsbhk");
+            // await notesApi.deleteNote("nvfdsbhk");
 
             deleteNote(id);
             // console.log("Note deleted successfully");
