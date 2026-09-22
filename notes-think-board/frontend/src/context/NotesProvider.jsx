@@ -10,16 +10,22 @@ export function NotesProvider({ children }) {
     }
 
     function addNote(note) {
-        setNotes(old => notes == null ? null : [...old, note]);
+        if (notes) {
+            setNotes(old => notes == null ? null : [...old, note]);
+        }
     }
 
     function updateNote(updatedNote) {
         console.log(updatedNote._id);
-        setNotes(old => old.map(note => note._id == updatedNote._id ? updatedNote : note));
+        if (notes) {
+            setNotes(old => old.map(note => note._id == updatedNote._id ? updatedNote : note));
+        }
     }
 
     function deleteNote(id) {
-        setNotes(old => old.filter(note => note._id !== id));
+        if (notes) {
+            setNotes(old => old.filter(note => note._id !== id));
+        }
     }
 
     const context = { 

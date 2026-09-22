@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { useNotify } from "../../context/NotificationProvider";
 import { notesApi } from "../../services/notes";
+import { useNotes } from "../../context/NotesProvider";
 
 function formatDate(date) {
   return date.toLocaleDateString("en-US", {
@@ -15,6 +16,8 @@ const NoteDetailPage = () => {
   const [note, setNote] = useState(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
+
+  const { deleteNote } = useNotes();
 
   const { addNotification } = useNotify();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,7 +35,6 @@ const NoteDetailPage = () => {
     async function loadNote() {
       setLoading(true);
       try {
-        // const note = await getNoteByID(id);
         const note = await notesApi.getNoteByID(id, controller);
         setNote(note);
         // setError(null);
@@ -60,29 +62,6 @@ const NoteDetailPage = () => {
         }
       }
     }
-
-    // async function getNoteByID(id) {
-    //   console.log(id);
-    //   const response = await fetch(`http://localhost:5000/api/notes/${id}`, {
-    //     signal: controller.signal
-    //   });
-
-    //   const contentType = response.headers.get("content-type");
-    //   let result = null;
-
-    //   if (contentType && contentType.includes("application/json")) {
-    //     result = await response.json();
-    //   } else {
-    //     result = await response.text();
-    //   }
-
-    //   if (response.ok) {
-    //     return result;
-    //   } else {
-    //     const errorMessage = result.message || "An error occurred";
-    //     throw new Error(errorMessage);
-    //   }
-    // };
 
     return () => {
       if (controller) {
@@ -117,28 +96,28 @@ const NoteDetailPage = () => {
     )
   }
 
-  async function deleteNote(id) {
-    const response = await fetch(
-      `http://localhost:5000/api/notes/${id}`, {
-      method: "DELETE"
-    });
+  // async function deleteNote(id) {
+  //   const response = await fetch(
+  //     `http://localhost:5000/api/notes/${id}`, {
+  //     method: "DELETE"
+  //   });
 
-    const contentType = response.headers.get("content-type");
-    let result = null;
+  //   const contentType = response.headers.get("content-type");
+  //   let result = null;
 
-    if (contentType && contentType.includes("application/json")) {
-      result = await response.json();
-    } else {
-      result = await response.text();
-    }
+  //   if (contentType && contentType.includes("application/json")) {
+  //     result = await response.json();
+  //   } else {
+  //     result = await response.text();
+  //   }
 
-    if (response.ok) {
-      return result;
-    } else {
-      const errorMessage = result.message || "An error occurred";
-      throw new Error(errorMessage);
-    }
-  }
+  //   if (response.ok) {
+  //     return result;
+  //   } else {
+  //     const errorMessage = result.message || "An error occurred";
+  //     throw new Error(errorMessage);
+  //   }
+  // }
 
   async function handleDeleteNote(id) {
     if (deleting) {
@@ -148,16 +127,21 @@ const NoteDetailPage = () => {
 
     try {
       setDeleting(true);
-      const response = await deleteNote(id);
+      // const response = await deleteNote(id);
+      // const response = 
+      // await notesApi.deleteNote(id);
       // const response = await deleteNote("nvfdsbhk");
+      // const response = 
+      await notesApi.deleteNote("nvfdsbhk");
 
       navigate("/");
       // setNotes(currentNotes => currentNotes.filter(note => note._id !== id));
-      console.log("Note deleted successfully");
+      deleteNote(id);
+      // console.log("Note deleted successfully");
       addNotification("Note deleted successfully", "success");
     } catch (error) {
       console.log("Error in handleDelete: ", error.message);
-      console.log("Failed to delete note");
+      // console.log("Failed to delete note");
       addNotification("Failed to delete note", "error");
       addNotification(error.message, "error");
       // throw new Error(error.message);
