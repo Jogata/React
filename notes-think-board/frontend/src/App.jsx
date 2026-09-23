@@ -7,10 +7,13 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useNotes } from "./context/NotesProvider";
 import { notesApi } from "./services/notes";
+import { useNotify } from "./context/NotificationProvider";
+import { Notifications } from "./components/Notifications/Notifications";
 
 const App = () => {
   return (
     <div className="page">
+      <GlobalNotificationsWrapper />
       <Navbar />
       <main>
         <Routes>
@@ -93,6 +96,11 @@ function Test() {
 
   return <h1>Test</h1>
 }
+
+const GlobalNotificationsWrapper = () => {
+  const { notifications, removeNotification } = useNotify();
+  return <Notifications notifications={notifications} removeNotification={removeNotification} />;
+};
 
 const Navbar = () => {
   return (

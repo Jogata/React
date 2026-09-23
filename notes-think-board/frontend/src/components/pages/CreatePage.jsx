@@ -33,7 +33,7 @@ const CreatePage = () => {
             return;
         }
 
-        // setCreating(true);
+        setCreating(true);
 
         try {
             const response = await notesApi.createNote({ title, content });
@@ -45,7 +45,7 @@ const CreatePage = () => {
             // console.log("Failed to create note");
             addNotification("Failed to create note", "error");
         } finally {
-            // setCreating(false);
+            setCreating(false);
         }
     };
 

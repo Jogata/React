@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { useNotify } from "../../context/NotificationProvider";
 import { notesApi } from "../../services/notes";
 import { useNotes } from "../../context/NotesProvider";
+import { useCallback } from "react";
 
 function formatDate(date) {
     return date.toLocaleDateString("en-US", {
@@ -13,10 +14,8 @@ function formatDate(date) {
 }
 
 const HomePage = () => {
-    // const [loading, setLoading] = useState(true);
-    const [loading, setLoading] = useState(false);
-
-    const { notes, initializeNotes, updateNote, deleteNote } = useNotes();
+    // const [loading, setLoading] = useState(false);
+    const { notes, updateNote, deleteNote } = useNotes();
 
     const { addNotification } = useNotify();
 
@@ -33,9 +32,9 @@ const HomePage = () => {
         setIsModalOpen(false);
     }
 
-    if (loading) {
-        return <Spinner />;
-    }
+    // if (loading) {
+    //     return <Spinner />;
+    // }
 
     if (!notes) {
         return <h1>Data not received</h1>;
@@ -45,7 +44,7 @@ const HomePage = () => {
         return <NotesNotFound />;
     }
 
-    async function handleDeleteNote(id) {
+    const handleDeleteNote = useCallback( async id => {
         try {
             // const response = 
             await notesApi.deleteNote(id);
@@ -61,9 +60,9 @@ const HomePage = () => {
             addNotification("Failed to delete note", "error");
             addNotification(error.message, "error");
         }
-    };
+    }, [])
 
-    async function handleUpdateNote(updatedNote) {
+    const handleUpdateNote = useCallback(async updatedNote => {
         if (!updatedNote.title || !updatedNote.content) {
             addNotification("Please fill in all fields.", "error");
             return;
@@ -88,7 +87,7 @@ const HomePage = () => {
             addNotification(error.message, "error");
             // })
         }
-    }
+    }, [])
 
     return (
         <>
@@ -118,6 +117,7 @@ const HomePage = () => {
 };
 
 function Notes({ notes, handleDeleteNote, openModal, setNote }) {
+    console.log("notes rerendered");
     return (
         <div className="section notes-section">
             <h1 className="section-title">Notes</h1>
@@ -342,6 +342,44 @@ function Form({ note, handleUpdateNote }) {
         </form>
     )
 }
+
+// const HomePage = () => {
+//     const { notes, deleteNote } = useNotes();
+
+//     const { addNotification } = useNotify();
+
+//     if (!notes) {
+//         return <h1>Data not received</h1>;
+//     }
+
+//     if (notes.length == 0) {
+//         return <NotesNotFound />;
+//     }
+
+//     async function handleDeleteNote(id) {
+//         try {
+//             await notesApi.deleteNote(id);
+
+//             deleteNote(id);
+//             addNotification("Note deleted successfully", "success");
+//         } catch (error) {
+//             console.log("Error in handleDelete: ", error.message);
+//             addNotification("Failed to delete note", "error");
+//             addNotification(error.message, "error");
+//         }
+//     };
+
+//     return (
+//         <>
+//             <Notes 
+//                 notes={notes} 
+//                 handleDeleteNote={handleDeleteNote} 
+//                 openModal={openModal} 
+//                 setNote={setNote} 
+//             />
+//         </>
+//     )
+// };
 
 const Spinner = () => {
     return (

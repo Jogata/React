@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useState } from "react";
-import { Notifications } from "../components/Notifications/Notifications";
+// import { Notifications } from "../components/Notifications/Notifications";
 
 const NotificationContext = createContext(null);
 
@@ -10,19 +10,19 @@ export function NotificationProvider({ children }) {
         const newToast = { id: crypto.randomUUID(), message, type };
         setNotifications(old => [...old, newToast]);
     }, []);
-    
+
     const removeNotification = useCallback((id) => {
         setNotifications(old => old.filter(toast => toast.id !== id));
     }, []);
-        
+
     return (
-        <NotificationContext.Provider value={{ addNotification }}>
+        <NotificationContext.Provider value={{ notifications, removeNotification, addNotification }}>
             {children}
 
-            <Notifications
+            {/* <Notifications
                 notifications={notifications}
                 removeNotification={removeNotification}
-            />
+            /> */}
         </NotificationContext.Provider>
     );
 }
