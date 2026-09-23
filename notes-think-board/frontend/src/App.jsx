@@ -4,7 +4,6 @@ import HomePage from "./components/pages/HomePage";
 import CreatePage from "./components/pages/CreatePage";
 import NoteDetailPage from "./components/pages/NotePage";
 import { useEffect } from "react";
-// import { Children } from "react";
 import { useState } from "react";
 import { useNotes } from "./context/NotesProvider";
 import { notesApi } from "./services/notes";
@@ -17,6 +16,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<DataLoader />}>
             <Route index element={<HomePage />} />
+            <Route path="/test" element={<Test />} />
           </Route>
           <Route path="/create" element={<CreatePage />} />
           <Route path="/notes/:id" element={<NoteDetailPage />} />
@@ -78,12 +78,32 @@ if (loading) {
 return <Outlet />
 }
 
+function Test() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 5000);
+  }, [])
+
+  if (loading) {
+    return <Spinner />
+  }
+
+  return <h1>Test</h1>
+}
+
 const Navbar = () => {
   return (
     <header>
       <nav>
         <Link to="/" className="logo"><span>Think</span>Board</Link>
         <div>
+          <Link to={"/test"} className="link-btn">
+            <i className="fa fa-bars" aria-hidden="true"></i>
+            <span>Test Link</span>
+          </Link>
           <Link to={"/create"} className="link-btn">
             <i className="fa fa-plus" aria-hidden="true"></i>
             <span>New Note</span>
@@ -94,15 +114,15 @@ const Navbar = () => {
   );
 };
 
-// const Spinner = () => {
-//   return (
-//       <span className="loader">
-//           <div className="logo-ring"></div>
-//           <div className="logo-ring"></div>
-//           <div className="logo-ring"></div>
-//           <div className="logo-ring"></div>
-//       </span>
-//   )
-// }
+const Spinner = () => {
+  return (
+      <span className="loader">
+          <div className="logo-ring"></div>
+          <div className="logo-ring"></div>
+          <div className="logo-ring"></div>
+          <div className="logo-ring"></div>
+      </span>
+  )
+}
 
 export default App;
