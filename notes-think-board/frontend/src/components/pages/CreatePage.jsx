@@ -16,6 +16,7 @@ const CreatePage = () => {
     const { addNotification } = useNotify();
 
     // const navigate = useNavigate();
+    console.log("create page");
 
     async function handleSubmitCreateNoteForm(e) {
         e.preventDefault();
@@ -32,11 +33,11 @@ const CreatePage = () => {
             return;
         }
 
-        setCreating(true);
+        // setCreating(true);
 
         try {
             const response = await notesApi.createNote({ title, content });
-            // addNote(response);
+            addNote(response);
             addNotification(`${response.title} was created`, "success");
             // navigate("/");
         } catch (error) {
@@ -44,7 +45,7 @@ const CreatePage = () => {
             // console.log("Failed to create note");
             addNotification("Failed to create note", "error");
         } finally {
-            setCreating(false);
+            // setCreating(false);
         }
     };
 

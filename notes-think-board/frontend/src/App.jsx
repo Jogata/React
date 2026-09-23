@@ -1,8 +1,13 @@
 import { Route, Routes } from "react-router";
-import { Link } from "react-router";
+import { Link, Outlet } from "react-router";
 import HomePage from "./components/pages/HomePage";
 import CreatePage from "./components/pages/CreatePage";
 import NoteDetailPage from "./components/pages/NotePage";
+import { useEffect } from "react";
+// import { Children } from "react";
+import { useState } from "react";
+import { useNotes } from "./context/NotesProvider";
+import { notesApi } from "./services/notes";
 
 const App = () => {
   return (
@@ -10,7 +15,9 @@ const App = () => {
       <Navbar />
       <main>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<DataLoader />}>
+            <Route index element={<HomePage />} />
+          </Route>
           <Route path="/create" element={<CreatePage />} />
           <Route path="/notes/:id" element={<NoteDetailPage />} />
         </Routes>
@@ -18,6 +25,58 @@ const App = () => {
     </div>
   );
 };
+
+function DataLoader() {
+  const [loading, setLoading] = useState(false);
+
+  const { notes, initializeNotes } = useNotes();
+
+  useEffect(() => {
+    let controller = new AbortController();
+
+    if (notes == null) {
+        console.log(notes);
+        loadNotes();
+    }
+    
+    async function loadNotes() {
+        setLoading(true);
+        try {
+            const notes = await notesApi.getAllNotes(controller);
+            initializeNotes(notes);
+            // setError(null);
+            controller = null;
+        } catch (error) {
+            // setError(err.message);
+            if (error.name === "AbortError") {
+                console.log("Fetch safely aborted by layout unmount");
+                return;
+            }
+            
+            controller = null;
+            console.log("Error fetching notes");
+            console.log(error.message);
+            console.log("Failed to load notes");
+        } finally {
+            if (controller === null) {
+                setLoading(false);
+            }
+        }
+    }
+
+    return () => {
+        if (controller) {
+            controller.abort();
+        }
+    }
+}, []);
+
+if (loading) {
+  return <h1>Loading...</h1>
+}
+
+return <Outlet />
+}
 
 const Navbar = () => {
   return (

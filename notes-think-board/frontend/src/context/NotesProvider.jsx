@@ -11,7 +11,10 @@ export function NotesProvider({ children }) {
 
     function addNote(note) {
         if (notes) {
+            console.log(notes);
             setNotes(old => notes == null ? null : [...old, note]);
+        } else {
+            console.log(notes);
         }
     }
 
@@ -30,7 +33,6 @@ export function NotesProvider({ children }) {
 
     const context = { 
         notes, 
-        // setNotes, 
         initializeNotes, 
         addNote, 
         updateNote, 
