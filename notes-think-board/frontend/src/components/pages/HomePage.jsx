@@ -14,7 +14,6 @@ function formatDate(date) {
 }
 
 const HomePage = () => {
-    // const [loading, setLoading] = useState(false);
     const { notes, updateNote, deleteNote } = useNotes();
 
     const { addNotification } = useNotify();
@@ -31,10 +30,6 @@ const HomePage = () => {
     function closeModal() {
         setIsModalOpen(false);
     }
-
-    // if (loading) {
-    //     return <Spinner />;
-    // }
 
     if (!notes) {
         return <h1>Data not received</h1>;
@@ -380,21 +375,5 @@ function Form({ note, handleUpdateNote }) {
 //         </>
 //     )
 // };
-
-const Spinner = () => {
-    return (
-        <span
-            className="loader"
-            role="status"
-            aria-live="polite"
-        >
-            <div className="logo-ring"></div>
-            <div className="logo-ring"></div>
-            <div className="logo-ring"></div>
-            <div className="logo-ring"></div>
-            <span className="sr-only">Loading content, please wait.</span>
-        </span>
-    )
-}
 
 export default HomePage;

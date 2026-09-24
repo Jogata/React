@@ -5,8 +5,6 @@ const NotesContext = createContext(null);
 export function NotesProvider({ children }) {
     const [notes, setNotes] = useState(null);
 
-    // console.log("notes provider");
-
     function initializeNotes(notes) {
         setNotes(notes);
     }

@@ -122,15 +122,50 @@ const Navbar = () => {
   );
 };
 
+// const Spinner = () => {
+//   return (
+//       <span className="loader">
+//           <div className="logo-ring"></div>
+//           <div className="logo-ring"></div>
+//           <div className="logo-ring"></div>
+//           <div className="logo-ring"></div>
+//       </span>
+//   )
+// }
 const Spinner = () => {
   return (
-      <span className="loader">
+      <span
+          className="loader"
+          role="status"
+          aria-live="polite"
+      >
           <div className="logo-ring"></div>
           <div className="logo-ring"></div>
           <div className="logo-ring"></div>
           <div className="logo-ring"></div>
+          <span className="sr-only">Loading content, please wait.</span>
       </span>
   )
 }
 
 export default App;
+
+
+// import { NotificationProvider, useNotify } from './NotificationContext';
+// import { HomePage } from './HomePage';
+
+// const GlobalNotificationsWrapper = () => {
+//     const { notifications, removeNotification } = useNotify();
+//     return <Notifications notifications={notifications} removeNotification={removeNotification} />;
+// };
+
+// function App() {
+//     return (
+//         <NotificationProvider>
+//             <NotesProvider>
+//                 <HomePage />
+//                 <GlobalNotificationsWrapper />
+//             </NotesProvider>
+//         </NotificationProvider>
+//     );
+// }

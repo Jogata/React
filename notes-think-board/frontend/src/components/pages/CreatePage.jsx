@@ -15,7 +15,6 @@ const CreatePage = () => {
 
     const { addNotification } = useNotify();
 
-    // const navigate = useNavigate();
     console.log("create page");
 
     async function handleSubmitCreateNoteForm(e) {
