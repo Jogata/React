@@ -1,3 +1,5 @@
+import NoteCard from "./NoteCard";
+
 function Notes({ notes, handleDeleteNote, openModal, setNote }) {
     console.log("notes rerendered");
     return (
@@ -17,3 +19,5 @@ function Notes({ notes, handleDeleteNote, openModal, setNote }) {
         </div>
     )
 }
+
+export default Notes;
