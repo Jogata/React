@@ -18,8 +18,8 @@ const HomePage = () => {
 
     const { addNotification } = useNotify();
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [note, setNote] = useState(null);
+    const [ isModalOpen, setIsModalOpen ] = useState(false);
+    const [ note, setNote ] = useState(null);
 
     const setModalMode = () => console.log("todo setModalMode");
 
@@ -337,43 +337,5 @@ function Form({ note, handleUpdateNote }) {
         </form>
     )
 }
-
-// const HomePage = () => {
-//     const { notes, deleteNote } = useNotes();
-
-//     const { addNotification } = useNotify();
-
-//     if (!notes) {
-//         return <h1>Data not received</h1>;
-//     }
-
-//     if (notes.length == 0) {
-//         return <NotesNotFound />;
-//     }
-
-//     async function handleDeleteNote(id) {
-//         try {
-//             await notesApi.deleteNote(id);
-
-//             deleteNote(id);
-//             addNotification("Note deleted successfully", "success");
-//         } catch (error) {
-//             console.log("Error in handleDelete: ", error.message);
-//             addNotification("Failed to delete note", "error");
-//             addNotification(error.message, "error");
-//         }
-//     };
-
-//     return (
-//         <>
-//             <Notes 
-//                 notes={notes} 
-//                 handleDeleteNote={handleDeleteNote} 
-//                 openModal={openModal} 
-//                 setNote={setNote} 
-//             />
-//         </>
-//     )
-// };
 
 export default HomePage;
