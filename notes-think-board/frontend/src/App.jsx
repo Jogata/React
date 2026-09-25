@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router";
-import { Link, Outlet } from "react-router";
+import { Outlet } from "react-router";
+import Navbar from "./components/Navbar";
 import HomePage from "./components/pages/HomePage";
 import CreatePage from "./components/pages/CreatePage";
 import NoteDetailPage from "./components/pages/NotePage";
@@ -75,7 +76,6 @@ function DataLoader() {
   }, []);
 
   if (loading) {
-    // return <h1>Loading...</h1>
     return <Spinner />;
   }
 
@@ -101,26 +101,6 @@ function Test() {
 const GlobalNotificationsWrapper = () => {
   const { notifications, removeNotification } = useNotify();
   return <Notifications notifications={notifications} removeNotification={removeNotification} />;
-};
-
-const Navbar = () => {
-  return (
-    <header>
-      <nav>
-        <Link to="/" className="logo"><span>Think</span>Board</Link>
-        <div>
-          <Link to={"/test"} className="link-btn">
-            <i className="fa fa-bars" aria-hidden="true"></i>
-            <span>Test Link</span>
-          </Link>
-          <Link to={"/create"} className="link-btn">
-            <i className="fa fa-plus" aria-hidden="true"></i>
-            <span>New Note</span>
-          </Link>
-        </div>
-      </nav>
-    </header>
-  );
 };
 
 const Spinner = () => {
