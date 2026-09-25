@@ -38,47 +38,48 @@ function DataLoader() {
     let controller = new AbortController();
 
     if (notes == null) {
-        console.log(notes);
-        loadNotes();
+      console.log(notes);
+      loadNotes();
     }
-    
+
     async function loadNotes() {
-        setLoading(true);
-        try {
-            const notes = await notesApi.getAllNotes(controller);
-            initializeNotes(notes);
-            // setError(null);
-            controller = null;
-        } catch (error) {
-            // setError(err.message);
-            if (error.name === "AbortError") {
-                console.log("Fetch safely aborted by layout unmount");
-                return;
-            }
-            
-            controller = null;
-            console.log("Error fetching notes");
-            console.log(error.message);
-            console.log("Failed to load notes");
-        } finally {
-            if (controller === null) {
-                setLoading(false);
-            }
+      setLoading(true);
+      try {
+        const notes = await notesApi.getAllNotes(controller);
+        initializeNotes(notes);
+        // setError(null);
+        controller = null;
+      } catch (error) {
+        // setError(err.message);
+        if (error.name === "AbortError") {
+          console.log("Fetch safely aborted by layout unmount");
+          return;
         }
+
+        controller = null;
+        console.log("Error fetching notes");
+        console.log(error.message);
+        console.log("Failed to load notes");
+      } finally {
+        if (controller === null) {
+          setLoading(false);
+        }
+      }
     }
 
     return () => {
-        if (controller) {
-            controller.abort();
-        }
+      if (controller) {
+        controller.abort();
+      }
     }
-}, []);
+  }, []);
 
-if (loading) {
-  return <h1>Loading...</h1>
-}
+  if (loading) {
+    // return <h1>Loading...</h1>
+    return <Spinner />;
+  }
 
-return <Outlet />
+  return <Outlet />;
 }
 
 function Test() {
@@ -122,16 +123,6 @@ const Navbar = () => {
   );
 };
 
-// const Spinner = () => {
-//   return (
-//       <span className="loader">
-//           <div className="logo-ring"></div>
-//           <div className="logo-ring"></div>
-//           <div className="logo-ring"></div>
-//           <div className="logo-ring"></div>
-//       </span>
-//   )
-// }
 const Spinner = () => {
   return (
       <span
