@@ -1,17 +1,19 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router";
-import { useNotify } from "../../context/NotificationProvider";
+// import { Link } from "react-router";
 import { notesApi } from "../../services/notes";
 import { useNotes } from "../../context/NotesProvider";
+import { useNotify } from "../../context/NotificationProvider";
 import { useCallback } from "react";
+import Notes from "../Notes/Notes";
+import NotesNotFound from "../Notes/NotesNotFound";
 
-function formatDate(date) {
-    return date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-    });
-}
+// function formatDate(date) {
+//     return date.toLocaleDateString("en-US", {
+//         month: "short",
+//         day: "numeric",
+//         year: "numeric",
+//     });
+// }
 
 const HomePage = () => {
     const { notes, updateNote, deleteNote } = useNotes();
@@ -111,117 +113,117 @@ const HomePage = () => {
     )
 };
 
-function Notes({ notes, handleDeleteNote, openModal, setNote }) {
-    console.log("notes rerendered");
-    return (
-        <div className="section notes-section">
-            <h1 className="section-title">Notes</h1>
-            <div className="notes">
-                {notes.map(note => (
-                    <NoteCard 
-                        key={note._id} 
-                        note={note} 
-                        handleDeleteNote={handleDeleteNote} 
-                        openModal={openModal}
-                        setNote={setNote}
-                    />
-                ))}
-            </div>
-        </div>
-    )
-}
+// function Notes({ notes, handleDeleteNote, openModal, setNote }) {
+//     console.log("notes rerendered");
+//     return (
+//         <div className="section notes-section">
+//             <h1 className="section-title">Notes</h1>
+//             <div className="notes">
+//                 {notes.map(note => (
+//                     <NoteCard 
+//                         key={note._id} 
+//                         note={note} 
+//                         handleDeleteNote={handleDeleteNote} 
+//                         openModal={openModal}
+//                         setNote={setNote}
+//                     />
+//                 ))}
+//             </div>
+//         </div>
+//     )
+// }
 
-const NoteCard = ({ note, handleDeleteNote, openModal, setNote }) => {
-    const [deleting, setDeleting] = useState(false);
+// const NoteCard = ({ note, handleDeleteNote, openModal, setNote }) => {
+//     const [deleting, setDeleting] = useState(false);
 
-    const handleClickDeleteNote = async (e) => {
-        e.preventDefault();
+//     const handleClickDeleteNote = async (e) => {
+//         e.preventDefault();
 
-        if (deleting) {
-            console.log("The note is being deleted right now.");
-            return;
-        }
+//         if (deleting) {
+//             console.log("The note is being deleted right now.");
+//             return;
+//         }
 
-        // if (!window.confirm("Are you sure you want to delete this note?")) return;
+//         if (!window.confirm("Are you sure you want to delete this note?")) return;
             
-        try {
-            setDeleting(true);
-            const response = await handleDeleteNote(note._id);
-        } catch (error) {
-            console.log("Error in handleDelete: ", error.message);
-            console.log("Failed to delete note");
-        } finally {
-            setDeleting(false);
-        }
-    };
+//         try {
+//             setDeleting(true);
+//             const response = await handleDeleteNote(note._id);
+//         } catch (error) {
+//             console.log("Error in handleDelete: ", error.message);
+//             console.log("Failed to delete note");
+//         } finally {
+//             setDeleting(false);
+//         }
+//     };
 
-    const handleClickUpdateNote = async (e) => {
-        e.preventDefault();
-        openModal(note);
-        setNote(note);
-    };
+//     const handleClickUpdateNote = async (e) => {
+//         e.preventDefault();
+//         openModal(note);
+//         setNote(note);
+//     };
 
-    return (
-        <Link to={`/notes/${note._id}`} className="note">
-            <div className="card-body">
-                <h3 className="card-title">{note.title}</h3>
-                <p className="card-text">{note.content}</p>
-                <div className="card-footer">
-                    <span className="date">
-                        {formatDate(new Date(note.createdAt))}
-                    </span>
-                    <div className="card-actions">
-                        <button
-                            type="button"
-                            className="icon edit-btn"
-                            title="Edit"
-                            onClick={handleClickUpdateNote}
-                        >
-                            <span className="sr-only">Edit note {note.title}</span>
-                            <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
-                        </button>
-                        <button
-                            type="button"
-                            className="icon delete-btn modal-btn"
-                            title="Delete"
-                            onClick={handleClickDeleteNote}
-                        >
-                            {deleting ? (
-                                <>
-                                    <span className="sr-only">Deleting note {note.title}</span>
-                                    <i className="fa fa-spinner" aria-hidden="true"></i>
-                                </>
-                            ) : (
-                                <>
-                                    <span className="sr-only">Delete note {note.title}</span>
-                                    <i className="fa fa-trash-o" aria-hidden="true"></i>
-                                </>
-                            )}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </Link>
-    );
-};
+//     return (
+//         <Link to={`/notes/${note._id}`} className="note">
+//             <div className="card-body">
+//                 <h3 className="card-title">{note.title}</h3>
+//                 <p className="card-text">{note.content}</p>
+//                 <div className="card-footer">
+//                     <span className="date">
+//                         {formatDate(new Date(note.createdAt))}
+//                     </span>
+//                     <div className="card-actions">
+//                         <button
+//                             type="button"
+//                             className="icon edit-btn"
+//                             title="Edit"
+//                             onClick={handleClickUpdateNote}
+//                         >
+//                             <span className="sr-only">Edit note {note.title}</span>
+//                             <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
+//                         </button>
+//                         <button
+//                             type="button"
+//                             className="icon delete-btn modal-btn"
+//                             title="Delete"
+//                             onClick={handleClickDeleteNote}
+//                         >
+//                             {deleting ? (
+//                                 <>
+//                                     <span className="sr-only">Deleting note {note.title}</span>
+//                                     <i className="fa fa-spinner" aria-hidden="true"></i>
+//                                 </>
+//                             ) : (
+//                                 <>
+//                                     <span className="sr-only">Delete note {note.title}</span>
+//                                     <i className="fa fa-trash-o" aria-hidden="true"></i>
+//                                 </>
+//                             )}
+//                         </button>
+//                     </div>
+//                 </div>
+//             </div>
+//         </Link>
+//     );
+// };
 
-const NotesNotFound = () => {
-    return (
-        <div className="">
-            <div className="">
-                <i className="fa fa-notebook"></i>
-            </div>
-            <h1 className="">No notes yet</h1>
-            <p className="">
-                Ready to organize your thoughts? Create your
-                first note to get started on your journey.
-            </p>
-            <Link to="/create" className="btn">
-                Create Your First Note
-            </Link>
-        </div>
-    );
-};
+// const NotesNotFound = () => {
+//     return (
+//         <div className="">
+//             <div className="">
+//                 <i className="fa fa-notebook"></i>
+//             </div>
+//             <h1 className="">No notes yet</h1>
+//             <p className="">
+//                 Ready to organize your thoughts? Create your
+//                 first note to get started on your journey.
+//             </p>
+//             <Link to="/create" className="btn">
+//                 Create Your First Note
+//             </Link>
+//         </div>
+//     );
+// };
 
 function Modal({ isModalOpen, setModalMode, onClose, title, children }) {
     const dialogRef = useRef(null);
