@@ -1,30 +1,32 @@
 // import { useEffect, useRef, useState } from "react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { notesApi } from "../../services/notes";
 import { useNotes } from "../../context/NotesProvider";
 import { useNotify } from "../../context/NotificationProvider";
-import { useCallback } from "react";
+// import { useCallback } from "react";
 import Notes from "../Notes/Notes";
 import NotesNotFound from "../Notes/NotesNotFound";
 import Modal from "../Modal/Modal";
+import useModal from "../../hooks/useModal";
 
 const HomePage = () => {
     const { notes, updateNote, deleteNote } = useNotes();
 
     const { addNotification } = useNotify();
 
-    const [ isModalOpen, setIsModalOpen ] = useState(false);
+    // const [ isModalOpen, setIsModalOpen ] = useState(false);
+    const { isModalOpen, openModal, closeModal } = useModal();
     const [ note, setNote ] = useState(null);
 
     const setModalMode = () => console.log("todo setModalMode");
 
-    function openModal() {
-        setIsModalOpen(true);
-    }
+    // function openModal() {
+    //     setIsModalOpen(true);
+    // }
 
-    function closeModal() {
-        setIsModalOpen(false);
-    }
+    // function closeModal() {
+    //     setIsModalOpen(false);
+    // }
 
     if (!notes) {
         return <h1>Data not received</h1>;
