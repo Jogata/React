@@ -1,13 +1,12 @@
 import { Route, Routes } from "react-router";
-import { Outlet } from "react-router";
+// import { Outlet } from "react-router";
 import Navbar from "./components/Navbar";
+import NotesLoader from "./components/NotesLoader";
 import HomePage from "./components/pages/HomePage";
 import CreatePage from "./components/pages/CreatePage";
 import NoteDetailPage from "./components/pages/NotePage";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useNotes } from "./context/NotesProvider";
-import { notesApi } from "./services/notes";
 import { useNotify } from "./context/NotificationProvider";
 import { Notifications } from "./components/Notifications/Notifications";
 
@@ -18,7 +17,7 @@ const App = () => {
       <Navbar />
       <main>
         <Routes>
-          <Route path="/" element={<DataLoader />}>
+          <Route path="/" element={<NotesLoader />}>
             <Route index element={<HomePage />} />
             <Route path="/test" element={<Test />} />
           </Route>
@@ -29,58 +28,6 @@ const App = () => {
     </div>
   );
 };
-
-function DataLoader() {
-  const [loading, setLoading] = useState(false);
-
-  const { notes, initializeNotes } = useNotes();
-
-  useEffect(() => {
-    let controller = new AbortController();
-
-    if (notes == null) {
-      console.log(notes);
-      loadNotes();
-    }
-
-    async function loadNotes() {
-      setLoading(true);
-      try {
-        const notes = await notesApi.getAllNotes(controller);
-        initializeNotes(notes);
-        // setError(null);
-        controller = null;
-      } catch (error) {
-        // setError(err.message);
-        if (error.name === "AbortError") {
-          console.log("Fetch safely aborted by layout unmount");
-          return;
-        }
-
-        controller = null;
-        console.log("Error fetching notes");
-        console.log(error.message);
-        console.log("Failed to load notes");
-      } finally {
-        if (controller === null) {
-          setLoading(false);
-        }
-      }
-    }
-
-    return () => {
-      if (controller) {
-        controller.abort();
-      }
-    }
-  }, []);
-
-  if (loading) {
-    return <Spinner />;
-  }
-
-  return <Outlet />;
-}
 
 function Test() {
   const [loading, setLoading] = useState(true);
@@ -103,21 +50,21 @@ const GlobalNotificationsWrapper = () => {
   return <Notifications notifications={notifications} removeNotification={removeNotification} />;
 };
 
-const Spinner = () => {
-  return (
-      <span
-          className="loader"
-          role="status"
-          aria-live="polite"
-      >
-          <div className="logo-ring"></div>
-          <div className="logo-ring"></div>
-          <div className="logo-ring"></div>
-          <div className="logo-ring"></div>
-          <span className="sr-only">Loading content, please wait.</span>
-      </span>
-  )
-}
+// const Spinner = () => {
+//   return (
+//       <span
+//           className="loader"
+//           role="status"
+//           aria-live="polite"
+//       >
+//           <div className="logo-ring"></div>
+//           <div className="logo-ring"></div>
+//           <div className="logo-ring"></div>
+//           <div className="logo-ring"></div>
+//           <span className="sr-only">Loading content, please wait.</span>
+//       </span>
+//   )
+// }
 
 export default App;
 
